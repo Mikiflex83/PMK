@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "checks": {
+    "recipientBeforeAction": true,
+    "exactContentPreview": true,
+    "destinationExplained": true,
+    "explicitConfirmation": true,
+    "stagesConfigurable": true,
+    "exceptionsVisible": true,
+    "uncertainWriteRecovery": true,
+    "cleanupRecovery": true,
+    "rereadBeforeWrite": true,
+    "sessionAudit": true,
+    "analysisRegistry": true
+  },
+  "scope": "Dossier, destination et contenu contrôlés avant écriture ; étapes, exceptions et reprises visibles et vérifiées par relecture Koha."
+}

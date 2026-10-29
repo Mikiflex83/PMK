@@ -1,0 +1,21 @@
+{
+  "kind": "Browser fixtures using native DOM nodes and actual live-preview adapters",
+  "rows": [
+    {
+      "name": "Bibliographic live preview preserves exact native order, nodes, handlers, user input and MARC visibility on undo",
+      "passed": true
+    },
+    {
+      "name": "Grouping diagnostics distinguish absent information, invalid selectors and competing nested targets without moving anything",
+      "passed": true
+    },
+    {
+      "name": "Item detail preview diagnoses absent fields and reversibly moves native inputs in reading and keyboard order",
+      "passed": true
+    },
+    {
+      "name": "Holdings preview retains readable native statuses, sorting controls and original column names after undo",
+      "passed": true
+    }
+  ]
+}

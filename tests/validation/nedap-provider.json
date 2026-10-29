@@ -1,0 +1,105 @@
+{
+  "kind": "Perl in local Koha; all provider HTTP responses mocked",
+  "rows": [
+    {
+      "name": "Provider data accepted",
+      "passed": true
+    },
+    {
+      "name": "Only required numerical counters forwarded",
+      "passed": true
+    },
+    {
+      "name": "Fixed provider host",
+      "passed": true
+    },
+    {
+      "name": "HTTPS only",
+      "passed": true
+    },
+    {
+      "name": "Bounded native provider path",
+      "passed": true
+    },
+    {
+      "name": "Server credential sent only to provider",
+      "passed": true
+    },
+    {
+      "name": "Repeated read uses cache",
+      "passed": true
+    },
+    {
+      "name": "Reject invalid interval or path segment before provider access",
+      "passed": true
+    },
+    {
+      "name": "Reject invalid interval or path segment before provider access",
+      "passed": true
+    },
+    {
+      "name": "Reject invalid interval or path segment before provider access",
+      "passed": true
+    },
+    {
+      "name": "Reject invalid interval or path segment before provider access",
+      "passed": true
+    },
+    {
+      "name": "Reject invalid interval or path segment before provider access",
+      "passed": true
+    },
+    {
+      "name": "Reject invalid interval or path segment before provider access",
+      "passed": true
+    },
+    {
+      "name": "Reject invalid interval or path segment before provider access",
+      "passed": true
+    },
+    {
+      "name": "Different RCR cannot use configured credential",
+      "passed": true
+    },
+    {
+      "name": "Rejected inputs make no provider calls",
+      "passed": true
+    },
+    {
+      "name": "Redirect refused",
+      "passed": true
+    },
+    {
+      "name": "Provider authentication failure distinct and sanitized",
+      "passed": true
+    },
+    {
+      "name": "Malformed provider payload refused",
+      "passed": true
+    },
+    {
+      "name": "Nonnumeric counts refused",
+      "passed": true
+    },
+    {
+      "name": "Missing credential distinct",
+      "passed": true
+    },
+    {
+      "name": "Redirects disabled in actual client",
+      "passed": true
+    },
+    {
+      "name": "TLS certificate verification on",
+      "passed": true
+    },
+    {
+      "name": "Provider request timeout bounded",
+      "passed": true
+    },
+    {
+      "name": "Provider response size bounded",
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "passed": true,
+  "mappings": [
+    {
+      "id": "b",
+      "label": "Site",
+      "target": "items.homebranch",
+      "marc": "995$b",
+      "source": "form",
+      "authorisedValueCategory": "",
+      "dependency": "none",
+      "found": true,
+      "tagName": "SELECT",
+      "issues": []
+    },
+    {
+      "id": "e",
+      "label": "Localisation",
+      "target": "items.location",
+      "marc": "995$e",
+      "source": "form",
+      "authorisedValueCategory": "",
+      "dependency": "b",
+      "found": true,
+      "tagName": "SELECT",
+      "issues": []
+    },
+    {
+      "id": "bad",
+      "label": "Champ absent",
+      "target": "items.missing",
+      "marc": "99$x",
+      "source": "authorised_values",
+      "authorisedValueCategory": "",
+      "dependency": "unknown",
+      "found": false,
+      "tagName": null,
+      "issues": [
+        "authorised-value-category-missing",
+        "dependency-invalid",
+        "dependency-values-missing",
+        "marc-invalid",
+        "target-missing"
+      ]
+    }
+  ],
+  "configurationView": "3 champ(s) contrôlé(s), 1 à vérifier. Le test lit la page sans modifier le formulaire.Site — items.homebranch — MARC 995$b — source form — ✓Localisation — items.location — MARC 995$e — source form — dépend de b — ✓Champ absent — items.missing — MARC 99$x — source authorised_values — dépend de unknown — ⚠ target-missing, marc-invalid, authorised-value-category-missing, dependency-invalid, dependency-values-missing",
+  "dependencyReject": false,
+  "dependencyAccept": true
+}

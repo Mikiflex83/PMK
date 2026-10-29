@@ -1,0 +1,9 @@
+{
+  "kind": "Browser runtime with Koha confirmation markup and API responses",
+  "rows": [
+    {
+      "name": "Checkout correction explains the exact rule, remains single during rapid updates and withdraws on another Koha warning",
+      "passed": true
+    }
+  ]
+}

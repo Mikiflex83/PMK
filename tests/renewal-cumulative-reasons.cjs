@@ -1,0 +1,22 @@
+const {chromium}=require('playwright');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const ROOT=path.resolve(__dirname,'..');
+const OUT=path.join(ROOT,'tests/validation/renewal-cumulative-reasons.json');
+(async()=>{
+ const browser=await chromium.launch({executablePath:process.env.PMK_CHROMIUM_PATH||'/usr/bin/chromium',headless:true,args:['--no-sandbox']});
+ const page=await browser.newPage({locale:'fr-FR'});
+ await page.route('http://pmk.test/**',route=>route.fulfill({contentType:'text/html',body:'<!doctype html><html lang="fr"><head></head><body><main><table><thead><tr><th>Document</th><th>Renouvellement</th></tr></thead><tbody><tr><td>Test</td><td class="renewcol"><span class="no-renew-hold">Réservation active</span><span class="no-renew-overdue">Document en retard</span><input type="checkbox" name="renew" disabled></td></tr></tbody></table></main></body></html>'}));
+ await page.goto('http://pmk.test/cgi-bin/koha/circ/circulation.pl');
+ await page.evaluate(()=>{window.PMKConfig={registerModule(){},getConfig(){return Promise.resolve({api:{enabled:false},advanced:{initialScanDelayMs:0}})},subscribe(){},getLanguage(){return 'fr'}}});
+ await page.addScriptTag({path:path.join(ROOT,'114-renew-modif.js')});
+ await page.locator('.pmk114-reason').waitFor();
+ const reason=await page.locator('.pmk114-reason').innerText();
+ const title=await page.locator('.pmk114-reason').getAttribute('title');
+ const codes=await page.evaluate(()=>PMK114RenewalEnhancements.domReasons('Réservation active Document en retard',document.querySelector('.renewcol')));
+ assert.match(reason,/réservation/i);assert.match(reason,/retard/i);assert.deepEqual(codes,['on_reserve','norenew_overdue']);assert.match(title,/on_reserve.*norenew_overdue/);
+ const definition=await page.evaluate(()=>{let d;PMKConfig.registerModule=x=>d=x;return PMK114RenewalEnhancements.defaults.reasonLabels.map(x=>x.fr)});
+ fs.writeFileSync(OUT,JSON.stringify({passed:true,displayedReason:reason,technicalSource:title,codes,defaultReadableLabels:definition},null,2)+'\n');
+ console.log('PASS renewal reasons are Koha-linked, readable and cumulative');await browser.close();
+})().catch(e=>{fs.writeFileSync(OUT,JSON.stringify({passed:false,error:e.stack},null,2)+'\n');console.error(e);process.exit(1)});

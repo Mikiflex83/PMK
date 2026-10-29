@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "checks": {
+    "contactsMaskedByDefault": true,
+    "temporaryReveal": true,
+    "exportMinimizedByDefault": true,
+    "personalExportExplicit": true,
+    "cardCriterionExact": true,
+    "identityCriterionExplained": true,
+    "weakContactSignals": true,
+    "falsePositiveWorkflow": true,
+    "noDirectDelete": true,
+    "noExternalDependency": true
+  },
+  "scope": "Contrat de la page : coordonnées masquées, export minimisé et critères de rapprochement avec faux positifs expliqués."
+}

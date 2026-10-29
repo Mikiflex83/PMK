@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "newDay": "2026-01-02",
+  "concurrentCount": 3,
+  "correction": {
+    "reason": "Saisie différée après fermeture",
+    "userId": "agent",
+    "recordedAt": "2026-01-02T00:01:00.000Z",
+    "eventAt": "2026-01-02T10:00:00Z",
+    "adults": 1,
+    "kids": 0
+  },
+  "refusedWithoutReason": "Indiquez une justification de 3 à 300 caractères."
+}

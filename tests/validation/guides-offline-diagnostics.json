@@ -1,0 +1,9 @@
+{
+  "kind": "Actual guide core with vendored Intro.js plus PMK configuration diagnostics",
+  "rows": [
+    {
+      "name": "Guides load vendored Intro.js without external requests and diagnose engine version, resume state and missing versioned steps",
+      "passed": true
+    }
+  ]
+}

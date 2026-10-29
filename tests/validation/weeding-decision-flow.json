@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "checks": {
+    "criteriaProposal": true,
+    "criteriaRules": true,
+    "candidateNotDecision": true,
+    "explicitAgentDecision": true,
+    "selectionNotDecision": true,
+    "separateSelectionState": true,
+    "explicitDecisionRecord": true,
+    "reversibleDecision": true,
+    "confirmedActions": true
+  },
+  "scope": "Contrat de la page : critères expliqués, liste sélectionnée distincte et décision explicite et réversible."
+}

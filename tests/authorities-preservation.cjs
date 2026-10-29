@@ -1,0 +1,9 @@
+// Protect the advanced Authorities engines; only the installation envelope may change.
+const fs=require('node:fs'),cp=require('node:child_process'),crypto=require('node:crypto');
+let acorn;try{acorn=require('acorn');}catch(_){acorn={};new Function('exports','module',process.binding('natives')['internal/deps/acorn/acorn/dist/acorn'])(acorn,{exports:acorn});}
+const file='138-pages/138-page-authorities.js',baseline='a63d58e21d6a9144eaf1c2f5c06c912b06fe22b5';
+const before=cp.execFileSync('git',['show',baseline+':'+file],{encoding:'utf8'}),after=fs.readFileSync(file,'utf8');
+const hash=x=>crypto.createHash('sha256').update(x).digest('hex');
+function functions(source){const html=JSON.parse(source.match(/const PAGE_SOURCE = ("(?:[^"\\]|\\.)*");/)[1]),result=new Map();for(const m of html.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/g)){const text=m[1],ast=acorn.parse(text,{ecmaVersion:'latest',sourceType:'module'});function walk(n){if(!n||typeof n!=='object')return;if(n.type==='FunctionDeclaration'&&n.id)result.set(n.id.name,hash(text.slice(n.start,n.end)));for(const v of Object.values(n))if(Array.isArray(v))v.forEach(walk);else if(v&&typeof v==='object')walk(v);}walk(ast);}return result;}
+const old=functions(before),current=functions(after);for(const [name,digest]of old)if(current.get(name)!==digest)throw Error('Authorities engine changed: '+name);if(old.size!==current.size)throw Error('Authorities functions added/removed');
+const proof={passed:true,baselineCommit:baseline,priorSourceSha256:hash(before),currentSourceSha256:hash(after),otherNamedFunctionsPreserved:old.size,remoteMemoryRemoved:!after.includes('DracQualityMemory'),installationEnvelopeAdded:true};fs.writeFileSync('tests/validation/authorities-preservation.json',JSON.stringify(proof,null,2)+'\n');console.log(JSON.stringify(proof));

@@ -1,0 +1,65 @@
+{
+  "kind": "Browser fixtures, bounded module improvements",
+  "rows": [
+    {
+      "name": "Phone formatting preserves international numbers, extensions, identifiers, input and tel links",
+      "passed": true
+    },
+    {
+      "name": "Recent history exclusions prevent recording without erasing personal entries; selective deletion remains available",
+      "passed": true
+    },
+    {
+      "name": "Astrology uses all historical sign boundaries and rejects impossible dates",
+      "passed": true
+    },
+    {
+      "name": "Mobile QR reveals the current URL and repeated parameters and blocks an external generator",
+      "passed": true
+    },
+    {
+      "name": "Copy failure is announced without false success; fallback restores focus and long content is preserved",
+      "passed": true
+    },
+    {
+      "name": "Scroll controls remain keyboard accessible on mobile and respect reduced motion",
+      "passed": true
+    },
+    {
+      "name": "Loan timeline declares loaded-row scope and retains partial API enrichment after a page failure",
+      "passed": true
+    },
+    {
+      "name": "Bibliographic badges explain the matched text and retain a visible alternative when the image fails",
+      "passed": true
+    },
+    {
+      "name": "New-acquisition badges expose their source date and ignore absent, invalid, future and old dates",
+      "passed": true
+    },
+    {
+      "name": "Message chronology handles equal and missing dates, dynamic additions and restores native nodes",
+      "passed": true
+    },
+    {
+      "name": "Reservation guard releases rejected native validation, blocks slow duplicate submissions and treats labels as text",
+      "passed": true
+    },
+    {
+      "name": "Reservation AJAX guard waits for an explicit result and restores the original button after failure",
+      "passed": true
+    },
+    {
+      "name": "Long list counters preserve input and existing descriptions while comparing bounded duplicate samples",
+      "passed": true
+    },
+    {
+      "name": "Call-number search previews mixed prefixes and encodes accents, ampersands and quotes without changing the native link",
+      "passed": true
+    },
+    {
+      "name": "Batch clearing summarizes selected fields including dynamic rows and cancellation leaves native values intact",
+      "passed": true
+    }
+  ]
+}

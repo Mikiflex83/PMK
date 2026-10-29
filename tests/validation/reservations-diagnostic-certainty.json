@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "checks": {
+    "analysisDateUsesCoverage": true,
+    "analysisDateVisible": true,
+    "certaintyFromEvidence": true,
+    "probableNamed": true,
+    "incompleteNamed": true,
+    "rowDisplaysCertainty": true,
+    "explanationAndActionSeparated": true,
+    "noFirebaseReference": true
+  },
+  "scope": "Contrat de la page : date et couverture de l’analyse, degré de certitude, cause et action distinctes."
+}

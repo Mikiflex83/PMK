@@ -1,0 +1,222 @@
+<main>
+ <div id="messages">
+ 
+
+ <div id="transient_result"></div>
+</div>
+
+ 
+ 
+ <div id="toolbar" class="btn-toolbar">
+ 
+ <div class="btn-group">
+ <button class="btn btn-default" id="newRecord"><i class="fa fa-plus"></i> Nouvelle notice</button>
+ <button class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"></button>
+ <ul class="dropdown-menu dropdown-menu-end">
+ <li><a class="dropdown-item" id="newRecordDefault" href="/cgi-bin/koha/cataloguing/addbiblio.pl?frameworkcode=">Grille de catalogage par défaut</a></li>
+ 
+ <li><a class="dropdown-item" href="/cgi-bin/koha/cataloguing/addbiblio.pl?frameworkcode=ARTI">Article de périodique</a></li>
+ 
+ <li><a class="dropdown-item" href="/cgi-bin/koha/cataloguing/addbiblio.pl?frameworkcode=FA">Catalogage rapide</a></li>
+ 
+ <li><a class="dropdown-item" href="/cgi-bin/koha/cataloguing/addbiblio.pl?frameworkcode=PATR">Fonds patrimonial</a></li>
+ 
+ <li><a class="dropdown-item" href="/cgi-bin/koha/cataloguing/addbiblio.pl?frameworkcode=ACQ">Grille acquisition</a></li>
+ 
+ <li><a class="dropdown-item" href="/cgi-bin/koha/cataloguing/addbiblio.pl?frameworkcode=MULT">Multimédia</a></li>
+ 
+ <li><a class="dropdown-item" href="/cgi-bin/koha/cataloguing/addbiblio.pl?frameworkcode=OBJ">Objets</a></li>
+ 
+ <li><a class="dropdown-item" href="/cgi-bin/koha/cataloguing/addbiblio.pl?frameworkcode=PERI">Périodique</a></li>
+ 
+ <li><a class="dropdown-item" href="/cgi-bin/koha/cataloguing/addbiblio.pl?frameworkcode=PROV">Provence</a></li>
+ 
+ <li><a class="dropdown-item" href="/cgi-bin/koha/cataloguing/addbiblio.pl?frameworkcode=WEB">Ressource web</a></li>
+ 
+ </ul>
+ </div>
+ 
+ <div class="btn-group">
+ <button class="btn btn-default" id="z3950search"><i class="fa fa-search"></i> Dériver une nouvelle notice via Z39.50/SRU</button>
+ <button class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"></button>
+ <ul class="dropdown-menu dropdown-menu-end">
+ <li id="Default" class="z3950searchFw"><a class="dropdown-item" href="#">Grille de catalogage par défaut</a></li>
+ 
+ <li id="ARTI" class="z3950searchFw"><a class="dropdown-item" href="#">Article de périodique</a></li>
+ 
+ <li id="FA" class="z3950searchFw"><a class="dropdown-item" href="#">Catalogage rapide</a></li>
+ 
+ <li id="PATR" class="z3950searchFw"><a class="dropdown-item" href="#">Fonds patrimonial</a></li>
+ 
+ <li id="ACQ" class="z3950searchFw"><a class="dropdown-item" href="#">Grille acquisition</a></li>
+ 
+ <li id="MULT" class="z3950searchFw"><a class="dropdown-item" href="#">Multimédia</a></li>
+ 
+ <li id="OBJ" class="z3950searchFw"><a class="dropdown-item" href="#">Objets</a></li>
+ 
+ <li id="PERI" class="z3950searchFw"><a class="dropdown-item" href="#">Périodique</a></li>
+ 
+ <li id="PROV" class="z3950searchFw"><a class="dropdown-item" href="#">Provence</a></li>
+ 
+ <li id="WEB" class="z3950searchFw"><a class="dropdown-item" href="#">Ressource web</a></li>
+ 
+ </ul>
+ </div>
+ 
+ </div>
+ <!-- /#toolbar -->
+ 
+
+ <h1>Catalogage<button type="button" id="pmk-config-table-labels-page--cgi-bin-koha-cataloguing-cataloging-home-pl" class="btn btn-link btn-sm pmk-context-config" title="Configurer Libellés et éléments d’interface" aria-label="Configurer Libellés et éléments d’interface"><i class="fa fa-gear" aria-hidden="true"></i></button></h1>
+
+ <div class="row">
+ <div class="col-sm-4 col-md-4">
+ 
+ <h3>Importer</h3>
+ <ul class="buttons-list">
+ 
+ <li>
+ <a class="circ-button" href="/cgi-bin/koha/tools/stage-marc-import.pl"><i class="fa fa-download"></i> Import des notices dans le réservoir</a>
+ </li>
+ 
+
+ 
+ <li>
+ <a class="circ-button" href="/cgi-bin/koha/tools/manage-marc-import.pl"><i class="fa fa-tasks"></i> Gérer les notices importées dans le réservoir</a>
+ </li>
+ 
+ </ul>
+ 
+
+ 
+ <h3>Exporter</h3>
+ <ul class="buttons-list">
+ 
+ <li>
+ <a class="circ-button" href="/cgi-bin/koha/tools/export.pl"><i class="fa fa-upload"></i> Exporter les données du catalogue</a>
+ </li>
+ 
+ </ul>
+ 
+
+ 
+ <h3>Rapports</h3>
+ <ul class="buttons-list">
+ 
+ <li>
+ <a class="circ-button" href="/cgi-bin/koha/tools/inventory.pl"><i class="fa-solid fa-clipboard-check"></i> Inventaire/Récolement</a>
+ </li>
+ 
+
+ 
+ <li>
+ <a class="circ-button" href="/cgi-bin/koha/cataloguing/concerns.pl"><i class="fa fa-list-ul"></i> Problèmes de catalogage</a>
+ </li>
+ 
+ </ul>
+ 
+ 
+ <h3>Catalogage rapide</h3>
+ <ul class="buttons-list">
+ 
+ <li>
+ <a class="circ-button" href="/cgi-bin/koha/cataloguing/addbiblio.pl?frameworkcode=FA"><i class="fa fa-plus"></i> Catalogage rapide</a>
+ </li>
+ 
+ </ul>
+ 
+ </div>
+
+ <div class="col-sm-4 col-md-4">
+ 
+ <h3>Modification par lots</h3>
+ <ul class="buttons-list">
+ 
+ <li>
+ <a class="circ-button" href="/cgi-bin/koha/tools/batchMod.pl"><i class="fa-solid fa-pencil" aria-hidden="true"></i> Modification d'exemplaires par lots</a>
+ </li>
+ 
+ 
+ <li>
+ <a class="circ-button" href="/cgi-bin/koha/tools/batchMod.pl?del=1"><i class="fa fa-trash-can"></i> Suppression d'exemplaires par lots</a>
+ </li>
+ 
+ 
+ <li>
+ <a class="circ-button" href="/cgi-bin/koha/tools/batch_record_modification.pl"><i class="fa-solid fa-pencil" aria-hidden="true"></i> Modification de notices par lot</a>
+ </li>
+ 
+ 
+ <li>
+ <a class="circ-button" href="/cgi-bin/koha/tools/batch_delete_records.pl"><i class="fa fa-trash-can"></i> Suppression de notices par lot</a>
+ </li>
+ 
+
+ 
+ <li>
+ <a class="circ-button" href="/cgi-bin/koha/tools/marc_modification_templates.pl"><i class="fa fa-gear"></i> Modèles de transformation MARC</a>
+ </li>
+ 
+ </ul>
+ 
+
+ 
+ <h3>Automatisation</h3>
+ <ul class="buttons-list">
+ 
+ <li>
+ <a class="circ-button" href="/cgi-bin/koha/tools/automatic_item_modification_by_age.pl"><i class="fa-solid fa-calendar-days"></i> Modifications d'exemplaires par ancienneté</a>
+ </li>
+ 
+ 
+ <li>
+ <a class="circ-button" href="/cgi-bin/koha/tools/stockrotation.pl"><i class="fa-solid fa-rotate"></i> Rotation des stocks</a>
+ </li>
+ 
+ </ul>
+ 
+ </div>
+
+ <div class="col-sm-4 col-md-4">
+ 
+ <h3>Outils</h3>
+ <ul class="buttons-list">
+ 
+ <li>
+ <a class="circ-button" href="/cgi-bin/koha/labels/label-home.pl"><i class="fa fa-hashtag"></i> Créateur d'étiquettes</a>
+ </li>
+
+ <li>
+ <a class="circ-button" href="/cgi-bin/koha/labels/barcode-print.pl"><i class="fa fa-barcode"></i> Générateur d'images de codes à barres</a>
+ </li>
+
+ <li>
+ <a class="circ-button" href="/cgi-bin/koha/labels/spinelabel-home.pl"><i class="fa fa-hashtag"></i> Créateur d'étiquettes rapide</a>
+ </li>
+ 
+
+ 
+ <li>
+ <a class="circ-button" href="/cgi-bin/koha/tools/upload-cover-image.pl"><i class="fa fa-upload"></i> Téléverser une image de couverture locale</a>
+ </li>
+ 
+ </ul>
+ 
+
+ 
+ <h3>Administration</h3>
+ <ul class="buttons-list">
+ 
+ <li>
+ <a class="circ-button" href="/cgi-bin/koha/admin/preferences.pl?tab=cataloguing"><i class="fa fa-tasks"></i> Préférences</a>
+ </li>
+ 
+ <li>
+ <a class="circ-button" href="/cgi-bin/koha/admin/admin-home.pl"><i class="fa fa-cogs"></i> Configuration</a>
+ </li>
+ </ul>
+ 
+ </div>
+ </div>
+
+ </main>

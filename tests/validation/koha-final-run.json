@@ -1,0 +1,169 @@
+{
+  "kind": "Recorded real Koha validation of this KPZ; not exhaustive production certification",
+  "dateUtc": "2026-10-28T15:44:41.912717+00:00",
+  "pluginVersion": "0.4.0",
+  "packageSha256": "a31e436d814330e1a4064e8e8f6f9e445fe385cfc5b39e76f4bd825949c44846",
+  "environment": {
+    "koha": "25.11",
+    "marc": "UNIMARC",
+    "database": "MariaDB 10.11",
+    "dedicatedLocalInstance": true,
+    "firebaseEmulatorsStopped": true,
+    "externalBrowserHTTPAndWebSocketsBlocked": true
+  },
+  "suites": [
+    {
+      "suite": "koha-native-data",
+      "passed": true,
+      "scenarios": 15,
+      "proof": "tests/validation/koha-native-data.json",
+      "proofSha256": "28fb35252cb6b4155941599eda83b02672b537aebbaf287dc4322f65ab8eb3a1"
+    },
+    {
+      "suite": "koha-native-engines",
+      "passed": true,
+      "scenarios": 5,
+      "proof": "tests/validation/koha-native-engines.json",
+      "proofSha256": "ec0d2e3ab24a0fd950b0b97ce1f4f897037cad2afd949aafbb063322ad5ed079"
+    },
+    {
+      "suite": "koha-shared-tools",
+      "passed": true,
+      "scenarios": 2,
+      "proof": "tests/validation/koha-shared-tools.json",
+      "proofSha256": "e9a29183702e3b11c1fdc018294e7e3b3b790a5a0526e41bdea4b12e10e62fb0"
+    },
+    {
+      "suite": "koha-configuration",
+      "passed": true,
+      "scenarios": 86,
+      "proof": "tests/validation/koha-configuration.json",
+      "proofSha256": "d603861657c210be86ef877c304f849c63ff6660897e2138f32093458b1ca5a7"
+    },
+    {
+      "suite": "koha-business",
+      "passed": true,
+      "scenarios": 6,
+      "proof": "tests/validation/koha-business.json",
+      "proofSha256": "d962f1b6657b028f432e79f5de95c17be01508c5f45af1ede1e5c87f9a88e4f1"
+    },
+    {
+      "suite": "koha-circulation",
+      "passed": true,
+      "scenarios": 4,
+      "proof": "tests/validation/koha-circulation.json",
+      "proofSha256": "e82bd0b806b96043a9cdac6938e54b490d11ffdfcb00f66a15e33f84184c4422"
+    },
+    {
+      "suite": "koha-checkout-status",
+      "passed": true,
+      "scenarios": 1,
+      "proof": "tests/validation/koha-checkout-status.json",
+      "proofSha256": "91b53f38143e868e1b0aaf3cda9f9c3884fd118830edd7d7b7c90b0ff02c00ef"
+    },
+    {
+      "suite": "koha-lost-checkin",
+      "passed": true,
+      "scenarios": 2,
+      "proof": "tests/validation/koha-lost-checkin.json",
+      "proofSha256": "2cfa38d28952b004695adfa726b7181e3ad98a4e0f566f5a5d4517964f5ae371"
+    },
+    {
+      "suite": "koha-restoration",
+      "passed": true,
+      "scenarios": 1,
+      "proof": "tests/validation/koha-restoration.json",
+      "proofSha256": "2ec5185e38437302b769606c9c8a6fbb82d6d723dc543559c668fed0da0b0994"
+    },
+    {
+      "suite": "koha-maintenance",
+      "passed": true,
+      "scenarios": 7,
+      "proof": "tests/validation/koha-maintenance.json",
+      "proofSha256": "a12da6d2d39cafde74e494daf1d9e11e7bd969b0c347695949bf116ac60c83a0"
+    },
+    {
+      "suite": "koha-publications",
+      "passed": true,
+      "scenarios": 2,
+      "proof": "tests/validation/koha-publications.json",
+      "proofSha256": "be1344fe1a0eee65aa68689f37b996ab5eb0da6918ccacdec71c9a645b59561f"
+    },
+    {
+      "suite": "koha-internal-pages",
+      "passed": true,
+      "scenarios": 19,
+      "proof": "tests/validation/koha-internal-pages.json",
+      "proofSha256": "30b3496d2a5c56bf74d75b38ea36d8cb32e2ec328179d059bde25fac61d165b9"
+    },
+    {
+      "suite": "koha-reports",
+      "passed": true,
+      "scenarios": 13,
+      "proof": "tests/validation/koha-reports.json",
+      "proofSha256": "559edc56840ae2d0cf3b75eab0393af9a4bd536abe6419650f34abc0cf71ece2"
+    },
+    {
+      "suite": "koha-migration",
+      "passed": true,
+      "scenarios": 13,
+      "proof": "tests/validation/koha-migration.json",
+      "proofSha256": "adb02b6660c2c6fdd7a84af0634aa609c0de5d7ac35ae1190dd78cfb4ab9bff2"
+    },
+    {
+      "suite": "koha-universality",
+      "passed": true,
+      "scenarios": 5,
+      "proof": "tests/validation/koha-universality.json",
+      "proofSha256": "1a18f1c85637b4444834b5629b9503d769335685bdb582fb99ae5126da595ff9"
+    },
+    {
+      "suite": "koha-plugin",
+      "passed": true,
+      "scenarios": 6,
+      "proof": "tests/validation/koha-plugin.json",
+      "proofSha256": "a6dc0ed710563f81668d4f1b9107871b1e2003f42b866f3d2dd92ee7d76b3f04"
+    },
+    {
+      "suite": "koha-sql",
+      "passed": true,
+      "scenarios": 13,
+      "proof": "tests/validation/koha-sql.json",
+      "proofSha256": "0ac0899df17c2779857fbed072a980e63e78516c430191fd27c70c1c113ac12b"
+    },
+    {
+      "suite": "koha-routes",
+      "passed": true,
+      "scenarios": 30,
+      "proof": "tests/validation/koha-routes.json",
+      "proofSha256": "57ccb85b4324011edca43577eb94dd42855a12a469cfb1c0ea7857c6bb8b830c"
+    },
+    {
+      "suite": "koha-installation",
+      "passed": true,
+      "scenarios": 1,
+      "proof": "tests/validation/koha-installation.json",
+      "proofSha256": "5ce097bd3a830883fb1e8c4e834d7b2e60191750dfd6698f4c0c37bfb76ecd27"
+    },
+    {
+      "suite": "koha-upgrade-preservation",
+      "passed": true,
+      "scenarios": 1,
+      "proof": "tests/validation/koha-upgrade-preservation.json",
+      "proofSha256": "2be168316862d5abe1611432222ff5750dcec51909c4394501fefe4aceb687f9"
+    }
+  ],
+  "configurationAndDataPreservedOnReinstall": true,
+  "authoritiesRemoteLearningRemoved": true,
+  "authoritiesOtherNamedFunctionsPreserved": 315,
+  "legacyExportSyntheticScenarios": 5,
+  "notValidatedLive": [
+    "Electre provider and images",
+    "France Publications supplier account and claims",
+    "EmailJS delivery",
+    "external catalogs and address providers",
+    "physical barcode scanner, camera and printer",
+    "real Libnet/NEDAP account",
+    "production legacy-storage export import"
+  ]
+}

@@ -1,0 +1,338 @@
+[
+  {
+    "id": "attendance-counter",
+    "title": "Compteur de fréquentation — Koha",
+    "hosts": 1,
+    "text": "À propos de cette page et vérifications\nPages & outils internes\nCompteur de fréquentation\nAccueil Koha\nConfigurer cette page\nCompteur de fréquentation\nfixture\nAdministration\nCompteur flottant\nSaisir la fréquentation\nLieu\n\nDate\n\nAujourd'hui\nRemettre l’affichage à zéro\nRecharger les compteurs\nAdultes\n−\n0\n+\nNotes (optionnel)\n\nEnfants\n−\n0\n+\nNotes (optionnel)\n\nExporter les résultats du rapport\nExport Horaire Détaillé\nDernière sauvegarde : —\nSélectionnez au moins un site\nConsulter les statistiques et exporter\nSites du rapport\nAucun site sélectionné\nDu\nAu\nRegrouper\nJour\nSemaine\nMois\nHeure\nLieu\nTranche horaire\nGénérer le rapport\nPériode rapide :\nCe mois\nCette année\nTout l'historique\nExport CSV (tout)\nAucun site sélectionné.\nEffacer\nLignes/page:\n10\n25\n50\n100\n0\nJournées-site\n0\nAdultes\n0\nEnfants\n0\nTotal\n0\nMoyenne/jour\nOptions avancées\nAucun résultat\nRapport complet / PDF\nExporter résultats actuels\nAfficher graphique\nVue Tranches Horaire\nLes compteurs et rapports utilisent les données enregistrées pour le lieu et la période choisis.",
+    "errors": [],
+    "denied": false,
+    "pageStatus": {
+      "state": "mounted"
+    },
+    "listeners": 0,
+    "overlayOpen": false,
+    "internalDenial": false,
+    "pageErrors": [],
+    "externalRequests": [],
+    "kohaRequests": []
+  },
+  {
+    "id": "action-journal",
+    "title": "Journal des actions — Koha",
+    "hosts": 1,
+    "text": "À propos de cette page et vérifications\nPages & outils internes\nJournal des actions\nAccueil Koha\nConfigurer cette page\nJournal des actions\nAjouter une action\nDate\nAuteur\nType d'action\nCréation notice\nModification notice\nSuppression notice\nFusion notice\nRestauration\nConditionnement\nRéparation\nInformation\nAutre\nDescription\nAjouter l'entrée\nConsulter le journal\nAfficher les supprimées Exporter le journal affiché en PDF\nDate\tAuteur\tType\tDescription\tActions",
+    "errors": [],
+    "denied": false,
+    "pageStatus": {
+      "state": "mounted"
+    },
+    "listeners": 1,
+    "overlayOpen": false,
+    "internalDenial": false,
+    "pageErrors": [],
+    "externalRequests": [
+      "https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Space+Grotesk:wght@600;700&display=swap",
+      "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.2/html2pdf.bundle.min.js"
+    ],
+    "kohaRequests": []
+  },
+  {
+    "id": "restore-deleted-items",
+    "title": "Restauration d’exemplaires — Koha",
+    "hosts": 1,
+    "text": "À propos de cette page et vérifications\nPages & outils internes\nRestauration d’exemplaires\nAccueil Koha\nConfigurer cette page\nRetrouver et restaurer des exemplaires\n\nRecherche par code-barres ou par plage de dates — restauration native PimpMyKoha. Les prêts/retours utilisent la carte VALEUR_PRIVEE_SUPPRIMEE.\n\nContrôle d'accès : Impossible de lire l'utilisateur connecté dans la page Koha.\nAccès refusé. Accès limité à compte.koha.exemple. Vérifiez votre session et les droits de cette page.",
+    "errors": [],
+    "denied": false,
+    "pageStatus": {
+      "state": "mounted"
+    },
+    "listeners": 0,
+    "overlayOpen": false,
+    "internalDenial": true,
+    "pageErrors": [],
+    "externalRequests": [],
+    "kohaRequests": []
+  },
+  {
+    "id": "weeding",
+    "title": "Désherbage — Koha",
+    "hosts": 1,
+    "text": "À propos de cette page et vérifications\nPages & outils internes\nDésherbage\nAccueil Koha\nConfigurer cette page\nDésherbage\n\nScannez directement un document, ou préparez une liste de travail avant le contrôle au rayon. Les critères proposent des candidats ; la décision reste à prendre.\n\nPréparer une liste\nContrôler par scan\nRevoir les décisions\nBilan et session\nScanner / contrôler un exemplaire\nMasquer la fiche\nScan libre\nContrôler ce document\nPrêt à scanner.\nPérimètre et critères\n\nDéfinissez la sélection de travail. Les champs vides ne sont pas pris en compte.\n\nPérimètre\nSite actuel\n— Tous —\nLocalisation\n— Toutes —\nÉtage\n— Tous —\nCollection\n— Toutes —\nType de document\n— Tous —\nDomaine (099$a)\n×\nListe en cours de chargement…\nSous-domaine (099$b)\n×\nFiltré par le domaine sélectionné.\nThème (099$e)\n×\nFiltré par le domaine et le sous-domaine sélectionnés.\nCritères\nCritères 1\nAnnées sans prêt\nChamp vide = ignoré.\nÂge min. pub.\nChamp vide = ignoré.\nÂge min. ex.\nChamp vide = ignoré.\nNb prêt min.\nChamp vide = ignoré.\nNb prêt max.\nChamp vide = ignoré.\nEfficacité 099 maximale\n— Ignorer —\n❌ Faible\n🛏️ Dormant\n⚠️ Moyen\n✅ Bon\n🔥 Excellent\n👑 Exceptionnel\nClasse 099 la plus élevée encore retenue.\n+ Ajouter une condition OU\nDans une même ligne, les critères sont reliés par ET. Les lignes sont reliées entre elles par OU. Champ vide = critère ignoré.\nConstruire / actualiser la liste\nAjouter une liste de codes-barres\nEffacer la liste\nBilan et gestion de la session\n0 scan(s) · 0 en liste\nDocuments traités\n0 document(s)\nAPI 0",
+    "errors": [],
+    "denied": false,
+    "pageStatus": {
+      "state": "mounted"
+    },
+    "listeners": 0,
+    "overlayOpen": false,
+    "internalDenial": false,
+    "pageErrors": [],
+    "externalRequests": [],
+    "kohaRequests": []
+  },
+  {
+    "id": "appointments",
+    "title": "Rendez-vous réseau / Doodle — Koha",
+    "hosts": 1,
+    "text": "À propos de cette page et vérifications\nPages & outils internes\nRendez-vous réseau / Doodle\nAccueil Koha\nConfigurer cette page",
+    "errors": [],
+    "denied": false,
+    "pageStatus": {
+      "state": "mounted"
+    },
+    "listeners": 7,
+    "shadowText": "     Semaine\n          </button>\n        </div>\n\n        \n      </div>\n\n      <div id=\"dk-slots-container\"><div class=\"dk-empty\">Aucun créneau ne correspond aux critères.</div></div>\n    </section>\n  </main>\n    </div>\n  </div>\n  <div id=\"dk-modal-root\"></div>\n  <div class=\"dk-toasts\"></div>\n</div>\n",
+    "overlayOpen": false,
+    "internalDenial": false,
+    "pageErrors": [],
+    "externalRequests": [
+      "https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"
+    ],
+    "kohaRequests": []
+  },
+  {
+    "id": "authorities",
+    "title": "Maintenance des autorités — Koha",
+    "hosts": 1,
+    "text": "Pages & outils internes\nMaintenance des autorités\nAccueil Koha\nKOHA · QUALITÉ DES AUTORITÉS\nMaintenance des autorités\n\nDédoublonner, contrôler après fusion, auditer selon vos règles et enrichir si nécessaire.\n\nAutorités Koha\nRéférentiel complet\nCharger les doublons\n\nEspaces de travail : le contrôle après fusion suit les fusions ; l’audit et l’enrichissement sont utilisables selon le besoin.\n\n1\nDédoublonnage\nIdentiques & possibles\n2\nAprès fusion\nContrôles & anomalies\n3\nAudit qualité\nRègles configurables\n4\nEnrichissement\nFacultatif\nVedettes identiques\nDoublons possibles\nAutorités sans notice liée\nBilan du référentiel\nExplorateur d’autorités\nToutes les autorités\nAUTORITÉS\n—\nVEDETTES IDENTIQUES\n—\nDOUBLONS POSSIBLES\n—\nUSAGES VÉRIFIÉS\n—\nORPHELINES TROUVÉES\n—\nTous les types\nRéinitialiser\nAucun chargement automatique. Utilise « Charger les doublons » pour le rapport ciblé ou « Référentiel complet » pour l’analyse globale.",
+    "errors": [],
+    "denied": false,
+    "pageStatus": {
+      "state": "mounted"
+    },
+    "listeners": 0,
+    "overlayOpen": false,
+    "internalDenial": false,
+    "pageErrors": [],
+    "externalRequests": [],
+    "kohaRequests": []
+  },
+  {
+    "id": "inventory",
+    "title": "Inventaire — Koha",
+    "hosts": 1,
+    "text": "À propos de cette page et vérifications\nPages & outils internes\nInventaire\nAccueil Koha\nConfigurer cette page\nInventaire autonome v0.4.19\n\nInventaire Koha sans plugin : stockage local, travail par poste, export puis fusion des résultats.\n\nInitialisation…Stockage local : vérification…\nINVENTAIRE ACTIF\nAucun inventaire ouvert\nCommencez par créer, ouvrir ou importer un inventaire.\nParcours conseillé : suivez les étapes 1 à 4.\nPARCOURS INVENTAIRE\n1\nInventaires\nCréer, ouvrir ou importer\n2\nPréparer les zones\nPérimètre et contrôles\n3\nScanner\nFaire l’inventaire\n4\nSuivi & clôture\nRésultats, fusion et clôture\nOUTILS\n⌁\nDésherbage rapide\nUtilisable hors inventaire\n⚙\nConfiguration\nModèle des nouveaux inventaires\nChoisir, créer ou importer un inventaire\n\nChaque navigateur possède sa copie locale. Pour travailler sur plusieurs postes, exportez le même inventaire de départ, travaillez séparément, puis réimportez les fichiers sur le poste principal : les scans sont fusionnés par code-barres.\n\nCréer un inventaire\nImporter / fusionner\nAfficher\nTous\nOuverts\nClôturés\nPrincipe : l’inventaire et les scans sont stockés dans IndexedDB sur ce poste. Les données Koha ne servent pas de stockage d’inventaire. Les écritures Koha sont toujours des actions explicites : corrections validées, retours, désherbage ou statuts appliqués aux non-passés.",
+    "errors": [],
+    "denied": false,
+    "pageStatus": {
+      "state": "mounted"
+    },
+    "listeners": 0,
+    "overlayOpen": false,
+    "internalDenial": false,
+    "pageErrors": [],
+    "externalRequests": [
+      "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Figtree:wght@400;500;600;700&display=swap"
+    ],
+    "kohaRequests": []
+  },
+  {
+    "id": "reservations",
+    "title": "Maintenance des réservations — Koha",
+    "hosts": 1,
+    "text": "À propos de cette page et vérifications\nPages & outils internes\nMaintenance des réservations\nAccueil Koha\nConfigurer cette page\nKOHA · QUALITÉ DU CATALOGUE\nMaintenance des réservations\n\nLes réservations à vérifier, leur cause probable et l’action proposée, dans une seule liste.\n\nCharger et analyser\nExporter\nRéservations\nRéglages\nDécisions locales · 0 cas actuel(s)\nRÉSERVATIONS CHARGÉES\n0\nDOSSIERS À EXAMINER\n0\nINTERVENTION NÉCESSAIRE\n0\nNOTICES RESTANT À ANALYSER\n0\nAfficher \nÀ examiner\nToutes les réservations\nToutes les alertes\nIntervention nécessaire\nBlocage probable\nToutes les alertes critiques\nÀ vérifier\nÀ examiner\nSans alerte\nExclues des règles\nTous statuts\nEn file d’attente\nMise de côté\nEn transit\nEn traitement\nSuspendue\nTous sites de retrait\nTout âge\n≥ 30 j\n≥ 60 j\n≥ 90 j\n≥ 180 j\nRéinitialiser\nAucun chargement automatique. Cliquez sur « Charger et analyser » pour commencer.",
+    "errors": [],
+    "denied": false,
+    "pageStatus": {
+      "state": "mounted"
+    },
+    "listeners": 0,
+    "overlayOpen": false,
+    "internalDenial": false,
+    "pageErrors": [],
+    "externalRequests": [],
+    "kohaRequests": []
+  },
+  {
+    "id": "loans",
+    "title": "Prêts & litiges — Koha",
+    "hosts": 1,
+    "text": "À propos de cette page et vérifications\nPages & outils internes\nPrêts & litiges\nAccueil Koha\nConfigurer cette page\nKOHA · QUALITÉ DU CATALOGUE\nPrêts & litiges\n\nRendre visibles les prêts très anciens ou figés, les réclamations de retour et les états contradictoires, sans jamais inventer un retour.\n\nCharger les prêts\nArrêter\nExport CSV\nParcours principal · chaque espace reste accessible directement\n1 · Vue d’ensemble\nCharger et situer\n2 · Examiner les dossiers\nContrôler et sélectionner\n3 · Préparer les actions\nRésolution des litiges\nOutils :\nExplorer les situations\nRéglages\nDécisions locales · 0 dossier(s) actuel(s), 0 mémorisé(s). Les cas reconnus normaux sont masqués tant que les données et contrôles restent identiques. « Surveiller » conserve l’alerte. Toutes les annuler\nRevoir ou annuler une décision\nPRÊTS ACTIFS\n0\nCRITIQUES\n0\nÀ VÉRIFIER\n0\nANALYSE APPROFONDIE\n0\nSÉLECTION\n0\nToutes classes\nCritiques\nÀ vérifier\nAtypiques\nSans alerte\nToutes bibliothèques de prêt\nTout âge\n≥ 180 j\n≥ 1 an\n≥ 2 ans\n≥ 3 ans\n≥ 5 ans\nAucune recherche lancée. Clique sur « Charger les prêts » pour interroger Koha. Rien n’est chargé automatiquement à l’ouverture de cette page.",
+    "errors": [],
+    "denied": false,
+    "pageStatus": {
+      "state": "mounted"
+    },
+    "listeners": 0,
+    "overlayOpen": false,
+    "internalDenial": false,
+    "pageErrors": [],
+    "externalRequests": [],
+    "kohaRequests": []
+  },
+  {
+    "id": "transfers",
+    "title": "Transferts / navette — Koha",
+    "hosts": 1,
+    "text": "À propos de cette page et vérifications\nPages & outils internes\nTransferts / navette\nAccueil Koha\nConfigurer cette page\nTransferts / navette\n\nSituation, cause probable et action proposée, dans une seule liste.\n\nCharger et analyser\nExporter\nTransferts\nRéglages\nDécisions locales · 0 cas actuel(s)\nTRANSFERTS CHARGÉS\n0\nÀ EXAMINER\n0\nINTERVENTION NÉCESSAIRE\n0\nAfficher \nÀ examiner\nTous les transferts\nToutes les alertes\nIntervention nécessaire\nBlocage probable\nCritiques\nÀ vérifier\nÀ examiner\nSans alerte\nExclus\nToutes origines\nToutes destinations\nToutes raisons\nEffacer les filtres\nTransferts\n\n0 dossier(s) affiché(s) sur 0 chargé(s). Les dossiers sans alerte et exclus sont masqués. Choisissez « Tous les transferts » pour vérifier le classement.\n\nLes estimations proviennent du même planning que le widget des services. Elles ne remplacent jamais les événements enregistrés dans Koha.\n\n0 sélectionné(s)\nSélectionner la page\nSélection étendue\nAucun dossier avec les filtres actuels. Chargez les transferts ou choisissez Tous les transferts.\nPrécédent\nPage 1/1 · 0 dossier(s)\nSuivant",
+    "errors": [],
+    "denied": false,
+    "pageStatus": {
+      "state": "mounted"
+    },
+    "listeners": 0,
+    "overlayOpen": false,
+    "internalDenial": false,
+    "pageErrors": [],
+    "externalRequests": [],
+    "kohaRequests": []
+  },
+  {
+    "id": "items",
+    "title": "Maintenance des exemplaires — Koha",
+    "hosts": 1,
+    "text": "À propos de cette page et vérifications\nPages & outils internes\nMaintenance des exemplaires\nAccueil Koha\nConfigurer cette page\nQUALITÉ KOHA · EXEMPLAIRES\nMaintenance des exemplaires\n\nIntégrité, états figés, cohérence notice/exemplaires et préparation des traitements de masse.\n\nCharger les exemplaires\nArrêter\nParcours principal · chaque espace reste accessible directement\n1 · Vue d’ensemble\nCharger et situer\n2 · Examiner les dossiers\nContrôler et sélectionner\n3 · Préparer les actions\nSélection et vérification\nOutils :\nExplorer les situations\nRéglages\nDécisions locales · 0 dossier(s) actuel(s), 0 mémorisé(s). Les cas reconnus normaux sont masqués tant que les données et contrôles restent identiques. « Surveiller » conserve l’alerte. Toutes les annuler\nRevoir ou annuler une décision\nCHARGÉS\n0\nCRITIQUES\n0\nÀ VÉRIFIER\n0\nATYPIQUES\n0\nAPPROFONDIS\n0\nPrincipe\n\nLe chargement global utilise l'API REST Koha en pages de 500, strictement séquencées. Les contrôles relationnels (prêt, transfert, réservation, litige) ne sont chargés que pour une sélection.\n\nPerdus anciens\n0\nRetirés anciens\n0\nJamais vus ≥ 5 ans\n0\nCodes-barres dupliqués\n0\nMinorités notice\n0",
+    "errors": [],
+    "denied": false,
+    "pageStatus": {
+      "state": "mounted"
+    },
+    "listeners": 0,
+    "overlayOpen": false,
+    "internalDenial": false,
+    "pageErrors": [],
+    "externalRequests": [],
+    "kohaRequests": []
+  },
+  {
+    "id": "biblios",
+    "title": "Qualité du catalogue bibliographique — Koha",
+    "hosts": 1,
+    "text": "À propos de cette page et vérifications\nPages & outils internes\nQualité du catalogue bibliographique\nAccueil Koha\nConfigurer cette page\nQUALITÉ KOHA · NOTICES\nQualité du catalogue bibliographique\n\nDoublons, audit UNIMARC, notices fantômes, enrichissement assisté et traitements contrôlés.\n\nCharger les notices\nArrêter\nParcours principal · chaque espace reste accessible directement\n1 · Vue d’ensemble\nCharger et situer\n2 · Contrôler les notices\nAudit MARC et sélection\n3 · Examiner les doublons\nComparer les notices\n4 · Préparer les actions\nVérification et traitement\nOutils :\nSans exemplaire\nComparer avec la BnF\nRéglages\nDécisions locales · 0 dossier(s) actuel(s), 0 mémorisé(s). Les cas reconnus normaux sont masqués tant que les données et contrôles restent identiques. « Surveiller » conserve l’alerte. Toutes les annuler\nRevoir ou annuler une décision\nNOTICES\n0\nGROUPES DOUBLONS\n0\nAUDITÉES MARC\n0\nCRITIQUES\n0\nÀ VÉRIFIER\n0\nUNIMARC/B : l'audit traite 001, 100, 200$a et 801 comme éléments obligatoires du format d'échange ; les contrôles plus dépendants du type de document restent volontairement en classe « atypique » ou « à vérifier ».\nDoublons par ISBN / signature\n0\nNotices sans exemplaire auditées\n0\nISBN invalides audités\n0\nLiens auteurs à améliorer\n0\nRésumé absent\n0",
+    "errors": [],
+    "denied": false,
+    "pageStatus": {
+      "state": "mounted"
+    },
+    "listeners": 0,
+    "overlayOpen": false,
+    "internalDenial": false,
+    "pageErrors": [],
+    "externalRequests": [],
+    "kohaRequests": []
+  },
+  {
+    "id": "serials",
+    "title": "Maintenance des périodiques — Koha",
+    "hosts": 1,
+    "text": "À propos de cette page et vérifications\nPages & outils internes\nMaintenance des périodiques\nAccueil Koha\nConfigurer cette page\nQUALITÉ KOHA · PÉRIODIQUES\nMaintenance des périodiques\n\nAbonnements expirés, fascicules attendus, réclamations et situations figées.\n\nCharger le rapport\nParcours principal · chaque espace reste accessible directement\n1 · Vue d’ensemble\nCharger et situer\n2 · Examiner les dossiers\nContrôler et sélectionner\n3 · Préparer les lots\nSélection et vérification\nOutils :\nExplorer les situations\nRéglages\nDécisions locales · 0 dossier(s) actuel(s), 0 mémorisé(s). Les cas reconnus normaux sont masqués tant que les données et contrôles restent identiques. « Surveiller » conserve l’alerte. Toutes les annuler\nRevoir ou annuler une décision\nABONNEMENTS\n0\nCRITIQUES\n0\nÀ VÉRIFIER\n0\nATTENDUS EN RETARD\n0\nRÉCLAMÉS\n0\nFraîcheur : Rapport non chargé.\nCe module utilise un rapport SQL lecture seule parce que Koha ne fournit pas une liste REST globale équivalente pour les abonnements/fascicules. Les modifications restent dans les écrans natifs Périodiques.\nActifs expirés\n0\nFascicules attendus\n0\nAttendus en retard\n0\nManquants\n0\nRéclamations\n0",
+    "errors": [],
+    "denied": false,
+    "pageStatus": {
+      "state": "mounted"
+    },
+    "listeners": 0,
+    "overlayOpen": false,
+    "internalDenial": false,
+    "pageErrors": [],
+    "externalRequests": [],
+    "kohaRequests": []
+  },
+  {
+    "id": "patrons",
+    "title": "Qualité des comptes lecteurs — Koha",
+    "hosts": 1,
+    "text": "À propos de cette page et vérifications\nPages & outils internes\nQualité des comptes lecteurs\nAccueil Koha\nConfigurer cette page\nQUALITÉ KOHA · LECTEURS\nQualité des comptes lecteurs\n\nDoublons, coordonnées, comptes expirés et préparation des traitements de conservation.\n\nCharger les lecteurs\nArrêter\nAucune recherche lancée. Clique sur « Charger les lecteurs » pour interroger Koha.\nParcours principal · chaque espace reste accessible directement\n1 · Vue d’ensemble\nCharger et situer\n2 · Examiner les dossiers\nContrôler et sélectionner\n3 · Préparer les actions\nSélection et vérification\nOutils :\nDoublons et comptes liés\nRéglages\nDécisions locales · 0 dossier(s) actuel(s), 0 mémorisé(s). Les cas reconnus normaux sont masqués tant que les données et contrôles restent identiques. « Surveiller » conserve l’alerte. Toutes les annuler\nRevoir ou annuler une décision\nLECTEURS\n0\nCRITIQUES\n0\nÀ VÉRIFIER\n0\nEXPIRÉS\n0\nDOUBLONS IDENTITÉ\n0\nRGPD : toutes les données lecteur restent exclusivement dans Koha et dans le navigateur. Aucun partage externe n’est effectué par cette page.\nExpirés > 3 ans\n0\nSans contact\n0\nEmails invalides\n0\nIdentités dupliquées\n0\nApprofondis\n0",
+    "errors": [],
+    "denied": false,
+    "pageStatus": {
+      "state": "mounted"
+    },
+    "listeners": 0,
+    "overlayOpen": false,
+    "internalDenial": false,
+    "pageErrors": [],
+    "externalRequests": [],
+    "kohaRequests": []
+  },
+  {
+    "id": "quality-center",
+    "title": "Centre qualité Koha — Koha",
+    "hosts": 1,
+    "text": "À propos de cette page et vérifications\nPages & outils internes\nCentre qualité Koha\nAccueil Koha\nConfigurer cette page\nKOHA · CONTRÔLES ET MAINTENANCE\nCentre qualité Koha\n\nChoisissez le domaine à examiner. Les réglages et les actions restent propres à chaque outil.\n\n01Maintenance des autorités\n\nDoublons, fusions, orphelines, relink et audit des autorités.\n\nContrôles Koha\nAucune analyse enregistrée\n\nDernière fin : inconnue · Prérequis : Accès Koha correspondant\n\nOuvrir\n02Maintenance des réservations\n\nRepérer les réservations qui nécessitent un examen et préparer leur traitement.\n\nContrôles Koha\nAucune analyse enregistrée\n\nDernière fin : inconnue · Prérequis : API REST et droits sur les réservations\n\nOuvrir\nConfigurer\n03Prêts & litiges\n\nExaminer les prêts anciens, retards et réclamations.\n\nContrôles Koha\nAucune analyse enregistrée\n\nDernière fin : inconnue · Prérequis : API REST et droits sur les prêts\n\nOuvrir\nConfigurer\n04Transferts / navette\n\nSurveiller les demandes de transfert et les documents en transit entre sites.\n\nRapport SQL à configurer\nAucune analyse enregistrée\n\nDernière fin : inconnue · Prérequis : Rapport SQL des transferts\n\nOuvrir\nConfigurer\n05Maintenance des exemplaires\n\nRepérer les statuts figés et incohérences des exemplaires.\n\nContrôles Koha\nAucune analyse enregistrée\n\nDernière fin : inconnue · Prérequis : API REST et droits sur les exemplaires\n\nOuvrir\nConfigurer\n06Qualité du catalogue bibliographique\n\nExaminer la qualité des notices et préparer les corrections de catalogue.\n\nContrôles Koha\nAucune analyse enregistrée\n\nDernière fin : inconnue · Prérequis : API REST et droits sur les notices\n\nOuvrir\nConfigurer\n07Maintenance des périodiques\n\nExaminer abonnements échus, fascicules attendus, réclamations et inactivité.\n\nRapport SQL à configurer\nAucune analyse",
+    "errors": [],
+    "denied": false,
+    "pageStatus": {
+      "state": "mounted"
+    },
+    "listeners": 0,
+    "overlayOpen": false,
+    "internalDenial": false,
+    "pageErrors": [],
+    "externalRequests": [],
+    "kohaRequests": []
+  },
+  {
+    "id": "bulk-framework-change",
+    "title": "Modification de grille par lot — Koha",
+    "hosts": 1,
+    "text": "À propos de cette page et vérifications\nPages & outils internes\nModification de grille par lot\nAccueil Koha\nConfigurer cette page\nModification de grille par lot\nChange la grille de catalogage de plusieurs notices à partir de numéros de notice ou de codes-barres d'exemplaires.\nPimpMyKoha · 1.1.0-preplugin\nLe jeton CSRF Koha n'est pas visible dans cette page. L'analyse restera possible, mais Koha peut refuser les modifications PUT avec une erreur 403.\n1. Sélectionner les notices\n Numéros de notice\n Codes-barres d'exemplaires\nUn numéro de notice par ligne \nAnalyser le lot\nRéinitialiser\nLes doublons sont éliminés. Avec les codes-barres, plusieurs exemplaires d'une même notice ne produiront qu'une seule modification.",
+    "errors": [],
+    "denied": false,
+    "pageStatus": {
+      "state": "mounted"
+    },
+    "listeners": 0,
+    "overlayOpen": false,
+    "internalDenial": false,
+    "pageErrors": [],
+    "externalRequests": [],
+    "kohaRequests": []
+  },
+  {
+    "id": "xslt-assistant",
+    "title": "Éditeur XSLT — Koha",
+    "hosts": 1,
+    "text": "Pages & outils internes\nÉditeur XSLT\nAccueil Koha\nConfigurer cette page\nOuvrir l’éditeur XSLT",
+    "errors": [],
+    "denied": false,
+    "pageStatus": {
+      "state": "mounted"
+    },
+    "listeners": 0,
+    "overlayOpen": true,
+    "internalDenial": false,
+    "pageErrors": [],
+    "externalRequests": [],
+    "kohaRequests": []
+  },
+  {
+    "id": "bibliography-builder",
+    "title": "Bibliographies & publications — Koha",
+    "hosts": 1,
+    "text": "À propos de cette page et vérifications\nPages & outils internes\nBibliographies & publications\nAccueil Koha\nConfigurer cette page\n← Koha\nBibliographies & publications\nActualiser les données\nEnregistrer le modèle\nImprimer / PDF\nSOURCE\nListe\n0 entrée(s) chargée(s)\nMode de rendu\nUne fiche par notice\nUne fiche par exemplaire\nNotice + exemplaires\nCONTENU PUBLIÉ\n0/0 notice(s) affichée(s)\nChoisir les documents / exemplaires\nDOCUMENT\nTitre de la publication\n Afficher les numéros de notices\nDécochez pour masquer tous les blocs « N° notice » du rendu, sans modifier le modèle.\nModèle\nBibliographie classique\nNouveautés illustrées\nSélection / Coup de cœur\nCatalogue compact\nCatalogue d’exposition\nListe d’exemplaires\nNouveautés par bibliothèque\nBibliographie thématique\nCodes-barres scannables\nDupliquer\nExporter\nImporter\nMISE EN PAGE\nColonnes\nMarge (mm)\nOrientation\nPortrait\nPaysage\nORGANISATION\nTri\nTitre\nSous-titre\nAuteur / responsabilité principale\nÉditeur (API)\nÉditeur (210$c / 214$c)\nAnnée / date d’édition (210$d / 214$d)\nRésumé (330$a)\nCollection (225$a)\nISBN (010$a)\nPublic (999$q)\nSous-localisation locale (999$y)\nSupport / medium\nNuméro de partie\nNom de partie\nTitre uniforme\nTitre de série / collection\nDate de publication / copyright\nAbstract API (si présent)\nNotes\nDate de création de la notice\nDernière modification de la notice\nGrille / framework\nN° notice\nLien catalogue\nCode-barres exemplaire\nN° exemplaire\nCote\nSite propriétaire\nSite actuel\nLocalisation\nLocalisation permanente\nType de document\nStatut / exclusion du prêt\nPerdu\nEndommagé\nRetiré des collections\nDate d’acquisition\nPrix d’achat\nPrix de remplacement\nDernier prêt\nDernière vue\nRegrouper par\nAucun regroupement\nTitre\nSous-titre\nAuteur / responsabilité principale\nÉditeur (API)\nÉditeur (210$c / 214$c)\nAnnée / date d’édition ",
+    "errors": [],
+    "denied": false,
+    "pageStatus": {
+      "state": "mounted"
+    },
+    "listeners": 0,
+    "overlayOpen": false,
+    "internalDenial": false,
+    "pageErrors": [],
+    "externalRequests": [],
+    "kohaRequests": []
+  },
+  {
+    "id": "overdue-management",
+    "title": "Gestion des retards TP4 — Koha",
+    "hosts": 1,
+    "text": "À propos de cette page et vérifications\nPages & outils internes\nGestion des retards TP4\nAccueil Koha\nConfigurer cette page\nGestion des retards TP4\n\nConsulter et traiter les dossiers dans Koha.\n\n← Pages & outils internes\nAccueil Koha\nSite du lecteur\nChargement…\nTri\nRetard décroissant\nNom\nValeur décroissante\nActualiser les dossiers\nLe paramètre « Site adhérent » du rapport est introuvable. Vérifie le SQL V0.3 de 5261.\n\nSélectionne un lecteur pour consulter son dossier.",
+    "errors": [],
+    "denied": false,
+    "pageStatus": {
+      "state": "mounted"
+    },
+    "listeners": 0,
+    "overlayOpen": false,
+    "internalDenial": false,
+    "pageErrors": [],
+    "externalRequests": [],
+    "kohaRequests": [
+      {
+        "url": "http://pmk.test/cgi-bin/koha/reports/guided_reports.pl?id=5261&op=run",
+        "method": "GET"
+      }
+    ]
+  }
+]

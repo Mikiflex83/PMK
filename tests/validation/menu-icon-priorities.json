@@ -1,0 +1,9 @@
+{
+  "kind": "Browser runtime with two icon rules targeting the same Koha menu link",
+  "rows": [
+    {
+      "name": "Menu icon catalogue resolves duplicate targets by explicit priority, reports the winning rule and restores native markup",
+      "passed": true
+    }
+  ]
+}

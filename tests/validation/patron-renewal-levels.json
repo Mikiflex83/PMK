@@ -1,0 +1,9 @@
+{
+  "kind": "Browser runtime on patron details with native renewal link and three verification levels",
+  "rows": [
+    {
+      "name": "Patron renewal summary distinguishes information, warning and blocking checks and unlocks only after blocking confirmations",
+      "passed": true
+    }
+  ]
+}

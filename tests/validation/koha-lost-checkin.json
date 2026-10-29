@@ -1,0 +1,17 @@
+{
+  "kind": "Real native Koha lost-item checkin followed by explicit PMK agent choices",
+  "rows": [
+    {
+      "choice": "keep",
+      "passed": true,
+      "nativeLost": 0,
+      "notForLoan": 1
+    },
+    {
+      "choice": "available",
+      "passed": true,
+      "nativeLost": 0,
+      "notForLoan": 0
+    }
+  ]
+}

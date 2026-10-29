@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "checks": {
+    "exactIsbnCriterion": true,
+    "fallbackCriterion": true,
+    "candidateNotProof": true,
+    "missingDistinct": true,
+    "anomalyDistinct": true,
+    "technicalErrorDistinct": true,
+    "errorClearedAfterSuccess": true,
+    "auditSummaryCountsFailures": true,
+    "noExternalDependency": true
+  },
+  "scope": "Contrat de la page : critères de rapprochement visibles et états métier/technique non confondus."
+}

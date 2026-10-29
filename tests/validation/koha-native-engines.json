@@ -1,0 +1,51 @@
+{
+  "kind": "Real Koha UI, native SQL, no Firebase SDK or emulator",
+  "rows": [
+    {
+      "name": "Personal lists start on Koha, create default lists and render a persisted entry",
+      "passed": true,
+      "evidence": {
+        "profileId": "p_cG1rdGVzdCBuYXRpdmUgMTc5MzIwMTI1MzcwNg",
+        "namespace": "lists",
+        "listId": "default-notices",
+        "defaults": 2
+      }
+    },
+    {
+      "name": "Bibliography personal template is loaded and saved through the shared native profile",
+      "passed": true,
+      "evidence": {
+        "profile": "p_cG1rdGVzdCBuYXRpdmUgMTc5MzIwMTI1MzcwNg",
+        "name": "PMKTEST modèle natif"
+      }
+    },
+    {
+      "name": "Appointments use configured native collections and submit a real booking request",
+      "passed": true,
+      "evidence": {
+        "status": "approved",
+        "confirmedCount": 1,
+        "collection": "native_1793201253706_bookings"
+      }
+    },
+    {
+      "name": "Home widgets read native planning, frequency and the same appointment collections",
+      "passed": true,
+      "evidence": {
+        "nativeReads": [
+          "appointments",
+          "frequency",
+          "planning"
+        ]
+      }
+    },
+    {
+      "name": "Internal sharing submits and displays a request from the native backend",
+      "passed": true,
+      "evidence": {
+        "title": "PMKTEST partage natif",
+        "noteRetained": true
+      }
+    }
+  ]
+}

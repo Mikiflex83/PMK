@@ -1,0 +1,125 @@
+<main>
+ <div id="messages">
+ 
+
+ <div id="transient_result"></div>
+</div>
+
+ 
+ <h1>Circulation<button type="button" id="pmk-config-table-labels-page--cgi-bin-koha-circ-circulation-home-pl" class="btn btn-link btn-sm pmk-context-config" title="Configurer Libellés et éléments d’interface" aria-label="Configurer Libellés et éléments d’interface"><i class="fa fa-gear" aria-hidden="true"></i></button></h1>
+
+ <div class="row">
+ <div class="col-12 col-sm-4 circulation-actions">
+ <h3>Circulation</h3>
+
+ <ul class="buttons-list">
+ <li>
+ <a class="circ-button checkout" href="/cgi-bin/koha/circ/circulation.pl"><i class="fa fa-upload"></i> Prêter</a>
+ </li>
+ <li>
+ <a class="circ-button checkin" href="/cgi-bin/koha/circ/returns.pl"><i class="fa fa-download"></i> Rendre</a>
+ </li>
+ <li>
+ <a class="circ-button renew" href="/cgi-bin/koha/circ/renew.pl"><i class="fa fa-retweet"></i> Renouveler</a>
+ </li>
+ 
+ <li>
+ 
+ <a class="circ-button set-library" href="/cgi-bin/koha/circ/set-library.pl"><i class="fa fa-home"></i> Choisir un site</a>
+ 
+ </li>
+ 
+ 
+ 
+ <li>
+ <a class="circ-button fastadd" href="/cgi-bin/koha/cataloguing/addbiblio.pl?frameworkcode=FA"><i class="fa fa-plus"></i> Catalogage rapide</a>
+ </li><li data-pmk-nav-generated="1" data-pmk-nav-rule="legacy-052-send-native"><a data-pmk-nav-generated="1" data-pmk-nav-rule="legacy-052-send-native" href="/cgi-bin/koha/circ/transfers_to_send.pl" class="circ-button"><i class="fa-solid fa-truck-ramp-box" aria-hidden="true"></i> <span>Transferts à envoyer (natif)</span></a></li><li data-pmk-nav-generated="1" data-pmk-nav-rule="legacy-052-receive-native"><a data-pmk-nav-generated="1" data-pmk-nav-rule="legacy-052-receive-native" href="/cgi-bin/koha/circ/transferstoreceive.pl" class="circ-button"><i class="fa-solid fa-truck" aria-hidden="true"></i> <span>Transferts à recevoir (natif)</span></a></li>
+ 
+ 
+ 
+ 
+ </ul>
+ </div>
+
+ <div class="col-12 col-sm-4">
+ <div class="holds-bookings">
+ <h3>Réservations </h3>
+
+ <ul class="buttons-list">
+ <li>
+ <a class="circ-button holds-queue" href="/cgi-bin/koha/reports/guided_reports.pl?id=4904&amp;op=run" data-pmk-nav-original-href="/cgi-bin/koha/circ/view_holdsqueue.pl?branchlimit=DRA&amp;run_report=1" data-pmk-nav-rule="legacy-076-holdsqueue-report"><i class="fa fa-tasks"></i> File de réservations</a>
+ </li>
+ <li>
+ <a class="circ-button holds-to-pull" href="/cgi-bin/koha/circ/pendingreserves.pl"><i class="fa-solid fa-hand-back-fist"></i> Réservations à traiter</a>
+ </li>
+ <li>
+ <a class="circ-button holds-awaiting" href="/cgi-bin/koha/circ/waitingreserves.pl"><i class="fa-solid fa-calendar-days"></i> Réservations mises de coté</a>
+ </li>
+ 
+ <li>
+ <a class="circ-button holds-ratio" href="/cgi-bin/koha/circ/reserveratios.pl"><i class="fa-solid fa-chart-line"></i> Ratios de réservation</a>
+ </li>
+ 
+ </ul>
+ </div>
+
+ 
+ </div>
+
+ <div class="col-12 col-sm-4">
+ 
+
+ <div class="transfers">
+ <h3>Transferts<button type="button" id="pmk-config-custom-navigation-custom-navigation--cgi-bin-koha-circ-circulation-home-pl" class="btn btn-link btn-sm pmk-context-config" title="Configurer Navigation personnalisée" aria-label="Configurer Navigation personnalisée"><i class="fa fa-gear" aria-hidden="true"></i></button></h3>
+
+ <ul class="buttons-list">
+ 
+ <li>
+ <a class="circ-button transfer" href="/cgi-bin/koha/circ/branchtransfers.pl"><i class="fa-solid fa-right-left"></i> Transférer</a>
+ </li>
+ 
+ 
+ <li>
+ <a class="circ-button transfers-to-send" href="/cgi-bin/koha/reports/guided_reports.pl?id=4344&amp;op=run" data-pmk-nav-original-href="/cgi-bin/koha/circ/transfers_to_send.pl" data-pmk-nav-rule="legacy-052-send-report"><i class="fa-solid fa-right-from-bracket"></i> Transferts à envoyer</a>
+ </li>
+ 
+ <li>
+ <a class="circ-button transfers-to-receive" href="/cgi-bin/koha/reports/guided_reports.pl?id=4639&amp;op=run" data-pmk-nav-original-href="/cgi-bin/koha/circ/transferstoreceive.pl" data-pmk-nav-rule="legacy-052-receive-report"><i class="fa-solid fa-right-to-bracket"></i> Transferts à recevoir</a>
+ </li>
+ </ul>
+ </div>
+
+ 
+ <div class="overdues">
+ <h3>Retards</h3>
+
+ <ul class="buttons-list">
+ <li>
+ <a class="circ-button overdues-report" href="/cgi-bin/koha/circ/overdue.pl" title="Attention : ce rapport consomme beaucoup de ressources quand il y a un grand nombre de documents en retard."><i class="fa-solid fa-clock"></i> Retards</a>
+ </li>
+ <li>
+ <a class="circ-button overdues-fines" href="/cgi-bin/koha/circ/branchoverdues.pl" title="Limité à votre site. Voir l'aide pour plus d'informations."><i class="fa-solid fa-clock"></i> Retards avec amendes</a>
+ </li>
+ </ul>
+ </div>
+ 
+ </div>
+ </div>
+ <div class="row" id="intranet-circulation-home-html">
+ <div class="col-md-12">  </div>
+ </div>
+ <div class="row" id="offline-circulation">
+ <div class="col-md-12">
+ <h4>Prêt secouru</h4>
+ <div class="col-sm-5 col-md-3">
+ <p><a href="/cgi-bin/koha/offline_circ/process_koc.pl" class="offline-circ-upload">Charger les données de prêts secourus (fichier .koc)</a></p>
+ <p><a href="/cgi-bin/koha/offline_circ/list.pl" class="offline-circ-pending">Actions de prêt secouru en attente</a></p>
+ </div>
+ <div class="col-sm-5 col-md-3">
+ <p><a href="https://github.com/bywatersolutions/koha-offline-circulation/releases" class="offline-desktop-app"><i class="fa-solid fa-window-maximize"></i> Charger l'application sur le bureau</a></p>
+ <p><a href="https://addons.mozilla.org/fr-FR/firefox/addon/koct/" class="offline-firefox-addon"><i class="fa-brands fa-firefox"></i> Charger l'extension Firefox</a></p>
+ </div>
+ </div>
+ </div>
+
+ </main>

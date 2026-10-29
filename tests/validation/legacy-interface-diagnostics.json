@@ -1,0 +1,198 @@
+{
+  "passed": true,
+  "diagnostics": {
+    "schedule": {
+      "valid": true,
+      "error": "",
+      "entries": [
+        {
+          "day": "Mardi",
+          "period": "Matin",
+          "sites": [
+            "DRAGUIGNAN",
+            "FIGANIERES",
+            "BARGEMON",
+            "CALLAS",
+            "LA MOTTE",
+            "DRAGUIGNAN"
+          ],
+          "source": "Dracénie par défaut"
+        },
+        {
+          "day": "Mardi",
+          "period": "Après-midi",
+          "sites": [
+            "DRAGUIGNAN",
+            "LE MUY",
+            "VIDAUBAN",
+            "LORGUES",
+            "SALERNES",
+            "FLAYOSC",
+            "DRAGUIGNAN"
+          ],
+          "source": "Dracénie par défaut"
+        },
+        {
+          "day": "Mercredi",
+          "period": "Matin",
+          "sites": [
+            "DRAGUIGNAN",
+            "AMPUS",
+            "MONTFERRAT",
+            "COMPS-SUR-ARTUBY",
+            "CLAVIERS",
+            "DRAGUIGNAN"
+          ],
+          "source": "Dracénie par défaut"
+        },
+        {
+          "day": "Vendredi",
+          "period": "Matin",
+          "sites": [
+            "DRAGUIGNAN",
+            "LE MUY",
+            "VIDAUBAN",
+            "LORGUES",
+            "SALERNES",
+            "FLAYOSC",
+            "DRAGUIGNAN"
+          ],
+          "source": "Dracénie par défaut"
+        },
+        {
+          "day": "Vendredi",
+          "period": "Après-midi",
+          "sites": [
+            "DRAGUIGNAN",
+            "FIGANIERES",
+            "BARGEMON",
+            "CALLAS",
+            "LA MOTTE",
+            "DRAGUIGNAN"
+          ],
+          "source": "Dracénie par défaut"
+        }
+      ]
+    },
+    "targets": [
+      {
+        "label": "Impression",
+        "selector": "#printpatron, #printpatron_dropdown, .btn-group:has(.printslip) > button.dropdown-toggle",
+        "valid": true,
+        "count": 0,
+        "status": "absent sur cette page"
+      },
+      {
+        "label": "Signaler un problème",
+        "selector": "#newconcern",
+        "valid": true,
+        "count": 1,
+        "status": "trouvé"
+      },
+      {
+        "label": "Placement du signalement",
+        "selector": "#placehold",
+        "valid": true,
+        "count": 1,
+        "status": "trouvé"
+      },
+      {
+        "label": "Informations de site",
+        "selector": ".site-info",
+        "valid": true,
+        "count": 0,
+        "status": "absent sur cette page"
+      },
+      {
+        "label": "Fenêtre du site",
+        "selector": "#siteInfoModal",
+        "valid": true,
+        "count": 0,
+        "status": "absent sur cette page"
+      },
+      {
+        "label": "Arborescence",
+        "selector": "#arborescence",
+        "valid": true,
+        "count": 0,
+        "status": "absent sur cette page"
+      },
+      {
+        "label": "Champ caméra supplémentaire",
+        "selector": "",
+        "valid": true,
+        "count": 0,
+        "status": "non configuré"
+      },
+      {
+        "label": "Caméra — search-form",
+        "selector": "#search-form,[name=\"search-form\"]",
+        "valid": true,
+        "count": 0,
+        "status": "absent sur cette page"
+      },
+      {
+        "label": "Caméra — searchmember",
+        "selector": "#searchmember,[name=\"searchmember\"]",
+        "valid": true,
+        "count": 0,
+        "status": "absent sur cette page"
+      },
+      {
+        "label": "Caméra — ret_barcode",
+        "selector": "#ret_barcode,[name=\"ret_barcode\"]",
+        "valid": true,
+        "count": 0,
+        "status": "absent sur cette page"
+      },
+      {
+        "label": "Caméra — findborrower",
+        "selector": "#findborrower,[name=\"findborrower\"]",
+        "valid": true,
+        "count": 0,
+        "status": "absent sur cette page"
+      },
+      {
+        "label": "Caméra — barcode",
+        "selector": "#barcode,[name=\"barcode\"]",
+        "valid": true,
+        "count": 1,
+        "status": "trouvé"
+      }
+    ],
+    "capabilities": {
+      "secure": true,
+      "mediaDevices": true,
+      "permissionRequest": true,
+      "touch": true,
+      "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Mobile/15E148 Safari/604.1"
+    },
+    "schedulePreview": "Aperçu des tournéesJourPériodeParcoursOrigineMardiMatinDRAGUIGNAN → FIGANIERES → BARGEMON → CALLAS → LA MOTTE → DRAGUIGNANDracénie par défautMardiAprès-midiDRAGUIGNAN → LE MUY → VIDAUBAN → LORGUES → SALERNES → FLAYOSC → DRAGUIGNANDracénie par défautMercrediMatinDRAGUIGNAN → AMPUS → MONTFERRAT → COMPS-SUR-ARTUBY → CLAVIERS → DRAGUIGNANDracénie par défautVendrediMatinDRAGUIGNAN → LE MUY → VIDAUBAN → LORGUES → SALERNES → FLAYOSC → DRAGUIGNANDracénie par défautVendrediAprès-midiDRAGUIGNAN → FIGANIERES → BARGEMON → CALLAS → LA MOTTE → DRAGUIGNANDracénie par défaut",
+    "targetPreview": "Cibles sur la page actuellement ouverteImpression : absent sur cette pageSignaler un problème : trouvé (1)Placement du signalement : trouvé (1)Informations de site : absent sur cette pageFenêtre du site : absent sur cette pageArborescence : absent sur cette pageChamp caméra supplémentaire : non configuréCaméra — search-form : absent sur cette pageCaméra — searchmember : absent sur cette pageCaméra — ret_barcode : absent sur cette pageCaméra — findborrower : absent sur cette pageCaméra — barcode : trouvé (1)Caméra : API disponible ; l’autorisation sera demandée au premier scan. Appareil tactile détecté.",
+    "pickers": [
+      "print.target",
+      "concern.source",
+      "concern.after",
+      "transferInfo.target",
+      "transferInfo.modal",
+      "tree.target",
+      "scanner.extraSelector"
+    ],
+    "invalidSchedule": {
+      "ok": false,
+      "message": "Le jour « Mardi » doit contenir des périodes."
+    }
+  },
+  "scan": {
+    "value": "A1234567",
+    "events": [
+      "input",
+      "change",
+      "blur"
+    ],
+    "submitted": false,
+    "facingMode": "environment",
+    "overlay": "flex"
+  },
+  "hardware": "Parcours mobile exécuté avec l’API caméra simulée ; aucun téléphone physique connecté à cette session."
+}

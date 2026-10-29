@@ -1,0 +1,12 @@
+{
+  "name": "pmk-local-test-services",
+  "private": true,
+  "engines": {
+    "node": "20 || 22"
+  },
+  "dependencies": {
+    "html2pdf.js": "0.10.2",
+    "@emailjs/browser": "4.4.1",
+    "qrcodejs": "1.0.0"
+  }
+}

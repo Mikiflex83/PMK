@@ -1,0 +1,127 @@
+{
+  "packageSha256": "a491de3756e57005d3e74520dee1d2f32a90335e866b94a4fea4abd41136b353",
+  "at": "2026-10-23T18:08:50.375011+00:00",
+  "suites": [
+    {
+      "suite": "koha-native-data",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-native-engines",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-shared-tools",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-journal-permissions",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-plugin",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-configuration",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-business",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-circulation",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-checkout-status",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-lost-checkin",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-native-restoration",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-restoration",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-maintenance",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-publications",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-internal-pages",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-routes",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-migration",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-universality",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-nedap",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-report-diagnostics",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-presentation",
+      "passed": true,
+      "exitCode": 0,
+      "attempts": [
+        {
+          "exitCode": 1,
+          "reason": "Test expected French item label on English Koha UI"
+        },
+        {
+          "exitCode": 0,
+          "at": "2026-10-24T10:31:15.359151+00:00",
+          "log": "koha-presentation-resume.log"
+        }
+      ]
+    },
+    {
+      "suite": "koha-hold-validation",
+      "passed": true,
+      "exitCode": 0
+    }
+  ]
+}

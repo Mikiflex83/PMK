@@ -1,0 +1,13 @@
+{
+  "kind": "Actual browser module with local Koha result markup; navigation, keyboard and mobile viewport",
+  "rows": [
+    {
+      "name": "Facet changes cancel with Escape and browser history rebuilds current URL state without stale drawers",
+      "passed": true
+    },
+    {
+      "name": "Facet controls fit a phone viewport and pageshow reapplies the local availability state",
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "kind": "Browser runtime with one native expiration date and one waiting-date fallback",
+  "rows": [
+    {
+      "name": "Hold pickup date distinguishes Koha expiration, closure warning and open-day estimate",
+      "passed": true
+    }
+  ]
+}

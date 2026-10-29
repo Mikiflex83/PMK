@@ -1,0 +1,13 @@
+{
+  "kind": "Browser runtime with delayed Koha item update and repeated native check-in message",
+  "rows": [
+    {
+      "name": "Lost-item check-in exposes its decision trace, serializes concurrent writes and processes an identical later return",
+      "passed": true,
+      "evidence": {
+        "puts": 1,
+        "lists": 3
+      }
+    }
+  ]
+}

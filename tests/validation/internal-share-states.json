@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "recipient": "Accueil jeunesse",
+  "timerVisible": true,
+  "delivery": "Consulté le 28/10/2026 10:19:57",
+  "storedReceipt": {
+    "viewedAt": 1793182797183,
+    "viewedBy": "koha:agent2",
+    "deliveryStatus": "viewed"
+  },
+  "nativeStorageDescription": true
+}

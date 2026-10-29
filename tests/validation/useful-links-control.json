@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "diagnostics": "Contrôle des liens\nLibellé long (107 caractères) : il restera affiché sur plusieurs lignes.\nMême destination utilisée par : « Guide extrêmement détaillé destiné aux équipes de toutes les bibliothèques du réseau et à leurs partenaires », « Même destination ».",
+  "opened": [
+    "https://koha.test/cgi-bin/koha/catalogue/search.pl"
+  ],
+  "lastCheckedAt": "2026-10-28T10:22:03.773Z",
+  "longLabelPreserved": 107
+}

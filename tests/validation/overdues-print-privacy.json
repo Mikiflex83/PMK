@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "historical": "Destinataire : garant(s) détecté(s) · Données imprimées : noms des garants, adresse postale, nom de l’enfantJean DUPONT, Marie DUPONT12 rue des Médiathèques83300 DraguignanEnfant : Paul DUPONT",
+  "custom": "Destinataire : destinataire défini par le modèle · Données imprimées : numéro interne du lecteurDossier 12345",
+  "privacyFields": [
+    {
+      "key": "privacy.recipientPolicy",
+      "readOnly": true
+    },
+    {
+      "key": "privacy.dataPolicy",
+      "readOnly": true
+    }
+  ]
+}

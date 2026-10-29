@@ -1,0 +1,183 @@
+<main>
+ <div id="messages">
+ 
+
+ <div id="transient_result"></div>
+</div>
+
+ 
+ <h1>Outils<button type="button" id="pmk-config-table-labels-page--cgi-bin-koha-tools-tools-home-pl" class="btn btn-link btn-sm pmk-context-config" title="Configurer Libellés et éléments d’interface" aria-label="Configurer Libellés et éléments d’interface"><i class="fa fa-gear" aria-hidden="true"></i></button></h1>
+ <div class="row">
+ <div class="col-sm-6">
+ 
+ <h3>Adhérents et circulation</h3>
+ 
+ <dl>
+ 
+ <dt><a href="/cgi-bin/koha/patron_lists/lists.pl">Listes d'adhérents</a></dt>
+ <dd>Gestion des listes d'adhérents</dd>
+ 
+
+ 
+ <dt><a href="/cgi-bin/koha/clubs/clubs.pl">Clubs d'adhérents</a></dt>
+ <dd>Gérer les clubs d'adhérents</dd>
+ 
+
+ 
+ <dt>
+ <a href="/cgi-bin/koha/reviews/reviewswaiting.pl">Commentaires</a>
+ 
+ </dt>
+ <dd>Modérer les commentaires des adhérents</dd>
+ 
+
+ 
+ <dt><a href="/cgi-bin/koha/tools/import_borrowers.pl">Importer des adhérents</a></dt>
+ <dd>Import des données sur les adhérents</dd>
+ 
+
+ 
+ <dt><a href="/cgi-bin/koha/tools/letter.pl">Notifications et tickets</a></dt>
+ <dd>Définition des notifications (les messages pour les retards par ex. envoyés par courrier ou courriel)</dd>
+ 
+
+ 
+ <dt><a href="/cgi-bin/koha/tools/overduerules.pl">Paramétrage des relances</a></dt>
+ <dd>Paramétrage des relances pour les documents en retard</dd>
+ 
+
+ 
+ <dt><a href="/cgi-bin/koha/patroncards/home.pl">Créateur de cartes d'adhérent</a></dt>
+ <dd>Créer des cartes d'adhérent imprimables</dd>
+ 
+
+ 
+ <dt><a href="/cgi-bin/koha/tools/cleanborrowers.pl">Suppression et anonymisation des adhérents par lot</a></dt>
+ <dd>Suppression d'adhérents par lots et suppression de l'historique des prêts</dd>
+ 
+
+ 
+ <dt><a href="/cgi-bin/koha/tools/modborrowers.pl">Modification d'adhérents par lot</a></dt>
+ <dd>Modification des adhérents par lots</dd>
+ 
+
+ 
+ <dt><a href="/cgi-bin/koha/tools/batch_extend_due_dates.pl">Modification des dates de retour par lot</a></dt>
+ <dd>Modification par lots de la date de retour des prêts</dd>
+ 
+
+ 
+ <dt><a href="/cgi-bin/koha/tools/batch_modify_holds.pl">Modifier en lot des réservations</a></dt>
+ <dd>Modifier des réservations en lot</dd>
+ 
+
+ 
+ <dt>
+ <a href="/cgi-bin/koha/tags/review.pl">Mots-clés</a>
+ 
+ </dt>
+ <dd>Modération des tags des adhérents</dd>
+ 
+
+ 
+
+ 
+ <dt><a href="/cgi-bin/koha/rotating_collections/rotatingCollections.pl">Collections tournantes</a></dt>
+ <dd>Gestion des collections tournantes</dd>
+ 
+ </dl>
+ </div>
+ <!-- /.col-sm-6 -->
+
+ <div class="col-sm-6">
+ 
+ <h3>Outils supplémentaires</h3>
+ 
+ <dl>
+ 
+ <dt><a href="/cgi-bin/koha/tools/holidays.pl">Calendrier</a></dt>
+ <dd>Définition des jours de fermeture de la bibliothèque</dd>
+ 
+
+ 
+ <dt><a href="/cgi-bin/koha/tools/csv-profiles.pl">profils CSV</a></dt>
+ <dd>Gestion des profils d'export CSV</dd>
+ 
+
+ 
+ <dt><a href="/cgi-bin/koha/tools/viewlog.pl">Visualiseur des logs</a></dt>
+ <dd>Consultation des logs du système</dd>
+ 
+
+ 
+ <dt><a href="/cgi-bin/koha/tools/additional-contents.pl?category=news">Annonces</a></dt>
+ <dd>Rédiger des annonces pour l'OPAC et l'interface professionnelle</dd>
+
+ <dt><a href="/cgi-bin/koha/tools/additional-contents.pl?category=html_customizations">Personnalisations HTML</a></dt>
+ <dd>Rédiger des personnalisations HTML</dd>
+
+ <dt><a href="/cgi-bin/koha/tools/additional-contents.pl?category=pages">Pages</a></dt>
+ <dd>Rédiger des pages personnalisées</dd>
+
+ <dt><a href="/cgi-bin/koha/tools/additional-contents.pl?category=record_display">Personnalisations de l'affichage de la notice</a></dt>
+ <dd>Rédiger des personnalisations d'affichage de la notice</dd>
+ 
+
+ 
+ <dt><a href="/cgi-bin/koha/tools/quotes.pl">Éditeur de citations</a></dt>
+ <dd>Gérer les citations de 'Citation du jour'</dd>
+ 
+
+ 
+ <dt><a href="/cgi-bin/koha/plugins/plugins-home.pl?method=tool">Outil de Plugins</a></dt>
+ <dd>
+ Utiliser les plugins outils <ul>
+ 
+ <li class="plugin_link">
+ <a href="/cgi-bin/koha/plugins/run.pl?class=Koha%3A%3APlugin%3A%3ACom%3A%3ABibLibre%3A%3ABdpImport&amp;method=tool">
+ <span class="plugin_name">BDP Import</span>
+ </a>
+ </li>
+ 
+ <li class="plugin_link">
+ <a href="/cgi-bin/koha/plugins/run.pl?class=Koha%3A%3APlugin%3A%3ACom%3A%3ABibLibre%3A%3ATestMarcTransform&amp;method=tool">
+ <span class="plugin_name">Test MARC::Transform</span>
+ </a>
+ </li>
+ 
+ <li class="plugin_link">
+ <a href="/cgi-bin/koha/plugins/run.pl?class=Koha%3A%3APlugin%3A%3ACom%3A%3ABibLibre%3A%3ATransitionBibliographique&amp;method=tool">
+ <span class="plugin_name">Transition bibliographique</span>
+ </a>
+ </li>
+ 
+ <li class="plugin_link">
+ <a href="/cgi-bin/koha/plugins/run.pl?class=Koha%3A%3APlugin%3A%3AUndeleteRecords&amp;method=tool">
+ <span class="plugin_name">UndeleteRecords</span>
+ </a>
+ </li>
+ 
+ </ul>
+ </dd>
+ 
+
+ 
+ <dt><a href="/cgi-bin/koha/tools/upload.pl">Téléchargements</a></dt>
+ <dd>Téléchargez n'importe quel type de fichier, gérez des téléchargements</dd>
+ 
+
+ 
+ <dt><a href="/cgi-bin/koha/tools/access_files.pl">Accès aux fichiers</a></dt>
+ <dd>Accéder aux fichiers stockés sur le serveur, comme des registres ou des rapports</dd>
+ 
+
+ 
+ </dl>
+
+ 
+ </div>
+ <!-- /.col-sm-6 -->
+ </div>
+ <!-- /.row -->
+
+ </main>

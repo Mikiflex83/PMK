@@ -1,0 +1,9 @@
+{
+  "kind": "Browser reload with a stopped session job containing successes, skips, failures and remaining barcodes",
+  "rows": [
+    {
+      "name": "Interrupted batch restores only remaining barcodes, exposes a complete balance and becomes explicitly restartable",
+      "passed": true
+    }
+  ]
+}

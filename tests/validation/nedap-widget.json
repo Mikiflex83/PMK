@@ -1,0 +1,21 @@
+{
+  "kind": "Local browser fixtures; no provider account",
+  "rows": [
+    {
+      "name": "Explicit relay opt-in stores key only in dedicated server request and preserves personal and legacy settings",
+      "passed": true
+    },
+    {
+      "name": "Blank key preserves server credential and annual chart uses same-origin relay without a browser secret",
+      "passed": true
+    },
+    {
+      "name": "Revision conflict keeps draft; provider failure retains displayed counts and restores refresh action",
+      "passed": true
+    },
+    {
+      "name": "Explicit confirmed removal clears only server credential",
+      "passed": true
+    }
+  ]
+}

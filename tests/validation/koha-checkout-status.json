@@ -1,0 +1,13 @@
+{
+  "kind": "Real native Koha forced checkout and PMK correction; native preference restored",
+  "rows": [
+    {
+      "passed": true,
+      "item": 23148,
+      "patron": 60,
+      "nativeCheckout": true,
+      "configuredStatus": 1,
+      "finalStatus": 0
+    }
+  ]
+}

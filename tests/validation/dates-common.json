@@ -1,0 +1,21 @@
+{
+  "kind": "Browser fixtures in three time zones",
+  "rows": [
+    {
+      "name": "Strict dates, leap years, configured order and offsets in UTC",
+      "passed": true
+    },
+    {
+      "name": "Strict dates, leap years, configured order and offsets in Europe/Paris",
+      "passed": true
+    },
+    {
+      "name": "Strict dates, leap years, configured order and offsets in America/New_York",
+      "passed": true
+    },
+    {
+      "name": "Relative dates and historical API share the common parser",
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "kind": "Working package qualification, not the final migration release",
+  "packageSha256": "f185e416051d74e0bfe0a87ec5c02d9812c527bde4007715a7a1f8832d124ca2",
+  "baselinePackageSha256": "a491de3756e57005d3e74520dee1d2f32a90335e866b94a4fea4abd41136b353",
+  "baselineSuitesPassed": 22,
+  "changedSources": [
+    "060-grenouille.js",
+    "063-mis-en-page-catalogue.js",
+    "123-badges-index-serch.js"
+  ],
+  "backendUnchanged": true,
+  "at": "2026-10-24T10:35:25.168066+00:00",
+  "suites": [
+    {
+      "suite": "koha-configuration",
+      "passed": true,
+      "exitCode": 0,
+      "proofSha256": "aa3229f05e0d41e8dcc07ca20feaf0ef6abaa61353dd3063159f4cd1cab988d0"
+    },
+    {
+      "suite": "koha-internal-pages",
+      "passed": true,
+      "exitCode": 0,
+      "proofSha256": "b8eccc6d07af23cd0800d20b2e09049999b3c51326f86b8d4071e788be0aad9d"
+    },
+    {
+      "suite": "koha-presentation",
+      "passed": true,
+      "exitCode": 0,
+      "proofSha256": "86a98bf1aa8bd2997d94af676343569441290a17932dc49d204f79147006a391"
+    },
+    {
+      "suite": "koha-upgrade-preservation",
+      "passed": true,
+      "exitCode": 0,
+      "proofSha256": "29c09627e1e75882dfe11af9cae9a7fe31f60257aad5156d55453337e61698cf"
+    }
+  ]
+}

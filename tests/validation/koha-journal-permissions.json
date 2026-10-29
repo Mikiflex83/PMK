@@ -1,0 +1,21 @@
+{
+  "kind": "Real local Koha, staff/admin, synthetic journal entries",
+  "rows": [
+    {
+      "name": "Staff creates entry and history atomically, actual Koha author is server metadata",
+      "passed": true
+    },
+    {
+      "name": "Forbidden removal, missing reason and unpaired history leave both entry and audit unchanged",
+      "passed": true
+    },
+    {
+      "name": "Stale revision cannot overwrite a correction or unknown personal fields",
+      "passed": true
+    },
+    {
+      "name": "Operation rights and page access revoked during the same session take effect immediately",
+      "passed": true
+    }
+  ]
+}

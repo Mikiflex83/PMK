@@ -1,0 +1,13 @@
+{
+  "kind": "Browser fixtures with synthetic media and operating-system accessibility preferences",
+  "rows": [
+    {
+      "name": "Mascot media loads lazily, sound requires an explicit click or keyboard action and reduced motion stops and hides it",
+      "passed": true
+    },
+    {
+      "name": "Staff mascot names can be hidden from both hover and accessible fallback, with per-image exclusions retained",
+      "passed": true
+    }
+  ]
+}

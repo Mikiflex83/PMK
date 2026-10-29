@@ -1,0 +1,53 @@
+{
+  "kind": "Browser fixtures for explicit final-universality requirements",
+  "rows": [
+    {
+      "name": "Shared links preserve mixed text, repeated parameters and mail targets, reject credentials, and disclose destinations without secrets",
+      "passed": true
+    },
+    {
+      "name": "External link rendering adds the actual destination to cloned links without changing the native source",
+      "passed": true
+    },
+    {
+      "name": "Real label preview restores before/after state and diagnostics find differing selectors on the same element and low contrast",
+      "passed": true
+    },
+    {
+      "name": "Placement preview moves original nodes reversibly, preserves handlers, ignores missing targets and refuses a parent inside its own child",
+      "passed": true
+    },
+    {
+      "name": "Formatting preview and restoration keep native descendants, handlers and content added after preview",
+      "passed": true
+    },
+    {
+      "name": "Batch transfer retry prepares only distinct failures and their destination without submitting another transfer",
+      "passed": true
+    },
+    {
+      "name": "Long predefined lists search accents, retain duplicates and explain append/replace without changing text during filtering",
+      "passed": true
+    },
+    {
+      "name": "Efficiency follows pagination without total, labels partial results and retries without discarding available values",
+      "passed": true
+    },
+    {
+      "name": "Report print preserves native rows, prints only visible content and declares loaded-row scope with repeated headers",
+      "passed": true
+    },
+    {
+      "name": "Configured navigation rejects active URLs and credentials, previews query parameters and restores the native description",
+      "passed": true
+    },
+    {
+      "name": "Input rules defer composed text, sanitize paste and keep a UTF-16 caret after emoji without changing valid accents",
+      "passed": true
+    },
+    {
+      "name": "Contact requirements combine groups, focus the invalid field and include fields added dynamically without dropping native help",
+      "passed": true
+    }
+  ]
+}

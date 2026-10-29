@@ -1,0 +1,48 @@
+{
+  "passed": true,
+  "diagnosis": {
+    "validSelector": true,
+    "candidates": 2,
+    "rules": [
+      {
+        "id": "first",
+        "label": "Réservations principales",
+        "condition": "contains:reservations",
+        "matches": 1
+      },
+      {
+        "id": "second",
+        "label": "Règle concurrente",
+        "condition": "contains:reservations",
+        "matches": 1
+      },
+      {
+        "id": "lists",
+        "label": "Listes",
+        "condition": "contains:listes contenant ce titre",
+        "matches": 1
+      }
+    ],
+    "conflicts": [
+      {
+        "candidate": 1,
+        "text": "Réservations : 4",
+        "ruleIds": [
+          "first",
+          "second"
+        ]
+      }
+    ]
+  },
+  "simulation": "Simulation en lecture seule : condition, repère textuel et rendu visuel, sans déplacer aucun élément Koha.Règles concurrentes : Réservations principales / Règle concurrente[Réservations] Réservations principales · Condition : contains — Réservations[À vérifier] Règle concurrente · Condition : contains — Réservations[Liste de notices] Listes · Condition : contains — Listes contenant ce titre",
+  "markers": [
+    "Réservations",
+    "Liste de notices"
+  ],
+  "candidateTexts": [
+    "Réservations : 4",
+    "Listes contenant ce titre : Deux"
+  ],
+  "nativeChildren": [],
+  "restored": true
+}

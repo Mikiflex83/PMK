@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "diagnostics": {
+    "issues": [
+      {
+        "type": "invalid-relation",
+        "edgeIndex": 1,
+        "message": "Relation 2 : niveau parent ou enfant absent/incohérent"
+      },
+      {
+        "type": "orphan-value",
+        "fieldId": "child",
+        "value": "B2",
+        "message": "Enfant : « Enfant 2 » n’est relié à aucun parent"
+      }
+    ],
+    "counts": {
+      "invalid-relation": 1,
+      "orphan-value": 1
+    }
+  },
+  "banner": "Configuration à contrôler (2) : Relation 2 : niveau parent ou enfant absent/incohérent · Enfant : « Enfant 2 » n’est relié à aucun parent",
+  "status": ""
+}

@@ -1,0 +1,34 @@
+{
+  "kind": "Real Koha plugin: XSLT preview and bibliography workflows",
+  "rows": [
+    {
+      "name": "XSLT import, actual MARC preview and project backup",
+      "passed": true,
+      "evidence": {
+        "biblio": 21648,
+        "preview": "PMKTEST — Disponible — été et forêt",
+        "backup": "XSLT collé.pmk-xslt.json"
+      },
+      "optionalCoverServiceAbsent": []
+    },
+    {
+      "name": "Bibliography from the real native Koha list renders both records",
+      "passed": true,
+      "evidence": {
+        "shelf": 1,
+        "entries": 2,
+        "preview": "Contents of PMKTEST bibliography\nPMKTEST — Disponible — été et forêt\nÉditeur : Éditions Test\nAnnée : 2026\nRésumé de recette PMK : caractères accentués, é, à et euro €.\nCB : PMKTEST-AVAILABLE • Cote : PMK RECETTE É 1793183206448 • Site propriétaire : PMK_A • Site actuel : PMK_A • Localisation : CART • Type : PMKT • Statut : 0\n Voir la notice\nPMKTEST — Prêt et renouvellement\nÉditeur : Éditions Test\nAnnée : 2026\nRésumé de recette PMK : caractères accentués, é, à et euro €.\nCB : PMKTEST-LOAN • Cote : PMK LOAN • Site propriétaire : PMK_A • Site actuel : PMK_A • Localisation : CART • Type : PMKT • Statut : 0\n Voir la notice"
+      },
+      "optionalCoverServiceAbsent": [
+        {
+          "url": "http://127.0.0.1:18081/api/v1/contrib/electre/image?isbn10=207041311X&side=staff&result_page=true",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:18081/api/v1/contrib/electre/image?isbn10=207036822X&side=staff&result_page=true",
+          "status": 404
+        }
+      ]
+    }
+  ]
+}

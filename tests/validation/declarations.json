@@ -1,0 +1,790 @@
+{
+  "syntaxChecked": 160,
+  "declarations": 98,
+  "moduleIds": 87,
+  "coreImplementations": [
+    {
+      "file": "000-pmk-config-firestore.js",
+      "line": 7174
+    }
+  ],
+  "duplicateDeclarations": [
+    {
+      "id": "table-labels",
+      "sources": [
+        {
+          "id": "table-labels",
+          "file": "000-pmk-config-firestore.js",
+          "line": 7715,
+          "schemaVersion": 1
+        },
+        {
+          "id": "table-labels",
+          "file": "001-modification-entete-issuehistory.js",
+          "line": 1172,
+          "schemaVersion": 1
+        }
+      ]
+    },
+    {
+      "id": "detail-fourth-cover",
+      "sources": [
+        {
+          "id": "detail-fourth-cover",
+          "file": "000-pmk-config-firestore.js",
+          "line": 7929,
+          "schemaVersion": 2
+        },
+        {
+          "id": "detail-fourth-cover",
+          "file": "009-4eme-de-couv.js",
+          "line": 633,
+          "schemaVersion": 3
+        }
+      ]
+    },
+    {
+      "id": "external-links",
+      "sources": [
+        {
+          "id": "external-links",
+          "file": "000-pmk-config-firestore.js",
+          "line": 8445,
+          "schemaVersion": 4
+        },
+        {
+          "id": "external-links",
+          "file": "010-boutons-recherche-externe.js",
+          "line": 384,
+          "schemaVersion": 5
+        }
+      ]
+    },
+    {
+      "id": "moredetail-layout",
+      "sources": [
+        {
+          "id": "moredetail-layout",
+          "file": "000-pmk-config-firestore.js",
+          "line": 9332,
+          "schemaVersion": 3
+        },
+        {
+          "id": "moredetail-layout",
+          "file": "011-moredetail-layout.js",
+          "line": 497,
+          "schemaVersion": 3
+        }
+      ]
+    },
+    {
+      "id": "patron-message-templates",
+      "sources": [
+        {
+          "id": "patron-message-templates",
+          "file": "000-pmk-config-firestore.js",
+          "line": 10285,
+          "schemaVersion": 4
+        },
+        {
+          "id": "patron-message-templates",
+          "file": "017-gestion-litiges-select.js",
+          "line": 991,
+          "schemaVersion": 4
+        }
+      ]
+    },
+    {
+      "id": "contextual-search-links",
+      "sources": [
+        {
+          "id": "contextual-search-links",
+          "file": "000-pmk-config-firestore.js",
+          "line": 11248,
+          "schemaVersion": 1
+        },
+        {
+          "id": "contextual-search-links",
+          "file": "021-code-collection-search-results.js",
+          "line": 551,
+          "schemaVersion": 2
+        }
+      ]
+    },
+    {
+      "id": "z3950-workspace",
+      "sources": [
+        {
+          "id": "z3950-workspace",
+          "file": "000-pmk-config-firestore.js",
+          "line": 13433,
+          "schemaVersion": 2
+        },
+        {
+          "id": "z3950-workspace",
+          "file": "035-resize-z3950.js",
+          "line": 476,
+          "schemaVersion": 2
+        }
+      ]
+    },
+    {
+      "id": "catalogue-search-behavior",
+      "sources": [
+        {
+          "id": "catalogue-search-behavior",
+          "file": "000-pmk-config-firestore.js",
+          "line": 14148,
+          "schemaVersion": 3
+        },
+        {
+          "id": "catalogue-search-behavior",
+          "file": "036-clear-search-when-barcode.js",
+          "line": 1308,
+          "schemaVersion": 3
+        }
+      ]
+    },
+    {
+      "id": "detail-bibliographic-groups",
+      "sources": [
+        {
+          "id": "detail-bibliographic-groups",
+          "file": "000-pmk-config-firestore.js",
+          "line": 17730,
+          "schemaVersion": 2
+        },
+        {
+          "id": "detail-bibliographic-groups",
+          "file": "063-mis-en-page-catalogue.js",
+          "line": 1060,
+          "schemaVersion": 4
+        }
+      ]
+    },
+    {
+      "id": "relative-dates",
+      "sources": [
+        {
+          "id": "relative-dates",
+          "file": "000-pmk-config-firestore.js",
+          "line": 19540,
+          "schemaVersion": 3
+        },
+        {
+          "id": "relative-dates",
+          "file": "070-date-utils.js",
+          "line": 907,
+          "schemaVersion": 2
+        }
+      ]
+    },
+    {
+      "id": "patron-overdues-print",
+      "sources": [
+        {
+          "id": "patron-overdues-print",
+          "file": "000-pmk-config-firestore.js",
+          "line": 20838,
+          "schemaVersion": 3
+        },
+        {
+          "id": "patron-overdues-print",
+          "file": "078-hide-print-overdues.js",
+          "line": 1246,
+          "schemaVersion": 3
+        }
+      ]
+    }
+  ],
+  "records": [
+    {
+      "id": "table-labels",
+      "file": "000-pmk-config-firestore.js",
+      "line": 7715,
+      "schemaVersion": 1
+    },
+    {
+      "id": "detail-fourth-cover",
+      "file": "000-pmk-config-firestore.js",
+      "line": 7929,
+      "schemaVersion": 2
+    },
+    {
+      "id": "external-links",
+      "file": "000-pmk-config-firestore.js",
+      "line": 8445,
+      "schemaVersion": 4
+    },
+    {
+      "id": "moredetail-layout",
+      "file": "000-pmk-config-firestore.js",
+      "line": 9332,
+      "schemaVersion": 3
+    },
+    {
+      "id": "waiting-holds-age",
+      "file": "000-pmk-config-firestore.js",
+      "line": 9594,
+      "schemaVersion": 1
+    },
+    {
+      "id": "patron-message-templates",
+      "file": "000-pmk-config-firestore.js",
+      "line": 10285,
+      "schemaVersion": 4
+    },
+    {
+      "id": "element-formatting",
+      "file": "000-pmk-config-firestore.js",
+      "line": 10711,
+      "schemaVersion": 1
+    },
+    {
+      "id": "contextual-search-links",
+      "file": "000-pmk-config-firestore.js",
+      "line": 11248,
+      "schemaVersion": 1
+    },
+    {
+      "id": "bibliographic-markers",
+      "file": "000-pmk-config-firestore.js",
+      "line": 11541,
+      "schemaVersion": 1
+    },
+    {
+      "id": "transfer-button-holdings",
+      "file": "000-pmk-config-firestore.js",
+      "line": 11768,
+      "schemaVersion": 2
+    },
+    {
+      "id": "serials-tracking",
+      "file": "000-pmk-config-firestore.js",
+      "line": 12350,
+      "schemaVersion": 8
+    },
+    {
+      "id": "batchmod-empty-field-warning",
+      "file": "000-pmk-config-firestore.js",
+      "line": 12796,
+      "schemaVersion": 3
+    },
+    {
+      "id": "holdings-table-presentation",
+      "file": "000-pmk-config-firestore.js",
+      "line": 13147,
+      "schemaVersion": 1
+    },
+    {
+      "id": "z3950-workspace",
+      "file": "000-pmk-config-firestore.js",
+      "line": 13433,
+      "schemaVersion": 2
+    },
+    {
+      "id": "catalogue-search-behavior",
+      "file": "000-pmk-config-firestore.js",
+      "line": 14148,
+      "schemaVersion": 3
+    },
+    {
+      "id": "contextual-tooltips",
+      "file": "000-pmk-config-firestore.js",
+      "line": 14523,
+      "schemaVersion": 1
+    },
+    {
+      "id": "phone-number-formatting",
+      "file": "000-pmk-config-firestore.js",
+      "line": 14867,
+      "schemaVersion": 1
+    },
+    {
+      "id": "patron-astrological-sign",
+      "file": "000-pmk-config-firestore.js",
+      "line": 15183,
+      "schemaVersion": 1
+    },
+    {
+      "id": "multiline-list-counter",
+      "file": "000-pmk-config-firestore.js",
+      "line": 15633,
+      "schemaVersion": 2
+    },
+    {
+      "id": "lost-found-checkin-status",
+      "file": "000-pmk-config-firestore.js",
+      "line": 16012,
+      "schemaVersion": 1
+    },
+    {
+      "id": "search-facets",
+      "file": "000-pmk-config-firestore.js",
+      "line": 16450,
+      "schemaVersion": 3
+    },
+    {
+      "id": "guided-reports-tools",
+      "file": "000-pmk-config-firestore.js",
+      "line": 17131,
+      "schemaVersion": 2
+    },
+    {
+      "id": "detail-bibliographic-groups",
+      "file": "000-pmk-config-firestore.js",
+      "line": 17730,
+      "schemaVersion": 2
+    },
+    {
+      "id": "callnumber-progressive-search",
+      "file": "000-pmk-config-firestore.js",
+      "line": 18235,
+      "schemaVersion": 1
+    },
+    {
+      "id": "serials-claims-filtering",
+      "file": "000-pmk-config-firestore.js",
+      "line": 18534,
+      "schemaVersion": 1
+    },
+    {
+      "id": "070",
+      "file": "000-pmk-config-firestore.js",
+      "line": 18756,
+      "schemaVersion": 1
+    },
+    {
+      "id": "patron-age-display",
+      "file": "000-pmk-config-firestore.js",
+      "line": 19035,
+      "schemaVersion": 1
+    },
+    {
+      "id": "relative-dates",
+      "file": "000-pmk-config-firestore.js",
+      "line": 19540,
+      "schemaVersion": 3
+    },
+    {
+      "id": "efficiency-indicators",
+      "file": "000-pmk-config-firestore.js",
+      "line": 19992,
+      "schemaVersion": 3
+    },
+    {
+      "id": "scroll-buttons",
+      "file": "000-pmk-config-firestore.js",
+      "line": 20322,
+      "schemaVersion": 2
+    },
+    {
+      "id": "guided-report-print",
+      "file": "000-pmk-config-firestore.js",
+      "line": 20592,
+      "schemaVersion": 1
+    },
+    {
+      "id": "patron-overdues-print",
+      "file": "000-pmk-config-firestore.js",
+      "line": 20838,
+      "schemaVersion": 3
+    },
+    {
+      "id": "cataloguing-tree-assistant",
+      "file": "000-pmk-config-firestore.js",
+      "line": 21485,
+      "schemaVersion": 1
+    },
+    {
+      "id": "147-home-submenus",
+      "file": "000-pmk-config-firestore.js",
+      "line": 23412,
+      "schemaVersion": 3
+    },
+    {
+      "id": "authority-installation-options",
+      "file": "000-pmk-settings-authorities.js",
+      "line": 33,
+      "schemaVersion": 1
+    },
+    {
+      "id": "legacy-interface-options",
+      "file": "000-pmk-settings-legacy.js",
+      "line": 46,
+      "schemaVersion": 1
+    },
+    {
+      "id": "table-labels",
+      "file": "001-modification-entete-issuehistory.js",
+      "line": 1172,
+      "schemaVersion": 1
+    },
+    {
+      "id": "patron-renewal-verification",
+      "file": "002-verification-coordonnees.js",
+      "line": 779,
+      "schemaVersion": 2
+    },
+    {
+      "id": "responsive-tables",
+      "file": "005-style-holdings-table.js",
+      "line": 1149,
+      "schemaVersion": 2
+    },
+    {
+      "id": "copy-actions",
+      "file": "006-copy-patron-identifiers.js",
+      "line": 2276,
+      "schemaVersion": 6
+    },
+    {
+      "id": "history-row-highlights",
+      "file": "007-highlight-readingrec.js",
+      "line": 1168,
+      "schemaVersion": 5
+    },
+    {
+      "id": "loan-history-timeline",
+      "file": "008-issuehistory-timeline.js",
+      "line": 2230,
+      "schemaVersion": 1
+    },
+    {
+      "id": "detail-fourth-cover",
+      "file": "009-4eme-de-couv.js",
+      "line": 633,
+      "schemaVersion": 3
+    },
+    {
+      "id": "external-links",
+      "file": "010-boutons-recherche-externe.js",
+      "line": 384,
+      "schemaVersion": 5
+    },
+    {
+      "id": "moredetail-layout",
+      "file": "011-moredetail-layout.js",
+      "line": 497,
+      "schemaVersion": 3
+    },
+    {
+      "id": "patron-message-templates",
+      "file": "017-gestion-litiges-select.js",
+      "line": 991,
+      "schemaVersion": 4
+    },
+    {
+      "id": "contextual-search-links",
+      "file": "021-code-collection-search-results.js",
+      "line": 551,
+      "schemaVersion": 2
+    },
+    {
+      "id": "element-placement",
+      "file": "025-deplacer-grille-technique.js",
+      "line": 918,
+      "schemaVersion": 2
+    },
+    {
+      "id": "date-display-formatting",
+      "file": "034-modif-dates-technique-detail.js",
+      "line": 868,
+      "schemaVersion": 2
+    },
+    {
+      "id": "z3950-workspace",
+      "file": "035-resize-z3950.js",
+      "line": 476,
+      "schemaVersion": 2
+    },
+    {
+      "id": "catalogue-search-behavior",
+      "file": "036-clear-search-when-barcode.js",
+      "line": 1308,
+      "schemaVersion": 3
+    },
+    {
+      "id": "input-rules",
+      "file": "048-forbid-accents-batchmod.js",
+      "line": 790,
+      "schemaVersion": 2
+    },
+    {
+      "id": "custom-navigation",
+      "file": "052-modify-circulation-menu-links.js",
+      "line": 1059,
+      "schemaVersion": 2
+    },
+    {
+      "id": "patron-page-utils",
+      "file": "057-member-pages-utils.js",
+      "line": 1243,
+      "schemaVersion": 2
+    },
+    {
+      "id": "mascot-frogs",
+      "file": "060-grenouille.js",
+      "line": 764,
+      "schemaVersion": 1
+    },
+    {
+      "id": "mascot-agents",
+      "file": "060-grenouille.js",
+      "line": 903,
+      "schemaVersion": 1
+    },
+    {
+      "id": "detail-bibliographic-groups",
+      "file": "063-mis-en-page-catalogue.js",
+      "line": 1060,
+      "schemaVersion": 4
+    },
+    {
+      "id": "personal-lists-manager",
+      "file": "066-067-lists-manager-pmk-loader.js",
+      "line": 203,
+      "schemaVersion": 1
+    },
+    {
+      "id": "barcode-highlights",
+      "file": "068-blinking-barcode.js",
+      "line": 243,
+      "schemaVersion": 1
+    },
+    {
+      "id": "relative-dates",
+      "file": "070-date-utils.js",
+      "line": 907,
+      "schemaVersion": 2
+    },
+    {
+      "id": "recent-history",
+      "file": "071-history-system-pmk-loader.js",
+      "line": 113,
+      "schemaVersion": 1
+    },
+    {
+      "id": "advanced-search-sidebar",
+      "file": "075-advanced-search-pmk-loader.js",
+      "line": 234,
+      "schemaVersion": 1
+    },
+    {
+      "id": "patron-overdues-print",
+      "file": "078-hide-print-overdues.js",
+      "line": 1246,
+      "schemaVersion": 3
+    },
+    {
+      "id": "new-release-indicators",
+      "file": "079-new-release-logos.js",
+      "line": 264,
+      "schemaVersion": 1
+    },
+    {
+      "id": "cataloging-6xx-suggestions",
+      "file": "081-084-6xx-suggestions.js",
+      "line": 536,
+      "schemaVersion": 3
+    },
+    {
+      "id": "musicbrainz-coverart",
+      "file": "088-musicbrainz-coverart.js",
+      "line": 620,
+      "schemaVersion": 1
+    },
+    {
+      "id": "log-viewer",
+      "file": "101-koha-log.js",
+      "line": 527,
+      "schemaVersion": 2
+    },
+    {
+      "id": "item-template-buttons",
+      "file": "102-batchmod-mediabus-buttons.js",
+      "line": 1452,
+      "schemaVersion": 3
+    },
+    {
+      "id": "detail-reservations-summary-style",
+      "file": "103-detail-reservations-summary-style.js",
+      "line": 375,
+      "schemaVersion": 1
+    },
+    {
+      "id": "item-entry-assistant",
+      "file": "110-exemplaire-helper.js",
+      "line": 1796,
+      "schemaVersion": 4
+    },
+    {
+      "id": "internal-share",
+      "file": "111-internal-share.js",
+      "line": 1308,
+      "schemaVersion": 4
+    },
+    {
+      "id": "search-autocomplete-performance",
+      "file": "113-autocomplete-elestic.js",
+      "line": 1609,
+      "schemaVersion": 4
+    },
+    {
+      "id": "renewal-enhancements",
+      "file": "114-renew-modif.js",
+      "line": 1523,
+      "schemaVersion": 3
+    },
+    {
+      "id": "patron-message-chronology",
+      "file": "116-chrono-messages.js",
+      "line": 193,
+      "schemaVersion": 1
+    },
+    {
+      "id": "menu-icons",
+      "file": "117-icons-menus.js",
+      "line": 1131,
+      "schemaVersion": 5
+    },
+    {
+      "id": "patron-required-contact",
+      "file": "118-mail-tel-obligatoire.js",
+      "line": 736,
+      "schemaVersion": 3
+    },
+    {
+      "id": "multi-transfer",
+      "file": "119-multi-transfert.js",
+      "line": 2015,
+      "schemaVersion": 2
+    },
+    {
+      "id": "hold-pickup-expiration",
+      "file": "120-date-retrait-reservations.js",
+      "line": 396,
+      "schemaVersion": 1
+    },
+    {
+      "id": "search-filter-badges",
+      "file": "123-badges-index-serch.js",
+      "line": 19,
+      "schemaVersion": 1
+    },
+    {
+      "id": "patron-category-defaults",
+      "file": "124-csp-enfant.js",
+      "line": 321,
+      "schemaVersion": 2
+    },
+    {
+      "id": "hold-submit-guard",
+      "file": "125-double_clic_resrvation.js",
+      "line": 105,
+      "schemaVersion": 1
+    },
+    {
+      "id": "search-results-master",
+      "file": "129-mise-en-forme-exemplaire.js",
+      "line": 384,
+      "schemaVersion": 3
+    },
+    {
+      "id": "document-movements",
+      "file": "130-mouvements-documents.js",
+      "line": 28,
+      "schemaVersion": 2
+    },
+    {
+      "id": "suggestion-required-suggester",
+      "file": "132-suggestions.js",
+      "line": 554,
+      "schemaVersion": 1
+    },
+    {
+      "id": "intranet-nav-menu",
+      "file": "134-intranetnav-menu.js",
+      "line": 1635,
+      "schemaVersion": 8
+    },
+    {
+      "id": "guides-training",
+      "file": "135-guides-training-pmk-loader.js",
+      "line": 716,
+      "schemaVersion": 1
+    },
+    {
+      "id": "xslt-assistant",
+      "file": "136-xslt-assistant.js",
+      "line": 3867,
+      "schemaVersion": 3
+    },
+    {
+      "id": "home-widgets",
+      "file": "137-home-widgets.js",
+      "line": 440,
+      "schemaVersion": 1
+    },
+    {
+      "id": "home-widget-useful-links",
+      "file": "137-widgets/137-widget-liens-utiles.js",
+      "line": 100,
+      "schemaVersion": 1
+    },
+    {
+      "id": "internal-pages-tools",
+      "file": "138-pages-manager.js",
+      "line": 544,
+      "schemaVersion": 4
+    },
+    {
+      "id": "attendance-mediabus-mini",
+      "file": "139-attendance-mediabus.js",
+      "line": 2395,
+      "schemaVersion": 1
+    },
+    {
+      "id": "bibliography-builder",
+      "file": "142-bibliography-builder.js",
+      "line": 4672,
+      "schemaVersion": 2
+    },
+    {
+      "id": "144",
+      "file": "144-controle-doublons-adherents.js",
+      "line": 219,
+      "schemaVersion": 1
+    },
+    {
+      "id": "item-quick-edit",
+      "file": "145-pmk-edition-rapide-exemplaires.js",
+      "line": 70,
+      "schemaVersion": 1
+    },
+    {
+      "id": "checkout-status-correction",
+      "file": "146-checkout-status-correction-pmk.js",
+      "line": 81,
+      "schemaVersion": 1
+    },
+    {
+      "id": "france-publications-subscriptions",
+      "file": "PMK-abonnements-France-Publications-v0.1.0.js",
+      "line": 2522,
+      "schemaVersion": 1
+    },
+    {
+      "id": "page-qr-code",
+      "file": "page-qr-code.js",
+      "line": 943,
+      "schemaVersion": 2
+    },
+    {
+      "id": "last-borrower",
+      "file": "pmk-dernier-emprunteur.js",
+      "line": 58,
+      "schemaVersion": 1
+    }
+  ]
+}

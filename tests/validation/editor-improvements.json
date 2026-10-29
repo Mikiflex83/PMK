@@ -1,0 +1,12 @@
+{
+  "passed": [
+    "Editor refresh: bibliography shows source immediately, metadata before covers, spinner and cached mode changes",
+    "Editor refresh: late bibliography source responses cannot replace the latest selected list",
+    "Editor refresh: XSLT import, clear steps, editing, undo and complete export retain advanced source",
+    "Editor refresh: invalid XSLT import keeps the existing project and full backups restore as a separate project",
+    "Editor refresh: XSLT preview, MARC retargeting, comparison and validation use one cached test record",
+    "Editor refresh: bibliography bounds stalled reads, retains available data and retries without resetting layout",
+    "Editor refresh: targeted bibliography retry preserves choices and only refreshes the selected record",
+    "Editor refresh: XSLT validation checks a bounded sample and explains server compatibility"
+  ]
+}

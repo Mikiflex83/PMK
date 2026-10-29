@@ -1,0 +1,17 @@
+{
+  "kind": "Actual jQuery UI browser widgets and PMK module, controlled local asynchronous API fixtures",
+  "rows": [
+    {
+      "name": "Autocomplete discards out-of-order and edited-input responses and clears the jQuery UI pending counter",
+      "passed": true
+    },
+    {
+      "name": "Keyboard focus requests deferred item information without changing the query; barcode provenance is explicit",
+      "passed": true
+    },
+    {
+      "name": "Disabling autocomplete while a request is pending prevents reappearance and preserves unrelated settings",
+      "passed": true
+    }
+  ]
+}

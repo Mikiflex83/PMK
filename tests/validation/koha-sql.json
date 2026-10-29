@@ -1,0 +1,19 @@
+{
+  "passed": [
+    "008-historique-transferts.sql",
+    "129-statistiques-prets-exemplaire.sql",
+    "138-periodiques.sql",
+    "138-restauration-codes-barres.sql",
+    "138-restauration-dates.sql",
+    "138-signatures-notices.sql",
+    "138-suivi-retards-generique.sql",
+    "138-transferts.sql",
+    "Authorities-doublons.sql",
+    "Authorities-orphelins.sql",
+    "Authorities-referentiel.sql",
+    "FP-abonnements.sql",
+    "FP-fascicules.sql"
+  ],
+  "engine": "Real Koha 25.11 schema / MariaDB 10.11, EXPLAIN only",
+  "scope": "Schema and syntax validation; no business rows read or modified"
+}

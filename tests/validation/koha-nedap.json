@@ -1,0 +1,21 @@
+{
+  "kind": "Real local Koha API with synthetic credential; no provider call",
+  "rows": [
+    {
+      "name": "Admin writes require PMK header and fresh revision; replies contain metadata only and blank key preserves credential",
+      "passed": true
+    },
+    {
+      "name": "Authenticated staff cannot read/write server secret; unknown RCR, invalid dates and anonymous access rejected before any provider call",
+      "passed": true
+    },
+    {
+      "name": "Explicit server key removal confirmed by real Koha API",
+      "passed": true
+    },
+    {
+      "name": "Actual Koha home widget exposes relay settings and reads server metadata without changing active connection",
+      "passed": true
+    }
+  ]
+}

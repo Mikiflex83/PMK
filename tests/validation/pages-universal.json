@@ -1,0 +1,21 @@
+{
+  "passed": [
+    "Universal pages: removed lab redirects and authorities are byte-identical",
+    "Universal pages: eighteen descriptions and editors render without saving",
+    "Universal pages: PMK editor inherits local values and saves only explicit changes",
+    "Universal pages: native settings preserve legacy values and report failed PMK writes",
+    "Universal pages: staff access can change without granting access to authorities or shared settings writes",
+    "Universal pages: configured journal and appointments projects, collections and choices are used",
+    "Universal pages: restoration applies local access, report parameters and column mapping",
+    "Universal pages: report pagination reaches exhaustion and SQL copies from the page",
+    "Universal pages: MARC21 audit checks its own fields and respects disabled rules",
+    "Universal pages: weeding uses custom values and supports disabling the taxonomy",
+    "Universal pages: inventory preserves explicit categories and MARC mappings without automatic writes",
+    "Universal pages: invalid thresholds, MARC tags and remote Koha endpoints are rejected",
+    "Universal pages: batch framework changes keep MARC intact and use the selected MARC schema",
+    "Universal pages: overdue report column aliases, stage rules and workflow instructions are configurable",
+    "Universal pages: import stays in the draft and archives the previous personal options",
+    "Universal pages: read timeout covers a response body that never arrives"
+  ],
+  "network": "All responses mocked; no production access"
+}

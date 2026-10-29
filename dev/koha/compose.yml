@@ -1,0 +1,51 @@
+name: pmk-koha-test
+services:
+  db:
+    image: mariadb:10.11
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: koha_kohadev
+      MYSQL_USER: koha_kohadev
+      MYSQL_PASSWORD: password
+    volumes:
+      - pmk-database:/var/lib/mysql
+    networks: [pmk]
+  memcached:
+    image: memcached:1.6
+    command: memcached -m 64m
+    networks: [pmk]
+  koha:
+    image: ${PMK_KOHA_IMAGE:-koha/koha-testing:25.11}
+    command: ['/bin/bash', '/pmk-runtime.sh']
+    depends_on: [db, memcached]
+    cap_add: [ALL]
+    env_file: .env
+    environment:
+      NODE_EXTRA_CA_CERTS: /run/pmk-ca.pem
+      CURL_CA_BUNDLE: /run/pmk-ca.pem
+      SSL_CERT_FILE: /run/pmk-ca.pem
+      GIT_SSL_CAINFO: /run/pmk-ca.pem
+    volumes:
+      - ./runtime.sh:/pmk-runtime.sh:ro
+      - ${PMK_KOHA_SOURCE:?Set PMK_KOHA_SOURCE}:/kohadevbox/koha
+      - ${PMK_PLUGIN_STAGE:?Set PMK_PLUGIN_STAGE}:/pmk-plugin:ro
+      - ${PMK_CA_BUNDLE:-/etc/ssl/certs/ca-certificates.crt}:/run/pmk-ca.pem:ro
+    tmpfs: [/cover_db, /tmp]
+    ports:
+      - '127.0.0.1:18080:8080'
+      - '127.0.0.1:18081:8081'
+    healthcheck:
+      test: ['CMD', 'curl', '--fail', '--silent', '--output', '/dev/null', 'http://127.0.0.1:8081/']
+      interval: 15s
+      timeout: 10s
+      retries: 8
+      start_period: 120s
+    ulimits:
+      nofile: {soft: 65536, hard: 65536}
+    networks:
+      pmk:
+        aliases: [kohadev-intra.myDNSname.org, kohadev.myDNSname.org]
+networks:
+  pmk: {}
+volumes:
+  pmk-database: {}

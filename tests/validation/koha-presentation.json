@@ -1,0 +1,38 @@
+{
+  "kind": "Real local Koha catalogue and timeline reads",
+  "rows": [
+    {
+      "name": "Catalogue result cards load from the actual Koha item API",
+      "passed": true,
+      "evidence": {
+        "cards": 8,
+        "itemApiRequests": 26
+      }
+    },
+    {
+      "name": "Efficiency indicators explain item API coverage on actual catalogue results",
+      "passed": true,
+      "evidence": {
+        "sources": [
+          "Source: Koha API — 1 / 1 item(s)",
+          "Source: Koha API — 1 / 1 item(s)",
+          "Source: Koha API — 1 / 1 item(s)",
+          "Source: Koha API — 1 / 1 item(s)",
+          "Source: Koha API — 1 / 1 item(s)",
+          "Source: Koha API — 1 / 1 item(s)",
+          "Source: Koha API — 1 / 1 item(s)",
+          "Source: Koha API — 1 / 1 item(s)"
+        ],
+        "accessibleDescriptions": 8
+      }
+    },
+    {
+      "name": "Loan timeline explains its native table scope on actual circulation history",
+      "passed": true,
+      "evidence": {
+        "biblio": 21650,
+        "source": "Sources and scope\n\n1 loans read from the currently loaded Koha table rows. Filters, pagination and unreadable dates can limit this view. API data enriches these loans; this is not a complete circulation audit.\n\nLibrary names : loaded (14).\nLoan API : loaded (0)."
+      }
+    }
+  ]
+}

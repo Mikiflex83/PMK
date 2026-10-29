@@ -1,0 +1,64 @@
+{
+  "passed": true,
+  "ruleId": "mixed",
+  "options": [
+    {
+      "value": "serie",
+      "label": "Série manuelle",
+      "source": "manual",
+      "category": "THEMES",
+      "variants": [
+        {
+          "value": "Serie",
+          "label": "Série Koha",
+          "source": "koha",
+          "category": "THEMES"
+        },
+        {
+          "value": "serie",
+          "label": "Série manuelle",
+          "source": "manual",
+          "category": ""
+        }
+      ],
+      "sources": [
+        "koha:THEMES",
+        "manual"
+      ]
+    },
+    {
+      "value": "Koha",
+      "label": "Koha seul",
+      "source": "koha",
+      "category": "THEMES",
+      "variants": [
+        {
+          "value": "Koha",
+          "label": "Koha seul",
+          "source": "koha",
+          "category": "THEMES"
+        }
+      ],
+      "sources": [
+        "koha:THEMES"
+      ]
+    },
+    {
+      "value": "Nouveau",
+      "label": "Nouveau manuel",
+      "source": "manual",
+      "variants": [
+        {
+          "value": "Nouveau",
+          "label": "Nouveau manuel",
+          "source": "manual",
+          "category": ""
+        }
+      ],
+      "sources": [
+        "manual"
+      ]
+    }
+  ],
+  "summary": "3 suggestion(s) · 1 doublon(s) avec variantes conservées"
+}

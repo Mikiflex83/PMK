@@ -1,0 +1,9 @@
+{
+  "kind": "Browser fixtures on dynamically replaced Koha form markup; no submission or server writes",
+  "rows": [
+    {
+      "name": "Required suggester follows replaced native forms, focuses the patron action and preserves native descriptions and input",
+      "passed": true
+    }
+  ]
+}

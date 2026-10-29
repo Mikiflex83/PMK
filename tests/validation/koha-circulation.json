@@ -1,0 +1,37 @@
+{
+  "kind": "Real Koha native circulation forms with PMK plugin enabled",
+  "rows": [
+    {
+      "name": "Native checkout remains operational with all plugin modules enabled",
+      "passed": true,
+      "evidence": {
+        "checkout": 25,
+        "item": 23148,
+        "patron": 56
+      }
+    },
+    {
+      "name": "Native renewal updates the actual checkout",
+      "passed": true,
+      "evidence": {
+        "renewals": 1
+      }
+    },
+    {
+      "name": "Native checkin removes the actual checkout",
+      "passed": true,
+      "evidence": {
+        "item": 23148,
+        "activeCheckout": false
+      }
+    },
+    {
+      "name": "Transfer shortcut prefills the native form without automatically transferring",
+      "passed": true,
+      "evidence": {
+        "barcode": "PMKTEST-AVAILABLE",
+        "automaticSubmission": false
+      }
+    }
+  ]
+}

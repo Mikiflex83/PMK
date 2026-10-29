@@ -1,0 +1,11 @@
+{
+  "kind": "Real Koha + native PMK restoration, synthetic item only",
+  "rows": [
+    {
+      "passed": true,
+      "item": 23155,
+      "barcode": "PMKTEST-DELETED",
+      "plugin": "PimpMyKoha native restoration"
+    }
+  ]
+}

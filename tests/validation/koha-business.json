@@ -1,0 +1,65 @@
+{
+  "kind": "Real Koha business actions on synthetic PMKTEST data",
+  "rows": [
+    {
+      "name": "All module configurations available on home",
+      "passed": true,
+      "evidence": {
+        "count": 86
+      },
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "name": "Quick item editing persists one field and preserves the other data",
+      "passed": true,
+      "evidence": {
+        "item": 23148,
+        "fieldsPreserved": 45
+      },
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "name": "Quick item editing honors the configured NOT_LOAN category",
+      "passed": true,
+      "evidence": {
+        "category": "NOT_LOAN"
+      },
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "name": "Status editing writes and clears a native status without losing item data",
+      "passed": true,
+      "evidence": {
+        "item": 23148,
+        "statuses": [
+          1,
+          0
+        ]
+      },
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "name": "Sensitive item edits are refused while the item is on loan",
+      "passed": true,
+      "evidence": {
+        "item": 23149,
+        "writeRequests": 0
+      },
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "name": "Copy action writes the clipboard and confirms the copied value in a toast",
+      "passed": true,
+      "evidence": {
+        "value": "PMKTEST-ADULT"
+      },
+      "pageErrors": [],
+      "httpErrors": []
+    }
+  ]
+}

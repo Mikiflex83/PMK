@@ -1,0 +1,17 @@
+{
+  "kind": "Browser fixtures with actual search and claims modules; DataTables callback adapter, no Koha backend",
+  "rows": [
+    {
+      "name": "Search recognition explains competing actions and makes historical priority optional without changing saved defaults or context",
+      "passed": true
+    },
+    {
+      "name": "Claims filters survive row and table refresh; missing headers suspend filtering safely (dom)",
+      "passed": true
+    },
+    {
+      "name": "Claims filters survive row and table refresh; missing headers suspend filtering safely (datatables)",
+      "passed": true
+    }
+  ]
+}

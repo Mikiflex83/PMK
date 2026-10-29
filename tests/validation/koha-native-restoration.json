@@ -1,0 +1,50 @@
+{
+  "kind": "Native PMK restoration, inLibro disabled, local Koha and synthetic data",
+  "rows": [
+    {
+      "name": "Preview is read-only and rejects staff without restoration permission",
+      "passed": true,
+      "evidence": {
+        "readOnly": true,
+        "staff": 403,
+        "missingHeader": 403
+      }
+    },
+    {
+      "name": "Stale confirmation and revoked configuration access leave the archive untouched",
+      "passed": true,
+      "evidence": {
+        "stale": 409,
+        "revoked": 403
+      }
+    },
+    {
+      "name": "Native restoration preserves fields, queues indexing and can replay a lost response",
+      "passed": true,
+      "evidence": {
+        "item": 23155,
+        "barcode": "PMKTEST-DELETED",
+        "fields": 48,
+        "replayed": true,
+        "externalPluginEnabled": false
+      }
+    },
+    {
+      "name": "Barcode collision is previewed and confirmation becomes stale if the collision changes",
+      "passed": true,
+      "evidence": {
+        "explicitBarcode": "PMKTEST-DELETED_1",
+        "stale": 409
+      }
+    },
+    {
+      "name": "Deleted parent notice and MARC are restored together; invalid MARC rolls back all rows",
+      "passed": true,
+      "evidence": {
+        "biblio": 21655,
+        "rollbackVerified": true,
+        "parentAndItemRestored": true
+      }
+    }
+  ]
+}

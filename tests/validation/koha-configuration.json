@@ -1,0 +1,435 @@
+{
+  "kind": "Real Koha plugin: central configuration forms, read only",
+  "rows": [
+    {
+      "id": "table-labels",
+      "passed": true,
+      "fields": 128
+    },
+    {
+      "id": "detail-fourth-cover",
+      "passed": true,
+      "fields": 108
+    },
+    {
+      "id": "external-links",
+      "passed": true,
+      "fields": 174
+    },
+    {
+      "id": "moredetail-layout",
+      "passed": true,
+      "fields": 168
+    },
+    {
+      "id": "waiting-holds-age",
+      "passed": true,
+      "fields": 303
+    },
+    {
+      "id": "patron-message-templates",
+      "passed": true,
+      "fields": 195
+    },
+    {
+      "id": "element-formatting",
+      "passed": true,
+      "fields": 103
+    },
+    {
+      "id": "contextual-search-links",
+      "passed": true,
+      "fields": 109
+    },
+    {
+      "id": "bibliographic-markers",
+      "passed": true,
+      "fields": 167
+    },
+    {
+      "id": "transfer-button-holdings",
+      "passed": true,
+      "fields": 84
+    },
+    {
+      "id": "serials-tracking",
+      "passed": true,
+      "fields": 190
+    },
+    {
+      "id": "batchmod-empty-field-warning",
+      "passed": true,
+      "fields": 86
+    },
+    {
+      "id": "holdings-table-presentation",
+      "passed": true,
+      "fields": 204
+    },
+    {
+      "id": "z3950-workspace",
+      "passed": true,
+      "fields": 113
+    },
+    {
+      "id": "catalogue-search-behavior",
+      "passed": true,
+      "fields": 208
+    },
+    {
+      "id": "contextual-tooltips",
+      "passed": true,
+      "fields": 128
+    },
+    {
+      "id": "phone-number-formatting",
+      "passed": true,
+      "fields": 92
+    },
+    {
+      "id": "patron-astrological-sign",
+      "passed": true,
+      "fields": 87
+    },
+    {
+      "id": "multiline-list-counter",
+      "passed": true,
+      "fields": 112
+    },
+    {
+      "id": "lost-found-checkin-status",
+      "passed": true,
+      "fields": 86
+    },
+    {
+      "id": "search-facets",
+      "passed": true,
+      "fields": 99
+    },
+    {
+      "id": "guided-reports-tools",
+      "passed": true,
+      "fields": 85
+    },
+    {
+      "id": "detail-bibliographic-groups",
+      "passed": true,
+      "fields": 527
+    },
+    {
+      "id": "callnumber-progressive-search",
+      "passed": true,
+      "fields": 94
+    },
+    {
+      "id": "serials-claims-filtering",
+      "passed": true,
+      "fields": 90
+    },
+    {
+      "id": "070",
+      "passed": true,
+      "fields": 90
+    },
+    {
+      "id": "patron-age-display",
+      "passed": true,
+      "fields": 303
+    },
+    {
+      "id": "relative-dates",
+      "passed": true,
+      "fields": 303
+    },
+    {
+      "id": "efficiency-indicators",
+      "passed": true,
+      "fields": 112
+    },
+    {
+      "id": "scroll-buttons",
+      "passed": true,
+      "fields": 118
+    },
+    {
+      "id": "guided-report-print",
+      "passed": true,
+      "fields": 87
+    },
+    {
+      "id": "patron-overdues-print",
+      "passed": true,
+      "fields": 87
+    },
+    {
+      "id": "cataloguing-tree-assistant",
+      "passed": true,
+      "fields": 129
+    },
+    {
+      "id": "147-home-submenus",
+      "passed": true,
+      "fields": 84
+    },
+    {
+      "id": "authority-installation-options",
+      "passed": true,
+      "fields": 88
+    },
+    {
+      "id": "legacy-interface-options",
+      "passed": true,
+      "fields": 105
+    },
+    {
+      "id": "patron-renewal-verification",
+      "passed": true,
+      "fields": 111
+    },
+    {
+      "id": "responsive-tables",
+      "passed": true,
+      "fields": 88
+    },
+    {
+      "id": "copy-actions",
+      "passed": true,
+      "fields": 486
+    },
+    {
+      "id": "history-row-highlights",
+      "passed": true,
+      "fields": 111
+    },
+    {
+      "id": "loan-history-timeline",
+      "passed": true,
+      "fields": 211
+    },
+    {
+      "id": "element-placement",
+      "passed": true,
+      "fields": 84
+    },
+    {
+      "id": "date-display-formatting",
+      "passed": true,
+      "fields": 96
+    },
+    {
+      "id": "input-rules",
+      "passed": true,
+      "fields": 99
+    },
+    {
+      "id": "custom-navigation",
+      "passed": true,
+      "fields": 118
+    },
+    {
+      "id": "patron-page-utils",
+      "passed": true,
+      "fields": 126
+    },
+    {
+      "id": "mascot-frogs",
+      "passed": true,
+      "fields": 121
+    },
+    {
+      "id": "mascot-agents",
+      "passed": true,
+      "fields": 143
+    },
+    {
+      "id": "personal-lists-manager",
+      "passed": true,
+      "fields": 85
+    },
+    {
+      "id": "barcode-highlights",
+      "passed": true,
+      "fields": 95
+    },
+    {
+      "id": "recent-history",
+      "passed": true,
+      "fields": 85
+    },
+    {
+      "id": "advanced-search-sidebar",
+      "passed": true,
+      "fields": 89
+    },
+    {
+      "id": "new-release-indicators",
+      "passed": true,
+      "fields": 107
+    },
+    {
+      "id": "cataloging-6xx-suggestions",
+      "passed": true,
+      "fields": 138
+    },
+    {
+      "id": "musicbrainz-coverart",
+      "passed": true,
+      "fields": 85
+    },
+    {
+      "id": "log-viewer",
+      "passed": true,
+      "fields": 225
+    },
+    {
+      "id": "item-template-buttons",
+      "passed": true,
+      "fields": 125
+    },
+    {
+      "id": "detail-reservations-summary-style",
+      "passed": true,
+      "fields": 130
+    },
+    {
+      "id": "item-entry-assistant",
+      "passed": true,
+      "fields": 225
+    },
+    {
+      "id": "internal-share",
+      "passed": true,
+      "fields": 156
+    },
+    {
+      "id": "search-autocomplete-performance",
+      "passed": true,
+      "fields": 129
+    },
+    {
+      "id": "renewal-enhancements",
+      "passed": true,
+      "fields": 151
+    },
+    {
+      "id": "patron-message-chronology",
+      "passed": true,
+      "fields": 85
+    },
+    {
+      "id": "menu-icons",
+      "passed": true,
+      "fields": 84
+    },
+    {
+      "id": "patron-required-contact",
+      "passed": true,
+      "fields": 113
+    },
+    {
+      "id": "multi-transfer",
+      "passed": true,
+      "fields": 84
+    },
+    {
+      "id": "hold-pickup-expiration",
+      "passed": true,
+      "fields": 87
+    },
+    {
+      "id": "search-filter-badges",
+      "passed": true,
+      "fields": 84
+    },
+    {
+      "id": "patron-category-defaults",
+      "passed": true,
+      "fields": 90
+    },
+    {
+      "id": "hold-submit-guard",
+      "passed": true,
+      "fields": 87
+    },
+    {
+      "id": "search-results-master",
+      "passed": true,
+      "fields": 97
+    },
+    {
+      "id": "document-movements",
+      "passed": true,
+      "fields": 89
+    },
+    {
+      "id": "suggestion-required-suggester",
+      "passed": true,
+      "fields": 88
+    },
+    {
+      "id": "intranet-nav-menu",
+      "passed": true,
+      "fields": 90
+    },
+    {
+      "id": "guides-training",
+      "passed": true,
+      "fields": 84
+    },
+    {
+      "id": "xslt-assistant",
+      "passed": true,
+      "fields": 86
+    },
+    {
+      "id": "home-widgets",
+      "passed": true,
+      "fields": 84
+    },
+    {
+      "id": "attendance-mediabus-mini",
+      "passed": true,
+      "fields": 93
+    },
+    {
+      "id": "bibliography-builder",
+      "passed": true,
+      "fields": 85
+    },
+    {
+      "id": "144",
+      "passed": true,
+      "fields": 103
+    },
+    {
+      "id": "item-quick-edit",
+      "passed": true,
+      "fields": 94
+    },
+    {
+      "id": "checkout-status-correction",
+      "passed": true,
+      "fields": 86
+    },
+    {
+      "id": "france-publications-subscriptions",
+      "passed": true,
+      "fields": 96
+    },
+    {
+      "id": "page-qr-code",
+      "passed": true,
+      "fields": 112
+    },
+    {
+      "id": "home-widget-useful-links",
+      "passed": true,
+      "fields": 86
+    },
+    {
+      "id": "internal-pages-tools",
+      "passed": true,
+      "fields": 88
+    }
+  ]
+}

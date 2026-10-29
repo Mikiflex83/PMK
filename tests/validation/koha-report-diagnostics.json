@@ -1,0 +1,18 @@
+{
+  "kind": "Real local Koha; report metadata only",
+  "rows": [
+    {
+      "name": "Existing report exposes metadata and parameters without execution or SQL disclosure",
+      "passed": true,
+      "id": 4
+    },
+    {
+      "name": "Missing report and insufficient permissions are distinct",
+      "passed": true
+    },
+    {
+      "name": "Common diagnostics deduplicate configured reports and classify their availability",
+      "passed": true
+    }
+  ]
+}

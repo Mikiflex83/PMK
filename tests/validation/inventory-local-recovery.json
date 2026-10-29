@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "checks": {
+    "indexedDbStateVisible": true,
+    "indexedDbWriteConfirmed": true,
+    "indexedDbFailureVisible": true,
+    "resumeVisible": true,
+    "resumeAction": true,
+    "unknownBarcodeSaved": true,
+    "repeatedBarcodeExplained": true,
+    "otherZoneProtected": true,
+    "batchResumeState": true,
+    "tombstoneSelfTests": true,
+    "duplicateAnomalySelfTest": true
+  },
+  "scope": "Contrat de la page : état IndexedDB visible, reprise locale et traitement explicite des codes inconnus ou répétés."
+}

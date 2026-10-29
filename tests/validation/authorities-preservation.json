@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "baselineCommit": "a63d58e21d6a9144eaf1c2f5c06c912b06fe22b5",
+  "priorSourceSha256": "a11b79d15c0b2358a143d2a613a667c4fdae792395e6e01a02b65ebeb847e4b0",
+  "currentSourceSha256": "faf3fd30db11f141d90c34ece9fdcd1d9fd4740cffe5ad2f6ed78f7c3e27a0cb",
+  "otherNamedFunctionsPreserved": 315,
+  "remoteMemoryRemoved": true,
+  "installationEnvelopeAdded": true
+}

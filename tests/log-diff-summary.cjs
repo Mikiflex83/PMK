@@ -1,0 +1,22 @@
+const {chromium}=require('playwright');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const ROOT=path.resolve(__dirname,'..');
+const OUT=path.join(ROOT,'tests/validation/log-diff-summary.json');
+(async()=>{
+ const browser=await chromium.launch({executablePath:process.env.PMK_CHROMIUM_PATH||'/usr/bin/chromium',headless:true,args:['--no-sandbox']});
+ const page=await browser.newPage({locale:'fr-FR'});
+ await page.route('http://pmk.test/**',route=>route.fulfill({contentType:'text/html',body:'<!doctype html><html lang="fr"><head></head><body><table id="logst"><tbody><tr id="with"><td></td><td></td><td>CATALOGUING</td><td>MODIFY</td><td></td><td><div class="loginfo">Notice 42</div></td><td></td><td><table class="struct-diff"><tr><th>Champ</th><th>Avant</th><th>Après</th></tr><tr><td>Titre</td><td>Ancien</td><td>Nouveau</td></tr><tr><td>Auteur</td><td>Même</td><td>Même</td></tr><tr><td>Collection</td><td></td><td>Romans</td></tr></table></td></tr><tr id="missing"><td></td><td></td><td>MEMBERS</td><td>MODIFY</td><td></td><td><div class="loginfo">Adhérent 7</div></td><td></td><td></td></tr></tbody></table></body></html>'}));
+ await page.goto('http://pmk.test/cgi-bin/koha/tools/viewlog.pl');
+ await page.evaluate(()=>{window.PMKConfig={registerModule(){},getConfig(){return Promise.resolve({})},subscribe(){},getLanguage(){return 'fr'}}});
+ await page.addScriptTag({path:path.join(ROOT,'101-koha-log.js')});
+ await page.waitForFunction(()=>document.querySelectorAll('.pmk101-diff-summary').length===2);
+ const withDiff=await page.locator('#with .pmk101-diff-summary').innerText();
+ const missing=await page.locator('#missing .pmk101-diff-summary').innerText();
+ assert.match(withDiff,/2 champ\(s\) modifié\(s\).*Titre.*Collection/);
+ assert.match(missing,/non fournies par Koha/);
+ assert.equal(await page.locator('#with table.struct-diff').count(),1,'native Koha diff remains present');
+ fs.writeFileSync(OUT,JSON.stringify({passed:true,changedSummary:withDiff,missingSummary:missing,nativeDiffPreserved:true},null,2)+'\n');
+ console.log('PASS Koha log changed fields and missing diff explanation');await browser.close();
+})().catch(e=>{fs.writeFileSync(OUT,JSON.stringify({passed:false,error:e.stack},null,2)+'\n');console.error(e);process.exit(1)});

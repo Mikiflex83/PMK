@@ -1,0 +1,13 @@
+{
+  "kind": "Browser fixtures: keyboard and mobile touch",
+  "rows": [
+    {
+      "name": "Long mobile tooltip stays outside target, supports keyboard scrolling, restores focus and existing description",
+      "passed": true
+    },
+    {
+      "name": "Touch opens help, touching help keeps it readable and outside tap dismisses without editing input",
+      "passed": true
+    }
+  ]
+}

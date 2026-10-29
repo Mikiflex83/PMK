@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "packageSha256": "a31e436d814330e1a4064e8e8f6f9e445fe385cfc5b39e76f4bd825949c44846",
+  "kind": "Exact release KPZ uploaded via the real Koha 25.11 native installer",
+  "status": {
+    "version": "0.4.0",
+    "loaded": 110,
+    "storage": "koha",
+    "user": "koha"
+  }
+}

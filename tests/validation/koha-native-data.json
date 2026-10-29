@@ -1,0 +1,164 @@
+{
+  "kind": "Real Koha 25.11 / MariaDB; all Firebase traffic forbidden",
+  "pluginVersion": "0.4.0",
+  "rows": [
+    {
+      "name": "Native documents: all nine module namespaces persist Unicode, timestamps and unknown fields",
+      "passed": true,
+      "evidence": [
+        {
+          "ns": "attendance",
+          "revision": 1
+        },
+        {
+          "ns": "appointments",
+          "revision": 1
+        },
+        {
+          "ns": "journal",
+          "revision": 1
+        },
+        {
+          "ns": "lists",
+          "revision": 1
+        },
+        {
+          "ns": "taxonomy",
+          "revision": 1
+        },
+        {
+          "ns": "planning",
+          "revision": 1
+        },
+        {
+          "ns": "frequency",
+          "revision": 1
+        },
+        {
+          "ns": "internal-share",
+          "revision": 1
+        },
+        {
+          "ns": "authorities",
+          "revision": 1
+        }
+      ]
+    },
+    {
+      "name": "Native updates and merges retain unrelated fields; missing updates fail",
+      "passed": true,
+      "evidence": {
+        "a": {
+          "x": 3,
+          "y": 4
+        },
+        "custom": 42,
+        "note": "kept"
+      }
+    },
+    {
+      "name": "Atomic batches roll back every write on a missing document",
+      "passed": true,
+      "evidence": {
+        "rolledBack": true
+      }
+    },
+    {
+      "name": "Concurrent increments are retried without losing any count",
+      "passed": true,
+      "evidence": {
+        "count": 4,
+        "custom": 42
+      }
+    },
+    {
+      "name": "Two reservations compete for one place with a single successful atomic booking",
+      "passed": true,
+      "evidence": {
+        "accepted": 1,
+        "refused": 1
+      }
+    },
+    {
+      "name": "Native queries: collection boundaries, date comparisons, arrays, sort and limit",
+      "passed": true,
+      "evidence": [
+        4,
+        3
+      ]
+    },
+    {
+      "name": "Collections larger than one API page are fully read without truncation",
+      "passed": true,
+      "evidence": {
+        "documents": 1005
+      }
+    },
+    {
+      "name": "Native subscriptions see writes and stop after disposal",
+      "passed": true,
+      "evidence": {
+        "disposed": true
+      }
+    },
+    {
+      "name": "Import preview is read-only; existing fields and concurrent creations are preserved",
+      "passed": true,
+      "evidence": {
+        "created": 1,
+        "preserved": 1
+      }
+    },
+    {
+      "name": "Old JSON formats retain subcollections, IDs and timestamp values",
+      "passed": true,
+      "evidence": {
+        "rest": true,
+        "nested": true,
+        "rtdb": true
+      }
+    },
+    {
+      "name": "PMK data manager previews an uploaded file and imports after explicit click",
+      "passed": true,
+      "evidence": {
+        "previewReadOnly": true,
+        "explicitImport": true
+      }
+    },
+    {
+      "name": "Configuration import keeps custom fields and rows while applying the imported choices",
+      "passed": true,
+      "evidence": {
+        "customFields": true,
+        "mergedRows": 3,
+        "previousRevision": 1
+      }
+    },
+    {
+      "name": "Native API refuses missing request header, malformed paths and anonymous access",
+      "passed": true,
+      "evidence": {
+        "header": 403,
+        "path": 400,
+        "anonymous": 401
+      }
+    },
+    {
+      "name": "Staff identity comes from Koha; staff cannot export or modify managed referentials",
+      "passed": true,
+      "evidence": {
+        "userid": "pmk-test-staff",
+        "forbidden": 5
+      }
+    },
+    {
+      "name": "Authorities open with their audit settings and without the former learning service",
+      "passed": true,
+      "evidence": {
+        "mounted": true,
+        "learningRemoved": true
+      }
+    }
+  ]
+}

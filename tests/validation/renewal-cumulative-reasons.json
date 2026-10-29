@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "displayedReason": "Une réservation empêche le renouvellement · Renouvellement interdit en raison du retard",
+  "technicalSource": "Motifs fournis par Koha : on_reserve, norenew_overdue",
+  "codes": [
+    "on_reserve",
+    "norenew_overdue"
+  ],
+  "defaultReadableLabels": [
+    "Nombre maximal de renouvellements atteint",
+    "Une réservation empêche le renouvellement",
+    "Renouvellement interdit en raison du retard",
+    "Le document doit être présenté à la bibliothèque",
+    "Renouvellement encore trop tôt",
+    "Le document n'est plus renouvelable",
+    "Des frais impayés empêchent le renouvellement automatique",
+    "Le compte lecteur est expiré",
+    "Les règles de l'exemplaire interdisent le renouvellement",
+    "Une restriction empêche le renouvellement"
+  ]
+}

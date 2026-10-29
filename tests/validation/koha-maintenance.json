@@ -1,0 +1,586 @@
+{
+  "kind": "Real Koha read and analysis workflows on native fixtures and KTD sample records",
+  "rows": [
+    {
+      "id": "reservations",
+      "passed": true,
+      "ms": 1331,
+      "state": {
+        "status": "Analyse approfondie automatique terminée : 1 / 1 réservation(s).",
+        "kind": "dqr-status visible ok",
+        "text": "KOHA · QUALITÉ DU CATALOGUE\nMaintenance des réservations\n\nLes réservations à vérifier, leur cause probable et l’action proposée, dans une seule liste.\n\n Charger et analyser\nExporter\nAnalyse approfondie automatique terminée : 1 / 1 réservation(s).\nRéservations\nRéglages\nDécisions locales · 0 cas actuel(s)\nRÉSERVATIONS CHARGÉES\n1\nDOSSIERS À EXAMINER\n1\nINTERVENTION NÉCESSAIRE\n0\nNOTICES RESTANT À ANALYSER\n0\nAfficher \nÀ examiner\nToutes les réservations\nToutes les alertes\nIntervention nécessaire\nBlocage probable\nToutes les alertes critiques\nÀ vérifier\nÀ examiner\nSans alerte\nExclues des règles\nTous statuts\nEn file d’attente\nMise de côté\nEn transit\nEn traitement\nSuspendue\nTous sites de retrait\nPMK Test PMK_A (PMK_A)\nTout âge\n≥ 30 j\n≥ 60 j\n≥ 90 j\n≥ 180 j\nRéinitialiser\nRéservations\n\n1 dossier(s) affiché(s) sur 1 chargé(s). Les dossiers exclus et sans alerte sont masqués. Choisissez « Toutes les réservations » pour contrôler ce classement. Les cas prioritaires sont affichés en premier.\n\nAnalyse complète · 28/10/2026 15:35:53 · Une hypothèse guide la vérification ; seul un constat vérifié justifie une intervention directe.\n\nSélectionner la page\nSélection étendue\n0 sélectionnée(s)\nSélection\n\tDocument / retrait\tSituation\tConstat ou hypothèse\tAction proposée\t\n\tPMKTEST — Réservation en attente\nPMK Test PMK_A · #1\n\tÀ vérifier\nMise de côté\nMise de côté : 20 j · expire 10/10/2026\n\tHypothèse à vérifier\nDélai de retrait dépassé de 18 jours.\n\tVérifier le retrait puis clôturer selon votre procédure.\tOuvrir Koha\nDétails",
+        "tables": [
+          {
+            "id": "",
+            "rows": 2
+          }
+        ],
+        "buttons": [
+          {
+            "id": "dqr-refresh",
+            "text": "Charger et analyser"
+          },
+          {
+            "id": "dqr-stop",
+            "text": "Arrêter"
+          },
+          {
+            "id": "dqr-export-actions",
+            "text": "Liste avec les conseils · CSV"
+          },
+          {
+            "id": "dqr-export",
+            "text": "Réservations affichées · CSV"
+          },
+          {
+            "id": "dqr-export-quick",
+            "text": "Toutes les données chargées · JSON rapide"
+          },
+          {
+            "id": "dqr-export-analysis",
+            "text": "JSON approfondi (lent)"
+          },
+          {
+            "id": "",
+            "text": "Réservations"
+          },
+          {
+            "id": "",
+            "text": "Réglages"
+          },
+          {
+            "id": "",
+            "text": "Toutes les annuler"
+          },
+          {
+            "id": "dqr-reset",
+            "text": "Réinitialiser"
+          },
+          {
+            "id": "dqr-select-page",
+            "text": "Sélectionner la page"
+          },
+          {
+            "id": "dqr-select-filter",
+            "text": "Sélectionner tous les résultats filtrés"
+          },
+          {
+            "id": "",
+            "text": "Actualiser les détails"
+          },
+          {
+            "id": "",
+            "text": "Confirmer l’anomalie"
+          },
+          {
+            "id": "",
+            "text": "Cas normal"
+          },
+          {
+            "id": "",
+            "text": "À revoir"
+          },
+          {
+            "id": "",
+            "text": "Confirmer l’anomalie"
+          },
+          {
+            "id": "",
+            "text": "Cas normal"
+          },
+          {
+            "id": "",
+            "text": "À revoir"
+          }
+        ]
+      },
+      "requests": [
+        {
+          "path": "/api/v1/holds",
+          "method": "GET"
+        },
+        {
+          "path": "/api/v1/patrons",
+          "method": "GET"
+        },
+        {
+          "path": "/api/v1/authorised_value_categories/HOLD_CANCELLATION/authorised_values",
+          "method": "GET"
+        },
+        {
+          "path": "/api/v1/biblios/21651/items",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "id": "loans",
+      "passed": true,
+      "ms": 259,
+      "state": {
+        "status": "2 prêts actifs chargés. L’analyse approfondie n’est lancée que sur demande.",
+        "kind": "dql-status visible ok",
+        "text": "KOHA · QUALITÉ DU CATALOGUE\nPrêts & litiges\n\nRendre visibles les prêts très anciens ou figés, les réclamations de retour et les états contradictoires, sans jamais inventer un retour.\n\n Charger les prêts\n Arrêter\n Export CSV\n2 prêts actifs chargés. L’analyse approfondie n’est lancée que sur demande.\nParcours principal · chaque espace reste accessible directement\n1 · Vue d’ensemble\nCharger et situer\n2 · Examiner les dossiers\nContrôler et sélectionner\n3 · Préparer les actions\nRésolution des litiges\nOutils :\nExplorer les situations\nRéglages\nDécisions locales · 0 dossier(s) actuel(s), 0 mémorisé(s). Les cas reconnus normaux sont masqués tant que les données et contrôles restent identiques. « Surveiller » conserve l’alerte. Toutes les annuler\nRevoir ou annuler une décision\nPRÊTS ACTIFS\n2\nCRITIQUES\n0\nÀ VÉRIFIER\n0\nANALYSE APPROFONDIE\n0\nSÉLECTION\n0\nToutes classes\nCritiques\nÀ vérifier\nAtypiques\nSans alerte\nToutes bibliothèques de prêt\nPMK_A\nTout âge\n≥ 180 j\n≥ 1 an\n≥ 2 ans\n≥ 3 ans\n≥ 5 ans\n1 · Vue d’ensemble\n\nL’ancienneté est un signal, pas une preuve d’anomalie.\n\nAnalyser les prêts prioritaires\n≥ 365 jours\n0\nPrêts anciens\n≥ 730 jours\n0\nTrès anciens\nRetard ≥ 180 j\n0\nÉchéances très dépassées\nApprofondis\n0\nExemplaire, litige, transfert, lecteur\nPrincipe de sécurité : ce module ne fait jamais de retour automatique. Un prêt très ancien reste un prêt tant qu’un professionnel n’a pas établi la situation physique du document.",
+        "tables": [],
+        "buttons": [
+          {
+            "id": "dql-refresh",
+            "text": "Charger les prêts"
+          },
+          {
+            "id": "dql-stop",
+            "text": "Arrêter"
+          },
+          {
+            "id": "dql-export",
+            "text": "Export CSV"
+          },
+          {
+            "id": "",
+            "text": "1 · Vue d’ensembleCharger et situer"
+          },
+          {
+            "id": "",
+            "text": "2 · Examiner les dossiersContrôler et sélectionner"
+          },
+          {
+            "id": "",
+            "text": "3 · Préparer les actionsRésolution des litiges"
+          },
+          {
+            "id": "",
+            "text": "Explorer les situations"
+          },
+          {
+            "id": "",
+            "text": "Réglages"
+          },
+          {
+            "id": "",
+            "text": "Toutes les annuler"
+          },
+          {
+            "id": "dql-deep-priority",
+            "text": "Analyser les prêts prioritaires"
+          }
+        ]
+      },
+      "requests": [
+        {
+          "path": "/api/v1/checkouts",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "id": "transfers",
+      "passed": true,
+      "ms": 507,
+      "state": {
+        "status": "1 transfert(s) analysé(s).",
+        "kind": "q-status visible ok",
+        "text": "Transferts / navette\n\nSituation, cause probable et action proposée, dans une seule liste.\n\nCharger et analyser\nExporter\n1 transfert(s) analysé(s).\nTransferts\nRéglages\nDécisions locales · 0 cas actuel(s)\nTRANSFERTS CHARGÉS\n1\nÀ EXAMINER\n1\nINTERVENTION NÉCESSAIRE\n0\nAfficher \nÀ examiner\nTous les transferts\nToutes les alertes\nIntervention nécessaire\nBlocage probable\nCritiques\nÀ vérifier\nÀ examiner\nSans alerte\nExclus\nToutes origines\nPMK_A\nToutes destinations\nPMK_B\nToutes raisons\nManual\nEffacer les filtres\nTransferts\n\n1 dossier(s) affiché(s) sur 1 chargé(s). Les dossiers sans alerte et exclus sont masqués. Choisissez « Tous les transferts » pour vérifier le classement.\n\nLes estimations proviennent du même planning que le widget des services. Elles ne remplacent jamais les événements enregistrés dans Koha.\n\n0 sélectionné(s)\nSélectionner la page\nSélection étendue\n\tDocument / trajet\tSituation\tCause probable\tAction proposée\t\n\tPMKTEST — Transfert et navette\nPMKTEST-TRANSIT · #1\nPMK_A → PMK_B\n\tÀ examiner\nÀ envoyer\nDemande : 10 j\nÉvénement réel Koha : demandé le 18/10/2026 ; envoi non enregistré.\nEstimation : aucun passage correspondant trouvé dans le planning commun.\n\tLa demande attend encore sa préparation.\tVérifier la préparation de la prochaine navette.\tOuvrir Koha\nDétails\nPrécédent\nPage 1/1 · 1 dossier(s)\nSuivant",
+        "tables": [
+          {
+            "id": "",
+            "rows": 2
+          }
+        ],
+        "buttons": [
+          {
+            "id": "dqtr-refresh",
+            "text": "Charger et analyser"
+          },
+          {
+            "id": "dqtr-stop",
+            "text": "Arrêter"
+          },
+          {
+            "id": "dqtr-export",
+            "text": "Liste affichée et conseils · CSV"
+          },
+          {
+            "id": "dqtr-json",
+            "text": "Toutes les données chargées · JSON"
+          },
+          {
+            "id": "",
+            "text": "Transferts"
+          },
+          {
+            "id": "",
+            "text": "Réglages"
+          },
+          {
+            "id": "",
+            "text": "Toutes les annuler"
+          },
+          {
+            "id": "dqtr-reset",
+            "text": "Effacer les filtres"
+          },
+          {
+            "id": "sel-page",
+            "text": "Sélectionner la page"
+          },
+          {
+            "id": "sel-filter",
+            "text": "Tous les résultats filtrés"
+          },
+          {
+            "id": "",
+            "text": "Confirmer l’anomalie"
+          },
+          {
+            "id": "",
+            "text": "Cas normal"
+          },
+          {
+            "id": "",
+            "text": "À revoir"
+          },
+          {
+            "id": "",
+            "text": "Confirmer l’anomalie"
+          },
+          {
+            "id": "",
+            "text": "Cas normal"
+          },
+          {
+            "id": "",
+            "text": "À revoir"
+          },
+          {
+            "id": "",
+            "text": "Vérifier l’exemplaire via l’API"
+          },
+          {
+            "id": "dqtr-prev",
+            "text": "Précédent"
+          },
+          {
+            "id": "dqtr-next",
+            "text": "Suivant"
+          }
+        ]
+      },
+      "requests": [
+        {
+          "path": "/cgi-bin/koha/svc/report",
+          "method": "GET"
+        },
+        {
+          "path": "/cgi-bin/koha/svc/report",
+          "method": "GET"
+        },
+        {
+          "path": "/api/v1/contrib/pmk/data/planning",
+          "method": "POST",
+          "dataAction": "get",
+          "writeCount": 0
+        }
+      ]
+    },
+    {
+      "id": "serials",
+      "passed": true,
+      "ms": 451,
+      "state": {
+        "status": "1 abonnements chargés.",
+        "kind": "dqs-status visible ok",
+        "text": "QUALITÉ KOHA · PÉRIODIQUES\nMaintenance des périodiques\n\nAbonnements expirés, fascicules attendus, réclamations et situations figées.\n\nCharger le rapport\n1 abonnements chargés.\nParcours principal · chaque espace reste accessible directement\n1 · Vue d’ensemble\nCharger et situer\n2 · Examiner les dossiers\nContrôler et sélectionner\n3 · Préparer les lots\nSélection et vérification\nOutils :\nExplorer les situations\nRéglages\nDécisions locales · 0 dossier(s) actuel(s), 0 mémorisé(s). Les cas reconnus normaux sont masqués tant que les données et contrôles restent identiques. « Surveiller » conserve l’alerte. Toutes les annuler\nRevoir ou annuler une décision\nABONNEMENTS\n1\nCRITIQUES\n0\nÀ VÉRIFIER\n1\nATTENDUS EN RETARD\n1\nRÉCLAMÉS\n1\nFraîcheur : Rapport lu dans Koha le 28/10/2026 15:35:54 · 0 h. Fraîcheur conforme au seuil.\nCe module utilise un rapport SQL lecture seule parce que Koha ne fournit pas une liste REST globale équivalente pour les abonnements/fascicules. Les modifications restent dans les écrans natifs Périodiques.\nActifs expirés\n1\nFascicules attendus\n1\nAttendus en retard\n1\nManquants\n0\nRéclamations\n1",
+        "tables": [],
+        "buttons": [
+          {
+            "id": "load",
+            "text": "Charger le rapport"
+          },
+          {
+            "id": "",
+            "text": "1 · Vue d’ensembleCharger et situer"
+          },
+          {
+            "id": "",
+            "text": "2 · Examiner les dossiersContrôler et sélectionner"
+          },
+          {
+            "id": "",
+            "text": "3 · Préparer les lotsSélection et vérification"
+          },
+          {
+            "id": "",
+            "text": "Explorer les situations"
+          },
+          {
+            "id": "",
+            "text": "Réglages"
+          },
+          {
+            "id": "",
+            "text": "Toutes les annuler"
+          }
+        ]
+      },
+      "requests": [
+        {
+          "path": "/cgi-bin/koha/svc/report",
+          "method": "GET"
+        },
+        {
+          "path": "/cgi-bin/koha/svc/report",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "id": "patrons",
+      "passed": true,
+      "ms": 305,
+      "state": {
+        "status": "60 lecteurs chargés.",
+        "kind": "dqp-status visible ok",
+        "text": "QUALITÉ KOHA · LECTEURS\nQualité des comptes lecteurs\n\nDoublons, coordonnées, comptes expirés et préparation des traitements de conservation.\n\nCharger les lecteurs\nArrêter\n60 lecteurs chargés.\nParcours principal · chaque espace reste accessible directement\n1 · Vue d’ensemble\nCharger et situer\n2 · Examiner les dossiers\nContrôler et sélectionner\n3 · Préparer les actions\nSélection et vérification\nOutils :\nDoublons et comptes liés\nRéglages\nDécisions locales · 0 dossier(s) actuel(s), 0 mémorisé(s). Les cas reconnus normaux sont masqués tant que les données et contrôles restent identiques. « Surveiller » conserve l’alerte. Toutes les annuler\nRevoir ou annuler une décision\nLECTEURS\n60\nCRITIQUES\n0\nÀ VÉRIFIER\n2\nEXPIRÉS\n2\nDOUBLONS IDENTITÉ\n0\nRGPD : toutes les données lecteur restent exclusivement dans Koha et dans le navigateur. Aucun partage externe n’est effectué par cette page.\nExpirés > 3 ans\n1\nSans contact\n6\nEmails invalides\n0\nIdentités dupliquées\n0\nApprofondis\n0",
+        "tables": [],
+        "buttons": [
+          {
+            "id": "load",
+            "text": "Charger les lecteurs"
+          },
+          {
+            "id": "stop",
+            "text": "Arrêter"
+          },
+          {
+            "id": "",
+            "text": "1 · Vue d’ensembleCharger et situer"
+          },
+          {
+            "id": "",
+            "text": "2 · Examiner les dossiersContrôler et sélectionner"
+          },
+          {
+            "id": "",
+            "text": "3 · Préparer les actionsSélection et vérification"
+          },
+          {
+            "id": "",
+            "text": "Doublons et comptes liés"
+          },
+          {
+            "id": "",
+            "text": "Réglages"
+          },
+          {
+            "id": "",
+            "text": "Toutes les annuler"
+          }
+        ]
+      },
+      "requests": [
+        {
+          "path": "/api/v1/patrons",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "id": "items",
+      "passed": true,
+      "ms": 57842,
+      "state": {
+        "status": "6 210 exemplaires chargés.",
+        "kind": "dqi-status visible ok",
+        "text": "QUALITÉ KOHA · EXEMPLAIRES\nMaintenance des exemplaires\n\nIntégrité, états figés, cohérence notice/exemplaires et préparation des traitements de masse.\n\nCharger les exemplaires\nArrêter\n6 210 exemplaires chargés.\nChargement terminé · 6 210 exemplaire(s)\nParcours principal · chaque espace reste accessible directement\n1 · Vue d’ensemble\nCharger et situer\n2 · Examiner les dossiers\nContrôler et sélectionner\n3 · Préparer les actions\nSélection et vérification\nOutils :\nExplorer les situations\nRéglages\nDécisions locales · 0 dossier(s) actuel(s), 0 mémorisé(s). Les cas reconnus normaux sont masqués tant que les données et contrôles restent identiques. « Surveiller » conserve l’alerte. Toutes les annuler\nRevoir ou annuler une décision\nCHARGÉS\n6 210\nCRITIQUES\n0\nÀ VÉRIFIER\n6 202\nATYPIQUES\n0\nAPPROFONDIS\n0\nPrincipe\n\nLe chargement global utilise l'API REST Koha en pages de 500, strictement séquencées. Les contrôles relationnels (prêt, transfert, réservation, litige) ne sont chargés que pour une sélection.\n\nPerdus anciens\n0\nRetirés anciens\n0\nJamais vus ≥ 5 ans\n6 202\nCodes-barres dupliqués\n0\nMinorités notice\n23",
+        "tables": [],
+        "buttons": [
+          {
+            "id": "dqi-load",
+            "text": "Charger les exemplaires"
+          },
+          {
+            "id": "dqi-stop",
+            "text": "Arrêter"
+          },
+          {
+            "id": "",
+            "text": "1 · Vue d’ensembleCharger et situer"
+          },
+          {
+            "id": "",
+            "text": "2 · Examiner les dossiersContrôler et sélectionner"
+          },
+          {
+            "id": "",
+            "text": "3 · Préparer les actionsSélection et vérification"
+          },
+          {
+            "id": "",
+            "text": "Explorer les situations"
+          },
+          {
+            "id": "",
+            "text": "Réglages"
+          },
+          {
+            "id": "",
+            "text": "Toutes les annuler"
+          }
+        ]
+      },
+      "requests": [
+        {
+          "path": "/api/v1/items",
+          "method": "GET"
+        },
+        {
+          "path": "/api/v1/items",
+          "method": "GET"
+        },
+        {
+          "path": "/api/v1/items",
+          "method": "GET"
+        },
+        {
+          "path": "/api/v1/items",
+          "method": "GET"
+        },
+        {
+          "path": "/api/v1/items",
+          "method": "GET"
+        },
+        {
+          "path": "/api/v1/items",
+          "method": "GET"
+        },
+        {
+          "path": "/api/v1/items",
+          "method": "GET"
+        },
+        {
+          "path": "/api/v1/items",
+          "method": "GET"
+        },
+        {
+          "path": "/api/v1/items",
+          "method": "GET"
+        },
+        {
+          "path": "/api/v1/items",
+          "method": "GET"
+        },
+        {
+          "path": "/api/v1/items",
+          "method": "GET"
+        },
+        {
+          "path": "/api/v1/items",
+          "method": "GET"
+        },
+        {
+          "path": "/api/v1/items",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "id": "biblios",
+      "passed": true,
+      "ms": 3238,
+      "state": {
+        "status": "4 857 notices chargées · signatures SQL si disponibles.",
+        "kind": "dqb-status visible ok",
+        "text": "QUALITÉ KOHA · NOTICES\nQualité du catalogue bibliographique\n\nDoublons, audit UNIMARC, notices fantômes, enrichissement assisté et traitements contrôlés.\n\nCharger les notices\nArrêter\n4 857 notices chargées · signatures SQL si disponibles.\nParcours principal · chaque espace reste accessible directement\n1 · Vue d’ensemble\nCharger et situer\n2 · Contrôler les notices\nAudit MARC et sélection\n3 · Examiner les doublons\nComparer les notices\n4 · Préparer les actions\nVérification et traitement\nOutils :\nSans exemplaire\nComparer avec la BnF\nRéglages\nDécisions locales · 0 dossier(s) actuel(s), 0 mémorisé(s). Les cas reconnus normaux sont masqués tant que les données et contrôles restent identiques. « Surveiller » conserve l’alerte. Toutes les annuler\nRevoir ou annuler une décision\nNOTICES\n4 857\nGROUPES DOUBLONS\n52\nAUDITÉES MARC\n0\nCRITIQUES\n0\nÀ VÉRIFIER\n111\nUNIMARC/B : l'audit traite 001, 100, 200$a et 801 comme éléments obligatoires du format d'échange ; les contrôles plus dépendants du type de document restent volontairement en classe « atypique » ou « à vérifier ».\nDoublons par ISBN / signature\n111\nNotices sans exemplaire auditées\n0\nISBN invalides audités\n0\nLiens auteurs à améliorer\n0\nRésumé absent\n0",
+        "tables": [],
+        "buttons": [
+          {
+            "id": "load",
+            "text": "Charger les notices"
+          },
+          {
+            "id": "stop",
+            "text": "Arrêter"
+          },
+          {
+            "id": "",
+            "text": "1 · Vue d’ensembleCharger et situer"
+          },
+          {
+            "id": "",
+            "text": "2 · Contrôler les noticesAudit MARC et sélection"
+          },
+          {
+            "id": "",
+            "text": "3 · Examiner les doublonsComparer les notices"
+          },
+          {
+            "id": "",
+            "text": "4 · Préparer les actionsVérification et traitement"
+          },
+          {
+            "id": "",
+            "text": "Sans exemplaire"
+          },
+          {
+            "id": "",
+            "text": "Comparer avec la BnF"
+          },
+          {
+            "id": "",
+            "text": "Réglages"
+          },
+          {
+            "id": "",
+            "text": "Toutes les annuler"
+          }
+        ]
+      },
+      "requests": [
+        {
+          "path": "/cgi-bin/koha/svc/report",
+          "method": "GET"
+        },
+        {
+          "path": "/cgi-bin/koha/svc/report",
+          "method": "GET"
+        },
+        {
+          "path": "/cgi-bin/koha/svc/report",
+          "method": "GET"
+        },
+        {
+          "path": "/cgi-bin/koha/svc/report",
+          "method": "GET"
+        },
+        {
+          "path": "/cgi-bin/koha/svc/report",
+          "method": "GET"
+        },
+        {
+          "path": "/cgi-bin/koha/svc/report",
+          "method": "GET"
+        },
+        {
+          "path": "/cgi-bin/koha/svc/report",
+          "method": "GET"
+        },
+        {
+          "path": "/cgi-bin/koha/svc/report",
+          "method": "GET"
+        },
+        {
+          "path": "/cgi-bin/koha/svc/report",
+          "method": "GET"
+        },
+        {
+          "path": "/cgi-bin/koha/svc/report",
+          "method": "GET"
+        },
+        {
+          "path": "/cgi-bin/koha/svc/report",
+          "method": "GET"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "kind": "Browser mobile and desktop viewports with Koha holdings table markup",
+  "rows": [
+    {
+      "name": "Mobile item cards prioritise configured common columns, keep actions reachable and restore the native table on desktop",
+      "passed": true
+    }
+  ]
+}

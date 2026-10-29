@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "message": "Les champs du formulaire seront modifiés, sans enregistrement automatique.\n\nAperçu avant application :\n• Bibliothèque propriétaire : MÃ©diathÃ¨que [MDB] → RÃ©servoir [RMDB]\n⚠ Localisation : Adultes [A] → Z — valeur indisponible dans la liste Koha",
+  "preview": [
+    {
+      "ok": true,
+      "target": "items.homebranch",
+      "label": "Bibliothèque propriétaire",
+      "before": "MÃ©diathÃ¨que [MDB]",
+      "after": "RÃ©servoir [RMDB]"
+    },
+    {
+      "ok": false,
+      "target": "items.location",
+      "label": "Localisation",
+      "before": "Adultes [A]",
+      "after": "Z",
+      "reason": "valeur indisponible dans la liste Koha"
+    }
+  ],
+  "formPreserved": {
+    "home": "MDB",
+    "location": "A"
+  }
+}

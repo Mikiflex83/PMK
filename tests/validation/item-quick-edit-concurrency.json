@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "preview": "Modification à confirmer\n\nCote : « ANCIENNE » → « NOUVELLE »",
+  "conflict": "La valeur a changé depuis l’ouverture. Rechargez pour éviter un conflit.",
+  "writeRequests": 0,
+  "reads": 2
+}

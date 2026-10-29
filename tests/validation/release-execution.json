@@ -1,0 +1,92 @@
+{
+  "pluginVersion": "0.4.0",
+  "packageSha256": "a31e436d814330e1a4064e8e8f6f9e445fe385cfc5b39e76f4bd825949c44846",
+  "at": "2026-10-28T15:42:57.707106+00:00",
+  "suites": [
+    {
+      "suite": "koha-native-data",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-native-engines",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-shared-tools",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-plugin",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-configuration",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-business",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-circulation",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-checkout-status",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-lost-checkin",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-restoration",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-maintenance",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-publications",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-internal-pages",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-routes",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-migration",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-universality",
+      "passed": true,
+      "exitCode": 0
+    },
+    {
+      "suite": "koha-sql",
+      "passed": true,
+      "exitCode": 0
+    }
+  ]
+}

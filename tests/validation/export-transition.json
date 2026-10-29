@@ -1,0 +1,25 @@
+{
+  "kind": "Synthetic legacy export, no production or external connection",
+  "rows": [
+    {
+      "name": "Effective defaults, custom keys and order captured",
+      "passed": true
+    },
+    {
+      "name": "Local projects, dates and binary values retained; authentication credentials excluded",
+      "passed": true
+    },
+    {
+      "name": "Nested lists and entries plus historic shares retained with read-only SDK access",
+      "passed": true
+    },
+    {
+      "name": "Unreadable legacy service produces an explicitly incomplete backup",
+      "passed": true
+    },
+    {
+      "name": "FP companion is generated for the exact Koha origin and configured reference prefix",
+      "passed": true
+    }
+  ]
+}

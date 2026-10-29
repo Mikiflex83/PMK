@@ -1,0 +1,4 @@
+# Keep existing CRLF JavaScript while checking actual whitespace errors.
+*.js whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+# These fixtures retain the HTML pasted by the user, including blank lines.
+tests/fixtures/home-menus/*.html -whitespace

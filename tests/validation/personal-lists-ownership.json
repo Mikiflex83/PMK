@@ -1,0 +1,41 @@
+{
+  "passed": true,
+  "modes": {
+    "named": {
+      "text": "Mode partagé — profil nommé historique",
+      "state": {
+        "status": "idle",
+        "error": "",
+        "identityMode": "named",
+        "ownership": "shared",
+        "ready": false,
+        "profileId": "",
+        "profile": null,
+        "activeListIds": {
+          "notices": "",
+          "items": ""
+        },
+        "lists": []
+      }
+    },
+    "koha": {
+      "text": "Mode privé — listes liées au compte Koha connecté",
+      "state": {
+        "status": "idle",
+        "error": "",
+        "identityMode": "koha",
+        "ownership": "private",
+        "ready": false,
+        "profileId": "",
+        "profile": null,
+        "activeListIds": {
+          "notices": "",
+          "items": ""
+        },
+        "lists": []
+      }
+    }
+  },
+  "configuration": "Historique : profils nommés partagés, accessibles aux agents. Compte Koha : profil privé imposé par le serveur. Les anciens profils sont conservés ; leur attribution se fait explicitement dans l’outil de migration.",
+  "historicalAssignment": true
+}

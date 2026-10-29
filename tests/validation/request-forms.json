@@ -1,0 +1,217 @@
+[
+  {
+    "module": "home-widgets",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "relative-dates",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "070",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "patron-page-utils",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "144",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "patron-astrological-sign",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "guides-training",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "cataloging-6xx-suggestions",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "z3950-workspace",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "batchmod-empty-field-warning",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "item-entry-assistant",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "cataloguing-tree-assistant",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "xslt-assistant",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "search-autocomplete-performance",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "catalogue-search-behavior",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "item-template-buttons",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "search-facets",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "bibliographic-markers",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "new-release-indicators",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "musicbrainz-coverart",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "external-links",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "document-movements",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "detail-bibliographic-groups",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "moredetail-layout",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "holdings-table-presentation",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "callnumber-progressive-search",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "barcode-highlights",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "search-results-master",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "detail-fourth-cover",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "transfer-button-holdings",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "checkout-status-correction",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "lost-found-checkin-status",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "hold-pickup-expiration",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "history-row-highlights",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "loan-history-timeline",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "hold-submit-guard",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "renewal-enhancements",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "attendance-mediabus-mini",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "efficiency-indicators",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "copy-actions",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "patron-message-templates",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "intranet-nav-menu",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  },
+  {
+    "module": "147-home-submenus",
+    "formOpened": true,
+    "removedBoilerplateAbsent": true
+  }
+]

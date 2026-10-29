@@ -1,0 +1,9 @@
+{
+  "kind": "Actual advanced-search browser runtime with a custom Koha index and two criteria",
+  "rows": [
+    {
+      "name": "Advanced search accepts installation-specific indexes and previews the exact Koha query with readable AND/OR operators",
+      "passed": true
+    }
+  ]
+}

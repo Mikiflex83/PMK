@@ -1,0 +1,70 @@
+{
+  "passed": true,
+  "settings": {
+    "reportId": 99,
+    "maxTransferBatches": 7,
+    "batchSize": 500
+  },
+  "good": {
+    "ok": true,
+    "missing": [],
+    "columns": [
+      "Transfer_ID",
+      "Item_ID",
+      "From_Site",
+      "To_Site",
+      "Demande_le",
+      "Envoye_le",
+      "Arrive_le",
+      "Annule_le",
+      "Raison",
+      "Raison_annulation",
+      "Commentaire"
+    ]
+  },
+  "bad": {
+    "ok": false,
+    "missing": [
+      "From_Site",
+      "To_Site",
+      "Demande_le",
+      "Envoye_le",
+      "Arrive_le",
+      "Annule_le",
+      "Raison",
+      "Raison_annulation",
+      "Commentaire"
+    ],
+    "columns": [
+      "Transfer_ID",
+      "Item_ID"
+    ]
+  },
+  "fields": [
+    {
+      "key": "sqlTemplate",
+      "readOnly": true,
+      "help": "Conserver les paramètres <<Biblionumber>> et <<Après ID>>."
+    },
+    {
+      "key": "reportId",
+      "readOnly": false,
+      "help": ""
+    },
+    {
+      "key": "dataSources",
+      "readOnly": true,
+      "help": ""
+    },
+    {
+      "key": "reportContract",
+      "readOnly": true,
+      "help": ""
+    },
+    {
+      "key": "maxTransferBatches",
+      "readOnly": false,
+      "help": "La valeur par défaut limite une ouverture à 10 000 transferts. Le chargement s’arrête plus tôt dès que le rapport renvoie moins de 500 lignes."
+    }
+  ]
+}

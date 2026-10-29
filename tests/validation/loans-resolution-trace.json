@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "checks": {
+    "threeExplicitStages": true,
+    "proposalIsSimulation": true,
+    "justifiedByKohaValue": true,
+    "explicitUnlockAndConfirmation": true,
+    "rereadBeforeWrite": true,
+    "verifyAfterWrite": true,
+    "resultTrace": true,
+    "noExternalDependency": true
+  },
+  "scope": "Contrat de la page : constat, simulation motivée, écriture confirmée, relecture et bilan de session distincts."
+}

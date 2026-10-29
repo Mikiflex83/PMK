@@ -1,0 +1,29 @@
+{
+  "kind": "Real local Koha 25.11, native patron form, catalogue API and planning storage",
+  "rows": [
+    {
+      "name": "Planning widget mounts when visible and refreshes through the real Koha data engine",
+      "passed": true,
+      "evidence": {
+        "initialReads": 1,
+        "readsAfterRefresh": 2
+      }
+    },
+    {
+      "name": "Category simulation reads actual Koha member form without modifying values or submitting it",
+      "passed": true,
+      "evidence": {
+        "rows": 1,
+        "formUnchanged": true
+      }
+    },
+    {
+      "name": "Autocomplete uses actual Koha API results and settles loading after overlapping searches",
+      "passed": true,
+      "evidence": {
+        "suggestions": 8,
+        "pending": 0
+      }
+    }
+  ]
+}

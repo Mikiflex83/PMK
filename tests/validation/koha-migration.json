@@ -1,0 +1,157 @@
+{
+  "pluginVersion": "0.4.0",
+  "kind": "Dedicated real Koha 25.11 / MariaDB transition",
+  "rows": [
+    {
+      "name": "Native migration services and two accounts load",
+      "passed": true,
+      "evidence": {
+        "modules": 86
+      }
+    },
+    {
+      "name": "Private list profiles enforce server-side account ownership",
+      "passed": true,
+      "evidence": {
+        "outcomes": [
+          403,
+          403,
+          403
+        ],
+        "ids": [
+          "koha_54",
+          "p_cG1rdGVzdCBuYXRpdmUgMTc5Mjc3NzgxNjk4NQ",
+          "p_cG1rdGVzdCBuYXRpdmUgMTc5MjczODc2Njg3OQ",
+          "p_cG1rdGVzdCBuYXRpdmUgMTc5MjM5NjkxMDg0Ng",
+          "p_cG1rdGVzdCBuYXRpdmUgMTc5MjM5NjY2OTEzNA",
+          "p_cG1rdGVzdCBuYXRpdmUgMTc5MjM5NzI0MTA0Mw",
+          "p_cG1rdGVzdCBuYXRpdmUgMTc5MjM5NzUyNjMxOQ",
+          "p_cG1rdGVzdCBuYXRpdmUgMTc5MjU2NTEyNDI2Ng",
+          "p_cG1rdGVzdCBuYXRpdmUgMTc5MjU2NTM1ODcyNQ",
+          "p_cG1rdGVzdCBuYXRpdmUgMTc5MjU2OTQ2MTk3OA",
+          "p_cG1rdGVzdCBuYXRpdmUgMTc5MjUxOTcxNzA1Nw",
+          "p_cG1rdGVzdCBuYXRpdmUgMTc5MjUyMDYzMjk3OQ",
+          "p_cG1rdGVzdCBuYXRpdmUgMTc5MjUyNTY3NzIyMg",
+          "p_cG1rdGVzdCBuYXRpdmUgMTc5MzE4Mjk4MTc5OQ",
+          "p_cG1rdGVzdCBuYXRpdmUgMTc5MzIwMTI1MzcwNg"
+        ]
+      }
+    },
+    {
+      "name": "Account mode uses Koha session, never a selected historic name",
+      "passed": true,
+      "evidence": {
+        "profile": "koha_54",
+        "session": "54",
+        "config": "koha"
+      }
+    },
+    {
+      "name": "Migration snapshot and control refuse non administrators",
+      "passed": true,
+      "evidence": [
+        403,
+        403
+      ]
+    },
+    {
+      "name": "Tampered and partial archives are blocked before writes",
+      "passed": true,
+      "evidence": [
+        true,
+        true
+      ]
+    },
+    {
+      "name": "Global analysis is read-only and preserves array order",
+      "passed": true,
+      "evidence": {
+        "counts": {
+          "create": 1,
+          "identical": 0,
+          "configuration": 2
+        },
+        "merged": {
+          "rows": [
+            "mine",
+            "default"
+          ],
+          "custom": 42
+        }
+      }
+    },
+    {
+      "name": "Active runtime and missing backup block the global import",
+      "passed": true,
+      "evidence": [
+        "Enregistrez la sauvegarde du plugin avant import",
+        "Mettez le plugin en attente avant import"
+      ]
+    },
+    {
+      "name": "Pause, atomic configuration import and complete readback retain custom settings",
+      "passed": true,
+      "evidence": {
+        "r": {
+          "verified": true,
+          "sha256": "6c0827b14e31bb6e615483e2c1c84bbd7b05afc270c6b993c011f30cba6339a9",
+          "counts": {
+            "create": 1,
+            "identical": 0,
+            "configuration": 2
+          },
+          "activated": false
+        },
+        "enabled": false
+      }
+    },
+    {
+      "name": "A completed global import can be resumed without losing data",
+      "passed": true,
+      "evidence": {
+        "counts": {
+          "create": 0,
+          "identical": 1,
+          "configuration": 2
+        },
+        "verified": true
+      }
+    },
+    {
+      "name": "Different existing business data block replacement",
+      "passed": true,
+      "evidence": {
+        "conflicts": [
+          "taxonomy/migration_1793202102583/kept"
+        ],
+        "message": "Conflits à résoudre avant import"
+      }
+    },
+    {
+      "name": "A concurrent configuration write rejects the entire configuration batch",
+      "passed": true,
+      "evidence": {
+        "status": 409,
+        "exists": false
+      }
+    },
+    {
+      "name": "Fresh browser archive restores binary, dates, indexed keys and project text",
+      "passed": true,
+      "evidence": {
+        "text": "XSLT et inventaire",
+        "date": "2026-10-20T00:00:00.000Z",
+        "blob": "ABC"
+      }
+    },
+    {
+      "name": "Setup remains accessible with runtime paused and never starts the PMK modules",
+      "passed": true,
+      "evidence": {
+        "ready": true,
+        "modules": "undefined",
+        "ui": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "kind": "Documented and bounded PMK 0.4.0 compatibility matrix",
+  "rows": [
+    {
+      "name": "Koha 25.11",
+      "passed": true
+    },
+    {
+      "name": "MariaDB 10.11",
+      "passed": true
+    },
+    {
+      "name": "UNIMARC",
+      "passed": true
+    },
+    {
+      "name": "MARC21",
+      "passed": true
+    },
+    {
+      "name": "Chromium",
+      "passed": true
+    },
+    {
+      "name": "Scanner et caméra",
+      "passed": true
+    },
+    {
+      "name": "NEDAP / Libnet",
+      "passed": true
+    },
+    {
+      "name": "Electre",
+      "passed": true
+    },
+    {
+      "name": "France Publications",
+      "passed": true
+    },
+    {
+      "name": "aucun SDK ni service Firebase requis",
+      "passed": true
+    },
+    {
+      "name": "Aucun export de production Dracénie",
+      "passed": true
+    }
+  ]
+}

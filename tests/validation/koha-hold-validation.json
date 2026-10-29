@@ -1,0 +1,13 @@
+{
+  "kind": "Real local Koha form validation without submission",
+  "rows": [
+    {
+      "name": "Native Koha validation rejects a missing pickup location and PMK restores the button",
+      "passed": true,
+      "evidence": {
+        "alerts": 1,
+        "reservationWrites": 0
+      }
+    }
+  ]
+}

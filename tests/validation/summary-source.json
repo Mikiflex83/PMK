@@ -1,0 +1,5 @@
+{
+  "passed": [
+    "Summary source: explicit absence and failure stay distinct; custom source is readable on mobile and restored on disable"
+  ]
+}

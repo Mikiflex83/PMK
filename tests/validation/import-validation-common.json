@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "checks": {
+    "unknownFieldsPreserved": true,
+    "malformedJsonRejected": true,
+    "binaryRejected": true,
+    "sizeBounded": true,
+    "prototypePollutionRejected": true,
+    "sameOriginUrlAccepted": true,
+    "remoteUrlRejected": true,
+    "activeHtmlRejected": true,
+    "loginHtmlRejected": true,
+    "safeHtmlAccepted": true,
+    "pageSettingsUsesValidator": true,
+    "migrationUsesValidator": true,
+    "nativeDataUsesValidator": true
+  },
+  "scope": "Validation commune des imports texte/JSON, URL Koha et HTML passif ; champs inconnus valides conservés."
+}

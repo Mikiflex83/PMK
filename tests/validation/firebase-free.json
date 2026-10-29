@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "pluginVersion": "0.4.0",
+  "scriptsScanned": 153,
+  "serviceCalls": 0,
+  "externalSdkImports": 0,
+  "authoritiesLearningRemoved": true,
+  "retiredSharingControlsRemoved": true,
+  "firebaseEmulatorRequired": false
+}

@@ -1,0 +1,11 @@
+{
+  "passed": [
+    "Transferts : une ligne par transfert actif, comptes non multipliés et pagination",
+    "Périodiques : agrégats et dates du contrat, sans multiplication de fascicules",
+    "Restauration codes-barres : liste multiligne et conflit avec un exemplaire existant",
+    "Restauration dates : bornes inclusives sur la date de suppression",
+    "Signatures : alias bibliographiques et pagination",
+    "Retards génériques : un dossier par lecteur, montant non multiplié, périmètre de site"
+  ],
+  "engine": "SQLite fixtures with explicit MariaDB syntax adaptations; not a MariaDB production validation"
+}

@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "checks": {
+    "publicationThresholdConfig": true,
+    "publicationRequiresActiveFutureSubscription": true,
+    "publicationIsHypothesis": true,
+    "reportReadTimestamp": true,
+    "reportProvidedTimestamp": true,
+    "freshnessThresholdConfig": true,
+    "freshnessVisible": true,
+    "readFallbackExplained": true,
+    "noExternalDependency": true
+  },
+  "scope": "Contrat de la page : seuil d’interruption probable et fraîcheur fondée sur la date source ou, à défaut, la lecture Koha."
+}

@@ -1,0 +1,56 @@
+{
+  "pluginVersion": "0.4.0",
+  "kind": "Real dedicated Koha 25.11 bounded universality",
+  "rows": [
+    {
+      "name": "Native advanced search is useful without local series or099 indexes",
+      "passed": true,
+      "evidence": {
+        "hasNative": true,
+        "hasCustom": false
+      }
+    },
+    {
+      "name": "Special indexes can be mapped through configuration alone",
+      "passed": true,
+      "evidence": [
+        "my-series",
+        "my-domain",
+        "my-subdomain",
+        "my-theme",
+        "my-subject",
+        "my-series",
+        "my-domain",
+        "my-subdomain",
+        "my-theme",
+        "my-subject"
+      ]
+    },
+    {
+      "name": "Changed MARC fields use109; the historic122 does not run a second taxonomy query",
+      "passed": true,
+      "evidence": {
+        "mode": "generic",
+        "level": "695",
+        "fields": 1
+      }
+    },
+    {
+      "name": "Authorities expose installation settings and copyable SQL without changing engines",
+      "passed": true,
+      "evidence": {
+        "configured": true,
+        "sqlCopied": true
+      }
+    },
+    {
+      "name": "Global PMK off stops historical interface scripts after reload",
+      "passed": true,
+      "evidence": {
+        "legacy": false,
+        "panel": false,
+        "assistant": false
+      }
+    }
+  ]
+}

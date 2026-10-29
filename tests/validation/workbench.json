@@ -1,0 +1,29 @@
+{
+  "kind": "Browser fixtures, common configuration review and workflow contracts",
+  "rows": [
+    {
+      "name": "Diagnostics stay read-only and distinguish other pages, disabled rules, overlaps and invalid selectors",
+      "passed": true
+    },
+    {
+      "name": "URL review rejects unsafe schemes and credentials and masks confidential query values",
+      "passed": true
+    },
+    {
+      "name": "Shared confirmation is labelled, traps keyboard focus and restores the opener",
+      "passed": true
+    },
+    {
+      "name": "Targeted reset and undo change only the draft and retain unknown fields and customized arrays",
+      "passed": true
+    },
+    {
+      "name": "Sequential batch resumes failures without replaying successes and rejects duplicate identities before writes",
+      "passed": true
+    },
+    {
+      "name": "Batch cancellation stops before the next operation",
+      "passed": true
+    }
+  ]
+}

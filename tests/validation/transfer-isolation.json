@@ -1,0 +1,21 @@
+{
+  "kind": "Browser fixtures, independent tabs sharing one origin",
+  "rows": [
+    {
+      "name": "Two tabs retain independent barcodes even when their navigation overlaps",
+      "passed": true
+    },
+    {
+      "name": "Payload is consumed once and legacy shared storage is ignored",
+      "passed": true
+    },
+    {
+      "name": "Expired and future-dated handoffs are rejected",
+      "passed": true
+    },
+    {
+      "name": "Manual input is preserved without form submission",
+      "passed": true
+    }
+  ]
+}

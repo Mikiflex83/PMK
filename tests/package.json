@@ -1,0 +1,34 @@
+{
+  "name": "pimpmykoha-regression-tests",
+  "private": true,
+  "scripts": {
+    "test": "node regression.cjs",
+    "audit": "node audit.cjs",
+    "pages": "node pages-access.cjs",
+    "pages:universal": "node pages-universal.cjs",
+    "sql:pages": "python3 sql-pages.py",
+    "plugin:storage": "node plugin-storage.cjs",
+    "plugin:koha": "node koha-plugin.cjs",
+    "sql:koha": "python3 koha-sql.py",
+    "plugin:routes": "node koha-routes.cjs",
+    "plugin:configuration": "node koha-configuration.cjs",
+    "plugin:business": "node koha-business.cjs",
+    "plugin:maintenance": "node koha-maintenance.cjs",
+    "plugin:shared": "node koha-shared-tools.cjs",
+    "plugin:circulation": "node koha-circulation.cjs",
+    "plugin:publications": "node koha-publications.cjs",
+    "plugin:pages": "node koha-internal-pages.cjs",
+    "plugin:restoration": "node koha-restoration.cjs",
+    "plugin:lost-checkin": "node koha-lost-checkin.cjs",
+    "plugin:checkout-status": "node koha-checkout-status.cjs",
+    "plugin:native": "node koha-native-data.cjs",
+    "plugin:engines": "node koha-native-engines.cjs",
+    "firebase:free": "python3 firebase-free.py",
+    "plugin:installation": "node koha-installation.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1",
+    "jquery": "3.7.1",
+    "acorn": "8.15.0"
+  }
+}

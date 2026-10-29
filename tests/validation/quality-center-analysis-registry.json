@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "checks": {
+    "commonRegistry": true,
+    "metadataOnly": true,
+    "boundedOutcomes": true,
+    "centerReadsRegistry": true,
+    "centerShowsDates": true,
+    "centerShowsPrerequisites": true,
+    "noSecondEngine": true,
+    "authorityUnchanged": true,
+    "analysisPagesConnected": true
+  },
+  "scope": "Registre commun limité aux métadonnées, synthèse des dates et prérequis, sans second moteur métier."
+}

@@ -1,0 +1,1516 @@
+{
+  "version": "0.4.0",
+  "baseCommit": "4dda5050f29f74cbe0a52ed546b51bee6d442f3b",
+  "constraints": [
+    "Défauts Dracénie et réglages ajoutés conservés",
+    "Pas de refonte des moteurs Autorités",
+    "Design et philosophie Bibliographies conservés",
+    "Pas de Firebase à l’exécution",
+    "Pas de données de production ni services réels prétendument testés"
+  ],
+  "rows": [
+    {
+      "id": "table-labels",
+      "kind": "module",
+      "name": "Libellés et éléments d’interface",
+      "requested": "Aperçu avant/après, conflits de règles et cibles sans effet.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/final-universality.json",
+        "tests/validation/workbench.json"
+      ],
+      "maturityCriterion": "Aperçu avant/après, conflits de règles et cibles sans effet. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Aperçu avant/après réversible ; diagnostic des cibles absentes et des sélecteurs différents visant un même élément."
+    },
+    {
+      "id": "detail-fourth-cover",
+      "kind": "module",
+      "name": "Résumé enrichi / 4ème de couverture",
+      "requested": "Distinguer résumé absent/source indisponible, lecture longue mobile.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/summary-source.json"
+      ],
+      "maturityCriterion": "Distinguer résumé absent/source indisponible, lecture longue mobile. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "result": "États explicites du fournisseur, source configurable, contenu long mobile et restauration du DOM à la désactivation.",
+      "remaining": []
+    },
+    {
+      "id": "external-links",
+      "kind": "module",
+      "name": "Liens externes",
+      "requested": "Destination et paramètres transmis, aperçu du lien final.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/final-universality.json"
+      ],
+      "maturityCriterion": "Destination et paramètres transmis, aperçu du lien final. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Destination et paramètres réels décrits sur les liens ; paramètres sensibles masqués et source native conservée."
+    },
+    {
+      "id": "moredetail-layout",
+      "kind": "module",
+      "name": "Présentation des détails des exemplaires",
+      "requested": "Aperçu réel, champs absents, ordre de lecture accessible.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/layout-previews.json",
+        "tests/validation/regression-040.json"
+      ],
+      "maturityCriterion": "Aperçu réel, champs absents, ordre de lecture accessible. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Aperçu sur structure personnalisée, champs absents diagnostiqués, lecture et parcours clavier alignés sur le DOM ; saisies et événements conservés à l’annulation."
+    },
+    {
+      "id": "waiting-holds-age",
+      "kind": "module",
+      "name": "Ancienneté des réservations",
+      "requested": "Compatibilité vers dates relatives, pas de second moteur.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/regression-040.json"
+      ],
+      "maturityCriterion": "Compatibilité vers dates relatives, pas de second moteur. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "result": "Réglages historiques fusionnés dans les dates relatives, sans second moteur et sans écriture des anciens documents.",
+      "remaining": []
+    },
+    {
+      "id": "patron-message-templates",
+      "kind": "module",
+      "name": "Ajouter des listes de valeurs prédéfinies pour le remplissage automatique d’un champ",
+      "requested": "Recherche listes longues, doublons, effet sur saisie existante.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/final-universality.json"
+      ],
+      "maturityCriterion": "Recherche listes longues, doublons, effet sur saisie existante. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Recherche sans accents dans les listes longues, doublons signalés sans suppression et effet ajout/remplacement expliqué."
+    },
+    {
+      "id": "element-formatting",
+      "kind": "module",
+      "name": "Mise en forme des éléments",
+      "requested": "Contrastes et styles contradictoires.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/final-universality.json",
+        "tests/validation/workbench.json"
+      ],
+      "maturityCriterion": "Contrastes et styles contradictoires. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Contrastes et chevauchements signalés ; annulation sans recréer le HTML ni perdre les événements et contenus natifs."
+    },
+    {
+      "id": "contextual-search-links",
+      "kind": "module",
+      "name": "Liens dynamiques",
+      "requested": "Recherches historiques communes, accents et encodage.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/final-universality.json"
+      ],
+      "maturityCriterion": "Recherches historiques communes, accents et encodage. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Encodage des recherches mutualisé ; accents, caractères mixtes et paramètres répétés conservés."
+    },
+    {
+      "id": "bibliographic-markers",
+      "kind": "module",
+      "name": "Icônes et badges bibliographiques",
+      "requested": "Alternative textuelle, explication du badge.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/module-improvements.json"
+      ],
+      "maturityCriterion": "Alternative textuelle, explication du badge. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Texte déclencheur expliqué et alternative accessible ; libellé visible si l’image échoue."
+    },
+    {
+      "id": "transfer-button-holdings",
+      "kind": "module",
+      "name": "Transfert rapide d'un exemplaire",
+      "requested": "Préremplissage isolé par onglet.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/transfer-isolation.json"
+      ],
+      "maturityCriterion": "Préremplissage isolé par onglet. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "result": "Préremplissage par onglet, consommation unique, expiration et saisie manuelle conservée.",
+      "remaining": []
+    },
+    {
+      "id": "serials-tracking",
+      "kind": "module",
+      "name": "Gestion des périodiques",
+      "requested": "Aperçu automatismes, champs protégés, bilan partiel.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/koha-serials-preview.json"
+      ],
+      "maturityCriterion": "Aperçu automatismes, champs protégés, bilan partiel. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Aperçu en lecture seule des automatismes, des champs protégés et de leur effet ; cibles absentes signalées et bilan partiel, vérifiés sur la page de bulletinage Koha locale sans modifier ses champs."
+    },
+    {
+      "id": "batchmod-empty-field-warning",
+      "kind": "module",
+      "name": "Alerte avant vidage d'un champ",
+      "requested": "Récapitulatif des champs vidés, lignes dynamiques.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/module-improvements.json"
+      ],
+      "maturityCriterion": "Récapitulatif des champs vidés, lignes dynamiques. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Confirmation récapitulant les champs à vider, y compris les lignes ajoutées ; annulation sans modification de saisie."
+    },
+    {
+      "id": "holdings-table-presentation",
+      "kind": "module",
+      "name": "Présentation du tableau des exemplaires",
+      "requested": "Colonnes communes, couleurs et repères textuels.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/completion-configurations.json",
+        "tests/validation/layout-previews.json"
+      ],
+      "maturityCriterion": "Colonnes communes, couleurs et repères textuels. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Priorité commune et déterministe des libellés, indépendante du chargement ; aperçu immédiat et réversible, couleurs personnalisées et repères textuels natifs conservés."
+    },
+    {
+      "id": "z3950-workspace",
+      "kind": "module",
+      "name": "Confort de recherche Z39.50 / SRU",
+      "requested": "Dimensions facultatives, absence de résultat/serveur indisponible.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/completion-configurations.json"
+      ],
+      "maturityCriterion": "Dimensions facultatives, absence de résultat/serveur indisponible. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Redimensionnement facultatif ; saisies, messages natifs sans résultat et erreurs des serveurs conservés sans interception."
+    },
+    {
+      "id": "catalogue-search-behavior",
+      "kind": "module",
+      "name": "Barre de recherche catalogue",
+      "requested": "Type de recherche reconnu et correction des ambiguïtés.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/search-claims.json"
+      ],
+      "maturityCriterion": "Type de recherche reconnu et correction des ambiguïtés. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Test des profils concurrents avec explication des actions différentes ; priorité Dracénie conservée par défaut et désactivable pour appliquer strictement les profils locaux."
+    },
+    {
+      "id": "contextual-tooltips",
+      "kind": "module",
+      "name": "Info-bulles contextuelles",
+      "requested": "Clavier, toucher, éviter le masquage de la cible.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/tooltips.json"
+      ],
+      "maturityCriterion": "Clavier, toucher, éviter le masquage de la cible. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Lecture longue défilante hors du champ ciblé, clavier et toucher, retour du focus, descriptions natives et saisie conservées."
+    },
+    {
+      "id": "phone-number-formatting",
+      "kind": "module",
+      "name": "Formatage des numéros de téléphone",
+      "requested": "Téléphones atypiques, collage, extensions, conservation ambiguïtés.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/module-improvements.json"
+      ],
+      "maturityCriterion": "Téléphones atypiques, collage, extensions, conservation ambiguïtés. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "result": "Numéros atypiques et internationaux conservés ; les champs de saisie et liens tel: restent intacts.",
+      "remaining": []
+    },
+    {
+      "id": "patron-astrological-sign",
+      "kind": "module",
+      "name": "Signe astrologique du lecteur",
+      "requested": "Tests limites astrologie et dates invalides, pas d’extension.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/module-improvements.json"
+      ],
+      "maturityCriterion": "Tests limites astrologie et dates invalides, pas d’extension. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "result": "Limites des douze signes, année bissextile et dates impossibles vérifiées ; périmètre inchangé.",
+      "remaining": []
+    },
+    {
+      "id": "multiline-list-counter",
+      "kind": "module",
+      "name": "Compteur de listes",
+      "requested": "Rattachement au champ, listes longues, comparaison doublons.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/module-improvements.json"
+      ],
+      "maturityCriterion": "Rattachement au champ, listes longues, comparaison doublons. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Comparaison des doublons limitée à 100 valeurs affichées, comptage complet sur 24 004 lignes et saisie intacte."
+    },
+    {
+      "id": "lost-found-checkin-status",
+      "kind": "module",
+      "name": "Contrôle du statut au retour d’un document perdu",
+      "requested": "Trace de décision, retours successifs et concurrence.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/koha-lost-checkin.json",
+        "tests/validation/lost-found-concurrency.json"
+      ],
+      "maturityCriterion": "Trace de décision, retours successifs et concurrence. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Retour natif Koha vérifié avant le choix agent ; trace lisible de la décision, retours identiques successifs et verrou contre deux corrections simultanées du même exemplaire."
+    },
+    {
+      "id": "search-facets",
+      "kind": "module",
+      "name": "Facettes de recherche",
+      "requested": "Retour navigateur, clavier, mobile.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/facets-navigation.json"
+      ],
+      "maturityCriterion": "Retour navigateur, clavier, mobile. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Les changements en attente s’annulent avec Échap, le retour navigateur reconstruit l’état depuis l’URL, la restauration de page réapplique le filtre local et les commandes restent contenues sur mobile."
+    },
+    {
+      "id": "guided-reports-tools",
+      "kind": "module",
+      "name": "Outils des rapports guidés",
+      "requested": "ID du préréglage historique configurable, résultats paginés.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/completion-configurations.json"
+      ],
+      "maturityCriterion": "ID du préréglage historique configurable, résultats paginés. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Identifiant du préréglage configurable, valeur historique 5191 conservée ; filtres et colonnes repris après changement de page, portée limitée aux lignes chargées affichée."
+    },
+    {
+      "id": "detail-bibliographic-groups",
+      "kind": "module",
+      "name": "Organisation des informations de la notice",
+      "requested": "Aperçu regroupements, cibles absentes ou concurrentes.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/layout-previews.json"
+      ],
+      "maturityCriterion": "Aperçu regroupements, cibles absentes ou concurrentes. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Aperçu réversible avec ordre natif exact, champs saisis et événements conservés ; cibles absentes, invalides ou imbriquées diagnostiquées sans écriture."
+    },
+    {
+      "id": "callnumber-progressive-search",
+      "kind": "module",
+      "name": "Recherche progressive par cote",
+      "requested": "Aperçu découpage/requête, cotes mixtes et caractères spéciaux.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/module-improvements.json"
+      ],
+      "maturityCriterion": "Aperçu découpage/requête, cotes mixtes et caractères spéciaux. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Cote source et requêtes Koha visibles ; accents, caractères mixtes, clavier et lien natif conservés."
+    },
+    {
+      "id": "serials-claims-filtering",
+      "kind": "module",
+      "name": "Filtres des réclamations de périodiques",
+      "requested": "Diagnostic colonne absente, filtres après rafraîchissement.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/search-claims.json"
+      ],
+      "maturityCriterion": "Diagnostic colonne absente, filtres après rafraîchissement. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Diagnostic de colonne absente ou repérée par sa position ; suspension sûre du filtrage et reprise après remplacement des lignes, des colonnes ou du tableau, sans doublon DataTables."
+    },
+    {
+      "id": "070",
+      "kind": "module",
+      "name": "Autocomplétion des adresses",
+      "requested": "Données envoyées au fournisseur, lenteur et réponses ambiguës.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/address-provider.json"
+      ],
+      "maturityCriterion": "Données envoyées au fournisseur, lenteur et réponses ambiguës. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Paramètres réellement envoyés documentés et limités à la saisie d’adresse ; fournisseur et latence visibles, communes ambiguës signalées et relais compatible configurable."
+    },
+    {
+      "id": "patron-age-display",
+      "kind": "module",
+      "name": "Affichage de l'âge du lecteur",
+      "requested": "Compatibilité âge vers dates relatives.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/regression-040.json",
+        "tests/validation/dates-common.json"
+      ],
+      "maturityCriterion": "Compatibilité âge vers dates relatives. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "result": "Anciennes options conservées dans les âges et dates relatives ; analyse de date commune.",
+      "remaining": []
+    },
+    {
+      "id": "relative-dates",
+      "kind": "module",
+      "name": "Âges et dates relatives",
+      "requested": "Dates communes, bissextiles, heures et dates ambiguës.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/dates-common.json",
+        "tests/validation/regression-040.json"
+      ],
+      "maturityCriterion": "Dates communes, bissextiles, heures et dates ambiguës. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "result": "Ordre Koha, dates impossibles, ambiguïtés, fuseaux et changements d’heure testés.",
+      "remaining": []
+    },
+    {
+      "id": "efficiency-indicators",
+      "kind": "module",
+      "name": "Indicateurs d’efficacité",
+      "requested": "Calcul et limites, couverture des données.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/final-universality.json"
+      ],
+      "maturityCriterion": "Calcul et limites, couverture des données. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Formule et sources expliquées ; pagination sans total corrigée, calcul partiel indiqué et données disponibles conservées après erreur."
+    },
+    {
+      "id": "scroll-buttons",
+      "kind": "module",
+      "name": "Navigation rapide — haut / bas de page",
+      "requested": "Clavier, mobile, réduction animations.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/module-improvements.json"
+      ],
+      "maturityCriterion": "Clavier, mobile, réduction animations. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "result": "Clavier, variante mobile configurée, libellés accessibles et réduction des animations vérifiés.",
+      "remaining": []
+    },
+    {
+      "id": "guided-report-print",
+      "kind": "module",
+      "name": "Impression des résultats de rapports",
+      "requested": "Coupures impression, en-têtes répétés, portée partielle.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/final-universality.json"
+      ],
+      "maturityCriterion": "Coupures impression, en-têtes répétés, portée partielle. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "En-têtes répétés et lignes non coupées ; portée limitée aux lignes chargées explicitée ; contenu actif retiré de la copie imprimable."
+    },
+    {
+      "id": "patron-overdues-print",
+      "kind": "module",
+      "name": "Impression des retards / garant",
+      "requested": "Données personnelles imprimées, destinataire et aperçu.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/overdues-print-privacy.json"
+      ],
+      "maturityCriterion": "Données personnelles imprimées, destinataire et aperçu. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Le destinataire et les catégories de données personnelles imprimées sont explicités dans la configuration et dans l’aperçu WYSIWYG ; le numéro interne n’est annoncé que si le modèle l’utilise."
+    },
+    {
+      "id": "cataloguing-tree-assistant",
+      "kind": "module",
+      "name": "Assistant domaine / arborescence",
+      "requested": "Relations incohérentes, valeurs orphelines, raison du filtrage.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/cataloguing-tree-diagnostics.json"
+      ],
+      "maturityCriterion": "Relations incohérentes, valeurs orphelines, raison du filtrage. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Les relations incohérentes, sources vides et valeurs orphelines sont diagnostiquées sans modifier le référentiel. Lorsqu’un choix ne produit aucun enfant, l’assistant indique la relation manquante qui motive le filtrage."
+    },
+    {
+      "id": "147-home-submenus",
+      "kind": "module",
+      "name": "Menus de l’accueil",
+      "requested": "Menus communs clavier/toucher, destinations indisponibles.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/menu-common-engine.json"
+      ],
+      "maturityCriterion": "Menus communs clavier/toucher, destinations indisponibles. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Le module 147 utilise le moteur partagé pmk.menus : navigation clavier et toucher vérifiée, actions indisponibles et favoris dont la destination a disparu affichés sans lien actif."
+    },
+    {
+      "id": "patron-renewal-verification",
+      "kind": "module",
+      "name": "Vérification avant renouvellement lecteur",
+      "requested": "Synthèse des vérifications, information/avertissement/blocage.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/patron-renewal-levels.json"
+      ],
+      "maturityCriterion": "Synthèse des vérifications, information/avertissement/blocage. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Synthèse explicite des contrôles ; informations en lecture seule, avertissements conseillés et blocages obligatoires distingués avant l’action native Koha."
+    },
+    {
+      "id": "responsive-tables",
+      "kind": "module",
+      "name": "Tableaux d’exemplaires sur mobile",
+      "requested": "Colonnes communes, hiérarchie mobile, accès actions.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/responsive-table-priorities.json"
+      ],
+      "maturityCriterion": "Colonnes communes, hiérarchie mobile, accès actions. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Colonnes communes prioritaires et colonnes d’actions configurables ; actions accessibles dans les fiches mobiles, colonnes masquées respectées et tableau natif restauré sur écran large."
+    },
+    {
+      "id": "copy-actions",
+      "kind": "module",
+      "name": "Actions de copie",
+      "requested": "Refus presse-papiers, annonces accessibles, contenu long.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/module-improvements.json",
+        "tests/validation/regression-040.json"
+      ],
+      "maturityCriterion": "Refus presse-papiers, annonces accessibles, contenu long. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "result": "Refus annoncé, absence de faux succès, retour du focus après le secours, toast accessible sans HTML exécuté.",
+      "remaining": []
+    },
+    {
+      "id": "history-row-highlights",
+      "kind": "module",
+      "name": "Repères de l’historique des prêts",
+      "requested": "Légende, règle déclenchée, limites périodes.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/history-boundaries.json"
+      ],
+      "maturityCriterion": "Légende, règle déclenchée, limites périodes. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Légende des règles actives et règle déclenchée sur chaque repère ; dates limites exactes, retard d’un jour, prêt en cours et chronologie impossible vérifiés à date et fuseau fixes."
+    },
+    {
+      "id": "loan-history-timeline",
+      "kind": "module",
+      "name": "Historique des prêts et des retours",
+      "requested": "Historique complet/partiel, provenance, dates communes.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/module-improvements.json",
+        "tests/validation/koha-presentation.json"
+      ],
+      "maturityCriterion": "Historique complet/partiel, provenance, dates communes. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "result": "Périmètre du tableau et sources explicites, API partielle conservée, intitulés natifs Koha reconnus et dates communes.",
+      "remaining": []
+    },
+    {
+      "id": "element-placement",
+      "kind": "module",
+      "name": "Placement d'éléments",
+      "requested": "Aperçu réversible, placements contradictoires, cibles absentes.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/final-universality.json"
+      ],
+      "maturityCriterion": "Aperçu réversible, placements contradictoires, cibles absentes. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Déplacement des nœuds originaux, aperçu annulable et refus des cycles parent/enfant ; cibles absentes diagnostiquées."
+    },
+    {
+      "id": "date-display-formatting",
+      "kind": "module",
+      "name": "Formatage des dates affichées",
+      "requested": "Conversions communes, dates ambiguës explicites.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/dates-common.json"
+      ],
+      "maturityCriterion": "Conversions communes, dates ambiguës explicites. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "result": "Conversion commune avec les dates relatives ; ambiguïtés signalées et dates impossibles refusées.",
+      "remaining": []
+    },
+    {
+      "id": "input-rules",
+      "kind": "module",
+      "name": "Règles de saisie",
+      "requested": "Transformations expliquées, collage, mobile, caractères composés.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/final-universality.json"
+      ],
+      "maturityCriterion": "Transformations expliquées, collage, mobile, caractères composés. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Composition respectée jusqu’à validation, collage filtré avec explication, accents valides conservés et position du curseur corrigée après un emoji."
+    },
+    {
+      "id": "custom-navigation",
+      "kind": "module",
+      "name": "Navigation personnalisée",
+      "requested": "Boucles et destinations invalides, paramètres transmis.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/final-universality.json"
+      ],
+      "maturityCriterion": "Boucles et destinations invalides, paramètres transmis. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Destinations actives et adresses avec identifiants refusées ; paramètres visibles et description native restaurable. Le module remplace des liens, sans redirection automatique."
+    },
+    {
+      "id": "patron-page-utils",
+      "kind": "module",
+      "name": "Automatismes de saisie adhérent",
+      "requested": "Aperçu champs, priorité saisie manuelle et automatismes.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/patron-automation-preview.json"
+      ],
+      "maturityCriterion": "Aperçu champs, priorité saisie manuelle et automatismes. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Aperçu en lecture seule des cibles et effets ; priorité des valeurs manuelles expliquée, aucun champ Koha modifié et proposition de mot de passe masquée."
+    },
+    {
+      "id": "mascot-frogs",
+      "kind": "module",
+      "name": "Mascotte — Grenouilles",
+      "requested": "Réduction animations/son, médias différés.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/mascot-accessibility.json"
+      ],
+      "maturityCriterion": "Réduction animations/son, médias différés. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Images différées, son uniquement sur action explicite au clic ou au clavier ; une seule lecture et arrêt/masquage selon la préférence de réduction des animations, réglage dérogeable."
+    },
+    {
+      "id": "mascot-agents",
+      "kind": "module",
+      "name": "Mascotte — Agents",
+      "requested": "Visibilité noms/photos, masquage individuel, images légères.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/mascot-accessibility.json"
+      ],
+      "maturityCriterion": "Visibilité noms/photos, masquage individuel, images légères. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Noms masquables aussi dans le texte accessible, désactivation individuelle des images et chargement différé ; médias personnels conservés."
+    },
+    {
+      "id": "personal-lists-manager",
+      "kind": "module",
+      "name": "Listes de travail",
+      "requested": "Modes partagé/privé visibles, attribution profils historiques.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/personal-lists-ownership.json"
+      ],
+      "maturityCriterion": "Modes partagé/privé visibles, attribution profils historiques. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Le panneau affiche explicitement le mode partagé par profil historique ou le mode privé lié au compte Koha ; l’état public expose la propriété et l’outil de migration attribue une copie sans supprimer le profil historique."
+    },
+    {
+      "id": "barcode-highlights",
+      "kind": "module",
+      "name": "Repérage des codes-barres",
+      "requested": "Mémorisation claire, faux codes-barres.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/barcode-memory.json"
+      ],
+      "maturityCriterion": "Mémorisation claire, faux codes-barres. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Provenance et durée de la mémoire locale visibles, effacement depuis PMK, anciennes entrées expirées et codes inclus dans un identifiant plus long ignorés."
+    },
+    {
+      "id": "recent-history",
+      "kind": "module",
+      "name": "Historique récent",
+      "requested": "Effacement sélectif, pages exclues, stockage local explicite.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/module-improvements.json"
+      ],
+      "maturityCriterion": "Effacement sélectif, pages exclues, stockage local explicite. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "result": "Exclusion de pages, effacement sélectif et stockage local explicite ; entrées personnelles préservées.",
+      "remaining": []
+    },
+    {
+      "id": "advanced-search-sidebar",
+      "kind": "module",
+      "name": "Recherche avancée",
+      "requested": "Aperçu requête, index configurés, ET/OU lisibles.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/advanced-search-query.json"
+      ],
+      "maturityCriterion": "Aperçu requête, index configurés, ET/OU lisibles. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Index supplémentaires configurables et invalides refusés ; résumé ET/OU lisible et aperçu exact des paramètres envoyés à search.pl."
+    },
+    {
+      "id": "new-release-indicators",
+      "kind": "module",
+      "name": "Indicateurs de nouveauté",
+      "requested": "Date source du badge, absence/ancienneté.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/module-improvements.json"
+      ],
+      "maturityCriterion": "Date source du badge, absence/ancienneté. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Date d’acquisition source visible ; dates absentes, futures, invalides ou anciennes sans faux badge."
+    },
+    {
+      "id": "cataloging-6xx-suggestions",
+      "kind": "module",
+      "name": "Aide à l’indexation 6XX",
+      "requested": "Origine suggestions, variantes et doublons sans fusion.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/cataloging-6xx-provenance.json"
+      ],
+      "maturityCriterion": "Origine suggestions, variantes et doublons sans fusion. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Chaque suggestion conserve ses sources Koha/manuelles et toutes ses variantes. Les doublons sont comptés et expliqués sans modifier ni fusionner les listes sources ; la priorité manuelle historique reste appliquée à l’affichage."
+    },
+    {
+      "id": "musicbrainz-coverart",
+      "kind": "module",
+      "name": "Jaquettes musicales — MusicBrainz",
+      "requested": "Provenance et correspondance jaquette, rejet local, nouvelles tentatives.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/musicbrainz-provenance.json"
+      ],
+      "maturityCriterion": "Provenance et correspondance jaquette, rejet local, nouvelles tentatives. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Provenance Cover Art Archive, critère de correspondance, score et identifiant release visibles ; nouvelle tentative après absence ou erreur, et rejet local persistant empêchant de reproposer la correspondance."
+    },
+    {
+      "id": "log-viewer",
+      "kind": "module",
+      "name": "Journal des modifications Koha",
+      "requested": "Différence avant/après, champs modifiés, données absentes.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/log-diff-summary.json"
+      ],
+      "maturityCriterion": "Différence avant/après, champs modifiés, données absentes. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "La différence native Koha reste intacte ; un résumé nomme les champs réellement modifiés et une mention explicite indique les entrées de modification pour lesquelles Koha ne fournit aucune donnée avant/après."
+    },
+    {
+      "id": "item-template-buttons",
+      "kind": "module",
+      "name": "Boutons modèles exemplaires",
+      "requested": "Aperçu champs remplis/remplacés, valeurs invalides.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/item-template-preview.json"
+      ],
+      "maturityCriterion": "Aperçu champs remplis/remplacés, valeurs invalides. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Aperçu avant application de chaque champ avec valeur actuelle et valeur proposée ; champs absents et valeurs indisponibles dans les listes Koha signalés avant toute modification, annulation sans altérer le formulaire."
+    },
+    {
+      "id": "detail-reservations-summary-style",
+      "kind": "module",
+      "name": "Mise en forme conditionnelle — Réservations et listes",
+      "requested": "Simulation condition, conflits, alternative aux couleurs.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/detail-reservations-simulation.json"
+      ],
+      "maturityCriterion": "Simulation condition, conflits, alternative aux couleurs. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "La configuration simule en lecture seule chaque condition et signale les règles concurrentes. Un repère textuel configurable accompagne la couleur ; les éléments Koha et leur ordre natif sont restaurés à la désactivation."
+    },
+    {
+      "id": "item-entry-assistant",
+      "kind": "module",
+      "name": "Assistant de saisie des exemplaires",
+      "requested": "Dépendances champs, mappings MARC/valeurs autorisées.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/item-entry-mappings.json"
+      ],
+      "maturityCriterion": "Dépendances champs, mappings MARC/valeurs autorisées. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Les dépendances entre champs sont configurables et appliquées dans le panneau. Un diagnostic en lecture seule relie chaque cible à son mapping MARC, sa source et sa catégorie de valeurs autorisées, et signale cibles, VA ou dépendances invalides."
+    },
+    {
+      "id": "internal-share",
+      "kind": "module",
+      "name": "Partage interne",
+      "requested": "Destinataires et durée, envoyé/disponible/consulté.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/internal-share-states.json"
+      ],
+      "maturityCriterion": "Destinataires et durée, envoyé/disponible/consulté. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Destinataire et durée restante visibles ; états envoyé, disponible et consulté distincts, accusé de consultation enregistré au premier clic du destinataire. La configuration indique le stockage exclusif dans l’API native Koha."
+    },
+    {
+      "id": "search-autocomplete-performance",
+      "kind": "module",
+      "name": "Autocomplétion Recherche catalogue",
+      "requested": "Réponses désordonnées, clavier, provenance suggestions.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/autocomplete-responses.json",
+        "tests/validation/koha-completion.json"
+      ],
+      "maturityCriterion": "Réponses désordonnées, clavier, provenance suggestions. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Réponses obsolètes ignorées, compteur de chargement libéré, provenance catalogue/code-barres visible et enrichissement accessible au clavier ; lecture de l’API Koha réelle vérifiée."
+    },
+    {
+      "id": "renewal-enhancements",
+      "kind": "module",
+      "name": "Disponibilité et motifs de renouvellement",
+      "requested": "Motifs reliés à Koha, restrictions cumulées.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/renewal-cumulative-reasons.json"
+      ],
+      "maturityCriterion": "Motifs reliés à Koha, restrictions cumulées. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Les codes de blocage natifs Koha sont reliés à des libellés compréhensibles et configurables ; plusieurs restrictions simultanées restent toutes visibles, avec les codes sources disponibles dans l’infobulle."
+    },
+    {
+      "id": "patron-message-chronology",
+      "kind": "module",
+      "name": "Chronologie des messages lecteur",
+      "requested": "Dates absentes/identiques, ordre stable après ajout.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/module-improvements.json"
+      ],
+      "maturityCriterion": "Dates absentes/identiques, ordre stable après ajout. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Dates structurées communes, dates identiques stables, ajouts suivis et ordre natif restaurable."
+    },
+    {
+      "id": "menu-icons",
+      "kind": "module",
+      "name": "Icônes des menus",
+      "requested": "Catalogue/priorités icônes communs, conflits.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/menu-icon-priorities.json"
+      ],
+      "maturityCriterion": "Catalogue/priorités icônes communs, conflits. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Catalogue historique conservé, priorités explicites pour les personnalisations, conflits de cible et règle gagnante affichés ; DOM natif restauré à la désactivation."
+    },
+    {
+      "id": "patron-required-contact",
+      "kind": "module",
+      "name": "Coordonnées obligatoires",
+      "requested": "Combinaisons attendues, focus erreur, champs dynamiques.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/final-universality.json"
+      ],
+      "maturityCriterion": "Combinaisons attendues, focus erreur, champs dynamiques. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Combinaisons de contacts, focus sur la première erreur, nouveaux champs dynamiques et aide native contrôlés."
+    },
+    {
+      "id": "multi-transfer",
+      "kind": "module",
+      "name": "Transfert en lot",
+      "requested": "Reprendre seuls échecs, bilan, interruption.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/final-universality.json",
+        "tests/validation/multi-transfer-interruption.json"
+      ],
+      "maturityCriterion": "Reprendre seuls échecs, bilan, interruption. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Reprise préparée avec les seuls échecs distincts ; après interruption, seuls les codes restants sont restaurés avec bilan réussis/ignorés/erreurs et relance explicite."
+    },
+    {
+      "id": "hold-pickup-expiration",
+      "kind": "module",
+      "name": "Date limite de retrait des réservations",
+      "requested": "Date native/estimation et hypothèses visibles.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/hold-expiration-sources.json"
+      ],
+      "maturityCriterion": "Date native/estimation et hypothèses visibles. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Date native Koha distinguée de l’estimation ; base, nombre de jours et exclusion des dimanches affichés lorsque le repli est calculé."
+    },
+    {
+      "id": "search-filter-badges",
+      "kind": "module",
+      "name": "Badges des filtres de recherche",
+      "requested": "Retrait clavier, filtres répétés, libellés longs.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/search-badge-accessibility.json"
+      ],
+      "maturityCriterion": "Retrait clavier, filtres répétés, libellés longs. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Filtres aux intitulés identiques conservés séparément, libellés longs accessibles sur mobile et suppression au clavier avec retour du focus ; recherche et autres critères inchangés."
+    },
+    {
+      "id": "patron-category-defaults",
+      "kind": "module",
+      "name": "Valeurs par défaut selon la catégorie d’adhérent",
+      "requested": "Aperçu catégorie, conflits, valeur automatique/manuelle.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/completion-configurations.json",
+        "tests/validation/koha-completion.json"
+      ],
+      "maturityCriterion": "Aperçu catégorie, conflits, valeur automatique/manuelle. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Simulation sans remplissage, valeurs manuelles conservées, conflits et valeurs absentes des listes signalés ; lecture du formulaire réel Koha sans soumission."
+    },
+    {
+      "id": "hold-submit-guard",
+      "kind": "module",
+      "name": "Protection double validation — réservations",
+      "requested": "Clic puis Entrée, lenteur, erreur et déblocage.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/module-improvements.json",
+        "tests/validation/koha-hold-validation.json"
+      ],
+      "maturityCriterion": "Clic puis Entrée, lenteur, erreur et déblocage. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Double soumission bloquée même après attente ; validation native annulée et échec AJAX explicitement signalé débloquent la garde."
+    },
+    {
+      "id": "search-results-master",
+      "kind": "module",
+      "name": "Résultats catalogue — présentation et exemplaires",
+      "requested": "Chargements partiels, reprise par notice, longues pages.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/catalogue-partial.json",
+        "tests/validation/koha-presentation.json"
+      ],
+      "maturityCriterion": "Chargements partiels, reprise par notice, longues pages. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "result": "Pagination partielle réessayable par notice ; 100 notices et 199 cartes avec une requête simultanée ; présentation vérifiée sur Koha local.",
+      "remaining": []
+    },
+    {
+      "id": "document-movements",
+      "kind": "module",
+      "name": "Mouvements des documents",
+      "requested": "Provenance/limites, contrat colonnes rapport.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/document-movements-contract.json"
+      ],
+      "maturityCriterion": "Provenance/limites, contrat colonnes rapport. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Provenance SQL/API et contrat des onze colonnes du rapport visibles dans la configuration ; contrat vérifié à l’exécution et chargement borné par lots de 500, à 10 000 transferts par défaut."
+    },
+    {
+      "id": "suggestion-required-suggester",
+      "kind": "module",
+      "name": "Suggestions — lecteur obligatoire",
+      "requested": "Focus lecteur, changement de lecteur, formulaire dynamique.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/suggester-dynamic.json"
+      ],
+      "maturityCriterion": "Focus lecteur, changement de lecteur, formulaire dynamique. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Retour du focus vers l’attribution du lecteur, avertissement décrit aux aides techniques ; changements de lecteur et remplacement du formulaire suivis sans boucle ni perte de saisie."
+    },
+    {
+      "id": "intranet-nav-menu",
+      "kind": "module",
+      "name": "Menu IntranetNav",
+      "requested": "Accessibilité menus communs, favoris indisponibles.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/menu-common-engine.json"
+      ],
+      "maturityCriterion": "Accessibilité menus communs, favoris indisponibles. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Le module 134 utilise le même moteur pmk.menus que le 147 ; sous-menus clavier/toucher et fonctions PMK indisponibles sont présentés de façon accessible."
+    },
+    {
+      "id": "guides-training",
+      "kind": "module",
+      "name": "Guides & formation",
+      "requested": "Bilan étapes introuvables, reprise, version du guide.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/guides-offline-diagnostics.json"
+      ],
+      "maturityCriterion": "Bilan étapes introuvables, reprise, version du guide. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Intro.js embarqué dans le plugin sans requête externe ; versions du chargeur, du moteur et des guides affichées, reprise signalée et cibles d’étapes introuvables listées."
+    },
+    {
+      "id": "xslt-assistant",
+      "kind": "module",
+      "name": "Éditeur XSLT",
+      "requested": "Erreurs localisées, notices comparées, compatibilité XSLT.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/editor-improvements.json",
+        "tests/validation/koha-publications.json"
+      ],
+      "maturityCriterion": "Erreurs localisées, notices comparées, compatibilité XSLT. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "result": "Échantillon de cinq notices, compatibilité libxslt expliquée, erreurs XML natives et projets préservés.",
+      "remaining": []
+    },
+    {
+      "id": "home-widgets",
+      "kind": "module",
+      "name": "Widgets & blocs d’accueil",
+      "requested": "Erreurs isolées, rafraîchissement, widgets secondaires différés.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/completion-configurations.json",
+        "tests/validation/planning-refresh.json",
+        "tests/validation/koha-completion.json"
+      ],
+      "maturityCriterion": "Erreurs isolées, rafraîchissement, widgets secondaires différés. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Erreurs isolées, reprise ciblée, chargement à l’approche de l’affichage et actualisation ; nettoyage des minuteurs et conservation des brouillons du planning, vérifiés aussi sur Koha local."
+    },
+    {
+      "id": "attendance-mediabus-mini",
+      "kind": "module",
+      "name": "Compteur de fréquentation",
+      "requested": "Correction justifiée, concurrence, changement de journée.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/attendance-counter-integrity.json"
+      ],
+      "maturityCriterion": "Correction justifiée, concurrence, changement de journée. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Transactions sérialisées sans perte lors de clics concurrents ; toute correction horaire exige une justification conservée dans le journal, et la vue qui suivait la date du jour bascule automatiquement après minuit."
+    },
+    {
+      "id": "bibliography-builder",
+      "kind": "module",
+      "name": "Bibliographies & publications",
+      "requested": "Notices incomplètes/source, reprise ciblée, coupures impression.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/editor-improvements.json",
+        "tests/validation/koha-publications.json"
+      ],
+      "maturityCriterion": "Notices incomplètes/source, reprise ciblée, coupures impression. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "result": "Sources et indisponibilités visibles, actualisation par notice, choix conservés, règles de coupure d’impression maintenues.",
+      "remaining": []
+    },
+    {
+      "id": "144",
+      "kind": "module",
+      "name": "Contrôle des doublons adhérents",
+      "requested": "Explication ressemblances et degrés de suspicion.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/patron-duplicate-explanations.json"
+      ],
+      "maturityCriterion": "Explication ressemblances et degrés de suspicion. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Chaque candidat explique les champs identiques, différents ou approchants et le nombre d’écarts tolérés ; degrés de suspicion forte/très forte sans fusion automatique."
+    },
+    {
+      "id": "item-quick-edit",
+      "kind": "module",
+      "name": "Édition rapide des exemplaires",
+      "requested": "Concurrence, avant/après champs sensibles.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/item-quick-edit-concurrency.json"
+      ],
+      "maturityCriterion": "Concurrence, avant/après champs sensibles. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Aperçu avant/après pour chaque champ, mention des champs sensibles et détail dans le toast de confirmation ; relecture juste avant écriture et refus sans PUT lorsqu’un autre agent a modifié la valeur."
+    },
+    {
+      "id": "checkout-status-correction",
+      "kind": "module",
+      "name": "Correction du statut au prêt",
+      "requested": "Trace règle, prêts rapides, refus et concurrence.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/koha-checkout-status.json",
+        "tests/validation/checkout-decision-trace.json"
+      ],
+      "maturityCriterion": "Trace règle, prêts rapides, refus et concurrence. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Prêt natif confirmé avant correction du seul statut autorisé ; règle exacte expliquée, rafales DOM sans doublon et proposition retirée devant une réservation ou un autre avertissement Koha."
+    },
+    {
+      "id": "france-publications-subscriptions",
+      "kind": "module",
+      "name": "Périodiques — enrichissement natif Koha / FP",
+      "requested": "Qualification FP réelle, associations incertaines, bilan partiel.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/france-publications-qualification.json"
+      ],
+      "maturityCriterion": "Qualification FP réelle, associations incertaines, bilan partiel. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Le moteur distingue association certaine, comparaison partielle et rapprochement ambigu. Le bilan expose les motifs et les abonnements Koha concurrents sans créer d’association ni écrire dans Koha ; une lecture FP interrompue reste explicitement incomplète."
+    },
+    {
+      "id": "page-qr-code",
+      "kind": "module",
+      "name": "QR mobile de la page",
+      "requested": "Aperçu URL/paramètres, connexion requise sur téléphone.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/module-improvements.json"
+      ],
+      "maturityCriterion": "Aperçu URL/paramètres, connexion requise sur téléphone. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "result": "URL et paramètres visibles, besoin de session mobile expliqué, générateur limité au Koha courant.",
+      "remaining": []
+    },
+    {
+      "id": "home-widget-useful-links",
+      "kind": "module",
+      "name": "Liens utiles — widget",
+      "requested": "Contrôle manuel liens, libellés longs, doublons.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/useful-links-control.json"
+      ],
+      "maturityCriterion": "Contrôle manuel liens, libellés longs, doublons. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Contrôle manuel daté par lien, diagnostic des destinations en double ou invalides et avertissement sur les libellés longs ; les libellés restent affichés intégralement et les liens Dracénie historiques sont conservés."
+    },
+    {
+      "id": "internal-pages-tools",
+      "kind": "module",
+      "name": "Pages & outils internes",
+      "requested": "Fiche objectif/accès/prérequis/dernière vérification, diagnostics communs.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/koha-internal-pages.json",
+        "tests/validation/koha-report-diagnostics.json"
+      ],
+      "maturityCriterion": "Fiche objectif/accès/prérequis/dernière vérification, diagnostics communs. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Fiche objectif, fonctions, moteur, accès, prérequis et lien direct ; vérification manuelle datée dans la session. Aide accessible jusque dans l’éditeur plein écran ; page Autorités conservée."
+    },
+    {
+      "id": "legacy-interface-options",
+      "kind": "module",
+      "name": "Interface — améliorations historiques",
+      "requested": "Tableau navette, cibles visuelles, caméra téléphone réel.",
+      "status": "partiel",
+      "evidence": [
+        "tests/validation/legacy-interface-diagnostics.json"
+      ],
+      "maturityCriterion": "Tableau navette, cibles visuelles, caméra téléphone réel. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [
+        "Effectuer une lecture finale sur un téléphone physique autorisé à utiliser la caméra ; la session a exercé l’API caméra avec un flux simulé."
+      ],
+      "result": "Aperçu tabulaire des tournées, validation du JSON, sélecteurs visuels et diagnostic des cibles ajoutés. Le parcours mobile ouvre la caméra arrière, confirme trois lectures identiques, renseigne le champ et ne valide pas le formulaire."
+    },
+    {
+      "id": "authority-installation-options",
+      "kind": "module",
+      "name": "Paramètres d’installation des Autorités",
+      "requested": "Diagnostic rapports/types Autorités, recette sans refonte métier.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/authority-installation-diagnostics.json",
+        "tests/validation/koha-report-diagnostics.json"
+      ],
+      "maturityCriterion": "Diagnostic rapports/types Autorités, recette sans refonte métier. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Les identifiants dupliqués ou absents et les codes de types invalides sont signalés avant enregistrement. Le diagnostic commun vérifie dans Koha le nom et les paramètres des rapports sans exécuter ni divulguer leur SQL ; le moteur métier de la page Autorités n’est pas appelé."
+    },
+    {
+      "id": "action-journal",
+      "kind": "page",
+      "name": "Journal des actions",
+      "requested": "Droits par opération, auteur, justification, historique corrections.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/koha-journal-permissions.json",
+        "tests/validation/koha-shared-tools.json"
+      ],
+      "maturityCriterion": "Droits par opération, auteur, justification, historique corrections. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Droits par opération réévalués côté serveur, auteur Koha authentifié, justification obligatoire et historique avant/après atomique ; refus des révisions périmées."
+    },
+    {
+      "id": "restore-deleted-items",
+      "kind": "page",
+      "name": "Restauration d’exemplaires",
+      "requested": "Supprimer dépendance UndeleteRecords; aperçu, transaction, droits serveur, identité, conflits, notice supprimée, réindexation, reprise.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/koha-native-restoration.json",
+        "tests/validation/koha-restoration.json",
+        "tests/validation/restoration-batch.json"
+      ],
+      "maturityCriterion": "Supprimer dépendance UndeleteRecords; aperçu, transaction, droits serveur, identité, conflits, notice supprimée, réindexation, reprise. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "result": "Restauration native transactionnelle, droits serveur, aperçu, collisions, notice supprimée, réindexation, reprise des échecs et réponse perdue ; autre plugin désactivé pendant la recette.",
+      "remaining": []
+    },
+    {
+      "id": "weeding",
+      "kind": "page",
+      "name": "Désherbage",
+      "requested": "Explication critères, proposition/sélection/décision.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/weeding-decision-flow.json"
+      ],
+      "maturityCriterion": "Explication critères, proposition/sélection/décision. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Chaque critère affiche sa valeur, sa règle et son résultat, avec la logique ET/OU. La proposition, la sélection de travail et la décision de l’agent sont nommées séparément ; les actions sont confirmées, enregistrées et réversibles tant que l’exemplaire n’est pas supprimé."
+    },
+    {
+      "id": "appointments",
+      "kind": "page",
+      "name": "Rendez-vous réseau / Doodle",
+      "requested": "Concurrence, annulations, récurrences, succès notification distinct.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/appointments-consistency.json",
+        "tests/validation/koha-shared-tools.json"
+      ],
+      "maturityCriterion": "Concurrence, annulations, récurrences, succès notification distinct. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Création, validation et annulation relisent les documents dans une transaction Koha avec contrôle de capacité. Les occurrences récurrentes ont un identifiant déterministe, respectent exclusions et occurrences existantes ; le succès métier reste distinct de la notification facultative."
+    },
+    {
+      "id": "inventory",
+      "kind": "page",
+      "name": "Inventaire",
+      "requested": "État sauvegarde locale, reprise, codes inconnus/répétés.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/inventory-local-recovery.json"
+      ],
+      "maturityCriterion": "État sauvegarde locale, reprise, codes inconnus/répétés. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "État du stockage IndexedDB et reprise visibles dans la page. Les codes inconnus, rescannés dans la même zone ou déjà vus dans une autre zone sont conservés avec un état explicite ; les imports interrompus restent reprenables sans appliquer silencieusement de modification Koha."
+    },
+    {
+      "id": "reservations",
+      "kind": "page",
+      "name": "Maintenance des réservations",
+      "requested": "Anomalies expliquées, date analyse, certitude/hypothèse.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/reservations-diagnostic-certainty.json"
+      ],
+      "maturityCriterion": "Anomalies expliquées, date analyse, certitude/hypothèse. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "La date et la couverture de l’analyse sont affichées. Chaque dossier distingue constat vérifié, hypothèse forte, hypothèse sur données partielles ou absence d’écart démontré ; la cause et l’action proposée restent dans des colonnes séparées."
+    },
+    {
+      "id": "loans",
+      "kind": "page",
+      "name": "Prêts & litiges",
+      "requested": "Résolution justifiée, constat/proposition/action.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/loans-resolution-trace.json"
+      ],
+      "maturityCriterion": "Résolution justifiée, constat/proposition/action. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Le parcours distingue le constat relu dans Koha, la proposition simulée avec son motif autorisé, puis l’action réellement effectuée. Chaque écriture relit le litige avant et après la résolution et conserve un bilan de session avec succès, dossiers ignorés et échecs."
+    },
+    {
+      "id": "transfers",
+      "kind": "page",
+      "name": "Transferts / navette",
+      "requested": "Planning commun, estimation/événement réel.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/planning-transfer-common.json"
+      ],
+      "maturityCriterion": "Planning commun, estimation/événement réel. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "La page lit le même document natif Koha et le même moteur d’occurrences que le widget Planning. Les alias relient les codes de sites aux étapes ; l’estimation du prochain passage reste affichée séparément des événements de demande, d’envoi et d’arrivée enregistrés par Koha."
+    },
+    {
+      "id": "items",
+      "kind": "page",
+      "name": "Maintenance des exemplaires",
+      "requested": "Progression, préfiltrage, récapitulatif avant action.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/items-batch-readiness.json"
+      ],
+      "maturityCriterion": "Progression, préfiltrage, récapitulatif avant action. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Le chargement paginé expose sa progression et son achèvement. Le préfiltrage actif est récapitulé avec la sélection conservée ; avant les commandes, la page compte exemplaires, codes-barres, dossiers approfondis et statuts terminaux. La suppression reste simulée et relue avant chaque écriture."
+    },
+    {
+      "id": "biblios",
+      "kind": "page",
+      "name": "Qualité du catalogue bibliographique",
+      "requested": "Critères de rapprochement, donnée manquante/anomalie/erreur.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/biblios-diagnostic-states.json"
+      ],
+      "maturityCriterion": "Critères de rapprochement, donnée manquante/anomalie/erreur. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Les rapprochements indiquent leur critère : ISBN valide identique ou, à défaut, titre et auteur normalisés avec la même année. Un groupe reste une proposition. La page distingue donnée manquante, anomalie métier, erreur technique et notice non encore contrôlée."
+    },
+    {
+      "id": "serials",
+      "kind": "page",
+      "name": "Maintenance des périodiques",
+      "requested": "Seuils et interruption publication, fraîcheur rapport.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/serials-publication-freshness.json"
+      ],
+      "maturityCriterion": "Seuils et interruption publication, fraîcheur rapport. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Le seuil d’interruption possible est configurable et ne s’applique qu’à un abonnement actif non arrivé à échéance. La page affiche la fraîcheur selon la date produite par le rapport ou, à défaut, l’heure de lecture dans Koha, avec un seuil explicite."
+    },
+    {
+      "id": "patrons",
+      "kind": "page",
+      "name": "Qualité des comptes lecteurs",
+      "requested": "Minimisation données, faux positifs, rapprochements expliqués.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/patrons-privacy-matching.json"
+      ],
+      "maturityCriterion": "Minimisation données, faux positifs, rapprochements expliqués. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Les coordonnées sont masquées par défaut et révélées temporairement par dossier. L’export omet nom et coordonnées sauf option explicite. Les rapprochements indiquent si le critère est strict ou faible, signalent les cas familiaux possibles et permettent de qualifier un faux positif sans supprimer de compte."
+    },
+    {
+      "id": "quality-center",
+      "kind": "page",
+      "name": "Centre qualité Koha",
+      "requested": "Synthèse analyses, dates, prérequis sans second moteur.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/quality-center-analysis-registry.json"
+      ],
+      "maturityCriterion": "Synthèse analyses, dates, prérequis sans second moteur. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Dates, résultats et prérequis synthétisés depuis un registre commun limité aux métadonnées ; aucun second moteur métier et page Autorités inchangée."
+    },
+    {
+      "id": "bulk-framework-change",
+      "kind": "page",
+      "name": "Modification de grille par lot",
+      "requested": "Différence détaillée, reprise échecs, conservation MARC.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/bulk-framework-marc-recovery.json"
+      ],
+      "maturityCriterion": "Différence détaillée, reprise échecs, conservation MARC. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Différence de grille et structure MARC détaillées, relecture avant/après écriture, export d’audit et reprise limitée aux échecs techniques ; les écarts MARC imposent une vérification manuelle."
+    },
+    {
+      "id": "overdue-management",
+      "kind": "page",
+      "name": "Gestion des retards TP4",
+      "requested": "Destinataire/contenu avant action, étapes/exceptions/reprises.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/overdue-action-preview-recovery.json"
+      ],
+      "maturityCriterion": "Destinataire/contenu avant action, étapes/exceptions/reprises. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Dossier destinataire, destination et contenu exact contrôlés avant écriture ; étapes et exceptions visibles, reprises après réponse incertaine ou nettoyage partiel, avec relecture Koha."
+    },
+    {
+      "id": "nedap",
+      "kind": "widget",
+      "name": "Fréquentation NEDAP",
+      "requested": "Relais Koha limité au fournisseur, clé serveur; qualification compte réel.",
+      "status": "partiel",
+      "evidence": [
+        "tests/validation/nedap-widget.json",
+        "tests/validation/nedap-provider.json",
+        "tests/validation/koha-nedap.json"
+      ],
+      "maturityCriterion": "Relais Koha limité au fournisseur, clé serveur; qualification compte réel. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [
+        "Qualifier une connexion avec le compte Libnet de l’installation. Aucun compte fournisseur n’est disponible ici ; les réponses fournisseur ont été simulées."
+      ],
+      "result": "Relais Koha à destination fixe, clé serveur non retournée, droits et révisions contrôlés ; modes historiques et réglages personnels conservés."
+    },
+    {
+      "id": "appointments",
+      "kind": "widget",
+      "name": "Rendez-vous",
+      "requested": "États communs page/widget, absence vs erreur.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/appointments-consistency.json",
+        "tests/validation/koha-shared-tools.json"
+      ],
+      "maturityCriterion": "États communs page/widget, absence vs erreur. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Le widget utilise le même stockage natif et le même contrôle de capacité transactionnel que la page. Chargement, absence réelle de créneau et erreur de chaque source sont trois états distincts ; un échec de notification n’annule pas la réservation enregistrée."
+    },
+    {
+      "id": "circulation",
+      "kind": "widget",
+      "name": "Circulation & abonnements",
+      "requested": "Période, actualisation, périmètre; zéro vs indisponible.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/circulation-widget-scope-refresh.json"
+      ],
+      "maturityCriterion": "Période, actualisation, périmètre; zéro vs indisponible. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Période transmise aux deux rapports Koha, actualisation manuelle ou périodique, périmètre et dernière lecture visibles ; zéro activité est distingué d’un rapport indisponible."
+    },
+    {
+      "id": "planning",
+      "kind": "widget",
+      "name": "Planning des services",
+      "requested": "Exceptions/occurrences, partage avec estimation navette.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/planning-transfer-common.json"
+      ],
+      "maturityCriterion": "Exceptions/occurrences, partage avec estimation navette. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Occurrences ponctuelles ou hebdomadaires et exceptions utilisent le moteur commun. Ce même moteur alimente les estimations de la page Transferts, avec les réglages et valeurs historiques conservés."
+    },
+    {
+      "id": "permissions",
+      "kind": "socle",
+      "name": "permissions",
+      "requested": "Droits changés pendant session, modifications simultanées.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/koha-journal-permissions.json",
+        "tests/validation/koha-migration.json",
+        "tests/validation/koha-plugin.json"
+      ],
+      "maturityCriterion": "Droits changés pendant session, modifications simultanées. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Retrait de droits pendant la session, propriété des profils et modifications concurrentes contrôlés côté Koha ; les écritures périmées et les lots en conflit sont refusés."
+    },
+    {
+      "id": "imports",
+      "kind": "socle",
+      "name": "imports",
+      "requested": "HTML, URLs et fichiers malformés.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/import-validation-common.json"
+      ],
+      "maturityCriterion": "HTML, URLs et fichiers malformés. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "remaining": [],
+      "result": "Validation commune des fichiers texte/JSON, limites de taille et profondeur, URL limitées au Koha courant et HTML actif refusé ; les champs inconnus valides restent conservés."
+    },
+    {
+      "id": "configuration",
+      "kind": "socle",
+      "name": "configuration",
+      "requested": "Différences défaut/personnalisé et reset ciblé.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/workbench.json"
+      ],
+      "maturityCriterion": "Différences défaut/personnalisé et reset ciblé. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "result": "Différences, valeurs sensibles masquées, reset scalaire ciblé du brouillon et annulation ; tableaux personnalisés et champs inconnus conservés.",
+      "remaining": []
+    },
+    {
+      "id": "diagnostics",
+      "kind": "socle",
+      "name": "diagnostics",
+      "requested": "Cibles absentes, rapports/prérequis indisponibles.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/workbench.json",
+        "tests/validation/koha-report-diagnostics.json",
+        "tests/validation/quality-center-analysis-registry.json"
+      ],
+      "maturityCriterion": "Cibles absentes, rapports/prérequis indisponibles. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "result": "Diagnostics communs des cibles, rapports et prérequis, avec résultats datés et sans exécution SQL implicite. Les pages et fournisseurs conservent leurs contrôles métier spécialisés.",
+      "remaining": []
+    },
+    {
+      "id": "services",
+      "kind": "socle",
+      "name": "services",
+      "requested": "Étendre ciblage, requêtes, dates, notifications et lots communs.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/workbench.json",
+        "tests/validation/dates-common.json",
+        "tests/validation/planning-transfer-common.json",
+        "tests/validation/import-validation-common.json"
+      ],
+      "maturityCriterion": "Étendre ciblage, requêtes, dates, notifications et lots communs. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "result": "Dates, confirmations, imports, revue des réglages, occurrences de planning et reprise des lots reposent sur des services communs documentés ; les moteurs métier restent propres à leur domaine.",
+      "remaining": []
+    },
+    {
+      "id": "compatibility",
+      "kind": "socle",
+      "name": "compatibility",
+      "requested": "Matrice de versions réellement testées.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/compatibility-matrix.json",
+        "tests/validation/koha-publications.json",
+        "tests/validation/koha-native-restoration.json"
+      ],
+      "maturityCriterion": "Matrice de versions réellement testées. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "result": "Matrice 0.4.0 publiée : Koha 25.11, MariaDB 10.11 et UNIMARC qualifiés localement ; MARC21, navigateurs, fournisseurs et matériels portent des limites explicites sans bloquer les autres modules.",
+      "remaining": []
+    },
+    {
+      "id": "migration",
+      "kind": "socle",
+      "name": "migration",
+      "requested": "Recette de transition réelle, exporter/importer sans perte; copie production à qualifier avec export réel.",
+      "status": "validé sur le périmètre demandé",
+      "evidence": [
+        "tests/validation/export-transition.json",
+        "tests/validation/import-validation-common.json",
+        "tests/validation/koha-migration.json",
+        "tests/validation/koha-installation.json",
+        "tests/validation/koha-upgrade-preservation.json"
+      ],
+      "maturityCriterion": "Recette de transition réelle, exporter/importer sans perte; copie production à qualifier avec export réel. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
+      "result": "Le paquet final est lié par empreinte à son installation, son import global et sa réinstallation. Configurations, champs inconnus, données, historiques et secret serveur de test sont conservés ; l’export réel de production reste à fournir par l’établissement.",
+      "remaining": []
+    }
+  ],
+  "lastReviewedUtc": "2026-10-28T15:44:41.955914+00:00",
+  "qualificationScope": "La validation concerne les scénarios documentés. Aucun compte fournisseur, équipement physique ou export réel de production n’est présenté comme testé."
+}

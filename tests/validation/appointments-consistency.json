@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "checks": {
+    "pageBookingTransaction": true,
+    "pageLiveCapacity": true,
+    "approvalCapacityTransaction": true,
+    "cancellationTransaction": true,
+    "recurrenceDeterministic": true,
+    "recurrenceExceptions": true,
+    "notificationSeparated": true,
+    "widgetBookingTransaction": true,
+    "widgetBusinessSuccessIndependent": true,
+    "widgetEmptyDistinctFromError": true,
+    "widgetSourceErrorsTracked": true
+  },
+  "scope": "Contrats page et widget : transactions natives Koha, récurrence idempotente et états vide/erreur distincts."
+}

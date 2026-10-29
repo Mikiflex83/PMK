@@ -1,0 +1,9 @@
+{
+  "kind": "Browser configuration preview on a Koha-like patron form; field state compared before and after",
+  "rows": [
+    {
+      "name": "Patron automation preview identifies targets and manual-value priority without modifying any Koha field or exposing the generated password",
+      "passed": true
+    }
+  ]
+}

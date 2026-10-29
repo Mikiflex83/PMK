@@ -1,0 +1,9 @@
+const {chromium}=require('playwright');const assert=require('node:assert/strict');const fs=require('node:fs');const path=require('node:path');
+const ROOT=path.resolve(__dirname,'..'),OUT=path.join(ROOT,'tests/validation/document-movements-contract.json');
+(async()=>{const browser=await chromium.launch({executablePath:process.env.PMK_CHROMIUM_PATH||'/usr/bin/chromium',headless:true,args:['--no-sandbox']});const page=await browser.newPage();await page.setContent('<!doctype html><html><head></head><body></body></html>');
+ await page.evaluate(()=>{window.__def=null;window.PMKConfig={registerModule(d){window.__def=d},getConfig(){return Promise.resolve({maxTransferBatches:7,reportId:99})},subscribe(){}}});
+ await page.addScriptTag({path:path.join(ROOT,'130-mouvements-documents.js')});await page.waitForFunction(()=>PMK130GetSettings().reportId===99);
+ const result=await page.evaluate(()=>{const good={Transfer_ID:1,Item_ID:2,From_Site:'A',To_Site:'B',Demande_le:'',Envoye_le:'',Arrive_le:'',Annule_le:'',Raison:'',Raison_annulation:'',Commentaire:''};return {settings:PMK130GetSettings(),good:PMK130ValidateReportRows([good]),bad:PMK130ValidateReportRows([{Transfer_ID:1,Item_ID:2}]),fields:__def.schema[0].fields.map(x=>({key:x.key,readOnly:!!x.readOnly,help:x.help?.fr||''}))}});
+ assert.equal(result.settings.maxTransferBatches,7);assert.equal(result.settings.batchSize,500);assert.equal(result.good.ok,true);assert.equal(result.bad.ok,false);assert(result.bad.missing.includes('From_Site'));assert(result.fields.some(x=>x.key==='dataSources'&&x.readOnly));assert(result.fields.some(x=>x.key==='reportContract'&&x.readOnly));
+ fs.writeFileSync(OUT,JSON.stringify({passed:true,...result},null,2)+'\n');console.log('PASS document movement data sources, limits and report contract');await browser.close();
+})().catch(e=>{fs.writeFileSync(OUT,JSON.stringify({passed:false,error:e.stack},null,2)+'\n');console.error(e);process.exit(1)});

@@ -1,0 +1,54 @@
+{
+  "passed": true,
+  "complete": true,
+  "errors": [],
+  "total": 4,
+  "counts": {
+    "same": 1,
+    "partial": 1,
+    "unmatched": 2
+  },
+  "associations": [
+    {
+      "ref": "DRG-1-100",
+      "kind": "same",
+      "label": "Association Koha",
+      "kohaSubscriptionId": "1",
+      "related": []
+    },
+    {
+      "ref": "DRG-1-101",
+      "kind": "partial",
+      "label": "Association Koha",
+      "kohaSubscriptionId": "2",
+      "related": []
+    },
+    {
+      "ref": "DRG-1-102",
+      "kind": "unmatched",
+      "label": "Référence FP enregistrée dans plusieurs abonnements Koha : résoudre le doublon",
+      "kohaSubscriptionId": "",
+      "related": [
+        "3",
+        "4"
+      ]
+    },
+    {
+      "ref": "AUTRE-9",
+      "kind": "unmatched",
+      "label": "Site non reconnu : aucune référence Koha, code destinataire configuré ou adresse unique",
+      "kohaSubscriptionId": "",
+      "related": []
+    }
+  ],
+  "incomplete": {
+    "complete": false,
+    "errors": [
+      "Lecture interrompue"
+    ],
+    "total": 0,
+    "counts": {},
+    "associations": []
+  },
+  "kohaDescription": "Une référence FP explicite et unique donne une correspondance certaine. Une association multiple ou incomplète reste à vérifier par un agent."
+}

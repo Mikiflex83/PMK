@@ -1,0 +1,16 @@
+{
+  "kind": "Browser runtime with delayed compatible address provider and two same-street city results",
+  "rows": [
+    {
+      "name": "Address autocomplete discloses provider latency and ambiguous cities, sends only the typed address parameters and preserves unrelated patron data",
+      "passed": true,
+      "evidence": {
+        "parameters": [
+          "maximumResponses",
+          "text",
+          "type"
+        ]
+      }
+    }
+  ]
+}

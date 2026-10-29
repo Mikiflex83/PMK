@@ -1,0 +1,14 @@
+{
+  "passed": [
+    "Real Koha: plugin loads all declared scripts from bundled resources",
+    "Real Koha: native save retains custom values after reload",
+    "Real Koha: stale revision and missing request header cannot overwrite configuration",
+    "Real Koha: staff reads configuration but cannot alter shared settings",
+    "Real Koha: favorites belong to the authenticated session",
+    "Real Koha: internal hub and settings open through the native plugin"
+  ],
+  "kohaURL": "http://127.0.0.1:18081",
+  "kind": "real Koha 25.11 + MariaDB",
+  "externalRequestsBlocked": 10,
+  "pageErrors": []
+}

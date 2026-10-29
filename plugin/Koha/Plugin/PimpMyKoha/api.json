@@ -1,0 +1,1035 @@
+{
+  "/documents/{document_key}": {
+    "get": {
+      "x-mojo-to": "PimpMyKoha::Controller#get_document",
+      "operationId": "pmk_get_document",
+      "tags": [
+        "pmk"
+      ],
+      "produces": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "document_key",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]{1,190}$"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Document PMK",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "400": {
+          "description": "Invalid request",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "401": {
+          "description": "Authentication required",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "403": {
+          "description": "Access forbidden",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "409": {
+          "description": "Concurrent configuration change",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "413": {
+          "description": "Document too large",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "500": {
+          "description": "Server error",
+          "schema": {
+            "type": "object"
+          }
+        }
+      },
+      "x-koha-authorization": {
+        "permissions": {
+          "catalogue": "1"
+        }
+      }
+    },
+    "put": {
+      "x-mojo-to": "PimpMyKoha::Controller#put_document",
+      "operationId": "pmk_put_document",
+      "tags": [
+        "pmk"
+      ],
+      "produces": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "document_key",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]{1,190}$"
+        },
+        {
+          "name": "body",
+          "in": "body",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "required": [
+              "data",
+              "revision"
+            ],
+            "properties": {
+              "data": {
+                "type": "object"
+              },
+              "revision": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Document PMK",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "400": {
+          "description": "Invalid request",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "401": {
+          "description": "Authentication required",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "403": {
+          "description": "Access forbidden",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "409": {
+          "description": "Concurrent configuration change",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "413": {
+          "description": "Document too large",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "500": {
+          "description": "Server error",
+          "schema": {
+            "type": "object"
+          }
+        }
+      },
+      "x-koha-authorization": {
+        "permissions": {
+          "catalogue": "1"
+        }
+      }
+    }
+  },
+  "/configuration": {
+    "get": {
+      "x-mojo-to": "PimpMyKoha::Controller#get_configuration",
+      "operationId": "pmk_get_configuration",
+      "tags": [
+        "pmk"
+      ],
+      "produces": [
+        "application/json"
+      ],
+      "responses": {
+        "200": {
+          "description": "Initial shared configuration snapshot",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "403": {
+          "description": "Staff required",
+          "schema": {
+            "type": "object"
+          }
+        }
+      },
+      "x-koha-authorization": {
+        "permissions": {
+          "catalogue": "1"
+        }
+      }
+    }
+  },
+  "/data/{store_name}": {
+    "post": {
+      "x-mojo-to": "PimpMyKoha::Controller#data",
+      "operationId": "pmk_native_data",
+      "tags": [
+        "pmk"
+      ],
+      "produces": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "store_name",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "name": "body",
+          "in": "body",
+          "required": true,
+          "schema": {
+            "type": "object"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Native result",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "400": {
+          "description": "Invalid request",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "401": {
+          "description": "Authentication required",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "403": {
+          "description": "Access forbidden",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "404": {
+          "description": "Missing document",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "409": {
+          "description": "Concurrent modification",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "413": {
+          "description": "Request too large",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "500": {
+          "description": "Server error",
+          "schema": {
+            "type": "object"
+          }
+        }
+      },
+      "x-koha-authorization": {
+        "permissions": {
+          "catalogue": "1"
+        }
+      }
+    }
+  },
+  "/session": {
+    "get": {
+      "x-mojo-to": "PimpMyKoha::Controller#get_native_session",
+      "operationId": "pmk_native_session",
+      "tags": [
+        "pmk"
+      ],
+      "produces": [
+        "application/json"
+      ],
+      "responses": {
+        "200": {
+          "description": "Native result",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "400": {
+          "description": "Invalid request",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "401": {
+          "description": "Authentication required",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "403": {
+          "description": "Access forbidden",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "404": {
+          "description": "Missing document",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "409": {
+          "description": "Concurrent modification",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "413": {
+          "description": "Request too large",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "500": {
+          "description": "Server error",
+          "schema": {
+            "type": "object"
+          }
+        }
+      },
+      "x-koha-authorization": {
+        "permissions": {
+          "catalogue": "1"
+        }
+      }
+    }
+  },
+  "/runtime": {
+    "get": {
+      "x-mojo-to": "PimpMyKoha::Controller#runtime_control",
+      "operationId": "pmk_runtime_get",
+      "tags": [
+        "pmk"
+      ],
+      "produces": [
+        "application/json"
+      ],
+      "parameters": [],
+      "responses": {
+        "200": {
+          "description": "Runtime state",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "400": {
+          "description": "Invalid request",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "401": {
+          "description": "Authentication required",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "403": {
+          "description": "Admin required",
+          "schema": {
+            "type": "object"
+          }
+        }
+      },
+      "x-koha-authorization": {
+        "permissions": {
+          "catalogue": "1"
+        }
+      }
+    },
+    "put": {
+      "x-mojo-to": "PimpMyKoha::Controller#runtime_control",
+      "operationId": "pmk_runtime_put",
+      "tags": [
+        "pmk"
+      ],
+      "produces": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "body",
+          "in": "body",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "required": [
+              "enabled"
+            ],
+            "properties": {
+              "enabled": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Runtime state",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "400": {
+          "description": "Invalid request",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "401": {
+          "description": "Authentication required",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "403": {
+          "description": "Admin required",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "409": {
+          "description": "Concurrent configuration or runtime enabled",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "413": {
+          "description": "Too large",
+          "schema": {
+            "type": "object"
+          }
+        }
+      },
+      "x-koha-authorization": {
+        "permissions": {
+          "catalogue": "1"
+        }
+      }
+    }
+  },
+  "/migration/configuration": {
+    "get": {
+      "x-mojo-to": "PimpMyKoha::Controller#migration_configuration",
+      "operationId": "pmk_migration_configuration_get",
+      "tags": [
+        "pmk"
+      ],
+      "produces": [
+        "application/json"
+      ],
+      "parameters": [],
+      "responses": {
+        "200": {
+          "description": "Runtime state",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "400": {
+          "description": "Invalid request",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "401": {
+          "description": "Authentication required",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "403": {
+          "description": "Admin required",
+          "schema": {
+            "type": "object"
+          }
+        }
+      },
+      "x-koha-authorization": {
+        "permissions": {
+          "catalogue": "1"
+        }
+      }
+    },
+    "put": {
+      "x-mojo-to": "PimpMyKoha::Controller#migration_configuration",
+      "operationId": "pmk_migration_configuration_put",
+      "tags": [
+        "pmk"
+      ],
+      "produces": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "body",
+          "in": "body",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "required": [
+              "documents"
+            ],
+            "properties": {
+              "documents": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Runtime state",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "400": {
+          "description": "Invalid request",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "401": {
+          "description": "Authentication required",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "403": {
+          "description": "Admin required",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "409": {
+          "description": "Concurrent configuration or runtime enabled",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "413": {
+          "description": "Too large",
+          "schema": {
+            "type": "object"
+          }
+        }
+      },
+      "x-koha-authorization": {
+        "permissions": {
+          "catalogue": "1"
+        }
+      }
+    }
+  },
+  "/restoration/items/{item_id}": {
+    "get": {
+      "x-mojo-to": "PimpMyKoha::Controller#restoration",
+      "operationId": "pmk_restoration_get",
+      "tags": [
+        "pmk"
+      ],
+      "parameters": [
+        {
+          "name": "item_id",
+          "in": "path",
+          "type": "integer",
+          "minimum": 1,
+          "required": true
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Native restoration",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "400": {
+          "description": "Invalid request",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "401": {
+          "description": "Authentication required",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "403": {
+          "description": "Access forbidden",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "404": {
+          "description": "Deleted item missing",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "409": {
+          "description": "Conflict or changed preview",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "500": {
+          "description": "Server error",
+          "schema": {
+            "type": "object"
+          }
+        }
+      },
+      "x-koha-authorization": {
+        "permissions": {
+          "editcatalogue": "edit_items"
+        }
+      },
+      "produces": [
+        "application/json"
+      ]
+    },
+    "post": {
+      "x-mojo-to": "PimpMyKoha::Controller#restoration",
+      "operationId": "pmk_restoration_post",
+      "tags": [
+        "pmk"
+      ],
+      "parameters": [
+        {
+          "name": "item_id",
+          "in": "path",
+          "type": "integer",
+          "minimum": 1,
+          "required": true
+        },
+        {
+          "name": "body",
+          "in": "body",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "fingerprint",
+              "confirmed"
+            ],
+            "properties": {
+              "fingerprint": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "confirmed": {
+                "type": "boolean",
+                "enum": [
+                  true
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Native restoration",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "400": {
+          "description": "Invalid request",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "401": {
+          "description": "Authentication required",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "403": {
+          "description": "Access forbidden",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "404": {
+          "description": "Deleted item missing",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "409": {
+          "description": "Conflict or changed preview",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "500": {
+          "description": "Server error",
+          "schema": {
+            "type": "object"
+          }
+        }
+      },
+      "x-koha-authorization": {
+        "permissions": {
+          "editcatalogue": "edit_items"
+        }
+      },
+      "produces": [
+        "application/json"
+      ],
+      "consumes": [
+        "application/json"
+      ]
+    }
+  },
+  "/reports/{report_id}/diagnostic": {
+    "get": {
+      "x-mojo-to": "PimpMyKoha::Controller#report_diagnostic",
+      "operationId": "pmk_report_diagnostic",
+      "tags": [
+        "pmk"
+      ],
+      "produces": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "report_id",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "minimum": 1
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Report metadata without execution",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "400": {
+          "description": "Invalid ID",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "401": {
+          "description": "Authentication required",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "403": {
+          "description": "Configuration access required",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "404": {
+          "description": "Report missing",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "500": {
+          "description": "Server error",
+          "schema": {
+            "type": "object"
+          }
+        }
+      },
+      "x-koha-authorization": {
+        "permissions": {
+          "reports": "execute_reports"
+        }
+      }
+    }
+  },
+  "/nedap/settings": {
+    "get": {
+      "x-mojo-to": "PimpMyKoha::Controller#nedap_settings",
+      "operationId": "pmk_nedap_settings_get",
+      "tags": [
+        "pmk"
+      ],
+      "produces": [
+        "application/json"
+      ],
+      "parameters": [],
+      "responses": {
+        "200": {
+          "description": "Nedap settings metadata",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "400": {
+          "description": "Invalid input",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "401": {
+          "description": "Authentication required",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "403": {
+          "description": "Permission denied",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "409": {
+          "description": "Configuration changed or missing",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "500": {
+          "description": "Server unavailable",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "502": {
+          "description": "Provider unavailable",
+          "schema": {
+            "type": "object"
+          }
+        }
+      },
+      "x-koha-authorization": {
+        "permissions": {
+          "superlibrarian": 1
+        }
+      }
+    },
+    "put": {
+      "x-mojo-to": "PimpMyKoha::Controller#nedap_settings",
+      "operationId": "pmk_nedap_settings_put",
+      "tags": [
+        "pmk"
+      ],
+      "produces": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "body",
+          "in": "body",
+          "required": true,
+          "schema": {
+            "type": "object"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Nedap settings metadata",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "400": {
+          "description": "Invalid input",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "401": {
+          "description": "Authentication required",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "403": {
+          "description": "Permission denied",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "409": {
+          "description": "Configuration changed or missing",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "500": {
+          "description": "Server unavailable",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "502": {
+          "description": "Provider unavailable",
+          "schema": {
+            "type": "object"
+          }
+        }
+      },
+      "x-koha-authorization": {
+        "permissions": {
+          "superlibrarian": 1
+        }
+      },
+      "consumes": [
+        "application/json"
+      ]
+    }
+  },
+  "/nedap/counts": {
+    "get": {
+      "x-mojo-to": "PimpMyKoha::Controller#nedap_counts",
+      "operationId": "pmk_nedap_counts",
+      "tags": [
+        "pmk"
+      ],
+      "produces": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "rcr",
+          "in": "query",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "name": "from",
+          "in": "query",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "name": "to",
+          "in": "query",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "name": "period",
+          "in": "query",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "name": "display",
+          "in": "query",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Counters only; interval end is exclusive",
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        },
+        "400": {
+          "description": "Invalid input",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "401": {
+          "description": "Authentication required",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "403": {
+          "description": "Permission denied",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "409": {
+          "description": "Configuration changed or missing",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "500": {
+          "description": "Server unavailable",
+          "schema": {
+            "type": "object"
+          }
+        },
+        "502": {
+          "description": "Provider unavailable",
+          "schema": {
+            "type": "object"
+          }
+        }
+      },
+      "x-koha-authorization": {
+        "permissions": {
+          "catalogue": 1
+        }
+      }
+    }
+  }
+}

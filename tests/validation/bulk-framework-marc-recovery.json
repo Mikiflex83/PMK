@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "checks": {
+    "formattingIgnored": true,
+    "valuesProtected": true,
+    "fieldOrderProtected": true,
+    "detailedSummary": true,
+    "freshReadBeforeWrite": true,
+    "readAfterWrite": true,
+    "retryTechnicalFailures": true,
+    "marcMismatchBlocked": true,
+    "csvAudit": true
+  },
+  "scope": "Comparaison sémantique MARCXML avant/après, détail visible et reprise limitée aux échecs techniques."
+}

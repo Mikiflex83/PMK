@@ -1,0 +1,2589 @@
+{
+  "kind": "Real Koha internal page opening and read APIs. Business actions tested separately.",
+  "rows": [
+    {
+      "id": "attendance-counter",
+      "passed": true,
+      "ms": 284,
+      "state": {
+        "status": {
+          "state": "mounted"
+        },
+        "title": "Compteur de fréquentation — Koha",
+        "text": "À propos de cette page et vérifications\n Pages & outils internes\nCompteur de fréquentation\n Accueil Koha\nConfigurer cette page\nCompteur de fréquentation\nkoha\nAdministration\n Compteur flottant\nSaisir la fréquentation\nLieu\n\nDate\n\nAujourd'hui\nRemettre l’affichage à zéro\nRecharger les compteurs\nAdultes\n−\n0\n+\nNotes (optionnel)\n\nEnfants\n−\n0\n+\nNotes (optionnel)\n\nExporter les résultats du rapport\nExport Horaire Détaillé\nDernière sauvegarde : —\nSélectionnez au moins un site\nConsulter les statistiques et exporter\nSites du rapport\nAucun site sélectionné\nDu\nAu\nRegrouper\nJour\nSemaine\nMois\nHeure\nLieu\nTranche horaire\nGénérer le rapport\nPériode rapide :\nCe mois\nCette année\nTout l'historique\nExport CSV (tout)\nAucun site sélectionné.\nEffacer\nLignes/page:\n10\n25\n50\n100\n0\nJournées-site\n0\nAdultes\n0\nEnfants\n0\nTotal\n0\nMoyenne/jour\nOptions avancées\nAucun résultat\nRapport complet / PDF\nExporter résultats actuels\nAfficher graphique\nVue Tranches Horaire\nLes compteurs et rapports utilisent les données enregistrées pour le lieu et la période choisis.",
+        "buttons": [
+          {
+            "text": "Vérifier les réglages et les rapports",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Configurer cette page",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Administration",
+            "id": "freq-btnSignIn",
+            "title": ""
+          },
+          {
+            "text": "Fermer la gestion",
+            "id": "freq-btnSignOut",
+            "title": ""
+          },
+          {
+            "text": " Compteur flottant",
+            "id": "",
+            "title": "Afficher le compteur flottant"
+          },
+          {
+            "text": "Aujourd'hui",
+            "id": "freq-btnQuickToday",
+            "title": ""
+          },
+          {
+            "text": "Remettre l’affichage à zéro",
+            "id": "freq-btnReset",
+            "title": "Remettre l’affichage local à zéro ; ne supprime pas la journée enregistrée"
+          },
+          {
+            "text": "Recharger les compteurs",
+            "id": "freq-btnUpdate",
+            "title": "Relire les valeurs enregistrées pour ce lieu et cette date"
+          },
+          {
+            "text": "−",
+            "id": "freq-decAdults",
+            "title": "Retirer 1 — Adultes"
+          },
+          {
+            "text": "+",
+            "id": "freq-incAdults",
+            "title": "Ajouter 1 — Adultes"
+          },
+          {
+            "text": "−",
+            "id": "freq-decKids",
+            "title": "Retirer 1 — Enfants"
+          },
+          {
+            "text": "+",
+            "id": "freq-incKids",
+            "title": "Ajouter 1 — Enfants"
+          },
+          {
+            "text": "Exporter les résultats du rapport",
+            "id": "freq-btnExportCSV",
+            "title": ""
+          },
+          {
+            "text": "Export Horaire Détaillé",
+            "id": "freq-btnExportHourly",
+            "title": ""
+          },
+          {
+            "text": "Tout sélectionner",
+            "id": "freq-sitesAll",
+            "title": ""
+          },
+          {
+            "text": "Tout désélectionner",
+            "id": "freq-sitesNone",
+            "title": ""
+          },
+          {
+            "text": "Générer le rapport",
+            "id": "freq-btnApplyFilter",
+            "title": ""
+          },
+          {
+            "text": "Ce mois",
+            "id": "freq-periodMonth",
+            "title": ""
+          },
+          {
+            "text": "Cette année",
+            "id": "freq-periodYear",
+            "title": ""
+          },
+          {
+            "text": "Tout l'historique",
+            "id": "freq-periodAll",
+            "title": ""
+          },
+          {
+            "text": "Export CSV (tout)",
+            "id": "freq-btnExportAll",
+            "title": ""
+          },
+          {
+            "text": "Effacer",
+            "id": "freq-stats-clear-search",
+            "title": ""
+          },
+          {
+            "text": "«",
+            "id": "freq-stats-first",
+            "title": ""
+          },
+          {
+            "text": "‹",
+            "id": "freq-stats-prev",
+            "title": ""
+          },
+          {
+            "text": "›",
+            "id": "freq-stats-next",
+            "title": ""
+          },
+          {
+            "text": "»",
+            "id": "freq-stats-last",
+            "title": ""
+          },
+          {
+            "text": "Rapport complet / PDF",
+            "id": "freq-stats-full-report",
+            "title": ""
+          },
+          {
+            "text": "Exporter résultats actuels",
+            "id": "freq-stats-export-current",
+            "title": ""
+          },
+          {
+            "text": "Afficher graphique",
+            "id": "freq-stats-show-chart",
+            "title": ""
+          },
+          {
+            "text": "Vue Tranches Horaire",
+            "id": "freq-stats-show-hourly",
+            "title": ""
+          },
+          {
+            "text": "Ajouter",
+            "id": "freq-btnAddLocation",
+            "title": ""
+          },
+          {
+            "text": "Modifier",
+            "id": "freq-btnEditLocation",
+            "title": ""
+          },
+          {
+            "text": "Supprimer",
+            "id": "freq-btnDeleteLocation",
+            "title": ""
+          },
+          {
+            "text": "Corriger l'historique",
+            "id": "freq-btnFixLocation",
+            "title": ""
+          },
+          {
+            "text": "Annuler",
+            "id": "freq-admin-cancel",
+            "title": ""
+          },
+          {
+            "text": "Se connecter",
+            "id": "freq-admin-connect",
+            "title": ""
+          }
+        ],
+        "inputs": [
+          {
+            "id": "freq-selectLocation",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "freq-inputDate",
+            "type": "date",
+            "name": ""
+          },
+          {
+            "id": "freq-noteAdults",
+            "type": "text",
+            "name": ""
+          },
+          {
+            "id": "freq-noteKids",
+            "type": "text",
+            "name": ""
+          },
+          {
+            "id": "freq-statFrom",
+            "type": "date",
+            "name": ""
+          },
+          {
+            "id": "freq-statTo",
+            "type": "date",
+            "name": ""
+          },
+          {
+            "id": "freq-groupBy",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "freq-stats-search",
+            "type": "text",
+            "name": ""
+          },
+          {
+            "id": "freq-stats-page-size",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "checkbox",
+            "name": "stats-columns"
+          },
+          {
+            "id": "",
+            "type": "checkbox",
+            "name": "stats-columns"
+          },
+          {
+            "id": "",
+            "type": "checkbox",
+            "name": "stats-columns"
+          },
+          {
+            "id": "",
+            "type": "checkbox",
+            "name": "stats-columns"
+          },
+          {
+            "id": "",
+            "type": "checkbox",
+            "name": "stats-columns"
+          },
+          {
+            "id": "",
+            "type": "checkbox",
+            "name": "stats-columns"
+          },
+          {
+            "id": "",
+            "type": "checkbox",
+            "name": "stats-columns"
+          },
+          {
+            "id": "freq-newLocationName",
+            "type": "text",
+            "name": ""
+          },
+          {
+            "id": "freq-newLocationWeeks",
+            "type": "number",
+            "name": ""
+          },
+          {
+            "id": "freq-newLocationExtrapolate",
+            "type": "checkbox",
+            "name": ""
+          },
+          {
+            "id": "freq-editLocation",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "freq-editLocationName",
+            "type": "text",
+            "name": ""
+          },
+          {
+            "id": "freq-editLocationWeeks",
+            "type": "number",
+            "name": ""
+          },
+          {
+            "id": "freq-editLocationExtrapolate",
+            "type": "checkbox",
+            "name": ""
+          },
+          {
+            "id": "freq-deleteLocation",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "freq-fixOldLocation",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "freq-fixNewLocation",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "freq-fixFrom",
+            "type": "date",
+            "name": ""
+          },
+          {
+            "id": "freq-fixTo",
+            "type": "date",
+            "name": ""
+          },
+          {
+            "id": "freq-admin-password",
+            "type": "password",
+            "name": ""
+          }
+        ]
+      },
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "id": "action-journal",
+      "passed": true,
+      "ms": 473,
+      "state": {
+        "status": {
+          "state": "mounted"
+        },
+        "title": "Journal des actions — Koha",
+        "text": "À propos de cette page et vérifications\n Pages & outils internes\nJournal des actions\n Accueil Koha\nConfigurer cette page\nJournal des actions\nAjouter une action\nDate\nAuteur\nType d'action\nCréation notice\nModification notice\nSuppression notice\nFusion notice\nRestauration\nConditionnement\nRéparation\nInformation\nAutre\nDescription\nAjouter l'entrée\nConsulter le journal\nAfficher les supprimées Exporter le journal affiché en PDF\nDate\tAuteur\tType\tDescription\tActions",
+        "buttons": [
+          {
+            "text": "Vérifier les réglages et les rapports",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Configurer cette page",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Ajouter l'entrée",
+            "id": "saveEntry",
+            "title": ""
+          },
+          {
+            "text": "Annuler la modification",
+            "id": "cancelEntryEdit",
+            "title": ""
+          },
+          {
+            "text": "Afficher les supprimées",
+            "id": "toggleDeleted",
+            "title": ""
+          },
+          {
+            "text": "Exporter le journal affiché en PDF",
+            "id": "exportPdf",
+            "title": ""
+          },
+          {
+            "text": "Fermer",
+            "id": "closeHistoryModal",
+            "title": ""
+          }
+        ],
+        "inputs": [
+          {
+            "id": "date",
+            "type": "date",
+            "name": ""
+          },
+          {
+            "id": "author",
+            "type": "text",
+            "name": ""
+          },
+          {
+            "id": "type",
+            "type": "select-one",
+            "name": ""
+          }
+        ]
+      },
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "id": "restore-deleted-items",
+      "passed": true,
+      "ms": 417,
+      "state": {
+        "status": {
+          "state": "mounted"
+        },
+        "title": "Restauration d’exemplaires — Koha",
+        "text": "À propos de cette page et vérifications\n Pages & outils internes\nRestauration d’exemplaires\n Accueil Koha\nConfigurer cette page\nRetrouver et restaurer des exemplaires\n\nRecherche par code-barres ou par plage de dates — restauration native PimpMyKoha. Les prêts/retours utilisent la carte VALEUR_PRIVEE_SUPPRIMEE.\n\nConnecté en tant que « koha » — accès autorisé.\nChoisissez un mode de recherche. Les prêts/retours utilisent la carte VALEUR_PRIVEE_SUPPRIMEE. Accès selon les droits Koha configurés pour cette page.\n1 · Choisir la recherche\nPar code-barres\nPar plage de dates de suppression\n2 · Rechercher et examiner les exemplaires\nRechercher\nMode code-barres — rapport SQL 4.\n\n\tCode-barres\tTitre / Auteur\tISBN / ISSN\tNotice\tSupprimé le\tStatut\tStatut perdu\tTraitement\tActions\n3 · Restaurer les dossiers examinés\nTout cocher\nRestaurer la sélection\nTraitement avancé : restauration, prêt et retour",
+        "buttons": [
+          {
+            "text": "Vérifier les réglages et les rapports",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Configurer cette page",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Rechercher",
+            "id": "uds-search",
+            "title": ""
+          },
+          {
+            "text": "Charger les supprimés",
+            "id": "uds-search-dates",
+            "title": ""
+          },
+          {
+            "text": "Tout cocher",
+            "id": "uds-select-all",
+            "title": ""
+          },
+          {
+            "text": "Restaurer la sélection",
+            "id": "uds-batch-restore",
+            "title": ""
+          },
+          {
+            "text": "Restaurer, prêter puis retourner la sélection",
+            "id": "uds-batch-pipeline",
+            "title": ""
+          }
+        ],
+        "inputs": [
+          {
+            "id": "",
+            "type": "radio",
+            "name": "uds-search-mode"
+          },
+          {
+            "id": "",
+            "type": "radio",
+            "name": "uds-search-mode"
+          },
+          {
+            "id": "uds-from-date",
+            "type": "date",
+            "name": ""
+          },
+          {
+            "id": "uds-to-date",
+            "type": "date",
+            "name": ""
+          }
+        ]
+      },
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "id": "weeding",
+      "passed": true,
+      "ms": 192,
+      "state": {
+        "status": {
+          "state": "mounted"
+        },
+        "title": "Désherbage — Koha",
+        "text": "À propos de cette page et vérifications\n Pages & outils internes\nDésherbage\n Accueil Koha\nConfigurer cette page\nDésherbage\n\nScannez directement un document, ou préparez une liste de travail avant le contrôle au rayon. Les critères proposent des candidats ; la décision reste à prendre.\n\nPréparer une liste\nContrôler par scan\nRevoir les décisions\nBilan et session\nScanner / contrôler un exemplaire\nMasquer la fiche\nScan libre\nContrôler ce document\nPrêt à scanner.\nPérimètre et critères\n\nDéfinissez la sélection de travail. Les champs vides ne sont pas pris en compte.\n\nPérimètre\nSite actuel\n— Tous —\nLocalisation\n— Toutes —\nÉtage\n— Tous —\nCollection\n— Toutes —\nType de document\n— Tous —\nDomaine (099$a)\n×\nListe en cours de chargement…\nSous-domaine (099$b)\n×\nFiltré par le domaine sélectionné.\nThème (099$e)\n×\nFiltré par le domaine et le sous-domaine sélectionnés.\nCritères\nCritères 1\nAnnées sans prêt\nChamp vide = ignoré.\nÂge min. pub.\nChamp vide = ignoré.\nÂge min. ex.\nChamp vide = ignoré.\nNb prêt min.\nChamp vide = ignoré.\nNb prêt max.\nChamp vide = ignoré.\nEfficacité 099 maximale\n— Ignorer —\n❌ Faible\n🛏️ Dormant\n⚠️ Moyen\n✅ Bon\n🔥 Excellent\n👑 Exceptionnel\nClasse 099 la plus élevée encore retenue.\n+ Ajouter une condition OU\nDans une même ligne, les critères sont reliés par ET. Les lignes sont reliées entre elles par OU. Champ vide = critère ignoré.\nConstruire / actualiser la liste\nAjouter une liste de codes-barres\nEffacer la liste\nBilan et gestion de la session\n0 scan(s) · 0 en liste\nDocuments traités\n0 document(s)\nAPI 0",
+        "buttons": [
+          {
+            "text": "Vérifier les réglages et les rapports",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Configurer cette page",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Préparer une liste",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Contrôler par scan",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Revoir les décisions",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Bilan et session",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Masquer la fiche",
+            "id": "kwd-terrain-toggle",
+            "title": ""
+          },
+          {
+            "text": "Contrôler ce document",
+            "id": "kwd-scan-btn",
+            "title": ""
+          },
+          {
+            "text": "×",
+            "id": "",
+            "title": "Effacer"
+          },
+          {
+            "text": "×",
+            "id": "",
+            "title": "Effacer"
+          },
+          {
+            "text": "×",
+            "id": "",
+            "title": "Effacer"
+          },
+          {
+            "text": "+ Ajouter une condition OU",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Construire / actualiser la liste",
+            "id": "kwd-analyze-btn",
+            "title": ""
+          },
+          {
+            "text": "Ajouter une liste de codes-barres",
+            "id": "kwd-add-barcodes",
+            "title": ""
+          },
+          {
+            "text": "Effacer la liste",
+            "id": "kwd-prep-clear",
+            "title": ""
+          },
+          {
+            "text": "Cocher les lignes visibles",
+            "id": "kwd-select-visible",
+            "title": ""
+          },
+          {
+            "text": "Désélectionner",
+            "id": "kwd-clear-selection",
+            "title": ""
+          },
+          {
+            "text": "Traiter la sélection",
+            "id": "kwd-batch-treat",
+            "title": ""
+          },
+          {
+            "text": "Colonnes affichées",
+            "id": "kwd-column-toggle",
+            "title": ""
+          },
+          {
+            "text": "Exporter la session",
+            "id": "kwd-export-session",
+            "title": ""
+          },
+          {
+            "text": "Importer une session",
+            "id": "kwd-import-session",
+            "title": ""
+          },
+          {
+            "text": "Nouvelle session",
+            "id": "kwd-reset-session",
+            "title": ""
+          },
+          {
+            "text": "Copier CB Pilon",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Copier CB Réservoir",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Copier CB À revoir",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Copier CB supprimés",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Copier tous les CB modifiés",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Exporter CSV",
+            "id": "kwd-export-csv",
+            "title": ""
+          },
+          {
+            "text": "API 0",
+            "id": "kwd-request-log-toggle",
+            "title": "Afficher le détail des appels à Koha"
+          },
+          {
+            "text": "Effacer le journal",
+            "id": "kwd-clear-request-log",
+            "title": ""
+          }
+        ],
+        "inputs": [
+          {
+            "id": "kwd-barcode",
+            "type": "text",
+            "name": ""
+          },
+          {
+            "id": "kwd-prep-site",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "kwd-prep-location",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "kwd-prep-floor",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "kwd-prep-collection",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "kwd-prep-type",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "kwd-prep-domain",
+            "type": "text",
+            "name": ""
+          },
+          {
+            "id": "kwd-prep-subdomain",
+            "type": "text",
+            "name": ""
+          },
+          {
+            "id": "kwd-prep-theme",
+            "type": "text",
+            "name": ""
+          },
+          {
+            "id": "prep-g0-years_without_loan",
+            "type": "number",
+            "name": ""
+          },
+          {
+            "id": "prep-g0-min_pub_age",
+            "type": "number",
+            "name": ""
+          },
+          {
+            "id": "prep-g0-min_item_age",
+            "type": "number",
+            "name": ""
+          },
+          {
+            "id": "prep-g0-min_issues",
+            "type": "number",
+            "name": ""
+          },
+          {
+            "id": "prep-g0-max_issues",
+            "type": "number",
+            "name": ""
+          },
+          {
+            "id": "prep-g0-max_efficiency",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "kwd-prep-search",
+            "type": "search",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "checkbox",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "checkbox",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "checkbox",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "checkbox",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "checkbox",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "checkbox",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "checkbox",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "checkbox",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "checkbox",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "checkbox",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "checkbox",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "checkbox",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "checkbox",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "checkbox",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "checkbox",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "checkbox",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "checkbox",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "checkbox",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "checkbox",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "checkbox",
+            "name": ""
+          },
+          {
+            "id": "kwd-import-session-file",
+            "type": "file",
+            "name": ""
+          }
+        ]
+      },
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "id": "appointments",
+      "passed": true,
+      "ms": 2790,
+      "state": {
+        "status": {
+          "state": "mounted"
+        },
+        "title": "Rendez-vous réseau / Doodle — Koha",
+        "text": "À propos de cette page et vérifications\n Pages & outils internes\nRendez-vous réseau / Doodle\n Accueil Koha\nConfigurer cette page",
+        "buttons": [
+          {
+            "text": "Vérifier les réglages et les rapports",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Configurer cette page",
+            "id": "",
+            "title": ""
+          }
+        ],
+        "inputs": [],
+        "shadow": "     <div class=\"dk-filterbar\">\n        <div class=\"dk-field\">\n          <label>Thème</label>\n          <select class=\"dk-select\" id=\"dk-filter-theme\">\n            <option value=\"\">Tous les thèmes</option>\n            \n          </select>\n        </div>\n\n        <label class=\"dk-switchline\">\n          <input type=\"checkbox\" id=\"dk-filter-available\" checked=\"\">\n          <span>Disponibles uniquement</span>\n        </label>\n\n        <div class=\"dk-view-toggle\" style=\"margin-left:auto\">\n          <button class=\"dk-btn dk-btn-sm dk-btn-primary\" data-display-mode=\"list\">\n            Liste\n          </button>\n          <button class=\"dk-btn dk-btn-sm dk-btn-light\" data-display-mode=\"week\">\n            Semaine\n          </button>\n        </div>\n\n        \n      </div>\n\n      <div id=\"dk-slots-container\"><div class=\"dk-empty\">Aucun créneau ne correspond aux critères.</div></div>\n    </section>\n  </main>\n    </div>\n  </div>\n  <div id=\"dk-modal-root\"></div>\n  <div class=\"dk-toasts\"></div>\n</div>\n"
+      },
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "id": "authorities",
+      "passed": true,
+      "ms": 110,
+      "state": {
+        "status": {
+          "state": "mounted"
+        },
+        "title": "Maintenance des autorités — Koha",
+        "text": " Pages & outils internes\nMaintenance des autorités\n Accueil Koha\nKOHA · QUALITÉ DES AUTORITÉS\nMaintenance des autorités\n\nDédoublonner, contrôler après fusion, auditer selon vos règles et enrichir si nécessaire.\n\n Autorités Koha\n Référentiel complet\n Charger les doublons\n\nEspaces de travail : le contrôle après fusion suit les fusions ; l’audit et l’enrichissement sont utilisables selon le besoin.\n\n1\nDédoublonnage\nIdentiques & possibles\n2\nAprès fusion\nContrôles & anomalies\n3\nAudit qualité\nRègles configurables\n4\nEnrichissement\nFacultatif\nVedettes identiques\nDoublons possibles\nAutorités sans notice liée\nBilan du référentiel\n Explorateur d’autorités\n Toutes les autorités\nAUTORITÉS\n—\nVEDETTES IDENTIQUES\n—\nDOUBLONS POSSIBLES\n—\nUSAGES VÉRIFIÉS\n—\nORPHELINES TROUVÉES\n—\nTous les types\nRéinitialiser\nAucun chargement automatique. Utilise « Charger les doublons » pour le rapport ciblé ou « Référentiel complet » pour l’analyse globale.",
+        "buttons": [
+          {
+            "text": " Référentiel complet",
+            "id": "dam-load-full",
+            "title": ""
+          },
+          {
+            "text": " Charger les doublons",
+            "id": "dam-reload",
+            "title": ""
+          },
+          {
+            "text": "1DédoublonnageIdentiques & possibles",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "2Après fusionContrôles & anomalies",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "3Audit qualitéRègles configurables",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "4EnrichissementFacultatif",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Vedettes identiques",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Doublons possibles",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Contrôle après fusion",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Liens à vérifier",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Audit qualité",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Autorités sans notice liée",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Bilan du référentiel",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": " Explorateur d’autorités",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": " Toutes les autorités",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Réinitialiser",
+            "id": "dam-reset",
+            "title": ""
+          }
+        ],
+        "inputs": [
+          {
+            "id": "dam-search",
+            "type": "search",
+            "name": ""
+          },
+          {
+            "id": "dam-type",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "dam-unlinked-class",
+            "type": "select-one",
+            "name": ""
+          }
+        ]
+      },
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "id": "inventory",
+      "passed": true,
+      "ms": 369,
+      "state": {
+        "status": {
+          "state": "mounted"
+        },
+        "title": "Inventaire — Koha",
+        "text": "À propos de cette page et vérifications\n Pages & outils internes\nInventaire\n Accueil Koha\nConfigurer cette page\nInventaire autonome v0.4.19\n\nInventaire Koha sans plugin : stockage local, travail par poste, export puis fusion des résultats.\n\nInitialisation…Stockage local prêt · reprise disponible sur ce navigateur.\nINVENTAIRE ACTIF\nAucun inventaire ouvert\nCommencez par créer, ouvrir ou importer un inventaire.\nParcours conseillé : suivez les étapes 1 à 4.\nPARCOURS INVENTAIRE\n1\nInventaires\nCréer, ouvrir ou importer\n2\nPréparer les zones\nPérimètre et contrôles\n3\nScanner\nFaire l’inventaire\n4\nSuivi & clôture\nRésultats, fusion et clôture\nOUTILS\n⌁\nDésherbage rapide\nUtilisable hors inventaire\n⚙\nConfiguration\nModèle des nouveaux inventaires\nChoisir, créer ou importer un inventaire\n\nChaque navigateur possède sa copie locale. Pour travailler sur plusieurs postes, exportez le même inventaire de départ, travaillez séparément, puis réimportez les fichiers sur le poste principal : les scans sont fusionnés par code-barres.\n\nCréer un inventaire\nImporter / fusionner\nAfficher\nTous\nOuverts\nClôturés\nPrincipe : l’inventaire et les scans sont stockés dans IndexedDB sur ce poste. Les données Koha ne servent pas de stockage d’inventaire. Les écritures Koha sont toujours des actions explicites : corrections validées, retours, désherbage ou statuts appliqués aux non-passés.",
+        "buttons": [
+          {
+            "text": "Vérifier les réglages et les rapports",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Configurer cette page",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": " 1 InventairesCréer, ouvrir ou importer ",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": " 2 Préparer les zonesPérimètre et contrôles ",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": " 3 ScannerFaire l’inventaire ",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": " 4 Suivi & clôtureRésultats, fusion et clôture ",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": " ⌁ Désherbage rapideUtilisable hors inventaire ",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": " ⚙ ConfigurationModèle des nouveaux inventaires ",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Créer un inventaire",
+            "id": "btn-show-create",
+            "title": ""
+          },
+          {
+            "text": "Importer / fusionner",
+            "id": "btn-import-inventory",
+            "title": ""
+          },
+          {
+            "text": "Créer",
+            "id": "btn-create-inventory",
+            "title": ""
+          },
+          {
+            "text": "Annuler",
+            "id": "btn-cancel-create",
+            "title": ""
+          },
+          {
+            "text": "Ajouter une zone / localisation",
+            "id": "btn-new-zone",
+            "title": ""
+          },
+          {
+            "text": "Enregistrer la zone",
+            "id": "btn-save-zone",
+            "title": ""
+          },
+          {
+            "text": "Annuler",
+            "id": "btn-cancel-zone",
+            "title": ""
+          },
+          {
+            "text": "Valider",
+            "id": "btn-scan",
+            "title": ""
+          },
+          {
+            "text": "Importer un fichier de codes-barres",
+            "id": "btn-scan-file",
+            "title": ""
+          },
+          {
+            "text": "Arrêter l’import",
+            "id": "btn-cancel-bulk",
+            "title": ""
+          },
+          {
+            "text": "Exporter l’inventaire complet",
+            "id": "btn-export-current",
+            "title": ""
+          },
+          {
+            "text": "Exporter les scans CSV",
+            "id": "btn-export-csv",
+            "title": ""
+          },
+          {
+            "text": "1. Prévisualiser",
+            "id": "btn-preview-loans",
+            "title": ""
+          },
+          {
+            "text": "2. Appliquer",
+            "id": "btn-apply-loans",
+            "title": ""
+          },
+          {
+            "text": "Calculer / recalculer les non-passés",
+            "id": "btn-preview-missing",
+            "title": ""
+          },
+          {
+            "text": "Exporter CSV",
+            "id": "btn-export-missing",
+            "title": ""
+          },
+          {
+            "text": "Enregistrer ces statuts pour l’inventaire",
+            "id": "btn-save-missing-policy",
+            "title": ""
+          },
+          {
+            "text": "Choisir un statut à appliquer",
+            "id": "btn-apply-missing",
+            "title": ""
+          },
+          {
+            "text": "Actualiser",
+            "id": "btn-refresh-report",
+            "title": ""
+          },
+          {
+            "text": "Exporter le tableau CSV",
+            "id": "btn-export-report-csv",
+            "title": ""
+          },
+          {
+            "text": "Erreurs détaillées CSV",
+            "id": "btn-export-errors-csv",
+            "title": ""
+          },
+          {
+            "text": "Statistiques JSON",
+            "id": "btn-export-stats-json",
+            "title": ""
+          },
+          {
+            "text": "Rapport prêt à transmettre",
+            "id": "btn-export-final-report",
+            "title": ""
+          },
+          {
+            "text": "Synthèse finale CSV",
+            "id": "btn-export-final-summary-csv",
+            "title": ""
+          },
+          {
+            "text": "Clôturer l’inventaire",
+            "id": "btn-close-inventory",
+            "title": ""
+          },
+          {
+            "text": "Rouvrir",
+            "id": "btn-reopen-inventory",
+            "title": ""
+          },
+          {
+            "text": "Valider",
+            "id": "btn-quick-scan",
+            "title": ""
+          },
+          {
+            "text": "Fichier de codes-barres",
+            "id": "btn-quick-file",
+            "title": ""
+          },
+          {
+            "text": "Arrêter",
+            "id": "btn-quick-cancel",
+            "title": ""
+          },
+          {
+            "text": "Ajouter une liste",
+            "id": "btn-add-extra-av",
+            "title": ""
+          },
+          {
+            "text": "Ajouter une colonne",
+            "id": "btn-add-error-map",
+            "title": ""
+          },
+          {
+            "text": "Exporter la configuration",
+            "id": "btn-export-config",
+            "title": ""
+          },
+          {
+            "text": "Importer une configuration",
+            "id": "btn-import-config",
+            "title": ""
+          },
+          {
+            "text": "Enregistrer la configuration",
+            "id": "btn-save-settings",
+            "title": ""
+          }
+        ],
+        "inputs": [
+          {
+            "id": "inventory-status-filter",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "import-file",
+            "type": "file",
+            "name": ""
+          },
+          {
+            "id": "new-name",
+            "type": "text",
+            "name": ""
+          },
+          {
+            "id": "new-branch",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "new-start-date",
+            "type": "date",
+            "name": ""
+          },
+          {
+            "id": "new-branch-basis",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "new-consider-loans",
+            "type": "checkbox",
+            "name": ""
+          },
+          {
+            "id": "new-update-last-seen",
+            "type": "checkbox",
+            "name": ""
+          },
+          {
+            "id": "new-notes",
+            "type": "text",
+            "name": ""
+          },
+          {
+            "id": "zone-uuid",
+            "type": "hidden",
+            "name": ""
+          },
+          {
+            "id": "zone-label",
+            "type": "text",
+            "name": ""
+          },
+          {
+            "id": "zone-location",
+            "type": "select-multiple",
+            "name": ""
+          },
+          {
+            "id": "zone-public",
+            "type": "select-multiple",
+            "name": ""
+          },
+          {
+            "id": "zone-itype",
+            "type": "select-multiple",
+            "name": ""
+          },
+          {
+            "id": "zone-expected-homebranch",
+            "type": "select-multiple",
+            "name": ""
+          },
+          {
+            "id": "zone-expected-holdingbranch",
+            "type": "select-multiple",
+            "name": ""
+          },
+          {
+            "id": "zone-expected-location",
+            "type": "select-multiple",
+            "name": ""
+          },
+          {
+            "id": "zone-expected-lost",
+            "type": "select-multiple",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "number",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "number",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "number",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "number",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "number",
+            "name": ""
+          },
+          {
+            "id": "scan-zone-select",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "barcode-input",
+            "type": "text",
+            "name": ""
+          },
+          {
+            "id": "barcode-file",
+            "type": "file",
+            "name": ""
+          },
+          {
+            "id": "scan-apply-weeding",
+            "type": "checkbox",
+            "name": ""
+          },
+          {
+            "id": "loans-zone-select",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "missing-zone-select",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "missing-inv-notloan",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "missing-inv-lost",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "number",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "number",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "number",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "number",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "number",
+            "name": ""
+          },
+          {
+            "id": "quick-barcode",
+            "type": "text",
+            "name": ""
+          },
+          {
+            "id": "quick-file",
+            "type": "file",
+            "name": ""
+          },
+          {
+            "id": "quick-auto-apply",
+            "type": "checkbox",
+            "name": ""
+          },
+          {
+            "id": "set-branch-basis",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "set-consider-loans",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "set-update-last-seen",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "set-av-loc",
+            "type": "text",
+            "name": ""
+          },
+          {
+            "id": "set-av-ccode",
+            "type": "text",
+            "name": ""
+          },
+          {
+            "id": "set-av-public",
+            "type": "text",
+            "name": ""
+          },
+          {
+            "id": "set-av-sousloc",
+            "type": "text",
+            "name": ""
+          },
+          {
+            "id": "set-av-etage",
+            "type": "text",
+            "name": ""
+          },
+          {
+            "id": "set-av-notloan",
+            "type": "text",
+            "name": ""
+          },
+          {
+            "id": "set-av-lost",
+            "type": "text",
+            "name": ""
+          },
+          {
+            "id": "set-public-marc-subfield",
+            "type": "text",
+            "name": ""
+          },
+          {
+            "id": "set-sousloc-item-subfield",
+            "type": "text",
+            "name": ""
+          },
+          {
+            "id": "set-public-marc-tag",
+            "type": "text",
+            "name": ""
+          },
+          {
+            "id": "set-clear-lost",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "set-clear-notloan",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "set-auto-weeding",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "set-sounds",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "set-missing-notloan",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "set-missing-lost",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "set-weeding-notloan",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "set-weeding-lost",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "import-config-file",
+            "type": "file",
+            "name": ""
+          }
+        ]
+      },
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "id": "reservations",
+      "passed": true,
+      "ms": 295,
+      "state": {
+        "status": {
+          "state": "mounted"
+        },
+        "title": "Maintenance des réservations — Koha",
+        "text": "À propos de cette page et vérifications\n Pages & outils internes\nMaintenance des réservations\n Accueil Koha\nConfigurer cette page\nKOHA · QUALITÉ DU CATALOGUE\nMaintenance des réservations\n\nLes réservations à vérifier, leur cause probable et l’action proposée, dans une seule liste.\n\n Charger et analyser\nExporter\nRéservations\nRéglages\nDécisions locales · 0 cas actuel(s)\nRÉSERVATIONS CHARGÉES\n0\nDOSSIERS À EXAMINER\n0\nINTERVENTION NÉCESSAIRE\n0\nNOTICES RESTANT À ANALYSER\n0\nAfficher \nÀ examiner\nToutes les réservations\nToutes les alertes\nIntervention nécessaire\nBlocage probable\nToutes les alertes critiques\nÀ vérifier\nÀ examiner\nSans alerte\nExclues des règles\nTous statuts\nEn file d’attente\nMise de côté\nEn transit\nEn traitement\nSuspendue\nTous sites de retrait\nTout âge\n≥ 30 j\n≥ 60 j\n≥ 90 j\n≥ 180 j\nRéinitialiser\nAucun chargement automatique. Cliquez sur « Charger et analyser » pour commencer.",
+        "buttons": [
+          {
+            "text": "Vérifier les réglages et les rapports",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Configurer cette page",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": " Charger et analyser",
+            "id": "dqr-refresh",
+            "title": ""
+          },
+          {
+            "text": " Arrêter",
+            "id": "dqr-stop",
+            "title": ""
+          },
+          {
+            "text": "Liste avec les conseils · CSV",
+            "id": "dqr-export-actions",
+            "title": ""
+          },
+          {
+            "text": " Réservations affichées · CSV",
+            "id": "dqr-export",
+            "title": ""
+          },
+          {
+            "text": " Toutes les données chargées · JSON rapide",
+            "id": "dqr-export-quick",
+            "title": "Télécharge immédiatement toutes les réservations déjà chargées, sans nouvelle requête. Inclut les détails déjà analysés et indique les données manquantes."
+          },
+          {
+            "text": " JSON approfondi (lent)",
+            "id": "dqr-export-analysis",
+            "title": "Recharge toutes les réservations puis analyse chaque dossier. Peut prendre plusieurs minutes ; Arrêter produit un export partiel."
+          },
+          {
+            "text": "Réservations",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Réglages",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Toutes les annuler",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Réinitialiser",
+            "id": "dqr-reset",
+            "title": ""
+          }
+        ],
+        "inputs": [
+          {
+            "id": "dqr-view-scope",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "dqr-search",
+            "type": "search",
+            "name": ""
+          },
+          {
+            "id": "dqr-severity",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "dqr-status-filter",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "dqr-pickup",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "dqr-age",
+            "type": "select-one",
+            "name": ""
+          }
+        ]
+      },
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "id": "loans",
+      "passed": true,
+      "ms": 261,
+      "state": {
+        "status": {
+          "state": "mounted"
+        },
+        "title": "Prêts & litiges — Koha",
+        "text": "À propos de cette page et vérifications\n Pages & outils internes\nPrêts & litiges\n Accueil Koha\nConfigurer cette page\nKOHA · QUALITÉ DU CATALOGUE\nPrêts & litiges\n\nRendre visibles les prêts très anciens ou figés, les réclamations de retour et les états contradictoires, sans jamais inventer un retour.\n\n Charger les prêts\n Arrêter\n Export CSV\nParcours principal · chaque espace reste accessible directement\n1 · Vue d’ensemble\nCharger et situer\n2 · Examiner les dossiers\nContrôler et sélectionner\n3 · Préparer les actions\nRésolution des litiges\nOutils :\nExplorer les situations\nRéglages\nDécisions locales · 0 dossier(s) actuel(s), 0 mémorisé(s). Les cas reconnus normaux sont masqués tant que les données et contrôles restent identiques. « Surveiller » conserve l’alerte. Toutes les annuler\nRevoir ou annuler une décision\nPRÊTS ACTIFS\n0\nCRITIQUES\n0\nÀ VÉRIFIER\n0\nANALYSE APPROFONDIE\n0\nSÉLECTION\n0\nToutes classes\nCritiques\nÀ vérifier\nAtypiques\nSans alerte\nToutes bibliothèques de prêt\nTout âge\n≥ 180 j\n≥ 1 an\n≥ 2 ans\n≥ 3 ans\n≥ 5 ans\nAucune recherche lancée. Clique sur « Charger les prêts » pour interroger Koha. Rien n’est chargé automatiquement à l’ouverture de cette page.",
+        "buttons": [
+          {
+            "text": "Vérifier les réglages et les rapports",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Configurer cette page",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": " Charger les prêts",
+            "id": "dql-refresh",
+            "title": ""
+          },
+          {
+            "text": " Arrêter",
+            "id": "dql-stop",
+            "title": ""
+          },
+          {
+            "text": " Export CSV",
+            "id": "dql-export",
+            "title": ""
+          },
+          {
+            "text": "1 · Vue d’ensembleCharger et situer",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "2 · Examiner les dossiersContrôler et sélectionner",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "3 · Préparer les actionsRésolution des litiges",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Explorer les situations",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Réglages",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Toutes les annuler",
+            "id": "",
+            "title": ""
+          }
+        ],
+        "inputs": [
+          {
+            "id": "dql-search",
+            "type": "search",
+            "name": ""
+          },
+          {
+            "id": "dql-severity",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "dql-library",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "dql-age",
+            "type": "select-one",
+            "name": ""
+          }
+        ]
+      },
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "id": "transfers",
+      "passed": true,
+      "ms": 208,
+      "state": {
+        "status": {
+          "state": "mounted"
+        },
+        "title": "Transferts / navette — Koha",
+        "text": "À propos de cette page et vérifications\n Pages & outils internes\nTransferts / navette\n Accueil Koha\nConfigurer cette page\nTransferts / navette\n\nSituation, cause probable et action proposée, dans une seule liste.\n\nCharger et analyser\nExporter\nTransferts\nRéglages\nDécisions locales · 0 cas actuel(s)\nTRANSFERTS CHARGÉS\n0\nÀ EXAMINER\n0\nINTERVENTION NÉCESSAIRE\n0\nAfficher \nÀ examiner\nTous les transferts\nToutes les alertes\nIntervention nécessaire\nBlocage probable\nCritiques\nÀ vérifier\nÀ examiner\nSans alerte\nExclus\nToutes origines\nToutes destinations\nToutes raisons\nEffacer les filtres\nTransferts\n\n0 dossier(s) affiché(s) sur 0 chargé(s). Les dossiers sans alerte et exclus sont masqués. Choisissez « Tous les transferts » pour vérifier le classement.\n\nLes estimations proviennent du même planning que le widget des services. Elles ne remplacent jamais les événements enregistrés dans Koha.\n\n0 sélectionné(s)\nSélectionner la page\nSélection étendue\nAucun dossier avec les filtres actuels. Chargez les transferts ou choisissez Tous les transferts.\nPrécédent\nPage 1/1 · 0 dossier(s)\nSuivant",
+        "buttons": [
+          {
+            "text": "Vérifier les réglages et les rapports",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Configurer cette page",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Charger et analyser",
+            "id": "dqtr-refresh",
+            "title": ""
+          },
+          {
+            "text": "Arrêter",
+            "id": "dqtr-stop",
+            "title": ""
+          },
+          {
+            "text": "Liste affichée et conseils · CSV",
+            "id": "dqtr-export",
+            "title": ""
+          },
+          {
+            "text": "Toutes les données chargées · JSON",
+            "id": "dqtr-json",
+            "title": ""
+          },
+          {
+            "text": "Transferts",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Réglages",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Toutes les annuler",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Effacer les filtres",
+            "id": "dqtr-reset",
+            "title": ""
+          },
+          {
+            "text": "Sélectionner la page",
+            "id": "sel-page",
+            "title": ""
+          },
+          {
+            "text": "Tous les résultats filtrés",
+            "id": "sel-filter",
+            "title": ""
+          },
+          {
+            "text": "Précédent",
+            "id": "dqtr-prev",
+            "title": ""
+          },
+          {
+            "text": "Suivant",
+            "id": "dqtr-next",
+            "title": ""
+          }
+        ],
+        "inputs": [
+          {
+            "id": "dqtr-scope",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "dqtr-search",
+            "type": "text",
+            "name": ""
+          },
+          {
+            "id": "dqtr-severity",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "dqtr-from",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "dqtr-to",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "dqtr-reason",
+            "type": "select-one",
+            "name": ""
+          }
+        ]
+      },
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "id": "items",
+      "passed": true,
+      "ms": 192,
+      "state": {
+        "status": {
+          "state": "mounted"
+        },
+        "title": "Maintenance des exemplaires — Koha",
+        "text": "À propos de cette page et vérifications\n Pages & outils internes\nMaintenance des exemplaires\n Accueil Koha\nConfigurer cette page\nQUALITÉ KOHA · EXEMPLAIRES\nMaintenance des exemplaires\n\nIntégrité, états figés, cohérence notice/exemplaires et préparation des traitements de masse.\n\nCharger les exemplaires\nArrêter\nParcours principal · chaque espace reste accessible directement\n1 · Vue d’ensemble\nCharger et situer\n2 · Examiner les dossiers\nContrôler et sélectionner\n3 · Préparer les actions\nSélection et vérification\nOutils :\nExplorer les situations\nRéglages\nDécisions locales · 0 dossier(s) actuel(s), 0 mémorisé(s). Les cas reconnus normaux sont masqués tant que les données et contrôles restent identiques. « Surveiller » conserve l’alerte. Toutes les annuler\nRevoir ou annuler une décision\nCHARGÉS\n0\nCRITIQUES\n0\nÀ VÉRIFIER\n0\nATYPIQUES\n0\nAPPROFONDIS\n0\nPrincipe\n\nLe chargement global utilise l'API REST Koha en pages de 500, strictement séquencées. Les contrôles relationnels (prêt, transfert, réservation, litige) ne sont chargés que pour une sélection.\n\nPerdus anciens\n0\nRetirés anciens\n0\nJamais vus ≥ 5 ans\n0\nCodes-barres dupliqués\n0\nMinorités notice\n0",
+        "buttons": [
+          {
+            "text": "Vérifier les réglages et les rapports",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Configurer cette page",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Charger les exemplaires",
+            "id": "dqi-load",
+            "title": ""
+          },
+          {
+            "text": "Arrêter",
+            "id": "dqi-stop",
+            "title": ""
+          },
+          {
+            "text": "1 · Vue d’ensembleCharger et situer",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "2 · Examiner les dossiersContrôler et sélectionner",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "3 · Préparer les actionsSélection et vérification",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Explorer les situations",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Réglages",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Toutes les annuler",
+            "id": "",
+            "title": ""
+          }
+        ],
+        "inputs": []
+      },
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "id": "biblios",
+      "passed": true,
+      "ms": 164,
+      "state": {
+        "status": {
+          "state": "mounted"
+        },
+        "title": "Qualité du catalogue bibliographique — Koha",
+        "text": "À propos de cette page et vérifications\n Pages & outils internes\nQualité du catalogue bibliographique\n Accueil Koha\nConfigurer cette page\nQUALITÉ KOHA · NOTICES\nQualité du catalogue bibliographique\n\nDoublons, audit UNIMARC, notices fantômes, enrichissement assisté et traitements contrôlés.\n\nCharger les notices\nArrêter\nParcours principal · chaque espace reste accessible directement\n1 · Vue d’ensemble\nCharger et situer\n2 · Contrôler les notices\nAudit MARC et sélection\n3 · Examiner les doublons\nComparer les notices\n4 · Préparer les actions\nVérification et traitement\nOutils :\nSans exemplaire\nComparer avec la BnF\nRéglages\nDécisions locales · 0 dossier(s) actuel(s), 0 mémorisé(s). Les cas reconnus normaux sont masqués tant que les données et contrôles restent identiques. « Surveiller » conserve l’alerte. Toutes les annuler\nRevoir ou annuler une décision\nNOTICES\n0\nGROUPES DOUBLONS\n0\nAUDITÉES MARC\n0\nCRITIQUES\n0\nÀ VÉRIFIER\n0\nUNIMARC/B : l'audit traite 001, 100, 200$a et 801 comme éléments obligatoires du format d'échange ; les contrôles plus dépendants du type de document restent volontairement en classe « atypique » ou « à vérifier ».\nDoublons par ISBN / signature\n0\nNotices sans exemplaire auditées\n0\nISBN invalides audités\n0\nLiens auteurs à améliorer\n0\nRésumé absent\n0",
+        "buttons": [
+          {
+            "text": "Vérifier les réglages et les rapports",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Configurer cette page",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Charger les notices",
+            "id": "load",
+            "title": ""
+          },
+          {
+            "text": "Arrêter",
+            "id": "stop",
+            "title": ""
+          },
+          {
+            "text": "1 · Vue d’ensembleCharger et situer",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "2 · Contrôler les noticesAudit MARC et sélection",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "3 · Examiner les doublonsComparer les notices",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "4 · Préparer les actionsVérification et traitement",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Sans exemplaire",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Comparer avec la BnF",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Réglages",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Toutes les annuler",
+            "id": "",
+            "title": ""
+          }
+        ],
+        "inputs": []
+      },
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "id": "serials",
+      "passed": true,
+      "ms": 192,
+      "state": {
+        "status": {
+          "state": "mounted"
+        },
+        "title": "Maintenance des périodiques — Koha",
+        "text": "À propos de cette page et vérifications\n Pages & outils internes\nMaintenance des périodiques\n Accueil Koha\nConfigurer cette page\nQUALITÉ KOHA · PÉRIODIQUES\nMaintenance des périodiques\n\nAbonnements expirés, fascicules attendus, réclamations et situations figées.\n\nCharger le rapport\nParcours principal · chaque espace reste accessible directement\n1 · Vue d’ensemble\nCharger et situer\n2 · Examiner les dossiers\nContrôler et sélectionner\n3 · Préparer les lots\nSélection et vérification\nOutils :\nExplorer les situations\nRéglages\nDécisions locales · 0 dossier(s) actuel(s), 0 mémorisé(s). Les cas reconnus normaux sont masqués tant que les données et contrôles restent identiques. « Surveiller » conserve l’alerte. Toutes les annuler\nRevoir ou annuler une décision\nABONNEMENTS\n0\nCRITIQUES\n0\nÀ VÉRIFIER\n0\nATTENDUS EN RETARD\n0\nRÉCLAMÉS\n0\nFraîcheur : Rapport non chargé.\nCe module utilise un rapport SQL lecture seule parce que Koha ne fournit pas une liste REST globale équivalente pour les abonnements/fascicules. Les modifications restent dans les écrans natifs Périodiques.\nActifs expirés\n0\nFascicules attendus\n0\nAttendus en retard\n0\nManquants\n0\nRéclamations\n0",
+        "buttons": [
+          {
+            "text": "Vérifier les réglages et les rapports",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Configurer cette page",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Charger le rapport",
+            "id": "load",
+            "title": ""
+          },
+          {
+            "text": "1 · Vue d’ensembleCharger et situer",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "2 · Examiner les dossiersContrôler et sélectionner",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "3 · Préparer les lotsSélection et vérification",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Explorer les situations",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Réglages",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Toutes les annuler",
+            "id": "",
+            "title": ""
+          }
+        ],
+        "inputs": []
+      },
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "id": "patrons",
+      "passed": true,
+      "ms": 210,
+      "state": {
+        "status": {
+          "state": "mounted"
+        },
+        "title": "Qualité des comptes lecteurs — Koha",
+        "text": "À propos de cette page et vérifications\n Pages & outils internes\nQualité des comptes lecteurs\n Accueil Koha\nConfigurer cette page\nQUALITÉ KOHA · LECTEURS\nQualité des comptes lecteurs\n\nDoublons, coordonnées, comptes expirés et préparation des traitements de conservation.\n\nCharger les lecteurs\nArrêter\nAucune recherche lancée. Clique sur « Charger les lecteurs » pour interroger Koha.\nParcours principal · chaque espace reste accessible directement\n1 · Vue d’ensemble\nCharger et situer\n2 · Examiner les dossiers\nContrôler et sélectionner\n3 · Préparer les actions\nSélection et vérification\nOutils :\nDoublons et comptes liés\nRéglages\nDécisions locales · 0 dossier(s) actuel(s), 0 mémorisé(s). Les cas reconnus normaux sont masqués tant que les données et contrôles restent identiques. « Surveiller » conserve l’alerte. Toutes les annuler\nRevoir ou annuler une décision\nLECTEURS\n0\nCRITIQUES\n0\nÀ VÉRIFIER\n0\nEXPIRÉS\n0\nDOUBLONS IDENTITÉ\n0\nRGPD : toutes les données lecteur restent exclusivement dans Koha et dans le navigateur. Aucun partage externe n’est effectué par cette page.\nExpirés > 3 ans\n0\nSans contact\n0\nEmails invalides\n0\nIdentités dupliquées\n0\nApprofondis\n0",
+        "buttons": [
+          {
+            "text": "Vérifier les réglages et les rapports",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Configurer cette page",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Charger les lecteurs",
+            "id": "load",
+            "title": ""
+          },
+          {
+            "text": "Arrêter",
+            "id": "stop",
+            "title": ""
+          },
+          {
+            "text": "1 · Vue d’ensembleCharger et situer",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "2 · Examiner les dossiersContrôler et sélectionner",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "3 · Préparer les actionsSélection et vérification",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Doublons et comptes liés",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Réglages",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Toutes les annuler",
+            "id": "",
+            "title": ""
+          }
+        ],
+        "inputs": []
+      },
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "id": "quality-center",
+      "passed": true,
+      "ms": 172,
+      "state": {
+        "status": {
+          "state": "mounted"
+        },
+        "title": "Centre qualité Koha — Koha",
+        "text": "À propos de cette page et vérifications\n Pages & outils internes\nCentre qualité Koha\n Accueil Koha\nConfigurer cette page\nKOHA · CONTRÔLES ET MAINTENANCE\nCentre qualité Koha\n\nChoisissez le domaine à examiner. Les réglages et les actions restent propres à chaque outil.\n\n01Maintenance des autorités\n\nDoublons, fusions, orphelines, relink et audit des autorités.\n\nContrôles Koha\nAucune analyse enregistrée\n\nDernière fin : inconnue · Prérequis : Accès Koha correspondant\n\nOuvrir\n02Maintenance des réservations\n\nRepérer les réservations qui nécessitent un examen et préparer leur traitement.\n\nContrôles Koha\nAucune analyse enregistrée\n\nDernière fin : inconnue · Prérequis : API REST et droits sur les réservations\n\nOuvrir\nConfigurer\n03Prêts & litiges\n\nExaminer les prêts anciens, retards et réclamations.\n\nContrôles Koha\nAucune analyse enregistrée\n\nDernière fin : inconnue · Prérequis : API REST et droits sur les prêts\n\nOuvrir\nConfigurer\n04Transferts / navette\n\nSurveiller les demandes de transfert et les documents en transit entre sites.\n\nRapport SQL 8\nAucune analyse enregistrée\n\nDernière fin : inconnue · Prérequis : Rapport SQL des transferts\n\nOuvrir\nConfigurer\n05Maintenance des exemplaires\n\nRepérer les statuts figés et incohérences des exemplaires.\n\nContrôles Koha\nAucune analyse enregistrée\n\nDernière fin : inconnue · Prérequis : API REST et droits sur les exemplaires\n\nOuvrir\nConfigurer\n06Qualité du catalogue bibliographique\n\nExaminer la qualité des notices et préparer les corrections de catalogue.\n\nContrôles Koha\nAucune analyse enregistrée\n\nDernière fin : inconnue · Prérequis : API REST et droits sur les notices\n\nOuvrir\nConfigurer\n07Maintenance des périodiques\n\nExaminer abonnements échus, fascicules attendus, réclamations et inactivité.\n\nRapport SQL 3\nAucune analyse enregistrée\n\nDernière fin : inconnue · Prérequis : Rapport SQL des abonnements\n\nOuvrir\nConfigurer\n08Qualité des comptes lecteurs\n\nContrôler les comptes expirés, contacts et doublons potentiels.\n\nContrôles Koha\nAucune analyse enregistrée\n\nDernière fin : inconnue · Prérequis : API REST et droits sur les adhérents\n\nOuvrir\nConfigurer\n\nCette synthèse lit uniquement les dates et résultats enregistrés par les moteurs de chaque page. Elle ne relance, ne recalcule et ne duplique aucune analyse.\n\nFonctionnement\n\nCette page ne charge aucun dossier métier. Les contrôles reposent sur les règles et seuils configurés ; les décisions locales existantes sont conservées.\n\nLes rapports et les permissions de cette installation doivent être disponibles pour lancer les analyses concernées. La page Autorités est conservée inchangée.",
+        "buttons": [
+          {
+            "text": "Vérifier les réglages et les rapports",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Configurer cette page",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Configurer",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Configurer",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Configurer",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Configurer",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Configurer",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Configurer",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Configurer",
+            "id": "",
+            "title": ""
+          }
+        ],
+        "inputs": []
+      },
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "id": "bulk-framework-change",
+      "passed": true,
+      "ms": 1092,
+      "state": {
+        "status": {
+          "state": "mounted"
+        },
+        "title": "Modification de grille par lot — Koha",
+        "text": "À propos de cette page et vérifications\n Pages & outils internes\nModification de grille par lot\n Accueil Koha\nConfigurer cette page\n Modification de grille par lot\nChange la grille de catalogage de plusieurs notices à partir de numéros de notice ou de codes-barres d'exemplaires.\nPimpMyKoha · 1.1.0-preplugin\n1. Sélectionner les notices\n Numéros de notice\n Codes-barres d'exemplaires\nUn numéro de notice par ligne\n Analyser le lot\nRéinitialiser\nLes doublons sont éliminés. Avec les codes-barres, plusieurs exemplaires d'une même notice ne produiront qu'une seule modification.",
+        "buttons": [
+          {
+            "text": "Vérifier les réglages et les rapports",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Configurer cette page",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "\n                         Analyser le lot\n                    ",
+            "id": "pmk-bfc-analyze",
+            "title": ""
+          },
+          {
+            "text": "\n                        Réinitialiser\n                    ",
+            "id": "pmk-bfc-reset",
+            "title": ""
+          },
+          {
+            "text": "\n                        \n                        Modifier les grilles\n                    ",
+            "id": "pmk-bfc-run",
+            "title": ""
+          },
+          {
+            "text": "\n                        Arrêter\n                    ",
+            "id": "pmk-bfc-stop",
+            "title": ""
+          },
+          {
+            "text": "\n                        Reprendre les échecs techniques\n                    ",
+            "id": "pmk-bfc-retry",
+            "title": ""
+          },
+          {
+            "text": "\n                        Exporter le rapport CSV\n                    ",
+            "id": "pmk-bfc-export",
+            "title": ""
+          }
+        ],
+        "inputs": [
+          {
+            "id": "",
+            "type": "radio",
+            "name": "pmk_bfc_mode"
+          },
+          {
+            "id": "",
+            "type": "radio",
+            "name": "pmk_bfc_mode"
+          },
+          {
+            "id": "pmk-bfc-target-framework",
+            "type": "select-one",
+            "name": ""
+          }
+        ]
+      },
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "id": "xslt-assistant",
+      "passed": true,
+      "ms": 612,
+      "state": {
+        "status": {
+          "state": "mounted"
+        },
+        "title": "Éditeur XSLT — Koha",
+        "text": " Pages & outils internes\nÉditeur XSLT\n Accueil Koha\nConfigurer cette page\n Ouvrir l’éditeur XSLT",
+        "buttons": [
+          {
+            "text": "Configurer cette page",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": " Ouvrir l’éditeur XSLT",
+            "id": "",
+            "title": ""
+          }
+        ],
+        "inputs": []
+      },
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "id": "bibliography-builder",
+      "passed": true,
+      "ms": 12468,
+      "state": {
+        "status": {
+          "state": "mounted"
+        },
+        "title": "Bibliographies & publications — Koha",
+        "text": "À propos de cette page et vérifications\n Pages & outils internes\nBibliographies & publications\n Accueil Koha\nConfigurer cette page\n← Koha\nBibliographies & publications\nActualiser les données\n Enregistrer le modèle\n Imprimer / PDF\nSOURCE\nListe\n0 entrée(s) chargée(s)\nMode de rendu\nUne fiche par notice\nUne fiche par exemplaire\nNotice + exemplaires\nCONTENU PUBLIÉ\n0/0 notice(s) affichée(s)\n Choisir les documents / exemplaires\nDOCUMENT\nTitre de la publication\n Afficher les numéros de notices\nDécochez pour masquer tous les blocs « N° notice » du rendu, sans modifier le modèle.\nModèle\nBibliographie classique\nNouveautés illustrées\nSélection / Coup de cœur\nCatalogue compact\nCatalogue d’exposition\nListe d’exemplaires\nNouveautés par bibliothèque\nBibliographie thématique\nCodes-barres scannables\nDupliquer\nExporter\nImporter\nMISE EN PAGE\nColonnes\nMarge (mm)\nOrientation\nPortrait\nPaysage\nORGANISATION\nTri\nTitre\nSous-titre\nAuteur / responsabilité principale\nÉditeur (API)\nÉditeur (210$c / 214$c)\nAnnée / date d’édition (210$d / 214$d)\nRésumé (330$a)\nCollection (225$a)\nISBN (010$a)\nPublic (999$q)\nSous-localisation locale (999$y)\nSupport / medium\nNuméro de partie\nNom de partie\nTitre uniforme\nTitre de série / collection\nDate de publication / copyright\nAbstract API (si présent)\nNotes\nDate de création de la notice\nDernière modification de la notice\nGrille / framework\nN° notice\nLien catalogue\nCode-barres exemplaire\nN° exemplaire\nCote\nSite propriétaire\nSite actuel\nLocalisation\nLocalisation permanente\nType de document\nStatut / exclusion du prêt\nPerdu\nEndommagé\nRetiré des collections\nDate d’acquisition\nPrix d’achat\nPrix de remplacement\nDernier prêt\nDernière vue\nRegrouper par\nAucun regroupement\nTitre\nSous-titre\nAuteur / responsabilité principale\nÉditeur (API)\nÉditeur (210$c / 214$c)\nAnnée / date d’édition (210$d / 214$d)\nRésumé (330$a)\nCollection (225$a)\nISBN (010$a)\nPublic (999$q)\nSous-localisation locale (999$y)\nSupport / medium\nNuméro de partie\nNom de partie\nTitre uniforme\nTitre de série / collection\nDate de publication / copyright\nAbstract API (si présent)\nNotes\nDate de création de la notice\nDernière modification de la notice\nGrille / framework\nN° notice\nLien catalogue\nCode-barres exemplaire\nN° exemplaire\nCote\nSite propriétaire\nSite actuel\nLocalisation\nLocalisation permanente\nType de document\nStatut / exclusion du prêt\nPerdu\nEndommagé\nRetiré des collections\nDate d’acquisition\nPrix d’achat\nPrix de remplacement\nDernier prêt\nDernière vue\nFiltre texte\nBLOCS\n⋮⋮\nCouverture\nbiblio.cover\n×\n⋮⋮\nTitre\nbiblio.title\n×\n⋮⋮\nAuteur\nbiblio.author\n×\n⋮⋮\nÉditeur\nbiblio.publisher\n×\n⋮⋮\nAnnée\nbiblio.publication_year\n×\n⋮⋮\nRésumé (330$a)\nbiblio.summary\n×\n⋮⋮\nExemplaires\nitems\n×\n⋮⋮\nLien vers la notice\nbiblio.link\n×\nTexte libre\nBadge\nSéparateur\nCouverture\nQR code catalogue\nLien vers la notice\nTitre\nSous-titre\nAuteur / responsabilité\nÉditeur (210$c / 214$c)\nAnnée / date d’édition (210$d / 214$d)\nCollection (225$a)\nISBN (010$a)\nRésumé (330$a)\nPublic (999$q)\nSous-localisation (999$y)\nSérie (API)\nNotes\nSupport / medium\nNuméro de partie\nNom de partie\nTitre uniforme\nN° notice\nLien catalogue\nCode-barres exemplaire — texte\nCode-barres exemplaire — scannable\nCote\nSite propriétaire\nSite actuel\nLocalisation\nLocalisation permanente\nType de document\nStatut / exclusion du prêt\nDate d’acquisition\nPrix d’achat\nPrix de remplacement\nDernier prêt\nDernière vue\nDétails exemplaires — compact\nTableau détaillé des exemplaires\nAjouter\nBibliographie\nAucun résultat à afficher.\nCOUVERTURE\nLibellé interne\nTaille\nGraisse\nNormal\nSemi-gras\nGras\nAlignement\nGauche\nCentre\nDroite\nJustifié\nLargeur px\nHauteur px\nHabillage / positionnement\nDans le flux\nFlottant à gauche — texte à droite\nFlottant à droite — texte à gauche\nPleine largeur — texte au-dessus/dessous\nEn ligne / côte à côte\nLargeur du bloc (%)\nEspace autour (mm)\n Revenir sous les éléments flottants avant ce bloc\n Masquer si vide\n Italique\n Couleur secondaire",
+        "buttons": [
+          {
+            "text": "Vérifier les réglages et les rapports",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Configurer cette page",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "← Koha",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Actualiser les données",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": " Enregistrer le modèle",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": " Imprimer / PDF",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "\n                    \n                    Choisir les documents / exemplaires\n                ",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Dupliquer",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Exporter",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Importer",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "×",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "×",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "×",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "×",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "×",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "×",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "×",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "×",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Ajouter",
+            "id": "",
+            "title": ""
+          }
+        ],
+        "inputs": [
+          {
+            "id": "",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "text",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "checkbox",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "file",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "number",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "number",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "text",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "text",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "number",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "number",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "number",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "number",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "number",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "checkbox",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "checkbox",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "checkbox",
+            "name": ""
+          },
+          {
+            "id": "",
+            "type": "checkbox",
+            "name": ""
+          }
+        ]
+      },
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "id": "overdue-management",
+      "passed": true,
+      "ms": 606,
+      "state": {
+        "status": {
+          "state": "mounted"
+        },
+        "title": "Gestion des retards TP4 — Koha",
+        "text": "À propos de cette page et vérifications\n Pages & outils internes\nGestion des retards TP4\n Accueil Koha\nConfigurer cette page\nGestion des retards TP4\n\nConsulter et traiter les dossiers dans Koha.\n\n← Pages & outils internes\nAccueil Koha\nSite du lecteur\nTous les sites\nCenterville\nFairfield\nFairview\nFranklin\nInstitut Protestant de Théologie\nLiberty\nMidway\nPleasant Valley\nPMK Test PMK_A\nPMK Test PMK_B\nRiverside\nSpringfield\nTroy\nUnion\nTri\nRetard décroissant\nNom\nValeur décroissante\nActualiser les dossiers\n1 dossier(s) chargé(s). Classement fourni par le rapport 7.\n1\ndossiers lus\n1\nexceptions à contrôler\n0\naction(s) à reprendre\n0\naction(s) vérifiée(s) dans cette session\nTous 1\nÀ contrôler 1\n\n1 dossier(s) affiché(s) sur 1\n\nActualisé à 15:38:08\nPMKTEST ADULT Lecteur\n50 j\nPMKTEST-ADULT · PMK_A · 18,90 €\nExaminer les prêts et les messages Koha avant de choisir une action\nSélectionne un lecteur pour consulter son dossier.",
+        "buttons": [
+          {
+            "text": "Vérifier les réglages et les rapports",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Configurer cette page",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "Actualiser les dossiers",
+            "id": "tp4-refresh",
+            "title": ""
+          },
+          {
+            "text": "Vérifier l’enregistrement",
+            "id": "tp4-verify",
+            "title": ""
+          },
+          {
+            "text": "Tous 1",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "À contrôler 1",
+            "id": "",
+            "title": ""
+          },
+          {
+            "text": "PMKTEST ADULT Lecteur50 j PMKTEST-ADULT · PMK_A · 18,90 €Examiner les prêts et les messages Koha avant de choisir une action",
+            "id": "",
+            "title": ""
+          }
+        ],
+        "inputs": [
+          {
+            "id": "tp4-branch",
+            "type": "select-one",
+            "name": ""
+          },
+          {
+            "id": "tp4-search",
+            "type": "search",
+            "name": ""
+          },
+          {
+            "id": "tp4-sort",
+            "type": "select-one",
+            "name": ""
+          }
+        ]
+      },
+      "pageErrors": [],
+      "httpErrors": []
+    }
+  ],
+  "blocked": [
+    "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/grenouilles/grenouille9.png",
+    "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/grenouilles/grenouilles11.png",
+    "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/grenouilles/grenouille2.png",
+    "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/grenouilles/grenouilles25.png",
+    "https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Space+Grotesk:wght@600;700&display=swap",
+    "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Figtree:wght@400;500;600;700&display=swap"
+  ]
+}

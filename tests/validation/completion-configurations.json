@@ -1,0 +1,29 @@
+{
+  "kind": "Actual browser modules, native controls and shared presentation priority, without a Koha backend",
+  "rows": [
+    {
+      "name": "Patron category simulation uses the live rules without writes, preserves manual input and explains unavailable or competing values",
+      "passed": true
+    },
+    {
+      "name": "Shared column labels are deterministic, reversible and retain native nodes: 001-modification-entete-issuehistory.js then 033-mod-table-exemplaires.js",
+      "passed": true
+    },
+    {
+      "name": "Shared column labels are deterministic, reversible and retain native nodes: 033-mod-table-exemplaires.js then 001-modification-entete-issuehistory.js",
+      "passed": true
+    },
+    {
+      "name": "Guided report preset accepts another report ID; filters and reset apply only to newly paginated rows after delayed refresh",
+      "passed": true
+    },
+    {
+      "name": "Z39.50 sizing is optional and native empty-result and unavailable-server messages remain intact",
+      "passed": true
+    },
+    {
+      "name": "Home widgets isolate synchronous failures, retry one widget and defer offscreen widgets without losing refresh or cleanup",
+      "passed": true
+    }
+  ]
+}

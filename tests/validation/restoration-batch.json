@@ -1,0 +1,17 @@
+{
+  "kind": "Browser fixture, native restoration API contract and partial failure",
+  "rows": [
+    {
+      "name": "One review covers the whole selection; cancellation writes nothing",
+      "passed": true
+    },
+    {
+      "name": "Partial failure retains only failed selections without losing success",
+      "passed": true
+    },
+    {
+      "name": "Retry reuses the confirmed operation and never restores successful rows twice",
+      "passed": true
+    }
+  ]
+}

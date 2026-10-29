@@ -1,0 +1,151 @@
+{
+  "passed": true,
+  "defaults": {
+    "reports": [
+      {
+        "key": "allReportId",
+        "label": "Référentiel complet",
+        "file": "Authorities-referentiel.sql",
+        "id": 5246,
+        "valid": true,
+        "state": "à vérifier dans ce Koha"
+      },
+      {
+        "key": "duplicatesReportId",
+        "label": "Doublons",
+        "file": "Authorities-doublons.sql",
+        "id": 5245,
+        "valid": true,
+        "state": "à vérifier dans ce Koha"
+      },
+      {
+        "key": "orphansReportId",
+        "label": "Orphelins",
+        "file": "Authorities-orphelins.sql",
+        "id": 5260,
+        "valid": true,
+        "state": "à vérifier dans ce Koha"
+      }
+    ],
+    "personTypes": [
+      "NP",
+      "PERS",
+      "SAUT",
+      "FAM"
+    ],
+    "duplicatePersonTypes": [],
+    "invalidPersonTypes": [],
+    "valid": true
+  },
+  "invalid": {
+    "reports": [
+      {
+        "key": "allReportId",
+        "label": "Référentiel complet",
+        "file": "Authorities-referentiel.sql",
+        "id": 5246,
+        "valid": true,
+        "state": "identifiant partagé avec un autre rapport"
+      },
+      {
+        "key": "duplicatesReportId",
+        "label": "Doublons",
+        "file": "Authorities-doublons.sql",
+        "id": 5246,
+        "valid": true,
+        "state": "identifiant partagé avec un autre rapport"
+      },
+      {
+        "key": "orphansReportId",
+        "label": "Orphelins",
+        "file": "Authorities-orphelins.sql",
+        "id": 5260,
+        "valid": true,
+        "state": "à vérifier dans ce Koha"
+      }
+    ],
+    "personTypes": [
+      "NP",
+      "CODE INVALIDE"
+    ],
+    "duplicatePersonTypes": [
+      "np"
+    ],
+    "invalidPersonTypes": [
+      "CODE INVALIDE"
+    ],
+    "valid": false
+  },
+  "checked": {
+    "reports": [
+      {
+        "key": "allReportId",
+        "label": "Référentiel complet",
+        "file": "Authorities-referentiel.sql",
+        "id": 5246,
+        "valid": true,
+        "state": "à vérifier dans ce Koha",
+        "remote": {
+          "id": 5246,
+          "state": "ok",
+          "name": "Référentiel complet",
+          "executed": false
+        }
+      },
+      {
+        "key": "duplicatesReportId",
+        "label": "Doublons",
+        "file": "Authorities-doublons.sql",
+        "id": 5245,
+        "valid": true,
+        "state": "à vérifier dans ce Koha",
+        "remote": {
+          "id": 5245,
+          "state": "ok",
+          "name": "Doublons",
+          "executed": false
+        }
+      },
+      {
+        "key": "orphansReportId",
+        "label": "Orphelins",
+        "file": "Authorities-orphelins.sql",
+        "id": 5260,
+        "valid": true,
+        "state": "à vérifier dans ce Koha",
+        "remote": {
+          "id": 5260,
+          "state": "missing",
+          "executed": false
+        }
+      }
+    ],
+    "personTypes": [
+      "NP",
+      "PERS",
+      "SAUT",
+      "FAM"
+    ],
+    "duplicatePersonTypes": [],
+    "invalidPersonTypes": [],
+    "valid": true,
+    "checked": true
+  },
+  "view": "Diagnostic de cette installation\nRéférentiel complet — rapport 5246 : à vérifier dans ce Koha\nDoublons — rapport 5245 : à vérifier dans ce Koha\nOrphelins — rapport 5260 : à vérifier dans ce Koha\n\nTypes de personnes : NP, PERS, SAUT, FAM\n\nLe contrôle à distance lit uniquement le nom et les paramètres des rapports. Il n’exécute pas leur SQL et ne modifie aucune autorité.\n\nVérifier les rapports dans ce Koha\nRéférentiel complet : disponible · Doublons : disponible · Orphelins : introuvable",
+  "description": "Périmètre v1 : UNIMARC/A. Configurez les trois rapports propres à ce Koha et les codes de types de personnes. Cette fiche contrôle uniquement l’installation ; le moteur métier de la page Autorités reste inchangé.",
+  "validation": {
+    "ok": true
+  },
+  "checkedConfig": {
+    "allReportId": {
+      "reportId": 5246
+    },
+    "duplicatesReportId": {
+      "reportId": 5245
+    },
+    "orphansReportId": {
+      "reportId": 5260
+    }
+  },
+  "scope": "Configuration d’installation uniquement ; aucun chargement ni appel au moteur métier de la page Autorités."
+}

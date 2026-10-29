@@ -1,0 +1,10 @@
+**/node_modules/
+**/__pycache__/
+*.py[cod]
+.env
+**/.env
+/plugin/*.kpz
+/output/
+tests/validation/*-failure-*
+# Configuration Firebase historique locale : ne jamais publier.
+/legacy/pmk-legacy-private-config.js

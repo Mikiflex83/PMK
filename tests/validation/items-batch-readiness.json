@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "checks": {
+    "progressRegion": true,
+    "progressPerPage": true,
+    "progressCompletion": true,
+    "prefilterExplained": true,
+    "allUsefulFiltersIncluded": true,
+    "recapBeforeCommands": true,
+    "recapCounts": true,
+    "destructiveActionStillSimulated": true,
+    "noExternalDependency": true
+  },
+  "scope": "Contrat de la page : progression du chargement, préfiltrage explicite et récapitulatif avant commandes."
+}

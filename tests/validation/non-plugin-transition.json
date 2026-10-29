@@ -1,0 +1,25 @@
+{
+  "kind": "PMK 0.4.0 file-transfer transition with simulated historical Firebase projects",
+  "rows": [
+    {
+      "name": "Updated core reads existing non-plugin Firebase configuration",
+      "passed": true
+    },
+    {
+      "name": "Saving preserves unknown document metadata and customized rows",
+      "passed": true
+    },
+    {
+      "name": "PMK manager exports a plugin-compatible configuration backup",
+      "passed": true
+    },
+    {
+      "name": "Non-plugin restore analyzes first, downloads safety backup and preserves unknown fields",
+      "passed": true
+    },
+    {
+      "name": "Updated business modules retain their historical Firebase paths and transactions",
+      "passed": true
+    }
+  ]
+}

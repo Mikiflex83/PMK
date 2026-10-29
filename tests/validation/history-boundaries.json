@@ -1,0 +1,9 @@
+{
+  "kind": "Actual browser module, fixed Europe/Paris date and native Koha table markup",
+  "rows": [
+    {
+      "name": "Loan history legend names active rules and exact due-date boundaries distinguish duration, late return, overdue and chronology",
+      "passed": true
+    }
+  ]
+}

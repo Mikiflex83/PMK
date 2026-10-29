@@ -1,0 +1,9 @@
+{
+  "kind": "Browser runtime with local barcode memory, expiry and false-match cases",
+  "rows": [
+    {
+      "name": "Barcode memory shows its local provenance, expires old entries, rejects embedded false matches and can be cleared",
+      "passed": true
+    }
+  ]
+}

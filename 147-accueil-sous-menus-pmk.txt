@@ -1,0 +1,116 @@
+/**
+ * PMK 147 — Menus personnalisables sur l'accueil Koha 25.11 — IntranetUserJS
+ * VERSION 6.1 — catalogue étendu; administration uniquement dans PMK, favoris uniquement sur l’accueil.
+ *
+ * window.PMK147Store (injecté par PMK AVANT ce script):
+ *   async getGlobal() => {version:1, sections:{ [sectionPath]: {entries:Entry[]} }} | null
+ *   async setGlobal(config) => Promise<void>     // contrôle serveur admin requis
+ *   async getFavorites(userId) => string[]
+ *   async setFavorites(userId, ids) => Promise<void>
+ *   userId: identifiant Koha AUTHENTIFIÉ fourni par PMK
+ *   canEdit: bool, déterminé CÔTÉ SERVEUR, non par JS
+ * Ces appels DOIVENT être sécurisés côté serveur. Le masquage UI n'est pas une ACL.
+ *
+ * Pour les liens personnalisés, l'accès ne peut pas être attesté par IntranetUserJS.
+ * Ils ne deviennent visibles aux agents que si PMK fournit :
+ *   async canAccess(url, userId) => boolean  (évaluation permissions côté serveur)
+ * Les liens natifs sont extraits des pages Koha rendues pour la session.
+ */
+(()=>{
+ 'use strict';
+ if(location.pathname!=='/cgi-bin/koha/mainpage.pl'||window.__PMK147V5)return;
+ window.__PMK147V5=true;
+
+ const pmk = window.PMKConfig;
+ const moduleKey='147-home-submenus';
+ const localUser = String((window.Koha&&window.Koha.user&&(window.Koha.user.userid||window.Koha.user.id)) || (window.logged_in_user && window.logged_in_user.userid) || '').trim();
+ if (!pmk || typeof pmk.getConfig !== 'function') {console.warn('[PMK147] Socle PMK indisponible');return;}
+ const store = {
+   userId: localUser || null,
+   async getGlobal(){
+      const value=await pmk.getConfig(moduleKey);
+      if(value && value.enabled===false)return {version:1,sections:{}};
+      return {version:1,sections:Object.fromEntries((value?.sections||[]).filter(x=>x&&x.path).map(x=>[x.path,{entries:x.entries||[]}]))};
+   }
+ };
+
+ const ROOT='/cgi-bin/koha/';
+ const DEFAULT_CATALOG={}; // Source de vérité : pages Koha rendues, pas une liste d’URL supposées.
+
+ const conf={timeoutMs:6500,maxLinks:600};
+ const sections=new Map(); let globalConfig={version:1,sections:{}}; let fav=new Set();
+ const userId=typeof store.userId==='string'||typeof store.userId==='number'?String(store.userId):null;
+
+ const norm=s=>(s||'').replace(/\s+/g,' ').trim();
+ const el=(tag,cls,content)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(content!==undefined)n.textContent=content;return n};
+ const safe=(value,base=location.href)=>{try{if(!value||/^(?:#|javascript:|data:|mailto:)/i.test(value))return null;const u=new URL(value,base);if(u.origin!==location.origin||!u.pathname.startsWith(ROOT)||!u.pathname.endsWith('.pl')||/\/auth\/|\/login|\/logout/i.test(u.pathname))return null;if([...u.searchParams].some(([k,v])=>/^(?:csrf_token)$/i.test(k)||(/^(?:op|action)$/i.test(k)&&/^(?:cud-|delete|remove|save|update|merge|cancel|confirm)/i.test(v))))return null;return u;}catch{return null}};
+ const idFor=u=>u.pathname+u.search;
+ const denied=/(?:access denied|permission denied|insufficient privileges|not authorized|not authorised|droits insuffisants|accès refusé|vous n'avez pas (?:les? )?(?:droits?|autorisations?|permissions?))/i;
+ const css=`
+ .pmk147host{position:relative;display:flex;align-items:stretch;width:100%}.pmk147host>.icon_general{width:100%!important;flex:1;min-width:0;padding-right:40px!important}
+ .pmk147toggle{position:absolute;right:7px;top:50%;transform:translateY(-50%);height:28px;width:28px;border:0;border-radius:6px;background:transparent;display:grid;place-items:center;color:inherit;cursor:pointer;opacity:.73}
+ .pmk147toggle:hover,.pmk147toggle:focus-visible{background:#536d8a20;opacity:1}.pmk147toggle[hidden]{display:none!important}
+ .pmk147toggle[aria-expanded=true] svg{transform:rotate(180deg)}.pmk147toggle svg{transition:transform .15s}
+ .pmk147panel{position:absolute;left:0;top:calc(100% + 4px);width:min(430px,90vw);max-height:65vh;overflow:auto;z-index:11000;background:var(--bs-body-bg,#fff);color:var(--bs-body-color,#253342);border:1px solid #cbd5df;box-shadow:0 12px 24px #26374b26;border-radius:9px;padding:12px;text-align:left}
+ .pmk147panel[hidden]{display:none!important}.pmk147head{font-size:14px;font-weight:700;margin:0 0 9px}.pmk147search{width:100%;padding:7px 9px;border:1px solid #b6c5d3;border-radius:6px;margin:0 0 8px;box-sizing:border-box}
+ .pmk147category{margin:12px 0 4px;padding:5px 3px;color:#596c7b;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;border-bottom:1px solid #e3e9ee}
+ .pmk147separator{height:1px;background:#e4eaf0;margin:8px 0}.pmk147entry{display:flex;gap:4px;align-items:center;border-radius:5px}.pmk147entry:hover{background:#ecf2f7}.pmk147entry>a{flex:1;padding:8px 3px;text-decoration:none;color:#235b81;font-size:13px;overflow-wrap:anywhere}
+ .pmk147star{border:0;background:none;color:#8796a4;font-size:18px;cursor:pointer;padding:4px 7px}.pmk147star[aria-pressed=true]{color:#d39b1a}
+ .pmk147note{font-size:12px;color:#596c7b}
+ `;const style=el('style');style.textContent=css;document.head.append(style);
+ function category(anchor,main){const block=anchor.closest('.page-section,.card,fieldset,section,li,.col-sm-6,.col-md-6');const heading=block?.querySelector('h2,h3,h4,legend,.card-header');if(heading)return norm(heading.textContent).slice(0,95)||'Autres';let p=anchor;while(p&&p!==main){for(let e=p.previousElementSibling;e;e=e.previousElementSibling){if(e.matches?.('h2,h3,h4,legend,.card-header'))return norm(e.textContent).slice(0,95);}p=p.parentElement;}return 'Autres';}
+ function extract(doc,base){const main=doc.querySelector('#main,#content,main,.maincontent')||doc.body;const out=[],seen=new Set();for(const a of main.querySelectorAll('.page-section a[href],.card-body a[href],fieldset a[href],.maincontent a[href],.biglinks-list a[href],.row a[href],.col-sm-6 a[href]')){if(a.closest('nav,header,footer,.breadcrumb,.toolbar,.navbar'))continue;const u=safe(a.getAttribute('href'),base),label=norm(a.textContent);if(!u||!label||label.length<3||/^(?:valider|retour|annuler|voir|ok)$/i.test(label))continue;const id=idFor(u);if(id===idFor(new URL(base))||seen.has(id))continue;seen.add(id);out.push({type:'link',id,url:id,label:label.slice(0,110),category:category(a,main),origin:'koha'});if(out.length>=conf.maxLinks)break;}return out;}
+ async function discover(url){const ck='PMK147:page:'+url;try{const cached=JSON.parse(sessionStorage.getItem(ck)||'null');if(cached&&Date.now()-cached.at<180000&&Array.isArray(cached.links))return cached.links;}catch{} const ctrl=new AbortController(),tm=setTimeout(()=>ctrl.abort(),conf.timeoutMs);try{const r=await fetch(url,{credentials:'same-origin',signal:ctrl.signal,redirect:'follow',headers:{Accept:'text/html'}});if(!r.ok||!/text\/html/i.test(r.headers.get('content-type')||'')||!safe(r.url))return [];const doc=new DOMParser().parseFromString(await r.text(),'text/html');if(doc.querySelector('#loginform,form[action*="auth.pl"]')||denied.test(norm(doc.title)+' '+norm(doc.querySelector('h1,.alert-danger,.error')?.textContent)))return [];const items=extract(doc,url);try{sessionStorage.setItem(ck,JSON.stringify({at:Date.now(),links:items}));}catch{}return items;}catch{return []}finally{clearTimeout(tm)}}
+ const sectionConfig=k=>globalConfig.sections?.[k]||null;
+ function normalizeEntry(e){if(!e||!['link','category','separator'].includes(e.type))return null;if(e.type==='separator')return {type:'separator',id:String(e.id||crypto.randomUUID())};if(e.type==='category')return {type:'category',id:String(e.id||crypto.randomUUID()),label:String(e.label||'Catégorie').slice(0,100)};const u=safe(e.url);if(!u)return null;return {type:'link',id:idFor(u),url:idFor(u),label:String(e.label||'Lien').slice(0,110),origin:e.origin==='custom'?'custom':'koha',hidden:e.hidden===true,category:String(e.category||'Autres').slice(0,95)};}
+ function enrich(rec,found){
+  const candidates=DEFAULT_CATALOG[rec.key.replace(ROOT,'')]||{};
+  const categories=new Map();for(const [cat,entries] of Object.entries(candidates))for(const [label,path] of entries){const u=safe(ROOT+path);if(u)categories.set(idFor(u),{label,category:cat});}
+  return found.map(link=>{const match=categories.get(link.id);return match?{...link,category:match.category}:link;}); // Chaque lien doit être confirmé par la page Koha ; seuls les regroupements du catalogue sont réutilisés.
+ }
+ function applyConfig(rec){const found=enrich(rec,rec.discovered);const configured=sectionConfig(rec.key)?.entries;const byId=new Map(found.map(e=>[e.id,e]));if(!Array.isArray(configured))return found.slice();const ordered=[],used=new Set();for(const raw of configured){const e=normalizeEntry(raw);if(!e)continue;if(e.type!=='link'){ordered.push(e);continue;}if(e.hidden){used.add(e.id);continue;}if(e.origin==='koha'){const natural=byId.get(e.id);if(natural){ordered.push({...natural,label:natural.label,category:natural.category});used.add(e.id);}}else if(rec.allowedCustom.has(e.id)){ordered.push(e);used.add(e.id);}}for(const e of found)if(!used.has(e.id))ordered.push(e);return ordered;}
+ async function refresh(rec){const configured=sectionConfig(rec.key)?.entries||[];const custom=configured.filter(e=>e.type==='link'&&e.origin==='custom'&&!e.hidden);rec.allowedCustom=new Set();if(typeof store.canAccess==='function'&&userId){await Promise.all(custom.map(async e=>{try{const u=safe(e.url);if(u&&await store.canAccess(idFor(u),userId)===true)rec.allowedCustom.add(idFor(u));}catch{}}));}rec.items=applyConfig(rec);rec.toggle.hidden=!rec.items.some(x=>x.type==='link');if(!rec.toggle.hidden&&!rec.panel.hidden)render(rec);}
+ async function toggleFavorite(id){fav.has(id)?fav.delete(id):fav.add(id);if(userId&&typeof store.setFavorites==='function'){try{await store.setFavorites(userId,[...fav])}catch(e){console.warn('[PMK147] Favoris non enregistrés',e)}}else if(userId){try{localStorage.setItem('PMK147:fav:v3:'+location.host+':'+userId,JSON.stringify([...fav]))}catch{}}for(const r of sections.values())if(!r.panel.hidden)render(r);}
+ function render(rec){const panel=rec.panel;panel.replaceChildren();panel.append(el('div','pmk147head',rec.label));const search=el('input','pmk147search');search.type='search';search.placeholder='Rechercher un accès…';if(rec.items.filter(e=>e.type==='link').length>=8)panel.append(search);const body=el('div');panel.append(body);
+ const rebuild=()=>{body.replaceChildren();const q=norm(search.value).toLocaleLowerCase('fr');const items=rec.items.filter(e=>e.type!=='link'||!q||`${e.label} ${e.category}`.toLocaleLowerCase('fr').includes(q));const pinned=items.filter(e=>e.type==='link'&&fav.has(e.id));const others=items.filter(e=>e.type!=='link'||!fav.has(e.id));const ordered=q?items:[...(pinned.length?[{type:'category',label:'★ Favoris'},...pinned,{type:'separator'}]:[]),...others];let prevCat='';for(const e of ordered){if(e.type==='separator'){body.append(el('div','pmk147separator'));continue;}if(e.type==='category'){body.append(el('div','pmk147category',e.label));prevCat=e.label;continue;}if(!q&&e.category&&prevCat!==e.category&&!pinned.includes(e)){body.append(el('div','pmk147category',e.category));prevCat=e.category;}const row=el('div','pmk147entry'),star=el('button','pmk147star',fav.has(e.id)?'★':'☆');star.type='button';star.setAttribute('aria-pressed',String(fav.has(e.id)));star.title=fav.has(e.id)?'Retirer des favoris':'Ajouter aux favoris';star.disabled=!userId;star.title=!userId?'Identifiant Koha indisponible : favoris désactivés':star.title;star.onclick=()=>toggleFavorite(e.id);const a=el('a','',e.label);a.href=e.url;row.append(star,a);body.append(row);}};search.addEventListener('input',rebuild);rebuild();}
+ function syncAll(){return Promise.all([...sections.values()].map(refresh));}
+ function closeAll(){for(const r of sections.values()){r.panel.hidden=true;r.toggle.setAttribute('aria-expanded','false')}}
+ // PMK ouvre son éditeur dans sa propre page, jamais sur l'accueil Koha.
+ // API lecture et inventaire pour le gestionnaire de configuration PMK.
+ window.PMK147={
+   version:'8.0.0',
+   defaultCatalog:()=>JSON.parse(JSON.stringify(DEFAULT_CATALOG)),
+   getDiscovered:()=>Object.fromEntries([...sections.values()].map(r=>[r.key,{label:r.label,links:r.discovered.map(x=>({...x}))}])),
+   getConfig:()=>JSON.parse(JSON.stringify(globalConfig)),
+   validateConfig:config=>{
+     if(!config||config.version!==1||!config.sections||typeof config.sections!=='object')throw Error('Configuration PMK147 invalide');
+     for(const [key,section] of Object.entries(config.sections)){
+       if(!safe(key)||!Array.isArray(section.entries))throw Error('Section invalide : '+key);
+       for(const entry of section.entries)if(!normalizeEntry(entry))throw Error('Entrée invalide dans '+key);
+     }
+     return true;
+   },
+   reload:async()=>{if(typeof store.getGlobal!=='function')throw Error('Stockage partagé PMK non connecté');const c=await store.getGlobal();window.PMK147.validateConfig(c);globalConfig=c;await syncAll();},
+   // Ne fournit volontairement aucune fonction d'écriture globale dans l'accueil.
+ };
+ async function init(){try{if(userId&&typeof store.getFavorites==='function'){const a=await store.getFavorites(userId);fav=new Set(Array.isArray(a)?a:[])}else if(userId){fav=new Set(JSON.parse(localStorage.getItem('PMK147:fav:v3:'+location.host+':'+userId)||'[]'))}}catch{}
+ let moduleCfg;
+ try {
+   if (typeof pmk.getDefinition === 'function' && !pmk.getDefinition(moduleKey)) {
+     console.error('[PMK147] Le module 147 n’est pas déclaré dans 000-pmk-config-firestore.js. Remplacer le fichier 000 et actualiser sans cache.');
+     return;
+   }
+   moduleCfg = await pmk.getConfig(moduleKey);
+ } catch (error) {
+   console.error('[PMK147] Configuration introuvable : vérifier la version du socle 000 et le cache du navigateur.',error);
+   return;
+ }
+ if(moduleCfg.enabled===false)return;
+ globalConfig={version:1,sections:Object.fromEntries((moduleCfg.sections||[]).filter(x=>x&&x.path).map(x=>[x.path,{entries:x.entries||[]}]))};
+ const links=[...document.querySelectorAll('.biglinks-list > li > a.icon_general[href]')];for(const [i,a] of links.entries()){const u=safe(a.getAttribute('href'));if(!u)continue;const key=idFor(u),label=norm(a.textContent);const host=el('div','pmk147host');a.before(host);host.append(a);const toggle=el('button','pmk147toggle');toggle.hidden=true;toggle.type='button';toggle.setAttribute('aria-label','Ouvrir le sous-menu '+label);toggle.setAttribute('aria-expanded','false');toggle.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';const panel=el('div','pmk147panel');panel.hidden=true;panel.id='pmk147-panel-'+i;toggle.setAttribute('aria-controls',panel.id);host.append(toggle,panel);const rec={key,label,toggle,panel,discovered:[],allowedCustom:new Set(),items:[]};sections.set(key,rec);toggle.onclick=e=>{e.preventDefault();e.stopPropagation();const wasClosed=panel.hidden;closeAll();if(wasClosed){panel.hidden=false;toggle.setAttribute('aria-expanded','true');render(rec)}};}
+ document.addEventListener('click',e=>{if(!e.target.closest('.pmk147host')&&!e.target.closest('.pmk147modal'))closeAll()});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAll()});
+ // Toutes les rubriques en parallèle : pas de vérification HTTP par lien.
+ await Promise.all([...sections.values()].map(async rec=>{rec.discovered=await discover(location.origin+rec.key);await refresh(rec)}));
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})();

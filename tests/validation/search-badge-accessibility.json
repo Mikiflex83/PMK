@@ -1,0 +1,9 @@
+{
+  "kind": "Browser fixtures with repeated labels and native select change events",
+  "rows": [
+    {
+      "name": "Identical long filter labels remain distinct, fit mobile and can be removed independently with a useful keyboard focus",
+      "passed": true
+    }
+  ]
+}

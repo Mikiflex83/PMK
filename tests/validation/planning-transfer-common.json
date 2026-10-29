@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "checks": {
+    "commonNativeDocument": true,
+    "weeklyAndDateOccurrences": true,
+    "exceptionsApplied": true,
+    "aliasesAndRouteOrder": true,
+    "widgetUsesCommonEngine": true,
+    "transfersReadSamePlanning": true,
+    "realEventSeparated": true,
+    "universalMappingConfig": true,
+    "planningFailureDoesNotHideTransfers": true
+  },
+  "example": {
+    "estimatedDate": "2026-11-05",
+    "service": "Navette intersites"
+  },
+  "scope": "Moteur commun : occurrences, exceptions, alias de sites et distinction entre estimation et événement Koha."
+}

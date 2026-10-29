@@ -1,0 +1,31 @@
+{
+  "passed": true,
+  "kind": "Exact native Koha KPZ upload and explicit lifecycle; all four PMK tables and synthetic server credential unchanged",
+  "pluginVersion": "0.4.0",
+  "at": "2026-10-28T15:44:37.521787+00:00",
+  "packageSha256": "a31e436d814330e1a4064e8e8f6f9e445fe385cfc5b39e76f4bd825949c44846",
+  "tables": {
+    "koha_plugin_pimpmykoha_data": {
+      "count": 11553,
+      "sha256": "2f84937748d06e3025e54446dd72558bd8b01bbf30a3a445fac875f74dee8c67"
+    },
+    "koha_plugin_pimpmykoha_data_history": {
+      "count": 11776,
+      "sha256": "8a0aa32773e94aaca718344bfa75039f3c4910040e43e2d5c5a4060495821720"
+    },
+    "koha_plugin_pimpmykoha_documents": {
+      "count": 42,
+      "sha256": "6616342951b89b2492e2b2dfd91fb646cc109cecd8ec957e0a4801d489ced963"
+    },
+    "koha_plugin_pimpmykoha_history": {
+      "count": 724,
+      "sha256": "0d7bd0d7625729d7f673496d8d9b952d11fc7f2d99485a91160d4c25a6aedc20"
+    }
+  },
+  "serverCredential": {
+    "count": 1,
+    "sha256": "af1427678825cb9ca8554180c57b9e4395114f3932ebbdd81e8b51c691e0afdc"
+  },
+  "nativeUploadUnchanged": true,
+  "explicitLifecycleUnchanged": true
+}

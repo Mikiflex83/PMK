@@ -1,0 +1,15 @@
+{
+  "kind": "Real local Koha 25.11 serials receiving page and PMK configuration preview; read only",
+  "rows": [
+    {
+      "name": "Serials preview lists active automations, protected fields and partial target coverage without modifying Koha",
+      "passed": true,
+      "evidence": {
+        "tableRows": 12,
+        "effects": [
+          "Champ introuvable sur cette page"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "kind": "Browser runtime with exact and transposed-name Koha patron candidates",
+  "rows": [
+    {
+      "name": "Patron duplicate candidates expose each field comparison and distinguish strong from very strong suspicion without merging records",
+      "passed": true
+    }
+  ]
+}

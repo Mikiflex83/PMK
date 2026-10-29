@@ -1,0 +1,9 @@
+{
+  "kind": "Actual planning widget with controlled local storage; draft preservation and lifecycle",
+  "rows": [
+    {
+      "name": "Planning refresh preserves the unsaved configuration and last remote data; disposal removes timers and global listeners",
+      "passed": true
+    }
+  ]
+}

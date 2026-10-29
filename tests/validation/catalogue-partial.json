@@ -1,0 +1,24 @@
+{
+  "kind": "Browser fixture: partial Koha item pages and targeted retry",
+  "rows": [
+    {
+      "name": "Partial page failure retains loaded items and native availability",
+      "passed": true
+    },
+    {
+      "name": "Targeted retry leaves other rows untouched and paginates without x-total-count",
+      "passed": true
+    },
+    {
+      "name": "100 results respect default concurrency and retain 199 item cards; short pages with a known total continue",
+      "passed": true,
+      "notices": 100,
+      "cards": 199,
+      "peakConcurrentRequests": 1
+    },
+    {
+      "name": "Empty or malformed subsequent page preserves first items and marks native availability as partial",
+      "passed": true
+    }
+  ]
+}

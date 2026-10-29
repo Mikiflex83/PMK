@@ -1,0 +1,258 @@
+<main>
+ <div id="messages">
+ 
+
+ <div id="transient_result"></div>
+</div>
+
+ 
+ <h1>Administration<button type="button" id="pmk-config-table-labels-page--cgi-bin-koha-admin-admin-home-pl" class="btn btn-link btn-sm pmk-context-config" title="Configurer Libellés et éléments d’interface" aria-label="Configurer Libellés et éléments d’interface"><i class="fa fa-gear" aria-hidden="true"></i></button></h1>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ <div class="row">
+ <div class="col-md-6 sysprefs">
+ 
+ <form action="/cgi-bin/koha/admin/preferences.pl" method="get">
+ <fieldset>
+ <h4><a href="/cgi-bin/koha/admin/preferences.pl">Préférences système</a></h4>
+ <p>Gestion des préférences système comme le format MARC, le format de la date, le courriel de l'administrateur, et les templates.</p>
+ <input type="hidden" name="op" value="search">
+ <input type="text" name="searchfield" value="">
+ <input class="btn btn-primary" name="ok" type="submit" value="Recherche">
+ </fieldset>
+ </form>
+ 
+
+ 
+ <div class="hint"><h4>Conseil&nbsp;:</h4><p>Configurer ces paramètres dans leur ordre d'apparition.</p></div>
+ <h3>Paramètres de base</h3>
+ <dl>
+ 
+ <dt><a href="/cgi-bin/koha/admin/branches.pl">Bibliothèques</a></dt>
+ <dd>Définition des sites</dd>
+ <dt><a href="/cgi-bin/koha/admin/library_groups.pl">Groupes de bibliothèques</a></dt>
+ <dd>Définition des groupes hiérarchiques de sites</dd>
+ 
+ 
+ <dt><a href="/cgi-bin/koha/admin/itemtypes.pl">Types de document</a></dt>
+ <dd>Définition des types de documents utilisés dans les règles de circulation</dd>
+ 
+ 
+ <dt><a href="/cgi-bin/koha/admin/authorised_values.pl">Valeurs autorisées</a></dt>
+ <dd>Définition des catégories et des valeurs autorisées</dd>
+ 
+ </dl>
+ 
+
+ 
+ <h3>Adhérents et circulation</h3>
+ <dl>
+ 
+ <dt><a href="/cgi-bin/koha/admin/categories.pl">Catégories d'adhérents</a></dt>
+ <dd>Définition des catégories d'adhérents</dd>
+ 
+ 
+ <dt><a href="/cgi-bin/koha/admin/smart-rules.pl">Règles de circulation et de pénalités</a></dt>
+ <dd>Définition des règles de circulation et d'amende pour des combinaisons de sites, de catégories d'adhérent et de types de document</dd>
+ 
+ 
+ <dt><a href="/cgi-bin/koha/admin/patron-attr-types.pl">Types d'attributs d'adhérent</a></dt>
+ <dd>Définition des attributs étendus (identifiants et catégories statistiques) pour les adhérents</dd>
+ 
+ 
+ <dt><a href="/cgi-bin/koha/admin/branch_transfer_limits.pl">Limites de transfert réseau</a> (<a href="/cgi-bin/koha/admin/transfer_limits.pl">Editeur avancé</a>)</dt>
+ <dd>Limite les possibilités de transferts entre sites, sur la base des sites émetteur et récepteur, ainsi que du type de document. Ces règles ne s'appliquent que si la préférence système UseBranchTransferLimits est activée</dd>
+ <dt><a href="/cgi-bin/koha/admin/transport-cost-matrix.pl">Matrice des coûts de transport</a></dt>
+ <dd>Définition des coûts de transferts entre les sites</dd>
+ 
+ 
+ <dt><a href="/cgi-bin/koha/sip2/sip2.pl">Circulation en libre accès (SIP2)</a></dt>
+ <dd>Définit les paramètres SIP2, y compris les institutions, les comptes et les paramètres outrepassant les préférences système</dd>
+ 
+ 
+ <dt><a href="/cgi-bin/koha/admin/item_circulation_alerts.pl">Alertes de circulation</a></dt>
+ <dd>Définition des règles de notification des prêts/retours pour des combinaisons de sites, catégories d'adhérents et types de document</dd>
+ 
+ 
+ 
+ <dt><a href="/cgi-bin/koha/admin/cities.pl">Villes et communes</a></dt>
+ <dd>Définition des villes et communes où résident les adhérents</dd>
+ 
+ 
+ <dt><a href="/cgi-bin/koha/admin/curbside_pickup.pl">Collecte sur rendez-vous</a></dt>
+ <dd>Configurer la collecte sur rendez-vous pour les bibliothèques</dd>
+ 
+ 
+ <dt><a href="/cgi-bin/koha/admin/restrictions.pl">Types de suspension d'adhérent</a></dt>
+ <dd>Définir les types de suspensions d'adhérent manuelles</dd>
+ 
+ </dl>
+ 
+
+ 
+ <h3>Comptabilité</h3>
+ <dl>
+ 
+ <dt><a href="/cgi-bin/koha/admin/debit_types.pl">Types de débit</a></dt>
+ <dd>Définition des types de débit</dd>
+ <dt><a href="/cgi-bin/koha/admin/credit_types.pl">Types de crédit</a></dt>
+ <dd>Définition des types de crédit</dd>
+ 
+ 
+ </dl>
+ 
+
+ 
+ <h3>Plugins</h3>
+ <dl>
+ 
+ <dt><a href="/cgi-bin/koha/plugins/plugins-home.pl">Gérer les plugins</a></dt>
+ <dd>Voir, gérer, configurer et exécuter les plugins.</dd>
+ 
+ 
+ </dl>
+ 
+
+ 
+ <h3>Tâches</h3>
+ <dl>
+ <dt><a href="/cgi-bin/koha/admin/background_jobs.pl">Gestion des tâches</a></dt>
+ <dd>Visualiser, gérer et annuler les tâches de fond.</dd>
+ </dl>
+ 
+ </div>
+
+ <div class="col-md-6 sysprefs">
+ 
+ <h3>Catalogue</h3>
+ <dl>
+ 
+ <dt><a href="/cgi-bin/koha/admin/biblio_framework.pl">Grille des notices bibliographiques MARC</a></dt>
+ <dd>Création et gestion des grilles de catalogage définissant les caractéristiques de vos notices bibliographiques MARC (définition des champs et sous-champs), ainsi que l'organisation de la grille</dd>
+ <dt><a href="/cgi-bin/koha/admin/koha2marclinks.pl">Liens Koha =&gt; MARC</a></dt>
+ <dd>Définition des correspondances entre la base de données relationnelle (SQL) de Koha et les notices bibliographiques MARC</dd>
+ 
+ 
+ <dt><a href="/cgi-bin/koha/admin/checkmarc.pl">Validation grilles de catalogage</a></dt>
+ <dd>Vérification de la structure MARC. Si vous modifiez les grilles de catalogage MARC, il est recommandé d'utiliser cet outil pour vérifier qu'il n'y a pas d'erreurs dans vos grilles</dd>
+ <dt><a href="/cgi-bin/koha/admin/authtypes.pl">Grilles des notices d'autorité</a></dt>
+ <dd>Création et gestion des grilles définissant les caractéristiques de vos notices d'autorité MARC (définitions des champs et sous-champs)</dd>
+ 
+ 
+ <dt><a href="/cgi-bin/koha/admin/classsources.pl">Configuration de la classification</a></dt>
+ <dd>Définition des sources de classification (les systèmes utilisés pour construire les cotes) utilisées pour vos collections. Définition des règles de remplissage utilisées pour trier les cotes et des règles de subdivision pour les fractionner</dd>
+ 
+ 
+ <dt><a href="/cgi-bin/koha/admin/matching-rules.pl">Règles de concordance</a></dt>
+ <dd>Gestion des règles de concordance automatiques utilisées lors de l'import de notices MARC</dd>
+ 
+ 
+ <dt><a href="/cgi-bin/koha/admin/record_sources">Sources de notices</a></dt>
+ <dd>Définir la source d'où importer les notices</dd>
+ 
+ 
+ <dt><a href="/cgi-bin/koha/admin/marc-overlay-rules.pl">Règles de fusion de notices</a></dt>
+ <dd>Règles de fusion MARC automatique utilisées lors de l'import et la mise à jour de notices</dd>
+ 
+ 
+ <dt><a href="/cgi-bin/koha/admin/oai_sets.pl">Configuration des Sets OAI</a></dt>
+ <dd>Gestion des Sets OAI</dd>
+ 
+ 
+ <dt><a href="/cgi-bin/koha/admin/items_search_fields.pl">Champs de recherche des exemplaires</a></dt>
+ <dd>Gérer les champs personnalisés pour la recherche sur les exemplaires</dd>
+ 
+ 
+ 
+ <dt><a href="/cgi-bin/koha/admin/searchengine/elasticsearch/mappings.pl">Configuration du moteur de recherche (Elasticsearch)</a></dt>
+ <dd>Gestion des index, des facettes et de leurs correspondances avec des champs et sous-champs MARC</dd>
+ 
+ </dl>
+ 
+
+ 
+ <h3>Paramètres acquisitions</h3>
+ <dl>
+ 
+ <dt><a href="/cgi-bin/koha/admin/currency.pl">Devises et taux de change</a></dt>
+ <dd>Définition des devises et taux de change utilisés pour les acquisitions</dd>
+ 
+ 
+ <dt><a href="/cgi-bin/koha/admin/aqbudgetperiods.pl">Budgets</a></dt>
+ <dd>Définition des budgets</dd>
+ 
+ 
+ <dt><a href="/cgi-bin/koha/admin/aqbudgets.pl">Postes budgétaires</a></dt>
+ <dd>Définition des postes budgétaires au sein de vos budgets</dd>
+ 
+ 
+ <dt><a href="/cgi-bin/koha/admin/edi_accounts.pl">Comptes EDI</a></dt>
+ <dd>Gérer les comptes EDI des fournisseurs pour l'importation/exportation</dd>
+ <dt><a href="/cgi-bin/koha/admin/edi_ean_accounts.pl">EAN des bibliothèques</a></dt>
+ <dd>Gérer la bibliothèque EDI EANs</dd>
+ 
+ 
+ </dl>
+ 
+
+ 
+ <h3>Paramètres divers</h3>
+ <dl>
+ <!-- <dt><a href="/cgi-bin/koha/admin/printers.pl">Network Printers</a></dt>
+ <dd>Printers (UNIX paths).</dd> -->
+ 
+ <dt><a href="/cgi-bin/koha/admin/identity_providers.pl">Fournisseurs d'identité</a></dt>
+ <dd>Définir les services externes d'authentification à utiliser</dd>
+ 
+ 
+ <dt><a href="/cgi-bin/koha/admin/z3950servers.pl">Serveurs Z39.50/SRU</a></dt>
+ <dd>Définit les serveurs à interroger pour récupérer des données MARC</dd>
+ <dt><a href="/cgi-bin/koha/admin/oai_servers.pl">Entrepôts OAI</a></dt>
+ <dd>Définir les entrepôts OAI à moissonner</dd>
+ 
+ 
+ <dt><a href="/cgi-bin/koha/admin/smtp_servers.pl">Serveurs SMTP</a></dt>
+ <dd>Définit les serveurs SMTP à utiliser</dd>
+ 
+ 
+ <dt><a href="/cgi-bin/koha/admin/file_transports.pl">Transferts de fichiers</a></dt>
+ <dd>Définit les serveurs de transport de fichiers disponibles (FTP/SFTP)</dd>
+ 
+ 
+ <dt><a href="/cgi-bin/koha/admin/didyoumean.pl">Voulez-vous dire ?</a></dt>
+ <dd>Choix des plugins à utiliser pour suggérer des recherches supplémentaires aux adhérents et au personnel</dd>
+ 
+ 
+ <dt><a href="/cgi-bin/koha/admin/columns_settings.pl">Configurer les colonnes</a></dt>
+ <dd>Configurer et cacher ou afficher les colonnes pour les tableaux</dd>
+ 
+ 
+ <dt><a href="/cgi-bin/koha/admin/audio_alerts.pl">Alertes sonores</a></dt>
+ <dd>Définir quels événements déclenchent quels sons</dd>
+ 
+ 
+ 
+ <dt><a href="/cgi-bin/koha/admin/usage_statistics.pl">Partager vos statistiques d'utilisation</a></dt>
+ <dd>Partager les statistiques d'utilisation de votre installation Koha avec la communauté Koha</dd>
+ 
+ 
+ <dt><a href="/cgi-bin/koha/admin/share_content.pl">Partager du contenu avec Mana KB</a></dt>
+ <dd>Partager du contenu (abonnements, rapports) avec la communauté Koha</dd>
+ 
+ 
+ <dt><a href="/cgi-bin/koha/admin/additional-fields.pl">Champs supplémentaires</a></dt>
+ <dd>Ajout de champs supplémentaires à certaines tables</dd>
+ 
+ 
+ 
+ </dl>
+ 
+ </div>
+ </div>
+
+ </main>

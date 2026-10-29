@@ -1,0 +1,23 @@
+{
+  "kind": "Real Koha plugin with native SQL storage; Firebase blocked",
+  "rows": [
+    {
+      "name": "Journal CRUD respects custom collections and retains action history",
+      "passed": true,
+      "evidence": {
+        "entryId": "e151719e-d973-4cf3-8256-34e3ea22d399",
+        "history": 4,
+        "entriesCollection": "pmk_recipe_entries_1793201372492"
+      }
+    },
+    {
+      "name": "Attendance page and floating counter share the same persisted counts",
+      "passed": true,
+      "evidence": {
+        "date": "2026-10-28",
+        "document": "pmk-place__2026-10-28",
+        "adults": 2
+      }
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "checks": {
+    "sqlPeriodParameter": true,
+    "periodSentToKoha": true,
+    "periodVisible": true,
+    "manualRefresh": true,
+    "optionalAutomaticRefresh": true,
+    "refreshCleanup": true,
+    "scopeVisible": true,
+    "lastReadVisible": true,
+    "zeroIsData": true,
+    "unavailableDistinct": true,
+    "siteScopePreserved": true,
+    "unknownConfigPreserved": true,
+    "nativeWording": true
+  },
+  "scope": "Période transmise aux rapports Koha, actualisation manuelle/optionnelle, périmètre visible et états zéro/indisponible distincts."
+}
