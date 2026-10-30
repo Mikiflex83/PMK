@@ -17,22 +17,24 @@ concurrency:
 jobs:
   test-and-build:
     name: Audit, régression et paquets
-    runs-on: ubuntu-latest
+    # Playwright qualifie explicitement Ubuntu 24.04. Ne pas suivre la
+    # migration automatique de ubuntu-latest vers Ubuntu 26 sans recette.
+    runs-on: ubuntu-24.04
     timeout-minutes: 35
 
     steps:
       - name: Récupérer les sources
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Installer Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: tests/package-lock.json
 
       - name: Installer Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
@@ -89,7 +91,7 @@ jobs:
           PY
 
       - name: Publier les paquets de contrôle
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: pmk-${{ github.sha }}
           if-no-files-found: error
