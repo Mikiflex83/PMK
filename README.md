@@ -148,6 +148,14 @@ Les tests Chromium nécessitent Playwright et Chromium. Les tests Koha complets 
 - [Compatibilité de la version 0.4.0](COMPATIBILITE-PLUGIN-0.4.0.md)
 - [Suivi des améliorations](SUIVI-AMELIORATIONS-0.4.0.md)
 
+## Communauté
+
+- [Contribuer au projet](CONTRIBUTING.md)
+- [Obtenir de l’aide](SUPPORT.md)
+- [Signaler une vulnérabilité](SECURITY.md)
+- [Code de conduite](CODE_OF_CONDUCT.md)
+- [Journal des versions](CHANGELOG.md)
+
 ## Licence
 
 Le code de PimpMyKoha est distribué sous la licence [GNU GPL version 3 ou ultérieure](LICENSE), en cohérence avec Koha. Vous pouvez l’utiliser, l’étudier, le modifier et le redistribuer en respectant les conditions de cette licence, notamment la mise à disposition du code source des versions redistribuées.

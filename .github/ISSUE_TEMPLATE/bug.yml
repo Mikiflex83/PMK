@@ -1,0 +1,73 @@
+name: Signaler un défaut
+description: Signaler un comportement reproductible de PimpMyKoha
+title: "[Bug] "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Merci de retirer toute donnée de production, information lecteur, URL interne et secret avant de compléter ce formulaire.
+  - type: input
+    id: pmk-version
+    attributes:
+      label: Version de PMK
+      placeholder: 0.4.0
+    validations:
+      required: true
+  - type: input
+    id: koha-version
+    attributes:
+      label: Version de Koha
+      placeholder: 25.11
+    validations:
+      required: true
+  - type: dropdown
+    id: installation
+    attributes:
+      label: Mode d'installation
+      options:
+        - Plugin Koha
+        - Non-plugin
+        - En cours de migration
+    validations:
+      required: true
+  - type: input
+    id: module-page
+    attributes:
+      label: Module ou page concerné
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Étapes de reproduction
+      description: Utilisez uniquement des données fictives.
+      placeholder: |
+        1. Ouvrir…
+        2. Choisir…
+        3. Constater…
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Comportement attendu
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Comportement constaté
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Navigateur et système
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Confidentialité
+      options:
+        - label: J'ai retiré les données personnelles, secrets, cookies, exports de production et adresses internes.
+          required: true
+

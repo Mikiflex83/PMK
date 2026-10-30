@@ -1,0 +1,36 @@
+name: Proposer une amélioration
+description: Proposer une fonction ou une amélioration d'ergonomie
+title: "[Amélioration] "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: Besoin rencontré
+      description: Décrivez la situation de travail et la difficulté rencontrée.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Fonctionnement proposé
+    validations:
+      required: true
+  - type: textarea
+    id: universality
+    attributes:
+      label: Universalisation
+      description: Quelles options permettraient à d'autres installations Koha de l'utiliser ?
+  - type: textarea
+    id: native
+    attributes:
+      label: Interaction avec Koha
+      description: Précisez les fonctions natives, droits, rapports, zones MARC ou valeurs autorisées concernés.
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Confidentialité
+      options:
+        - label: Cette demande ne contient aucune donnée personnelle, configuration privée ou information de production.
+          required: true
+

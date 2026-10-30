@@ -1,0 +1,100 @@
+name: Validation PMK
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validation-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-and-build:
+    name: Audit, régression et paquets
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    steps:
+      - name: Récupérer les sources
+        uses: actions/checkout@v4
+
+      - name: Installer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: tests/package-lock.json
+
+      - name: Installer Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Installer les dépendances de test
+        working-directory: tests
+        run: npm ci
+
+      - name: Installer Chromium pour Playwright
+        working-directory: tests
+        run: |
+          npx playwright install --with-deps chromium
+          echo "PMK_CHROMIUM_PATH=$(node -e \"console.log(require('playwright').chromium.executablePath())\")" >> "$GITHUB_ENV"
+
+      - name: Auditer les déclarations et la syntaxe
+        working-directory: tests
+        run: npm run audit
+
+      - name: Vérifier l'absence de dépendance Firebase dans le plugin
+        run: python3 tests/firebase-free.py
+
+      - name: Contrôler les données publiables
+        run: python3 tests/publication-safety.py
+
+      - name: Exécuter les 79 groupes de régression
+        working-directory: tests
+        run: npm test
+
+      - name: Construire le mode non-plugin
+        run: |
+          python3 legacy/build.py \
+            --stage "$RUNNER_TEMP/pmk-non-plugin" \
+            --output "$RUNNER_TEMP/PimpMyKoha-non-plugin.zip"
+
+      - name: Construire le plugin KPZ
+        run: |
+          python3 plugin/build.py \
+            --stage "$RUNNER_TEMP/pmk-plugin" \
+            --output "$RUNNER_TEMP/PimpMyKoha-plugin.kpz"
+
+      - name: Contrôler les paquets construits
+        run: |
+          python3 tests/publication-safety.py \
+            "$RUNNER_TEMP/PimpMyKoha-non-plugin.zip" \
+            "$RUNNER_TEMP/PimpMyKoha-plugin.kpz"
+          python3 - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile
+          import os
+          for name in ('PimpMyKoha-non-plugin.zip', 'PimpMyKoha-plugin.kpz'):
+              path = Path(os.environ['RUNNER_TEMP']) / name
+              with ZipFile(path) as archive:
+                  assert archive.testzip() is None, name
+              print(f'{name}: {path.stat().st_size} octets, archive valide')
+          PY
+
+      - name: Publier les paquets de contrôle
+        uses: actions/upload-artifact@v4
+        with:
+          name: pmk-${{ github.sha }}
+          if-no-files-found: error
+          retention-days: 14
+          path: |
+            ${{ runner.temp }}/PimpMyKoha-non-plugin.zip
+            ${{ runner.temp }}/PimpMyKoha-plugin.kpz
+

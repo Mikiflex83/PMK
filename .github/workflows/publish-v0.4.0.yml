@@ -1,0 +1,46 @@
+name: Publier la version 0.4.0
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/publish-v0.4.0.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Créer la Release et joindre les paquets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer les fichiers publiés
+        uses: actions/checkout@v4
+
+      - name: Vérifier les paquets
+        run: |
+          test -f releases/0.4.0/PimpMyKoha-livraison-complete-2026-10-29.zip
+          test -f releases/0.4.0/PimpMyKoha-non-plugin-0.4.0-transition.3.zip
+          test -f releases/0.4.0/PimpMyKoha-plugin-0.4.0.kpz
+          python3 tests/publication-safety.py \
+            releases/0.4.0/PimpMyKoha-livraison-complete-2026-10-29.zip \
+            releases/0.4.0/PimpMyKoha-non-plugin-0.4.0-transition.3.zip \
+            releases/0.4.0/PimpMyKoha-plugin-0.4.0.kpz
+
+      - name: Créer la Release v0.4.0
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view v0.4.0 >/dev/null 2>&1; then
+            echo "La Release v0.4.0 existe déjà."
+            exit 0
+          fi
+          gh release create v0.4.0 \
+            releases/0.4.0/PimpMyKoha-livraison-complete-2026-10-29.zip \
+            releases/0.4.0/PimpMyKoha-non-plugin-0.4.0-transition.3.zip \
+            releases/0.4.0/PimpMyKoha-plugin-0.4.0.kpz \
+            --verify-tag \
+            --title "PimpMyKoha 0.4.0" \
+            --notes "Première livraison communautaire complète de PimpMyKoha : plugin Koha, mode non-plugin transitoire et outils de migration. Consultez le README, la matrice de compatibilité et la procédure de transition avant installation."
+
