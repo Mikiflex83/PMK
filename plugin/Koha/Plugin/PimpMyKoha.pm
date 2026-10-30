@@ -4,6 +4,7 @@ use Modern::Perl;
 use base qw(Koha::Plugins::Base);
 use JSON qw(decode_json);
 use C4::Context;
+use Koha::Plugin::PimpMyKoha::OwnerHistory;
 
 our $VERSION = '0.4.0';
 our $metadata = {
@@ -60,12 +61,18 @@ sub install {
         my $count = $dbh->selectrow_array('SELECT COUNT(*) FROM koha_plugin_pimpmykoha_documents');
         $self->store_data({runtime_enabled => $count ? '1' : '0'});
     }
+    Koha::Plugin::PimpMyKoha::OwnerHistory->install;
     return 1;
 }
 
 sub upgrade { return shift->install; }
 # La désinstallation ne supprime pas les réglages ni leur historique.
 sub uninstall { return 1; }
+
+sub after_item_action {
+    my ($self, $args) = @_;
+    Koha::Plugin::PimpMyKoha::OwnerHistory->record($args);
+}
 
 sub intranet_js {
     my ($self) = @_;
@@ -92,7 +99,7 @@ sub static_routes {
     open my $file, '<:raw', $self->mbf_path('manifest.json') or die "PMK manifest: $!";
     local $/;
     my $manifest = decode_json(<$file>);
-    my @files = ('bootstrap.js', 'storage.js', 'native-data.js', 'migration.js', 'manifest.json', $manifest->{autoloadBundle}, map { 'assets/' . $_ } sort keys %{$manifest->{files}});
+    my @files = ('owner-history.js', 'bootstrap.js', 'storage.js', 'native-data.js', 'migration.js', 'manifest.json', $manifest->{autoloadBundle}, map { 'assets/' . $_ } sort keys %{$manifest->{files}});
     my %routes;
     for my $index (0..$#files) {
         $routes{'/' . $files[$index]} = {get => {
