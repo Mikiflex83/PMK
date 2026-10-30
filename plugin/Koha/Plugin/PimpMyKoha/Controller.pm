@@ -10,7 +10,10 @@ use Koha::Plugin::PimpMyKoha::NativeData;
 use Koha::Plugin::PimpMyKoha::Restoration;
 use Koha::Reports;
 use Koha::Plugin::PimpMyKoha::Nedap;
+use Koha::Plugin::PimpMyKoha::OwnerHistory;
 my $document_json = JSON->new->canonical;
+
+sub owner_history { return Koha::Plugin::PimpMyKoha::OwnerHistory->get(shift); }
 
 sub nedap_settings { return Koha::Plugin::PimpMyKoha::Nedap::settings(shift); }
 sub nedap_counts { return Koha::Plugin::PimpMyKoha::Nedap::counts(shift); }
