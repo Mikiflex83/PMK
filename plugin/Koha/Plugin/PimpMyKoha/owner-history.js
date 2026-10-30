@@ -2,14 +2,19 @@
 'use strict';
 if(window.PMKOwnerHistory) return;
 const MODULE_ID='pmk-owner-history';
+const MODULE_VERSION='1.0.0-plugin';
+const DEFAULT_CONFIG=Object.freeze({enabled:true});
+let currentConfig={...DEFAULT_CONFIG};
 const state=window.PMKOwnerHistory={id:MODULE_ID,pluginOnly:true,enabled:true};
 let unsubscribe;
+function normalizeConfig(config){return {enabled:!config || config.enabled!==false};}
 function applyConfig(config){
-  state.enabled=!config || config.enabled!==false;
+  currentConfig=normalizeConfig(config);
+  state.enabled=currentConfig.enabled;
   const panel=document.getElementById('pmk-owner-history');
   if(panel)panel.hidden=!state.enabled;
 }
-function register(){
+function registerModule(){
   if(!window.PMKConfig || typeof window.PMKConfig.registerModule!=='function')return;
   try{window.PMKConfig.registerModule({
     id:MODULE_ID,schemaVersion:1,
@@ -17,7 +22,7 @@ function register(){
     description:{fr:'Historise côté serveur les changements de bibliothèque propriétaire et affiche une timeline ou un tableau brut (plugin uniquement).',en:'Tracks item home library changes on the server and displays timeline or raw table (plugin only).'},
     category:{fr:'Catalogue / exemplaires',en:'Catalogue / items'},
     supportedPages:['catalogue.detail','catalogue.moredetail'],
-    defaults:{enabled:true},
+    defaults:{...DEFAULT_CONFIG},
     schema:[{type:'section',id:'display',label:{fr:'Affichage',en:'Display'},fields:[
       {key:'enabled',type:'boolean',label:{fr:'Afficher l’historique sur les fiches exemplaires',en:'Show ownership history on item pages'}}
     ]}]
@@ -29,12 +34,12 @@ function register(){
     Promise.resolve(window.PMKConfig.getConfig(MODULE_ID)).then(applyConfig).catch(()=>{});
   }
 }
-register();
-if(!window.PMKConfig)window.addEventListener('pmk:config-ready',register,{once:true});
+registerModule();
+if(!window.PMKConfig)window.addEventListener('pmk:config-ready',registerModule,{once:true});
 function itemId(){
   const u=new URL(location.href);
   const n=u.searchParams.get('itemnumber')||u.searchParams.get('item_id');
-  return n&&/^\d+$/.test(n)?n:null;
+  return n&&/^[1-9]\d*$/.test(n)?n:null;
 }
 function el(tag,cls,text){const n=document.createElement(tag);if(cls)n.className=cls;if(text!=null)n.textContent=text;return n;}
 function render(root,data){
@@ -70,14 +75,24 @@ function render(root,data){
 }
 async function boot(){
  if(!/\/(moredetail|detail)\.pl$/.test(location.pathname))return;
+ // detail.pl normally carries biblionumber, not itemnumber. Never interpret it as an item ID.
  const id=itemId();if(!id)return;
  const host=document.querySelector('#catalogue_detail_biblio, #catalogue_detail, #content, main');
  if(!host)return;
+ if(!state.enabled)return;
  const section=el('section','panel panel-default');section.id='pmk-owner-history';section.hidden=!state.enabled;section.style.cssText='padding:14px;margin:16px 0';
  section.append(el('div',null,'Chargement de l’historique des affectations…'));host.append(section);
  try{const res=await fetch('/api/v1/contrib/pmk/owner-history/items/'+encodeURIComponent(id),{credentials:'same-origin',headers:{'Accept':'application/json'}});
  if(!res.ok)throw new Error('HTTP '+res.status);render(section,await res.json());}
  catch(e){section.replaceChildren(el('p','text-warning','Historique indisponible : '+e.message));}
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+async function start(){
+ registerModule();
+ if(window.PMKConfig && typeof window.PMKConfig.getConfig==='function'){
+   try{applyConfig(await window.PMKConfig.getConfig(MODULE_ID));}catch(e){applyConfig(DEFAULT_CONFIG);}
+ }
+ await boot();
+}
+state.moduleId=MODULE_ID;state.version=MODULE_VERSION;
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();
