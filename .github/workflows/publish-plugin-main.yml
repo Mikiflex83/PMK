@@ -1,0 +1,55 @@
+name: Publier automatiquement le plugin PMK valide
+
+on:
+  workflow_run:
+    workflows: ["Validation PMK"]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: pmk-release-main
+  cancel-in-progress: false
+
+jobs:
+  publish-plugin:
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.event == 'push' }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Télécharger le KPZ issu des tests réussis
+        uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          name: pmk-${{ github.event.workflow_run.head_sha }}
+          path: dist
+
+      - name: Vérifier le paquet publié
+        run: |
+          python3 - <<'PY'
+          import zipfile
+          with zipfile.ZipFile('dist/PimpMyKoha-plugin.kpz') as z:
+              assert z.testzip() is None
+              assert {'Koha/Plugin/PimpMyKoha.pm','Koha/Plugin/PimpMyKoha/api.json'}.issubset(z.namelist())
+          print('KPZ valide')
+          PY
+
+      - name: Créer une release téléchargeable et traçable
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          VALIDATED_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          tag="pmk-plugin-main-${VALIDATED_SHA:0:12}"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "Release déjà existante : $tag"
+            exit 0
+          fi
+          gh release create "$tag" dist/PimpMyKoha-plugin.kpz \
+            --target "$VALIDATED_SHA" \
+            --title "PimpMyKoha plugin — main validé ${VALIDATED_SHA:0:12}" \
+            --notes "Paquet KPZ généré automatiquement depuis un commit main ayant réussi Validation PMK. Commit complet : $VALIDATED_SHA. Tester sur sandbox Koha avant production." \
+            --latest
