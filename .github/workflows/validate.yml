@@ -46,7 +46,7 @@ jobs:
         working-directory: tests
         run: |
           npx playwright install --with-deps chromium
-          echo "PMK_CHROMIUM_PATH=$(node -e \"console.log(require('playwright').chromium.executablePath())\")" >> "$GITHUB_ENV"
+          node -e 'require("node:fs").appendFileSync(process.env.GITHUB_ENV, "PMK_CHROMIUM_PATH=" + require("playwright").chromium.executablePath() + "\n")'
 
       - name: Auditer les déclarations et la syntaxe
         working-directory: tests
