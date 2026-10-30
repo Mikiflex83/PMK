@@ -10,6 +10,7 @@ sub install {
     $dbh->do(q{CREATE TABLE IF NOT EXISTS koha_plugin_pimpmykoha_owner_state (
       itemnumber INT NOT NULL PRIMARY KEY,
       homebranch VARCHAR(10) NOT NULL,
+      initial_homebranch VARCHAR(10) NOT NULL,
       barcode VARCHAR(50) DEFAULT NULL,
       first_seen DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
       checked_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -28,9 +29,11 @@ sub install {
       KEY site_date (new_homebranch, changed_at)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4});
     # Baseline: install-time snapshot, not a historical ownership assertion.
+    my ($existing) = $dbh->selectrow_array(q{SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='koha_plugin_pimpmykoha_owner_state' AND COLUMN_NAME='initial_homebranch'});
+    unless ($existing) { $dbh->do('ALTER TABLE koha_plugin_pimpmykoha_owner_state ADD COLUMN initial_homebranch VARCHAR(10) DEFAULT NULL AFTER homebranch'); $dbh->do('UPDATE koha_plugin_pimpmykoha_owner_state SET initial_homebranch=homebranch WHERE initial_homebranch IS NULL'); }
     $dbh->do(q{INSERT IGNORE INTO koha_plugin_pimpmykoha_owner_state
-      (itemnumber,homebranch,barcode)
-      SELECT itemnumber,homebranch,barcode FROM items WHERE homebranch IS NOT NULL});
+      (itemnumber,homebranch,initial_homebranch,barcode)
+      SELECT itemnumber,homebranch,homebranch,barcode FROM items WHERE homebranch IS NOT NULL});
     return 1;
 }
 
@@ -54,8 +57,8 @@ sub record {
         if (!$state) {
             if (defined $owner) {
                 $dbh->do(q{INSERT INTO koha_plugin_pimpmykoha_owner_state
-                    (itemnumber,homebranch,barcode) VALUES (?,?,?)},
-                    undef,$id,$owner,$barcode);
+                    (itemnumber,homebranch,initial_homebranch,barcode) VALUES (?,?,?,?)},
+                    undef,$id,$owner,$owner,$barcode);
                 # Explicit first known state; never fabricate the original owner.
                 $dbh->do(q{INSERT INTO koha_plugin_pimpmykoha_owner_events
                     (itemnumber,barcode,new_homebranch,event_type,source,actor_id)
@@ -101,7 +104,7 @@ sub get {
       event_type,source,actor_id,DATE_FORMAT(changed_at,'%Y-%m-%dT%H:%i:%s.%f') AS changed_at
       FROM koha_plugin_pimpmykoha_owner_events WHERE itemnumber=?
       ORDER BY changed_at ASC,id ASC LIMIT 2000},{Slice=>{}},$id);
-    my $state = $dbh->selectrow_hashref(q{SELECT itemnumber,homebranch,barcode,
+    my $state = $dbh->selectrow_hashref(q{SELECT itemnumber,homebranch,initial_homebranch,barcode,
       DATE_FORMAT(first_seen,'%Y-%m-%dT%H:%i:%s') AS first_seen
       FROM koha_plugin_pimpmykoha_owner_state WHERE itemnumber=?},undef,$id);
     $c->res->headers->cache_control('private, no-store');
