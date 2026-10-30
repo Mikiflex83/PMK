@@ -1,0 +1,33 @@
+name: PMK plugin owner history - package test
+on:
+  push:
+    branches: [feat/plugin-item-owner-history]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build installable Koha plugin
+        run: |
+          python3 plugin/build.py --stage "$RUNNER_TEMP/pmk-owner-stage" --output "$RUNNER_TEMP/PimpMyKoha-plugin-owner-history-test.kpz"
+      - name: Validate archive and owner module
+        run: |
+          python3 - <<'PY'
+          import zipfile, os
+          path=os.environ['RUNNER_TEMP']+'/PimpMyKoha-plugin-owner-history-test.kpz'
+          with zipfile.ZipFile(path) as z:
+              assert z.testzip() is None
+              names=set(z.namelist())
+              for rel in ('PimpMyKoha.pm','PimpMyKoha/OwnerHistory.pm','PimpMyKoha/owner-history.js','PimpMyKoha/api.json','PimpMyKoha/bootstrap.js'):
+                  assert 'Koha/Plugin/'+rel in names, rel
+          print('Owner history plugin KPZ OK')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PimpMyKoha-plugin-owner-history-test
+          path: ${{ runner.temp }}/PimpMyKoha-plugin-owner-history-test.kpz
+          if-no-files-found: error
+          retention-days: 30

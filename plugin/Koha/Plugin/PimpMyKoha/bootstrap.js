@@ -34,6 +34,7 @@
         if(setup){state.ready=true;await window.PMKMigration.open();return;}
         await load(manifest.autoloadBundle,manifest.build);
         if (!window.PMKConfig) throw new Error('Le socle PMK n’a pas démarré.');
+        await load('owner-history.js',state.version);
         if (state.errors.length) throw new Error(state.errors.join('\n'));
         state.ready = true;
         if (new URLSearchParams(location.search).get('pmk_admin') === '1') window.PMKConfig?.openAdmin();
