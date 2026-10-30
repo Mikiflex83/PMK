@@ -6,5 +6,6 @@
 /plugin/*.kpz
 /output/
 tests/validation/*-failure-*
-# Configuration Firebase historique locale : ne jamais publier.
-/legacy/pmk-legacy-private-config.js
+# Configuration Firebase locale : ne jamais publier.
+/legacy/pmk-firebase-config.js
+/pmk-firebase-config.js

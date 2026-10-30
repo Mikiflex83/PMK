@@ -15,7 +15,7 @@ stage.mkdir(parents=True)
 
 excluded={'000-drac-quality-memory-firebase.js','008-issuehistory-timelineold.js','138-pages-settings.js','066-067-lists-manager.js','071-history-system.js','075-advanced-search-sidebar.js'}
 scripts=[p.name for p in sorted(ROOT.glob('*.js')) if p.name not in excluded]
-ordered=['legacy/000-pmk-legacy-firestore-adapter.js','legacy/001-pmk-legacy-native-data.js']+scripts
+ordered=['legacy/000-pmk-firebase-adapter.js','legacy/001-pmk-firebase-data.js']+scripts
 for path in list(ROOT.glob('*.js')):
  if path.name not in {'000-drac-quality-memory-firebase.js','008-issuehistory-timelineold.js'}:shutil.copy2(path,stage/path.name)
 for directory in ('137-widgets','138-pages','guides','sql'):
@@ -24,19 +24,20 @@ for directory in ('137-widgets','138-pages','guides','sql'):
 shutil.copy2(ROOT/'dev/migration/export-production.js',stage/'dev/migration/export-production.js')
 shutil.copy2(ROOT/'pimp-my-koha.png',stage/'pimp-my-koha.png')
 shutil.copy2(ROOT/'INSTALLATION-NON-PLUGIN-TRANSITION.md',stage/'INSTALLATION-NON-PLUGIN-TRANSITION.md')
+shutil.copy2(ROOT/'FIREBASE-NON-PLUGIN.md',stage/'FIREBASE-NON-PLUGIN.md')
 for notice in ('LICENSE','THIRD_PARTY_NOTICES.md'):
  shutil.copy2(ROOT/notice,stage/notice)
-for name in ('000-pmk-legacy-firestore-adapter.js','001-pmk-legacy-native-data.js','IntranetUserJS-Dracenie.js','pmk-legacy-private-config.example.js'):
+for name in ('000-pmk-firebase-adapter.js','001-pmk-firebase-data.js','IntranetUserJS-PMK.js','pmk-firebase-config.example.js'):
  shutil.copy2(ROOT/'legacy'/name,stage/name)
 # The common core remains identical to the plugin source; only the labels and
 # local-backup key are specialized inside this non-plugin distribution.
 core=stage/'000-pmk-config-firestore.js'
 text=core.read_text()
-text=text.replace('const STORAGE_LABEL = window.PMKConfigNativeStorage ? "Koha" : "Firestore";', 'const STORAGE_LABEL = window.PMKConfigNativeStorage?.kind === "firebase-legacy" ? "Firebase transitoire" : (window.PMKConfigNativeStorage ? "Koha" : "Stockage indisponible");')
-text=text.replace("const storageInstallation = 'koha';", "const storageInstallation = window.PMKConfigNativeStorage?.kind === 'firebase-legacy' ? 'firebase-legacy' : 'koha';")
+text=text.replace('const STORAGE_LABEL = window.PMKConfigNativeStorage ? "Koha" : "Firestore";', 'const STORAGE_LABEL = window.PMKConfigNativeStorage?.kind === "firebase" ? "Firebase de l’établissement" : (window.PMKConfigNativeStorage ? "Koha" : "Stockage indisponible");')
+text=text.replace("const storageInstallation = 'koha';", "const storageInstallation = window.PMKConfigNativeStorage?.kind === 'firebase' ? 'firebase' : 'koha';")
 core.write_text(text)
 
-version='0.4.0-transition.3'
+version='0.4.0-transition.4'
 file_names=[Path(x).name if x.startswith('legacy/') else x for x in ordered]
 # Every source is an IIFE. Consecutive chunks preserve their deterministic order
 # while avoiding both 112 requests and a single 7 MB parser input. This also
@@ -87,19 +88,20 @@ notice=f"""PimpMyKoha {version} — distribution transitoire sans plugin
 
 1. Sauvegardez le dossier PMK actuel et IntranetUserJS.
 2. Copiez le contenu de ce dossier dans /public/koha-scripts/ en remplaçant les fichiers PMK.
-3. Copiez pmk-legacy-private-config.example.js en pmk-legacy-private-config.js,
-   renseignez localement les configurations de vos anciens projets et ne publiez
+3. Copiez pmk-firebase-config.example.js en pmk-firebase-config.js,
+   renseignez localement la configuration de vos propres projets et ne publiez
    jamais ce fichier privé.
 4. Dans IntranetUserJS, conservez vos personnalisations hors PMK et remplacez
    l'ancien tableau `files` par le bloc JavaScript fourni dans
-   IntranetUserJS-Dracenie.js. IntranetUserJS n'accepte pas une balise HTML.
+   IntranetUserJS-PMK.js. IntranetUserJS n'accepte pas une balise HTML.
 5. Ne chargez plus séparément les anciens fichiers PMK : le chargeur fixe leur ordre
    et les démarre en quelques requêtes locales groupées.
 6. Ouvrez PMK puis « Données des modules — import / export » pour sauvegarder.
 
-Cette distribution utilise temporairement les projets Firebase historiques. Elle
-ne doit pas être chargée en même temps que le plugin. Le futur plugin reste sans
-Firebase et accepte la sauvegarde complète produite ici.
+Cette distribution utilise uniquement les projets Firebase configurés et
+administrés par votre établissement. PMK ne fournit aucun projet partagé. Elle
+ne doit pas être chargée en même temps que le plugin, qui reste sans Firebase et
+accepte la sauvegarde complète produite ici.
 """
 (stage/'LIRE-AVANT-INSTALLATION.txt').write_text(notice)
 manifest={'version':version,'kind':'pmk-non-plugin-transition','scripts':ordered,'files':{}}

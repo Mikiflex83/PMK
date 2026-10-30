@@ -6,10 +6,10 @@
  'use strict';
  if(window.PMKLegacyExport){window.PMKLegacyExport.open();return;}
  const overrides=window.PMK_LEGACY_EXPORT_OPTIONS||{};
- const namespaceConfigs=window.PMK_LEGACY_NAMESPACE_CONFIGS||{};
+ const namespaceConfigs=window.PMK_FIREBASE_NAMESPACE_CONFIGS||window.PMK_LEGACY_NAMESPACE_CONFIGS||{};
  const scopes=['configuration','attendance','appointments','journal','lists','taxonomy','planning','frequency'];
  const projects=Object.fromEntries(scopes.map(scope=>[scope,String(overrides.projects?.[scope]||(scope==='configuration'?window.PMK_FIREBASE_CONFIG?.projectId:namespaceConfigs[scope]?.projectId)||'')]).filter(([,project])=>project));
- const roots={configuration:['pimpmykoha_preplugin_modules'],attendance:['counts','locations'],appointments:['bookings','participants','pollResponses','polls','recurrenceRules','settings','slots','themes'],journal:['entries','logs'],lists:['profiles'],taxonomy:['treeData','koha099_named_presets','pmk_cataloguing_tree_presets','koha_items_assistant_presets'],planning:['planning'],frequency:['frequencyCounter']};
+ const roots={configuration:[String(window.PMK_FIREBASE_COLLECTION||'pimpmykoha_preplugin_modules')],attendance:['counts','locations'],appointments:['bookings','participants','pollResponses','polls','recurrenceRules','settings','slots','themes'],journal:['entries','logs'],lists:['profiles'],taxonomy:['treeData','koha099_named_presets','pmk_cataloguing_tree_presets','koha_items_assistant_presets'],planning:['planning'],frequency:['frequencyCounter']};
  const copy=x=>JSON.parse(JSON.stringify(x));
  const storePattern=/^(?:pmk|koha|drac|kx|sidebar|kwd|xslt|nf|items$|freq|doodle|dam-|inventory)/i;
  const secretPattern=/firebase|authuser|access.?token|refresh.?token|session.?token|password|csrf/i;

@@ -8,7 +8,7 @@ Le projet conserve la philosophie de l’installation historique de la Dracénie
 
 | Mode | Maturité actuelle |
 |---|---|
-| **Non-plugin** | Mode historique éprouvé en situation réelle. Il reste dépendant des projets Firebase historiques pour les configurations et certaines données PMK. La distribution 0.4.0 doit malgré tout être sauvegardée et vérifiée avant remplacement des scripts existants. |
+| **Non-plugin** | Mode éprouvé en situation réelle. Il dépend de projets Firebase créés et administrés par chaque établissement pour les configurations et certaines données PMK. Aucun projet Firebase ni identifiant Dracénie n’est fourni. |
 | **Plugin Koha** | **Version expérimentale en cours de test.** Le paquet passe des tests automatiques et des essais techniques sur une instance Koha dédiée, mais il ne bénéficie pas encore d’un retour d’utilisation en établissement ni d’une transition réelle validée. |
 
 > [!WARNING]
@@ -18,8 +18,8 @@ Le projet conserve la philosophie de l’installation historique de la Dracénie
 
 | Distribution | Usage | Téléchargement |
 |---|---|---|
-| Livraison complète | Plugin, mode non-plugin, migration, documentation et sources | [ZIP complet](releases/0.4.0/PimpMyKoha-livraison-complete-2026-10-29.zip) |
-| Mode non-plugin | Installation actuelle par transfert de fichiers | [ZIP non-plugin](releases/0.4.0/PimpMyKoha-non-plugin-0.4.0-transition.3.zip) |
+| Livraison complète | Plugin, mode non-plugin, migration, documentation et sources | [ZIP complet](releases/0.4.0/PimpMyKoha-livraison-complete-2026-10-30.zip) |
+| Mode non-plugin | Installation actuelle par transfert de fichiers | [ZIP non-plugin](releases/0.4.0/PimpMyKoha-non-plugin-0.4.0-transition.4.zip) |
 | Plugin Koha | Paquet expérimental pour test depuis **Outils → Plugins** | [KPZ de test](releases/0.4.0/PimpMyKoha-plugin-0.4.0.kpz) |
 
 Les empreintes SHA-256 sont publiées dans le [dossier de la version](releases/0.4.0/README.md).
@@ -44,11 +44,16 @@ Consultez [l’installation du plugin](INSTALLATION-PLUGIN.md), puis la [procéd
 Cette distribution permet de profiter des modules à jour lorsque l’installation des plugins Koha n’est pas encore autorisée. Elle se copie dans le dossier web qui sert actuellement les scripts PMK et utilise un petit chargeur dans `IntranetUserJS`.
 
 > [!CAUTION]
-> Le mode non-plugin n’est pas autonome : il dépend de Firebase et des identifiants des projets historiques pour charger les configurations et certaines données PMK. Une indisponibilité ou une suppression de ces projets peut rendre ces éléments inaccessibles. Cette dépendance externe disparaît uniquement dans le mode plugin.
+> Le mode non-plugin n’est pas autonome : chaque établissement doit créer, sécuriser et maintenir ses propres projets Firebase pour charger les configurations et certaines données PMK. PMK ne contient aucun identifiant Firebase Dracénie et ne donne accès à aucune base partagée. Cette dépendance externe disparaît uniquement dans le mode plugin.
 
-Elle garde volontairement l’accès aux anciens stockages Firebase de l’installation historique afin de retrouver les configurations existantes et de produire une sauvegarde importable dans le plugin. Le plugin, lui, n’utilise pas Firebase.
+Elle accepte la configuration Firebase propre à chaque installation et produit une sauvegarde importable dans le plugin. Le plugin, lui, n’utilise pas Firebase.
 
-Les identifiants de ces anciens projets ne sont pas publiés. Ils doivent être placés uniquement sur le serveur dans `pmk-legacy-private-config.js`, créé depuis le modèle fourni et exclu de Git.
+La configuration doit être placée uniquement sur le serveur dans `pmk-firebase-config.js`, créé depuis le modèle fourni et exclu de Git. Consultez [Créer et connecter ses propres projets Firebase](FIREBASE-NON-PLUGIN.md).
+
+Le diagnostic PMK teste ensuite le projet principal ainsi que chaque espace
+fonctionnel. Les connexions ne sont pas dupliquées dans les réglages de chaque
+module : plusieurs modules utilisant les mêmes données partagent un seul espace
+Firebase défini dans ce fichier.
 
 Consultez [l’installation non-plugin](INSTALLATION-NON-PLUGIN-TRANSITION.md).
 
@@ -70,9 +75,9 @@ L’export ne modifie pas l’ancienne installation. Les configurations inconnue
 ## Installation rapide sans plugin
 
 1. Sauvegarder le dossier de scripts actuel et les personnalisations Koha.
-2. Décompresser le [ZIP non-plugin](releases/0.4.0/PimpMyKoha-non-plugin-0.4.0-transition.3.zip).
+2. Décompresser le [ZIP non-plugin](releases/0.4.0/PimpMyKoha-non-plugin-0.4.0-transition.4.zip).
 3. Copier le contenu de `PimpMyKoha-non-plugin` dans le dossier servi, par exemple `/public/koha-scripts/`.
-4. Remplacer les anciens chargements PMK individuels par le contenu de `IntranetUserJS-Dracenie.js` fourni.
+4. Remplacer les anciens chargements PMK individuels par le contenu de `IntranetUserJS-PMK.js` fourni.
 5. Vider le cache du navigateur et contrôler les configurations dans PMK avant tout enregistrement.
 
 Les 113 sources sont regroupées en neuf ressources de démarrage pour réduire les requêtes HTTP. Les fichiers individuels restent séparés dans les sources afin de conserver une maintenance lisible.
