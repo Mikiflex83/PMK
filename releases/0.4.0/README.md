@@ -2,7 +2,11 @@
 
 - `PimpMyKoha-livraison-complete-2026-10-29.zip` : mode non-plugin, plugin, migration, documentation et sources.
 - `PimpMyKoha-non-plugin-0.4.0-transition.3.zip` : installation par transfert de fichiers.
-- `PimpMyKoha-plugin-0.4.0.kpz` : plugin prêt à téléverser dans Koha, avec stockage natif et sans dépendance Firebase.
+- `PimpMyKoha-plugin-0.4.0.kpz` : paquet plugin expérimental à téléverser sur une instance de test Koha, avec stockage natif et sans dépendance Firebase.
+
+> **État de maturité :** le mode non-plugin est le seul mode éprouvé en situation réelle. Le plugin 0.4.0 est expérimental, en cours de test, et doit être installé uniquement sur une instance de recette ou une copie de la production avant toute décision de bascule.
+
+> **Dépendance Firebase :** le mode non-plugin reste dépendant des projets Firebase historiques pour les configurations et certaines données PMK. Le plugin n’utilise aucun service Firebase après la migration.
 
 La distribution publique ne contient aucune configuration Firebase historique, aucun nom ou courriel personnel, aucun compte Koha privé, aucune carte lecteur technique et aucune URL Worker personnelle. Le mode non-plugin fournit seulement `pmk-legacy-private-config.example.js`. Chaque établissement crée localement `pmk-legacy-private-config.js`, qui reste exclu de Git et des archives publiques.
 
