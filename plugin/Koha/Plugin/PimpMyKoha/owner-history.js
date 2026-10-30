@@ -3,6 +3,34 @@
 if(window.PMKOwnerHistory) return;
 const MODULE_ID='pmk-owner-history';
 const state=window.PMKOwnerHistory={id:MODULE_ID,pluginOnly:true,enabled:true};
+let unsubscribe;
+function applyConfig(config){
+  state.enabled=!config || config.enabled!==false;
+  const panel=document.getElementById('pmk-owner-history');
+  if(panel)panel.hidden=!state.enabled;
+}
+function register(){
+  if(!window.PMKConfig || typeof window.PMKConfig.registerModule!=='function')return;
+  try{window.PMKConfig.registerModule({
+    id:MODULE_ID,schemaVersion:1,
+    name:{fr:'Historique des affectations',en:'Item ownership history'},
+    description:{fr:'Historise côté serveur les changements de bibliothèque propriétaire et affiche une timeline ou un tableau brut (plugin uniquement).',en:'Tracks item home library changes on the server and displays timeline or raw table (plugin only).'},
+    category:{fr:'Catalogue / exemplaires',en:'Catalogue / items'},
+    supportedPages:['catalogue.detail','catalogue.moredetail'],
+    defaults:{enabled:true},
+    schema:[{type:'section',id:'display',label:{fr:'Affichage',en:'Display'},fields:[
+      {key:'enabled',type:'boolean',label:{fr:'Afficher l’historique sur les fiches exemplaires',en:'Show ownership history on item pages'}}
+    ]}]
+  });}catch(e){console.warn('PMK owner module registration',e);}
+  if(!unsubscribe && typeof window.PMKConfig.subscribe==='function'){
+    try{unsubscribe=window.PMKConfig.subscribe(MODULE_ID,applyConfig)}catch(e){}
+  }
+  if(typeof window.PMKConfig.getConfig==='function'){
+    Promise.resolve(window.PMKConfig.getConfig(MODULE_ID)).then(applyConfig).catch(()=>{});
+  }
+}
+register();
+if(!window.PMKConfig)window.addEventListener('pmk:config-ready',register,{once:true});
 function itemId(){
   const u=new URL(location.href);
   const n=u.searchParams.get('itemnumber')||u.searchParams.get('item_id');
@@ -45,7 +73,7 @@ async function boot(){
  const id=itemId();if(!id)return;
  const host=document.querySelector('#catalogue_detail_biblio, #catalogue_detail, #content, main');
  if(!host)return;
- const section=el('section','panel panel-default');section.id='pmk-owner-history';section.style.cssText='padding:14px;margin:16px 0';
+ const section=el('section','panel panel-default');section.id='pmk-owner-history';section.hidden=!state.enabled;section.style.cssText='padding:14px;margin:16px 0';
  section.append(el('div',null,'Chargement de l’historique des affectations…'));host.append(section);
  try{const res=await fetch('/api/v1/contrib/pmk/owner-history/items/'+encodeURIComponent(id),{credentials:'same-origin',headers:{'Accept':'application/json'}});
  if(!res.ok)throw new Error('HTTP '+res.status);render(section,await res.json());}
