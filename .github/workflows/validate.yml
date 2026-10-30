@@ -89,7 +89,7 @@ jobs:
           PY
 
       - name: Publier les paquets de contrôle
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: pmk-${{ github.sha }}
           if-no-files-found: error
