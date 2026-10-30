@@ -19,7 +19,7 @@ function render(root,data){
  controls.append(b1,document.createTextNode(' '),b2,document.createTextNode(' '),csv);
  let rows=[...(data.events||[])];
  if(data.state&&!rows.some(x=>x.event_type==='baseline'))rows.unshift({
-   event_type:'baseline',new_homebranch:data.state.homebranch,changed_at:data.state.first_seen,source:'snapshot'});
+   event_type:'baseline',new_homebranch:data.state.initial_homebranch,changed_at:data.state.first_seen,source:'snapshot'});
  function show(mode){timeline.hidden=mode!=='timeline';table.hidden=mode!=='raw';try{localStorage.setItem('pmk-owner-view',mode)}catch(e){}}
  rows.forEach(r=>{
    const line=el('div','pmk-owner-event');
