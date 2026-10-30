@@ -1031,5 +1031,42 @@
         }
       }
     }
+  },
+  "/owner-history/items/{item_id}": {
+    "get": {
+      "x-mojo-to": "PimpMyKoha::Controller#owner_history",
+      "operationId": "pmk_owner_history_get",
+      "tags": [
+        "pmk"
+      ],
+      "produces": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "item_id",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "minimum": 1
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Historique propriétaire"
+        },
+        "403": {
+          "description": "Forbidden"
+        },
+        "500": {
+          "description": "Server error"
+        }
+      },
+      "x-koha-authorization": {
+        "permissions": {
+          "catalogue": "1"
+        }
+      }
+    }
   }
 }
