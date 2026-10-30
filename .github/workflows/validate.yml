@@ -79,6 +79,8 @@ jobs:
           python3 tests/publication-safety.py \
             "$RUNNER_TEMP/PimpMyKoha-non-plugin.zip" \
             "$RUNNER_TEMP/PimpMyKoha-plugin.kpz"
+          python3 tests/firebase-non-plugin-safety.py \
+            "$RUNNER_TEMP/PimpMyKoha-non-plugin.zip"
           python3 - <<'PY'
           from pathlib import Path
           from zipfile import ZipFile
@@ -87,6 +89,19 @@ jobs:
               path = Path(os.environ['RUNNER_TEMP']) / name
               with ZipFile(path) as archive:
                   assert archive.testzip() is None, name
+                  if name == 'PimpMyKoha-non-plugin.zip':
+                      files = set(archive.namelist())
+                      prefix = 'PimpMyKoha-non-plugin/'
+                      for required in (
+                          '000-pmk-firebase-adapter.js',
+                          '001-pmk-firebase-data.js',
+                          'pmk-firebase-config.example.js',
+                          'IntranetUserJS-PMK.js',
+                          'FIREBASE-NON-PLUGIN.md',
+                      ):
+                          assert prefix + required in files, required
+                      assert prefix + 'IntranetUserJS-Dracenie.js' not in files
+                      assert prefix + 'pmk-legacy-private-config.example.js' not in files
               print(f'{name}: {path.stat().st_size} octets, archive valide')
           PY
 

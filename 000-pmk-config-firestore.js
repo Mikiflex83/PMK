@@ -346,8 +346,8 @@
             [/\bportée historique\b/gi, "portée par défaut"],
             [/\bprofil Dracénie historique\b/gi, "profil Dracénie par défaut"],
             [/\bDracénie historique\b/gi, "Dracénie par défaut"],
-            [/\bRéférentiel local Dracénie\b/gi, "stockage Koha Dracénie"],
-            [/\bRéférentiel local\b/gi, "stockage Koha existant"],
+            [/\bRéférentiel local Dracénie\b/gi, "référentiel Firebase de l’établissement"],
+            [/\bRéférentiel local\b/gi, "référentiel Firebase configuré"],
             [/\bmode historique\b/gi, "mode classique"],
             [/\bbloc historique\b/gi, "bloc classique"],
             [/\bcompatibilité historique\b/gi, "compatibilité avec la présentation existante"],
@@ -360,8 +360,8 @@
             [/\bhistorical configuration\b/gi, "default configuration"],
             [/\bhistorical scope\b/gi, "default scope"],
             [/\bhistorical profile\b/gi, "default profile"],
-            [/\bLocal Dracénie reference\b/g, "Dracénie stockage Koha"],
-            [/\blocal reference\b/gi, "existing stockage Koha"],
+            [/\bLocal Dracénie reference\b/g, "institution Firebase reference"],
+            [/\blocal reference\b/gi, "configured Firebase reference"],
             [/\blegacy block\b/gi, "classic block"],
             [/\blegacy appearance\b/gi, "default appearance"],
             [/\bhistorically disabled\b/gi, "disabled by default"],
@@ -21578,14 +21578,14 @@
                                     type: "select",
                                     label: { fr: "Source des valeurs", en: "Value source" },
                                     options: [
-                                        { value: "firebase_legacy", label: { fr: "Référentiel local Dracénie", en: "Local Dracénie reference" } },
+                                        { value: "firebase_legacy", label: { fr: "Référentiel Firebase de l’établissement", en: "Institution Firebase reference" } },
                                         { value: "authorised_values", label: { fr: "Catégorie de valeurs autorisées Koha", en: "Koha authorised-value category" } },
                                         { value: "koha_field", label: { fr: "Valeurs déjà présentes dans la liste Koha du champ", en: "Values already present in the Koha field list" } },
                                         { value: "manual", label: { fr: "Liste manuelle", en: "Manual list" } }
                                     ],
                                     refreshOnChange: true
                                 },
-                                { key: "firebaseCode", type: "text", advanced: true, label: { fr: "Code niveau Référentiel local", en: "Legacy stockage Koha level code" }, when: function (root, path) {
+                                { key: "firebaseCode", type: "text", advanced: true, label: { fr: "Code du niveau Firebase", en: "Firebase level code" }, when: function (root, path) {
                                     const item = (((root || {}).levels || [])[path[path.length - 1]] || {});
                                     return item.sourceType === "firebase_legacy";
                                 } },
@@ -21635,14 +21635,14 @@
                                     type: "select",
                                     label: { fr: "Source des valeurs", en: "Value source" },
                                     options: [
-                                        { value: "firebase_legacy", label: { fr: "Référentiel local Dracénie", en: "Local Dracénie reference" } },
+                                        { value: "firebase_legacy", label: { fr: "Référentiel Firebase de l’établissement", en: "Institution Firebase reference" } },
                                         { value: "authorised_values", label: { fr: "Catégorie de valeurs autorisées Koha", en: "Koha authorised-value category" } },
                                         { value: "koha_field", label: { fr: "Liste native Koha du champ", en: "Native Koha field list" } },
                                         { value: "manual", label: { fr: "Liste manuelle", en: "Manual list" } }
                                     ],
                                     refreshOnChange: true
                                 },
-                                { key: "firebaseCode", type: "text", advanced: true, label: { fr: "Code Référentiel local", en: "Legacy stockage Koha code" } },
+                                { key: "firebaseCode", type: "text", advanced: true, label: { fr: "Code du référentiel Firebase", en: "Firebase reference code" } },
                                 { key: "authorisedValueCategory", type: "text", label: { fr: "Catégorie de VA", en: "Authorised-value category" } },
                                 { key: "manualValues", type: "textarea", rows: 5, label: { fr: "Valeurs manuelles — code|libellé", en: "Manual values — code|label" } },
                                 { key: "filterByHierarchy", type: "boolean", label: { fr: "Filtrer aussi selon le chemin hiérarchique", en: "Also filter by hierarchy path" } }
@@ -21664,7 +21664,7 @@
                             type: "select",
                             label: { fr: "Source des relations", en: "Relationship source" },
                             options: [
-                                { value: "firebase_legacy", label: { fr: "Arborescence Référentiel local + compléments configurés", en: "Historical stockage Koha hierarchy + configured additions" } },
+                                { value: "firebase_legacy", label: { fr: "Arborescence Firebase + compléments configurés", en: "Firebase hierarchy + configured additions" } },
                                 { value: "configured", label: { fr: "Relations configurées dans PMK", en: "Relations configured in PMK" } }
                             ]
                         },

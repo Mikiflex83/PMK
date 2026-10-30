@@ -1,16 +1,15 @@
 # PMK 0.4.0 transitoire sans plugin
 
 Cette distribution permet d’utiliser les scripts 0.4.0 par transfert de fichiers
-tant que l’installation des plugins Koha n’est pas autorisée. Elle conserve les
-projets Firebase historiques et ne modifie pas le paquet plugin, qui reste sans
-Firebase.
+tant que l’installation des plugins Koha n’est pas autorisée. Elle se connecte
+uniquement aux projets Firebase créés et administrés par l’établissement. Le
+paquet plugin reste sans Firebase.
 
 > [!CAUTION]
-> Cette distribution reste dépendante de Firebase. Elle a besoin des projets et
-> identifiants historiques pour charger les configurations et certaines données
-> PMK. Si ces services deviennent indisponibles, les éléments qui y sont stockés
-> ne sont plus accessibles. Le passage au plugin supprime cette dépendance après
-> export, import et validation de la reprise.
+> Cette distribution reste dépendante de Firebase. Chaque établissement doit
+> créer, sécuriser et maintenir ses propres projets. Aucun identifiant Firebase
+> Dracénie ni accès à une base partagée n’est fourni. Le passage au plugin
+> supprime cette dépendance après export, import et validation de la reprise.
 
 ## Installation
 
@@ -18,7 +17,12 @@ Firebase.
    et la base Koha.
 2. Décompresser le ZIP puis copier le contenu de `PimpMyKoha-non-plugin` dans le
    dossier servi sous `/public/koha-scripts/`.
-3. Copier `pmk-legacy-private-config.example.js` sous le nom `pmk-legacy-private-config.js`, puis y reporter localement les configurations Firebase de l’ancienne installation. Le fichier rempli reste privé et ne doit jamais être ajouté à Git ou à une archive publique. Le charger avant PMK si les anciennes applications ne sont pas déjà initialisées.
+3. Suivre [le guide Firebase](FIREBASE-NON-PLUGIN.md), puis copier `pmk-firebase-config.example.js` sous le nom `pmk-firebase-config.js` et y reporter les paramètres des projets appartenant à l’établissement. Le fichier rempli reste privé et ne doit jamais être ajouté à Git ou à une archive publique.
+
+   Un administrateur Firebase reste responsable de la création des projets et
+   de leurs règles. Un administrateur du serveur reste nécessaire pour déposer
+   le fichier. Le diagnostic PMK affiche ensuite l’état des espaces communs au
+   lieu d’enregistrer plusieurs connexions concurrentes dans les modules.
 4. Remplacer le bloc qui charge individuellement les fichiers PMK par ce
    JavaScript brut :
 
@@ -30,7 +34,7 @@ Firebase.
 
     function loadPmk() {
         const script = document.createElement('script');
-        script.src = '/public/koha-scripts/pmk-non-plugin-loader.js?v=0.4.0-transition.3';
+        script.src = '/public/koha-scripts/pmk-non-plugin-loader.js?v=0.4.0-transition.4';
         script.async = false;
         script.onerror = function () {
             console.error('PimpMyKoha : chargeur non-plugin inaccessible');
@@ -39,17 +43,17 @@ Firebase.
     }
 
     const privateConfig = document.createElement('script');
-    privateConfig.src = '/public/koha-scripts/pmk-legacy-private-config.js';
+    privateConfig.src = '/public/koha-scripts/pmk-firebase-config.js';
     privateConfig.async = false;
     privateConfig.onload = loadPmk;
     privateConfig.onerror = function () {
-        console.error('PimpMyKoha : configuration historique privée absente. Copiez et renseignez pmk-legacy-private-config.example.js avant de charger PMK.');
+        console.error('PimpMyKoha : configuration Firebase locale absente. Copiez et renseignez pmk-firebase-config.example.js avant de charger PMK.');
     };
     document.head.appendChild(privateConfig);
 })();
 ```
 
-Le fichier `IntranetUserJS-Dracenie.js` fourni dans l’archive reprend exactement ce bloc. Conservez séparément vos autres personnalisations `IntranetUserJS`.
+Le fichier `IntranetUserJS-PMK.js` fourni dans l’archive reprend exactement ce bloc. Conservez séparément vos autres personnalisations `IntranetUserJS`.
 
 5. Vider le cache du navigateur et ouvrir Koha avec un compte administrateur.
 6. Vérifier dans PMK que les configurations personnalisées sont présentes avant
@@ -86,6 +90,6 @@ Les fonctions exigeant un composant serveur du plugin ne peuvent pas être
 reproduites par un simple transfert JavaScript : restauration native
 d’exemplaires, relais serveur NEDAP, diagnostics serveur des rapports et stockage
 des secrets. Les autres modules continuent d’utiliser les API Koha disponibles
-et les projets Firebase historiques. Tester d’abord sur une copie de production.
+et les projets Firebase propres à l’établissement. Tester d’abord sur une copie de production.
 
 Ne jamais activer simultanément cette distribution et le plugin.
