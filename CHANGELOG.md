@@ -28,6 +28,8 @@ Les changements majeurs de PimpMyKoha sont consignés dans ce fichier.
 
 ### Limites connues
 
+- Le mode plugin est expérimental et en cours de test ; seul le mode non-plugin bénéficie actuellement d’un retour d’utilisation en situation réelle.
+- Aucune transition complète vers le plugin n’est encore validée sur une installation de production.
 - Qualification finale à effectuer avec le compte NEDAP/Libnet réel de l’installation.
 - Lecture caméra à confirmer sur le matériel mobile utilisé en production.
 - Migration exacte à confirmer avec un export réel et une recette sur une copie de la production.

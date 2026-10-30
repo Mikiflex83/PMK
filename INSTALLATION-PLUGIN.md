@@ -1,6 +1,9 @@
 # Installer PimpMyKoha 0.4.0
 
-Le paquet installable est **`plugin/PimpMyKoha-plugin-0.4.0.kpz`** dans le ZIP complet. Le code est qualifié sur Koha 25.11 professionnel / UNIMARC et MariaDB 10.11. Les preuves et limites figurent dans [la recette](RECETTE-PLUGIN-KOHA.md).
+> [!WARNING]
+> Le mode plugin est expérimental et en cours de test. Il a fait l’objet d’essais techniques sur une instance Koha dédiée, mais le mode non-plugin est le seul mode PMK éprouvé à ce jour en situation réelle. Installez ce KPZ sur une instance de recette ou une copie de la production, jamais directement sur la production.
+
+Le paquet de test est **`plugin/PimpMyKoha-plugin-0.4.0.kpz`** dans le ZIP complet. Il a passé les contrôles techniques prévus pour Koha 25.11 professionnel / UNIMARC et MariaDB 10.11, sans constituer une validation en production. Les preuves et limites figurent dans [la recette](RECETTE-PLUGIN-KOHA.md).
 
 1. Sauvegarder Koha, les fichiers personnalisés et le contenu exact d’IntranetUserJS/IntranetUserCSS. Commencer sur une copie de la production.
 2. Si PMK fonctionne déjà sans plugin, exécuter d’abord `dev/migration/export-production.js` comme décrit dans [la procédure de transition](TRANSITION-NON-PLUGIN-VERS-PLUGIN.md). Conserver le JSON privé et vérifier qu’il est complet.

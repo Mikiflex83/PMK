@@ -1,15 +1,16 @@
-# Compatibilité et limites qualifiées — plugin PMK 0.4.0
+# Compatibilité technique et limites — plugin expérimental PMK 0.4.0
 
-Cette matrice fixe la maturité retenue pour la livraison. Elle distingue les
-parcours exécutés sur une vraie installation Koha locale des contrats vérifiés
-sur des données simulées. Une intégration facultative non testée avec le compte
-réel de l’établissement ne bloque pas les autres modules.
+Le plugin 0.4.0 est en cours de test. Cette matrice décrit les contrôles
+automatiques et les essais techniques sur une instance Koha dédiée ; elle ne
+constitue ni une qualification en production ni un retour d’exploitation en
+établissement. Le mode non-plugin est actuellement le seul mode éprouvé en
+situation réelle.
 
 | Domaine | Niveau 0.4.0 | Portée vérifiée | Limite explicite |
 |---|---|---|---|
-| Koha | Qualifié localement | Koha 25.11, plugin installé et réinstallé par le gestionnaire natif | Faire une recette avant toute autre version majeure de Koha |
-| Base de données | Qualifié localement | MariaDB 10.11, tables du plugin, transactions, conflits et conservation lors d’une mise à jour | Sauvegarder la base de production avant la bascule |
-| UNIMARC | Qualifié localement | Notices, exemplaires, XSLT, bibliographies, index et rapports sur une installation UNIMARC | Les zones locales restent configurables |
+| Koha | Essais techniques locaux | Koha 25.11 dédié, installation et réinstallation du paquet | Refaire la recette sur une copie de l’installation de l’établissement |
+| Base de données | Essais techniques locaux | MariaDB 10.11, tables du plugin, transactions, conflits et conservation lors des essais | Confirmer sur une copie de la base cible et sauvegarder avant toute bascule |
+| UNIMARC | Essais techniques locaux | Notices, exemplaires, XSLT, bibliographies, index et rapports sur le jeu de recette | Confirmer avec les grilles et données réelles de l’établissement |
 | MARC21 | Compatible par configuration | Contrats de zones, index et grilles sans hypothèse UNIMARC imposée dans les options universalisées | Aucun jeu réel MARC21 complet n’a été qualifié dans cette session |
 | Navigateur | Qualifié automatiquement | Chromium, clavier, affichage mobile simulé et erreurs réseau maîtrisées | Safari et Firefox n’ont pas reçu une recette exhaustive |
 | Scanner et caméra | Compatible, matériel à qualifier | Flux caméra simulé, trois lectures concordantes, absence de validation automatique du formulaire | Lecture finale à faire sur le téléphone ou scanner réel de l’établissement |
@@ -18,12 +19,12 @@ réel de l’établissement ne bloque pas les autres modules.
 | Electre | Repli qualifié | Indisponibilité isolée et poursuite des bibliographies sans couverture Electre | Compte, images et quotas réels non testés |
 | France Publications | Contrats qualifiés | SQL, données et états de périodiques vérifiés localement | Compte fournisseur et réclamations réelles non testés |
 | EmailJS, catalogues et adresses externes | Facultatif | Échec isolé du reste de PMK et options configurables | Identifiants et services réels non testés |
-| Stockage | Qualifié localement | Configurations, données métier, historiques et secrets serveur dans Koha ; aucun SDK ni service Firebase requis | L’import réel dépend du fichier exporté par l’ancienne installation |
-| Migration | Qualifiée sur scénarios contrôlés | Export historique simulé, analyse, conflits, import, relecture et conservation après réinstallation | Aucun export de production Dracénie n’a été fourni à cette session |
+| Stockage | Testé automatiquement | Configurations, données métier, historiques et secrets serveur dans Koha ; aucun SDK ni service Firebase requis | Confirmer la persistance sur l’instance de recette cible |
+| Migration | Testée sur scénarios contrôlés | Export historique simulé, analyse, conflits, import, relecture et conservation après réinstallation | Aucune transition réelle vers le plugin n’est encore validée |
 
 La maturité finale d’un module signifie ici : configuration compréhensible,
 valeurs Dracénie conservées, personnalisations et clés inconnues préservées,
 échec circonscrit, et recette ciblée sur ses risques réels. Elle ne signifie pas
 une certification de chaque combinaison possible de version, fournisseur et
-équipement. Les deux qualifications encore dépendantes du terrain sont le compte
-Libnet réel et la caméra ou le scanner physique.
+équipement. La validation terrain du plugin, de la migration, des services
+externes et des équipements reste à effectuer avant toute mise en production.

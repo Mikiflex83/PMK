@@ -4,13 +4,23 @@ PimpMyKoha (PMK) est un ensemble de modules qui améliore l’interface professi
 
 Le projet conserve la philosophie de l’installation historique de la Dracénie tout en permettant à chaque bibliothèque d’adapter les pages, les sélecteurs, les statuts, les rapports SQL, les catégories, les sites et les libellés à son propre Koha. Les valeurs historiques restent les valeurs par défaut et les configurations personnalisées sont conservées lors des mises à jour.
 
+## État actuel du projet
+
+| Mode | Maturité actuelle |
+|---|---|
+| **Non-plugin** | Mode historique éprouvé en situation réelle. La distribution 0.4.0 doit malgré tout être sauvegardée et vérifiée avant remplacement des scripts existants. |
+| **Plugin Koha** | **Version expérimentale en cours de test.** Le paquet passe des tests automatiques et des essais techniques sur une instance Koha dédiée, mais il ne bénéficie pas encore d’un retour d’utilisation en établissement ni d’une transition réelle validée. |
+
+> [!WARNING]
+> Le plugin 0.4.0 est fourni pour évaluation et recette. Ne l’activez pas directement en production : commencez sur une copie de l’installation et conservez le mode non-plugin tant que la reprise complète n’a pas été validée.
+
 ## Télécharger la version 0.4.0
 
 | Distribution | Usage | Téléchargement |
 |---|---|---|
 | Livraison complète | Plugin, mode non-plugin, migration, documentation et sources | [ZIP complet](releases/0.4.0/PimpMyKoha-livraison-complete-2026-10-29.zip) |
 | Mode non-plugin | Installation actuelle par transfert de fichiers | [ZIP non-plugin](releases/0.4.0/PimpMyKoha-non-plugin-0.4.0-transition.3.zip) |
-| Plugin Koha | Installation depuis **Outils → Plugins** | [KPZ installable](releases/0.4.0/PimpMyKoha-plugin-0.4.0.kpz) |
+| Plugin Koha | Paquet expérimental pour test depuis **Outils → Plugins** | [KPZ de test](releases/0.4.0/PimpMyKoha-plugin-0.4.0.kpz) |
 
 Les empreintes SHA-256 sont publiées dans le [dossier de la version](releases/0.4.0/README.md).
 
@@ -18,7 +28,7 @@ Les empreintes SHA-256 sont publiées dans le [dossier de la version](releases/0
 
 ### Plugin Koha
 
-Le plugin est le mode cible. Il fournit :
+Le plugin est le mode cible, actuellement en phase de test. Il fournit :
 
 - un seul paquet KPZ à installer et à mettre à jour ;
 - un stockage natif dans Koha pour les configurations et les données PMK ;
@@ -84,7 +94,7 @@ Les fonctions propres à une installation disposent autant que possible de séle
 
 ## Compatibilité et validation
 
-La version 0.4.0 a été développée et qualifiée principalement avec Koha 25.11, UNIMARC et MariaDB 10.11. Elle comprend :
+La version 0.4.0 a été développée et contrôlée techniquement principalement avec Koha 25.11, UNIMARC et MariaDB 10.11. Seul le mode non-plugin bénéficie à ce jour d’un recul d’utilisation en situation réelle. Le plugin comprend :
 
 - 87 modules déclarés ;
 - 79 groupes de tests de régression avec des données locales simulées ;
@@ -92,7 +102,7 @@ La version 0.4.0 a été développée et qualifiée principalement avec Koha 25.
 - des tests du stockage natif, des migrations et des principaux parcours du plugin ;
 - un contrôle interdisant les appels aux services Firebase dans le plugin.
 
-Ces contrôles ne remplacent pas une recette sur une copie de l’installation cible, en particulier pour les permissions, rapports locaux, valeurs autorisées, matériels et services fournisseurs. Consultez la [recette plugin](RECETTE-PLUGIN-KOHA.md) et la [matrice de compatibilité](COMPATIBILITE-PLUGIN-0.4.0.md).
+Ces contrôles prouvent la construction et certains comportements attendus, mais ne constituent pas une validation du plugin en production. Une recette sur une copie de l’installation cible reste obligatoire, en particulier pour les permissions, rapports locaux, valeurs autorisées, matériels et services fournisseurs. Consultez la [recette plugin](RECETTE-PLUGIN-KOHA.md) et la [matrice de compatibilité](COMPATIBILITE-PLUGIN-0.4.0.md).
 
 ## Organisation du dépôt
 
