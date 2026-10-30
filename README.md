@@ -8,7 +8,7 @@ Le projet conserve la philosophie de l’installation historique de la Dracénie
 
 | Mode | Maturité actuelle |
 |---|---|
-| **Non-plugin** | Mode historique éprouvé en situation réelle. La distribution 0.4.0 doit malgré tout être sauvegardée et vérifiée avant remplacement des scripts existants. |
+| **Non-plugin** | Mode historique éprouvé en situation réelle. Il reste dépendant des projets Firebase historiques pour les configurations et certaines données PMK. La distribution 0.4.0 doit malgré tout être sauvegardée et vérifiée avant remplacement des scripts existants. |
 | **Plugin Koha** | **Version expérimentale en cours de test.** Le paquet passe des tests automatiques et des essais techniques sur une instance Koha dédiée, mais il ne bénéficie pas encore d’un retour d’utilisation en établissement ni d’une transition réelle validée. |
 
 > [!WARNING]
@@ -42,6 +42,9 @@ Consultez [l’installation du plugin](INSTALLATION-PLUGIN.md), puis la [procéd
 ### Mode non-plugin
 
 Cette distribution permet de profiter des modules à jour lorsque l’installation des plugins Koha n’est pas encore autorisée. Elle se copie dans le dossier web qui sert actuellement les scripts PMK et utilise un petit chargeur dans `IntranetUserJS`.
+
+> [!CAUTION]
+> Le mode non-plugin n’est pas autonome : il dépend de Firebase et des identifiants des projets historiques pour charger les configurations et certaines données PMK. Une indisponibilité ou une suppression de ces projets peut rendre ces éléments inaccessibles. Cette dépendance externe disparaît uniquement dans le mode plugin.
 
 Elle garde volontairement l’accès aux anciens stockages Firebase de l’installation historique afin de retrouver les configurations existantes et de produire une sauvegarde importable dans le plugin. Le plugin, lui, n’utilise pas Firebase.
 

@@ -6,6 +6,8 @@
 
 > **État de maturité :** le mode non-plugin est le seul mode éprouvé en situation réelle. Le plugin 0.4.0 est expérimental, en cours de test, et doit être installé uniquement sur une instance de recette ou une copie de la production avant toute décision de bascule.
 
+> **Dépendance Firebase :** le mode non-plugin reste dépendant des projets Firebase historiques pour les configurations et certaines données PMK. Le plugin n’utilise aucun service Firebase après la migration.
+
 La distribution publique ne contient aucune configuration Firebase historique, aucun nom ou courriel personnel, aucun compte Koha privé, aucune carte lecteur technique et aucune URL Worker personnelle. Le mode non-plugin fournit seulement `pmk-legacy-private-config.example.js`. Chaque établissement crée localement `pmk-legacy-private-config.js`, qui reste exclu de Git et des archives publiques.
 
 Le code PMK est sous GPL-3.0-or-later. Intro.js conserve sa licence AGPL-3.0. Ne pas activer simultanément le chargeur non-plugin et le plugin.

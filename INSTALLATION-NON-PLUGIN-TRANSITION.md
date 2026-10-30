@@ -5,6 +5,13 @@ tant que l’installation des plugins Koha n’est pas autorisée. Elle conserve
 projets Firebase historiques et ne modifie pas le paquet plugin, qui reste sans
 Firebase.
 
+> [!CAUTION]
+> Cette distribution reste dépendante de Firebase. Elle a besoin des projets et
+> identifiants historiques pour charger les configurations et certaines données
+> PMK. Si ces services deviennent indisponibles, les éléments qui y sont stockés
+> ne sont plus accessibles. Le passage au plugin supprime cette dépendance après
+> export, import et validation de la reprise.
+
 ## Installation
 
 1. Sauvegarder le dossier de scripts actuel, `IntranetUserJS`, `IntranetUserCSS`
