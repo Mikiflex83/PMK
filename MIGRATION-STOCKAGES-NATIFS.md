@@ -85,7 +85,7 @@ fusionnées ; les choix importés sont prioritaires. L’ancienne version compl�
 est archivée côté serveur avant toute modification. Recharger la page après
 l’import. Les favoris personnels ne sont pas importés sous l’identité d’autrui.
 
-Les valeurs par défaut Dracénie concernant le fonctionnement et la présentation
+Les valeurs par défaut d’origine concernant le fonctionnement et la présentation
 restent dans les définitions des modules. Les anciens identifiants techniques
 (`firebase_legacy`, par exemple) restent acceptés dans les configurations pour
 leur compatibilité, mais désignent maintenant le référentiel local.

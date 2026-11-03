@@ -23,7 +23,7 @@ const fs=require('node:fs');
   ['shelf','virtualshelves/shelves.pl?op=view&shelfnumber='+f.shelf],['authorities-home','authorities/authorities-home.pl'],
  ];
  try{
-  // Local Koha has no Dracénie France Publications reports or supplier session.
+  // Local Koha has no d’origine France Publications reports or supplier session.
   await h.configure('france-publications-subscriptions',{enabled:false});
   for(const [id,route]of routes){
    if(process.env.PMK_TEST_FILTER&&!id.includes(process.env.PMK_TEST_FILTER))continue;

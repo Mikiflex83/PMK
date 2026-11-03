@@ -225,7 +225,7 @@
      * Règles historiques du 056 intégrées directement au moteur commun.
      *
      * Le 056 ne créait pas ces pictogrammes : ils sont fournis par les mises en
-     * page catalogue de la Dracénie. Le moteur "Actions de copie" se branche
+     * page catalogue d’origine. Le moteur "Actions de copie" se branche
      * donc sur ces déclencheurs existants, sans produire un second bouton.
      */
     const LEGACY_056_RULES = [

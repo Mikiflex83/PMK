@@ -4,7 +4,7 @@
    Version : 3.0.0-preplugin
    Date : 2026-09-21
 
-   Historique Dracénie conservé : catégorie C -> sort1 = 12
+   Historique d’origine conservé : catégorie C -> sort1 = 12
    uniquement si sort1 est vide.
 
    Extension PMK :

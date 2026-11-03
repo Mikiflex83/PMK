@@ -192,7 +192,7 @@ async function check(name,fn){if(process.env.PMK_TEST_FILTER&&!name.includes(pro
   assert(!p.errors.length,p.errors.join('\n'));await p.close();
  });
  await check('Hierarchy assistant: configured manual fields on a changed page URL without engine selection',async()=>{
-  const cfg={enabled:true,runtimeMode:'legacy_dracenie',page:{path:'/cgi-bin/koha/cataloguing/cataloguing-new.pl',enabled:true},lists:{enabled:false},hierarchy:{relationshipMode:'none'},features:{nativeFiltering:false},levels:[{id:'level',enabled:true,labelFr:'Domaine personnel',labelEn:'Custom domain',tag:'099',subfield:'a',sourceType:'manual',manualValues:'FIC|Fiction\nDOC|Documentaire'}],extraFields:[]};
+  const cfg={enabled:true,runtimeMode:'legacy_default',page:{path:'/cgi-bin/koha/cataloguing/cataloguing-new.pl',enabled:true},lists:{enabled:false},hierarchy:{relationshipMode:'none'},features:{nativeFiltering:false},levels:[{id:'level',enabled:true,labelFr:'Domaine personnel',labelEn:'Custom domain',tag:'099',subfield:'a',sourceType:'manual',manualValues:'FIC|Fiction\nDOC|Documentaire'}],extraFields:[]};
   const p=await fixture('/cgi-bin/koha/cataloguing/cataloguing-new.pl','<input id="tag_099_subfield_a_1" value="">',{'cataloguing-tree-assistant':cfg});await load(p,'109-helper-domaine.js');
   await p.waitForFunction(()=>window.PMKCataloguingTreeAssistant);
   assert.equal(await p.locator('#koha099_picker_panel').count(),1);
@@ -398,14 +398,14 @@ async function check(name,fn){if(process.env.PMK_TEST_FILTER&&!name.includes(pro
   assert(!definitions['search-results-master'].schema.some(f=>f.label?.fr==='API et performances'||/rendu historique V8.1/.test(f.description?.fr||'')));
   assert(definitions['search-results-master'].schema.some(f=>f.key==='performance.apiPerPage'));
   assert(definitions['detail-fourth-cover'].schema.some(f=>f.key==='targetSelector'&&f.type==='elementPicker'));
-  assert.equal(definitions['search-results-master'].defaults.reports.statisticsReportId,4537);assert.equal(definitions['search-results-master'].defaults.reports.statisticsReportFormat,'legacy-dracenie');
+  assert.equal(definitions['search-results-master'].defaults.reports.statisticsReportId,4537);assert.equal(definitions['search-results-master'].defaults.reports.statisticsReportFormat,'legacy-default');
   assert(definitions['moredetail-layout'].defaults.fieldRules.some(rule=>rule.selector==='.copynumber'&&rule.labelFr==='Sous-localisation'));
   assert.equal(definitions['holdings-table-presentation'].defaults.detail.statusRules.find(rule=>rule.statusKey==='available').rowBackground,'#ebfaeb');
   for(const id of ['detail-bibliographic-groups','moredetail-layout','holdings-table-presentation','callnumber-progressive-search','barcode-highlights','search-results-master','detail-fourth-cover','transfer-button-holdings','checkout-status-correction']){await p.evaluate(id=>PMKConfig.openAdmin(id),id);assert.equal(await p.locator('.pmk-settings-intro').count(),0);}
   await p.evaluate(async()=>{for(const id of ['moredetail-layout','holdings-table-presentation'])await PMKConfig.saveConfig(id,await PMKConfig.getConfig(id))});
   assert.equal(await p.evaluate(()=>__configs['moredetail-layout'].custom.mine),1);assert.equal(await p.evaluate(()=>__configs['holdings-table-presentation'].custom.mine),2);assert(!p.errors.length,p.errors.join('\n'));await p.close();
  });
- await check('Catalogue refresh: native item cards retain Dracenie rules, fields, events and original order',async()=>{
+ await check('Catalogue refresh: native item cards retain original rules, fields, events and original order',async()=>{
   const item=id=>'<div id="container'+id+'"><h3 id="item'+id+'">CB'+id+'</h3><div class="page-section" id="collapse_item'+id+'"><div class="listgroup" id="info'+id+'"><h4>Informations</h4><div class="rows"><ol class="bibliodetails"><li class="copynumber"><span class="label">Copie :</span> A'+id+'</li><li class="custom-field"><span class="label">Personnel :</span><input value="initial" id="input'+id+'"></li></ol></div></div><div class="listgroup" id="history'+id+'"><h4>Historique</h4><div class="rows"><ol class="bibliodetails"><li class="issues"><span class="label">Prêts :</span> 1</li></ol></div></div></div></div>';
   const body='<div id="catalogue_detail_biblio"><div class="page-section" id="bib"><h2>Notice</h2><ol class="bibliodetails"><li class="rentalcharge">Prix</li></ol></div>'+item(1)+'<p id="between">Intercalé</p>'+item(2)+'<p id="after">Après</p></div>';
   const p=await fixture('/cgi-bin/koha/catalogue/moredetail.pl',body,{},true);

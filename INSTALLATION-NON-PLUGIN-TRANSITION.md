@@ -8,7 +8,7 @@ paquet plugin reste sans Firebase.
 > [!CAUTION]
 > Cette distribution reste dépendante de Firebase. Chaque établissement doit
 > créer, sécuriser et maintenir ses propres projets. Aucun identifiant Firebase
-> Dracénie ni accès à une base partagée n’est fourni. Le passage au plugin
+> préconfiguré ni accès à une base partagée n’est fourni. Le passage au plugin
 > supprime cette dépendance après export, import et validation de la reprise.
 
 ## Installation

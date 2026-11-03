@@ -39,7 +39,7 @@ if len(sys.argv) > 1:
             prefix + "FIREBASE-NON-PLUGIN.md",
         }
         assert required <= names, sorted(required - names)
-        assert prefix + "IntranetUserJS-Dracenie.js" not in names
+        assert prefix + "IntranetUserJS-original.js" not in names
         assert prefix + "pmk-legacy-private-config.example.js" not in names
         packaged = zipped.read(prefix + "pmk-firebase-config.example.js").decode()
         assert packaged == text

@@ -8,7 +8,7 @@
  Rôle:
  - remplace le legacy 033 sur catalogue/detail.pl et course_reserves/course-details.pl ;
  - absorbe la partie utile du legacy 032 pour l'affichage de la localisation ;
- - conserve les couleurs/comportements historiques Dracénie comme valeurs par défaut ;
+ - conserve les couleurs/comportements historiques d’origine comme valeurs par défaut ;
  - s'appuie en priorité sur les statuts structurés Koha (_status / classes item-status) ;
  - résiste aux redraw/reconstructions DataTables ;
  - ne masque PAS #catalogue_detail_elastic_record : cette fonction appartient au module

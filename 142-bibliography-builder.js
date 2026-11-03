@@ -1195,7 +1195,7 @@
          * - couvertures locales ;
          * - Amazon/Syndetics/CustomCoverImages si Koha les a activés ;
          * - éventuels fournisseurs/plugins ayant déjà injecté une URL statique ;
-         * - fallback 856 rendu par les XSLT Dracénie (.imgcouv/.imgcouvlist).
+         * - fallback 856 rendu par les XSLT d’origine (.imgcouv/.imgcouvlist).
          */
         [
             '#biblio-cover-slider .cover-image img',

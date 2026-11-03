@@ -25,7 +25,7 @@
 
   const DEFAULT_RUNTIME_CONFIG = {
     enabled: true,
-    runtimeMode: "legacy_dracenie",
+    runtimeMode: "legacy_default",
     page: {
       path: "/cgi-bin/koha/cataloguing/addbiblio.pl",
       enabled: true
@@ -4628,7 +4628,7 @@
     window.PMKCataloguingTreeAssistant = {
       version: "4.1.0",
       moduleId: MODULE_ID,
-      mode: "legacy_dracenie",
+      mode: "legacy_default",
       config: deepClone109(cfg),
       legacyRows: rows,
       getLegacyValues: code => legacyItemsForCode109(rows, String(code || "")),

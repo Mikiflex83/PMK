@@ -14,7 +14,7 @@
 
  Principes :
  - un seul moteur, autant de règles 6XX que nécessaire ;
- - les quatre listes historiques Dracénie sont conservées comme presets ;
+ - les quatre listes initiales sont conservées comme presets ;
  - le vrai champ Koha n'est jamais remplacé ni désactivé ;
  - ciblage prioritaire par zone + sous-zone MARC, libellé seulement en secours ;
  - source des suggestions : manuel / valeurs autorisées Koha / mixte ;
@@ -23,7 +23,7 @@
  - Select2 si disponible, chargement optionnel si absent, repli natif sinon ;
  - prise en charge des champs / zones répétés ajoutés dynamiquement par Koha ;
  - les contrôles d’aide PMK ne portent jamais de name : seul le vrai champ Koha est soumis ;
- - présentation historique Dracénie restaurée par défaut : champ de gauche + liste Select2 de droite en 50/50, écart 10 px, sans compteur ajouté.
+ - présentation initiale restaurée par défaut : champ de gauche + liste Select2 de droite en 50/50, écart 10 px, sans compteur ajouté.
 
  Correctifs 2.3.1 :
  - suppression du doublon visuel Select2 / select natif ;
@@ -728,7 +728,7 @@
                             type: "select",
                             label: { fr: "Présentation des champs", en: "Field presentation" },
                             options: [
-                                { value: "legacy-split", label: { fr: "Historique Dracénie — 50/50", en: "Dracénie legacy — 50/50" } },
+                                { value: "legacy-split", label: { fr: "Présentation initiale — 50/50", en: "Original layout — 50/50" } },
                                 { value: "inline-assistant", label: { fr: "Assistant à droite du champ natif", en: "Assistant next to native field" } }
                             ],
                             help: {

@@ -15,16 +15,11 @@
     const MODULE_ID = 'home-widget-useful-links';
     const VERSION = '1.1.2';
 
-    // Les valeurs locales historiques sont conservées pour l'installation d'origine,
-    // sans être diffusées comme configuration par défaut aux autres Koha.
-    const IS_LEGACY_SITE = /(^|\.)dracenie\.com$/i.test(window.location.hostname);
+    // Aucun lien institutionnel n'est diffusé par défaut.
+    const IS_LEGACY_SITE = false;
     const LEGACY_LINKS = [
             { id:'livres-hebdo', enabled:true, column:'left', label:'Livre Hebdo', url:'https://www.livreshebdo.fr/', note:'', newTab:true },
             { id:'atlas', enabled:true, column:'left', label:'Atlas des bibliothèques', url:'https://shs.hal.science/halshs-04444109', note:'', newTab:true },
-            { id:'site', enabled:true, column:'right', label:'Site Internet', url:'https://mediatheques.dracenie.com/', note:'', newTab:true },
-            { id:'agenda', enabled:true, column:'right', label:'Agenda', url:'https://mediatheques.dracenie.com/accueil/agenda', note:'', newTab:true },
-            { id:'infos', enabled:true, column:'right', label:'Infos pratiques des médiathèques', url:'https://mediatheques.dracenie.com/accueil/infos_et_services-les_mediathques', note:'', newTab:true },
-            { id:'billetterie', enabled:true, column:'right', label:'Billetterie', url:'https://billetterieculture.dracenie.com/', note:'', newTab:true }
     ];
     const DEFAULT_CONFIG = {
         enabled: true,

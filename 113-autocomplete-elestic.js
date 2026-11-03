@@ -20,7 +20,7 @@
    - configuration PMK complète, FR/EN, responsive et rendu Koha intégré ;
    - annulation stricte des recherches devenues obsolètes.
    - constructeur accessible de formats de codes-barres (sans regex obligatoire) ;
-   - preset Dracénie DR + 9 chiffres et test visuel des exemples ;
+   - preset d’origine DR + 9 chiffres et test visuel des exemples ;
    - la regex reste disponible uniquement pour les formats experts.
 
  IMPORTANT :
@@ -99,8 +99,8 @@
                 {
                     id: "dr-9-digits",
                     enabled: true,
-                    labelFr: "Dracénie — DR + 9 chiffres",
-                    labelEn: "Dracénie — DR + 9 digits",
+                    labelFr: "Configuration initiale — DR + 9 chiffres",
+                    labelEn: "Initial configuration — DR + 9 digits",
                     mode: "prefix-digits",
                     prefix: "DR",
                     minLength: 9,
@@ -1678,7 +1678,7 @@
                         {key:"barcode.displayBarcode",type:"boolean",label:{fr:"Afficher le CB correspondant dans la proposition",en:"Show matching barcode in suggestion"}},
                         {key:"barcode.exactScoreBonus",type:"number",advanced:true,label:{fr:"Bonus de score CB exact",en:"Exact barcode score bonus"}},
                         {key:"barcode.prefixScoreBonus",type:"number",advanced:true,label:{fr:"Bonus de score CB partiel",en:"Prefix barcode score bonus"}},
-                        {key:"barcode.fallbackProfiles",type:"repeater",label:{fr:"Formats de codes-barres reconnus",en:"Recognized barcode formats"},addLabel:{fr:"Ajouter un format de code-barres",en:"Add barcode format"},reorder:true,newItem:newBarcodeProfile,itemTitle:function(item,index,lang){return String(lang==="en"?(item&&item.labelEn||item&&item.id):(item&&item.labelFr||item&&item.id)||("CB "+(index+1)));},help:{fr:"Aucune expression régulière n’est nécessaire pour les formats courants. Exemple Dracénie préconfiguré : préfixe DR + 9 chiffres.",en:"No regular expression is required for common formats. Dracénie preset example: DR prefix + 9 digits."},fields:[
+                        {key:"barcode.fallbackProfiles",type:"repeater",label:{fr:"Formats de codes-barres reconnus",en:"Recognized barcode formats"},addLabel:{fr:"Ajouter un format de code-barres",en:"Add barcode format"},reorder:true,newItem:newBarcodeProfile,itemTitle:function(item,index,lang){return String(lang==="en"?(item&&item.labelEn||item&&item.id):(item&&item.labelFr||item&&item.id)||("CB "+(index+1)));},help:{fr:"Aucune expression régulière n’est nécessaire pour les formats courants. Exemple d’origine préconfiguré : préfixe DR + 9 chiffres.",en:"No regular expression is required for common formats. Original preset example: DR prefix + 9 digits."},fields:[
                             {key:"enabled",type:"boolean",label:{fr:"Format actif",en:"Format enabled"}},
                             {key:"labelFr",type:"text",label:{fr:"Nom du format",en:"Format name (French)"}},
                             {key:"labelEn",type:"text",advanced:true,label:{fr:"Nom anglais",en:"English name"}},

@@ -13,10 +13,10 @@
    - limitation du nombre de résultats et file MusicBrainz conservées ;
    - aucun appel si une vraie couverture est déjà présente ;
    - auto-enregistrement PMK;
-   - compatibilité DOM Dracénie/Koha : .bookcoverimg + .imgcouv;
+   - compatibilité DOM d’origine/Koha : .bookcoverimg + .imgcouv;
    - une image masquée par un autre module ne compte plus comme couverture affichée;
    - extraction EAN depuis .tech-ean / zone 073 et titre depuis .titlebib;
-   - search.pl Dracénie : .titlebibresult, .ean-result, .bookcoverimg / .cover-slides;
+   - search.pl d’origine : .titlebibresult, .ean-result, .bookcoverimg / .cover-slides;
    - création d’une cible de jaquette lorsque Koha affiche « Pas d’image disponible ».
    - v3.0.3 : démarrage fiabilisé si PMKConfig arrive après le module ;
    - relecture de la configuration PMK avant exécution ;

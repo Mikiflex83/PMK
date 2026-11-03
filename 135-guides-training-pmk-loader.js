@@ -110,7 +110,7 @@
 
 
     /*
-     * Compatibilité avec les guides historiques Dracénie.
+     * Compatibilité avec les guides historiques d’origine.
      *
      * Les guides 000b / 001..007 utilisent l'ancien contrat KOHA_GUIDES :
      *   - register(function(ctx){ return [steps...]; })
@@ -288,7 +288,7 @@
             if (syntheticDefinition) return syntheticDefinition;
 
             syntheticDefinition = originalRegister({
-                id: 'pmk-dracenie-guides-legacy',
+                id: 'pmk-guides-legacy',
                 title: 'Guide interactif',
                 priority: 10,
                 match: aggregateMatches,

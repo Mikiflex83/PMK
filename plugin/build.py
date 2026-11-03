@@ -16,6 +16,12 @@ target = stage / 'Koha/Plugin/PimpMyKoha'
 if target.exists():
     shutil.rmtree(target)
 shutil.copytree(ROOT / 'plugin/Koha', stage / 'Koha', dirs_exist_ok=True)
+test_target = stage / 't'
+if test_target.exists():
+    shutil.rmtree(test_target)
+shutil.copytree(ROOT / 'plugin/t', test_target)
+for qa_file in ('.kohaqarc', '.codespell-ignore'):
+    shutil.copy2(ROOT / qa_file, stage / qa_file)
 for notice in ('LICENSE','THIRD_PARTY_NOTICES.md'):
     shutil.copy2(ROOT / notice, target / notice)
 assets = target / 'assets'

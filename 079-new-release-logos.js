@@ -10,7 +10,7 @@
  - le badge est calculé à partir de la date d'acquisition de l'exemplaire le plus récent ;
  - fonctionne sur catalogue/search.pl et catalogue/detail.pl ;
  - conserve les seuils historiques 3 mois / 6 mois / 1 an par défaut ;
- - conserve .date_achat comme source historique Dracénie sur search.pl ;
+ - conserve .date_achat comme source initiale sur search.pl ;
  - utilise dateaccessioned / acquisition_date sur detail.pl ;
  - s'intègre directement à PMK sans modification du socle 000 ;
  - FR/EN, responsive, idempotent, sans dépendance jQuery.
@@ -279,8 +279,8 @@
                 supportedPages: [SEARCH_PAGE_ID, DETAIL_PAGE_ID],
                 prerequisites: [
                     {
-                        fr: "Sur search.pl, la configuration Dracénie utilise la classe .date_achat produite par le rendu/XSLT local. Sur une autre installation, renseigner le sélecteur qui contient les dates d’acquisition.",
-                        en: "On search.pl, the Dracénie defaults use the .date_achat class produced by the local XSLT/output. On another installation, set the selector containing acquisition dates."
+                        fr: "Sur search.pl, la configuration d’origine utilise la classe .date_achat produite par le rendu/XSLT local. Sur une autre installation, renseigner le sélecteur qui contient les dates d’acquisition.",
+                        en: "On search.pl, the Original installation defaults use the .date_achat class produced by the local XSLT/output. On another installation, set the selector containing acquisition dates."
                     }
                 ],
                 dependencies: [],
@@ -381,12 +381,12 @@
                         id: "advanced",
                         label: { fr: "Compatibilité / réglages avancés", en: "Compatibility / advanced settings" },
                         description: {
-                            fr: "Ces sélecteurs permettent d’adapter le module à une autre installation sans modifier le code. Les valeurs Dracénie historiques sont préchargées.",
-                            en: "These selectors let the module adapt to another installation without code changes. Historical Dracénie values are preloaded."
+                            fr: "Ces sélecteurs permettent d’adapter le module à une autre installation sans modifier le code. Les valeurs initiales sont préchargées.",
+                            en: "These selectors let the module adapt to another installation without code changes. Original values are preloaded."
                         },
                         fields: [
                             { key: "pages.search.rowSelector", type: "text", advanced: true, label: { fr: "Search — sélecteur d’une ligne de résultat", en: "Search — result row selector" } },
-                            { key: "pages.search.dateSelector", type: "text", advanced: true, label: { fr: "Search — sélecteur des dates d’acquisition", en: "Search — acquisition date selector" }, help: { fr: "Valeur Dracénie historique : .date_achat", en: "Historical Dracénie value: .date_achat" } },
+                            { key: "pages.search.dateSelector", type: "text", advanced: true, label: { fr: "Search — sélecteur des dates d’acquisition", en: "Search — acquisition date selector" }, help: { fr: "Valeur initiale : .date_achat", en: "Original value: .date_achat" } },
                             { key: "pages.search.preferredTargetSelector", type: "text", advanced: true, label: { fr: "Search — cible d’affichage préférée", en: "Search — preferred display target" } },
                             { key: "pages.detail.rowSelector", type: "text", advanced: true, label: { fr: "Detail — sélecteur des lignes d’exemplaires", en: "Detail — item row selector" } },
                             { key: "pages.detail.dateSelector", type: "text", advanced: true, label: { fr: "Detail — sélecteur de la date d’acquisition", en: "Detail — acquisition date selector" } },

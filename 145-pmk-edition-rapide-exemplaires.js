@@ -16,7 +16,7 @@
   const API = '/api/v1'; // Préfixe intranet Koha (même origine)
   let BIBLIO = ON_DETAIL ? Number(new URLSearchParams(location.search).get('biblionumber')) : 0;
 
-  // MARC de la grille Dracénie : les correspondances API sont celles
+  // MARC de la grille d’origine : les correspondances API sont celles
   // des données Koha, PAS une conversion automatique de sous-champs.
   // Ne jamais ajouter un champ non confirmé à cette liste.
   const FIELDS = [

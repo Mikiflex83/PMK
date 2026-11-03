@@ -124,7 +124,7 @@ services sur le Koha réel.
 ## Profil d’accueil demandé
 
 « Module 174 » a été interprété comme le module 147, correspondant aux menus
-d’accueil de la demande. Le profil Dracénie est intégré à partir des extraits
+d’accueil de la demande. Le profil initial est intégré à partir des extraits
 fournis. Les autres installations continuent d’utiliser la découverte de leurs
 pages natives ; les catégories d’adhérents, les grilles et les intitulés ne sont
 pas supposés identiques d’un Koha à l’autre.
@@ -185,7 +185,7 @@ au même endroit, dans les réglages avancés du 147. Un sélecteur de liens peu
 | Transfert rapide (028) | Blocs « Fonctionnement » et « Suite du workflow » retirés de la configuration. Le transfert reste explicitement déclenché par l’agent. |
 | Correction du statut au prêt (146) | Intitulé confirmé, sans numéro 145. |
 
-**Audit des dépendances Dracénie de 011/033.** Les anciens conteneurs et blocs de
+**Audit des dépendances d’origine de 011/033.** Les anciens conteneurs et blocs de
 `moredetail.pl`, leurs intitulés français, les regroupements et champs masqués,
 les noms d’en-tête, les couleurs, les libellés de disponibilité ainsi que le
 rapprochement avec le site de connexion sont conservés comme valeurs initiales.
@@ -272,7 +272,7 @@ Firebase restent les contrôles d’accès existants.
 | `sql/129-statistiques-prets-exemplaire.sql` | Statistiques d’un exemplaire : paramètre `Numéro exemplaire`. Créer le rapport, renseigner son ID dans 129 et choisir le mode standard. |
 
 Les deux requêtes sont aussi enregistrées dans le service commun `sql-reports`.
-Le rapport Dracénie 4537 et ses treize paramètres restent le mode initial de 129.
+Le rapport d’origine 4537 et ses treize paramètres restent le mode initial de 129.
 Le SQL standard distingue le compteur historique Koha et les prêts encore
 conservés en base, qui peuvent différer après anonymisation ou purge. Le rapport
 utilise des agrégations séparées pour ne pas multiplier les prêts par jointure.
@@ -381,7 +381,7 @@ les valeurs par défaut ; une liste de pages explicitement enregistrée est
 respectée, y compris lorsqu’elle omet une page par défaut.
 
 La vérification avant renouvellement lecteur utilise des signaux structurels
-Koha et n’exige aucun site ou code Dracénie. L’adresse, le téléphone et l’e-mail
+Koha et n’exige aucun site ou code d’origine. L’adresse, le téléphone et l’e-mail
 restent actifs par défaut. On peut ajouter une information, choisir sa valeur,
 changer les pages et adapter les cibles natives au thème Koha : expiration,
 expiration prochaine, informations lecteur, action de renouvellement et zone
@@ -535,7 +535,7 @@ concurrente. Favoris personnels exclus de la lecture groupée.
 
 L’édition rapide respecte les catégories configurées, prend en compte le statut
 natif 0 et propose des codes autorisés, exclus et soumis à confirmation réglables,
-avec les valeurs Dracénie conservées par défaut. Le compteur flottant ne recouvre
+avec les valeurs d’origine conservées par défaut. Le compteur flottant ne recouvre
 plus les pages internes. Le journal utilise sa collection personnalisée pour
 ajouter, modifier, supprimer et restaurer. Les explications de restauration
 suivent les réglages effectifs au lieu d’afficher des noms fixes.

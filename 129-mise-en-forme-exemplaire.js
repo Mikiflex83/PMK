@@ -106,7 +106,7 @@
 
         reports: {
             statisticsReportId: 4537,
-            statisticsReportFormat: 'legacy-dracenie',
+            statisticsReportFormat: 'legacy-default',
             statisticsParameterName: 'Numéro exemplaire',
             statisticsReportSql: STATISTICS_REPORT_SQL
         },
@@ -219,7 +219,7 @@
         result.items.actions.loanHistory = result.items.actions.loanHistory !== false;
 
         result.reports.statisticsReportId = Math.max(0, Number(result.reports.statisticsReportId) || 0);
-        result.reports.statisticsReportFormat = result.reports.statisticsReportFormat==='standard'?'standard':'legacy-dracenie';
+        result.reports.statisticsReportFormat = result.reports.statisticsReportFormat==='standard'?'standard':'legacy-default';
         result.reports.statisticsParameterName = String(result.reports.statisticsParameterName || 'Numéro exemplaire').trim() || 'Numéro exemplaire';
         result.performance.apiPerPage = pmkClamp(result.performance.apiPerPage, 1, 500, 100);
         result.performance.maxPages = pmkClamp(result.performance.maxPages, 1, 100, 20);
@@ -471,9 +471,9 @@ body.kx-search-results-page .kxri-item.is-unavailable { border-left-color:${a.un
                                 min: 0,
                                 step: 1,
                                 label: { fr: "Numéro du rapport de statistiques de prêt", en: "Checkout statistics report ID" },
-                                help: { fr: "Dracénie : 4537, conservé par défaut. Sur un autre Koha, créez le rapport SQL ci-dessous puis indiquez son numéro et choisissez le format « Rapport standard fourni ci-dessous ».", en: "Dracénie defaults to 4537. On another Koha, create the SQL report below, enter its ID and choose the supplied standard-report format." }
+                                help: { fr: "Configuration initiale : 4537, conservé par défaut. Sur un autre Koha, créez le rapport SQL ci-dessous puis indiquez son numéro et choisissez le format « Rapport standard fourni ci-dessous ».", en: "Original installation defaults to 4537. On another Koha, create the SQL report below, enter its ID and choose the supplied standard-report format." }
                             },
-                            {key:'reports.statisticsReportFormat',type:'select',label:{fr:'Rapport utilisé',en:'Report format'},options:[{value:'legacy-dracenie',label:{fr:'Rapport existant Dracénie (filtres historiques)',en:'Existing Dracénie report (historical filters)'}},{value:'standard',label:{fr:'Rapport standard fourni ci-dessous',en:'Supplied standard report'}}]},
+                            {key:'reports.statisticsReportFormat',type:'select',label:{fr:'Rapport utilisé',en:'Report format'},options:[{value:'legacy-default',label:{fr:'Rapport existant préconfiguré (filtres historiques)',en:'Existing preconfigured report (historical filters)'}},{value:'standard',label:{fr:'Rapport standard fourni ci-dessous',en:'Supplied standard report'}}]},
                             {key:'reports.statisticsParameterName',type:'text',advanced:true,label:{fr:'Nom du paramètre exemplaire',en:'Item parameter name'},help:{fr:'Conserver « Numéro exemplaire » pour le SQL fourni.',en:'Keep “Numéro exemplaire” for the supplied SQL.'}},
                             {type:'section',id:'statistics-sql',label:{fr:'Créer le rapport sur un autre Koha',en:'Create the report on another Koha'},description:{fr:'Dans Rapports, choisissez « Créer à partir de SQL », copiez le SQL et enregistrez. Reportez le numéro du nouveau rapport ci-dessus et choisissez le rapport standard. Le résultat concerne l’exemplaire cliqué ; les compteurs d’historique portent sur les prêts encore conservés dans Koha.',en:'Create a SQL report in Koha, paste this query and save it. Enter the new report ID above and select the standard format. History counts cover records still retained in Koha.'},fields:[
                                 {key:'reports.statisticsReportSql',type:'textarea',readOnly:true,rows:15,label:{fr:'SQL à copier',en:'SQL to copy'}},

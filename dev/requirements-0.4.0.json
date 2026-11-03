@@ -2,7 +2,7 @@
   "version": "0.4.0",
   "baseCommit": "4dda5050f29f74cbe0a52ed546b51bee6d442f3b",
   "constraints": [
-    "Défauts Dracénie et réglages ajoutés conservés",
+    "Défauts d’origine et réglages ajoutés conservés",
     "Pas de refonte des moteurs Autorités",
     "Design et philosophie Bibliographies conservés",
     "Pas de Firebase à l’exécution",
@@ -206,7 +206,7 @@
       ],
       "maturityCriterion": "Type de recherche reconnu et correction des ambiguïtés. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
       "remaining": [],
-      "result": "Test des profils concurrents avec explication des actions différentes ; priorité Dracénie conservée par défaut et désactivable pour appliquer strictement les profils locaux."
+      "result": "Test des profils concurrents avec explication des actions différentes ; priorité d’origine conservée par défaut et désactivable pour appliquer strictement les profils locaux."
     },
     {
       "id": "contextual-tooltips",
@@ -1105,7 +1105,7 @@
       ],
       "maturityCriterion": "Contrôle manuel liens, libellés longs, doublons. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
       "remaining": [],
-      "result": "Contrôle manuel daté par lien, diagnostic des destinations en double ou invalides et avertissement sur les libellés longs ; les libellés restent affichés intégralement et les liens Dracénie historiques sont conservés."
+      "result": "Contrôle manuel daté par lien, diagnostic des destinations en double ou invalides et avertissement sur les libellés longs ; les libellés restent affichés intégralement et les liens d’origine historiques sont conservés."
     },
     {
       "id": "internal-pages-tools",

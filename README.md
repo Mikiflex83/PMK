@@ -2,13 +2,17 @@
 
 PimpMyKoha (PMK) est un ensemble de modules qui améliore l’interface professionnelle de [Koha](https://koha-community.org/) sans remplacer ses fonctions métier. Il ajoute des réglages d’ergonomie, des outils de circulation et de catalogage, des menus, des pages internes et des aides configurables.
 
-Le projet conserve la philosophie de l’installation historique de la Dracénie tout en permettant à chaque bibliothèque d’adapter les pages, les sélecteurs, les statuts, les rapports SQL, les catégories, les sites et les libellés à son propre Koha. Les valeurs historiques restent les valeurs par défaut et les configurations personnalisées sont conservées lors des mises à jour.
+Le projet conserve ses comportements et valeurs initiales tout en permettant à chaque bibliothèque d’adapter les pages, les sélecteurs, les statuts, les rapports SQL, les catégories, les sites et les libellés à son propre Koha. Les configurations personnalisées sont conservées lors des mises à jour.
+
+## Développement avec l’intelligence artificielle
+
+PimpMyKoha a été **entièrement codé grâce à l’intelligence artificielle**, sous la direction du mainteneur du projet. Les besoins fonctionnels, les choix métier, les configurations attendues et les décisions de publication restent pilotés et validés humainement. Consultez la [déclaration complète](AI_DISCLOSURE.md).
 
 ## État actuel du projet
 
 | Mode | Maturité actuelle |
 |---|---|
-| **Non-plugin** | Mode éprouvé en situation réelle. Il dépend de projets Firebase créés et administrés par chaque établissement pour les configurations et certaines données PMK. Aucun projet Firebase ni identifiant Dracénie n’est fourni. |
+| **Non-plugin** | Mode éprouvé en situation réelle. Il dépend de projets Firebase créés et administrés par chaque établissement pour les configurations et certaines données PMK. Aucun projet Firebase préconfiguré n’est fourni. |
 | **Plugin Koha** | **Version expérimentale en cours de test.** Le paquet passe des tests automatiques et des essais techniques sur une instance Koha dédiée, mais il ne bénéficie pas encore d’un retour d’utilisation en établissement ni d’une transition réelle validée. |
 
 > [!WARNING]
@@ -44,7 +48,7 @@ Consultez [l’installation du plugin](INSTALLATION-PLUGIN.md), puis la [procéd
 Cette distribution permet de profiter des modules à jour lorsque l’installation des plugins Koha n’est pas encore autorisée. Elle se copie dans le dossier web qui sert actuellement les scripts PMK et utilise un petit chargeur dans `IntranetUserJS`.
 
 > [!CAUTION]
-> Le mode non-plugin n’est pas autonome : chaque établissement doit créer, sécuriser et maintenir ses propres projets Firebase pour charger les configurations et certaines données PMK. PMK ne contient aucun identifiant Firebase Dracénie et ne donne accès à aucune base partagée. Cette dépendance externe disparaît uniquement dans le mode plugin.
+> Le mode non-plugin n’est pas autonome : chaque établissement doit créer, sécuriser et maintenir ses propres projets Firebase pour charger les configurations et certaines données PMK. PMK ne contient aucun identifiant Firebase préconfiguré et ne donne accès à aucune base partagée. Cette dépendance externe disparaît uniquement dans le mode plugin.
 
 Elle accepte la configuration Firebase propre à chaque installation et produit une sauvegarde importable dans le plugin. Le plugin, lui, n’utilise pas Firebase.
 
@@ -110,7 +114,7 @@ La version 0.4.0 a été développée et contrôlée techniquement principalemen
 - des tests du stockage natif, des migrations et des principaux parcours du plugin ;
 - un contrôle interdisant les appels aux services Firebase dans le plugin.
 
-Ces contrôles prouvent la construction et certains comportements attendus, mais ne constituent pas une validation du plugin en production. Une recette sur une copie de l’installation cible reste obligatoire, en particulier pour les permissions, rapports locaux, valeurs autorisées, matériels et services fournisseurs. Consultez la [recette plugin](RECETTE-PLUGIN-KOHA.md) et la [matrice de compatibilité](COMPATIBILITE-PLUGIN-0.4.0.md).
+Ces contrôles prouvent la construction et certains comportements attendus, mais ne constituent pas une validation du plugin en production. Une recette sur une copie de l’installation cible reste obligatoire, en particulier pour les permissions, rapports locaux, valeurs autorisées, matériels et services fournisseurs. Consultez la [recette plugin](RECETTE-PLUGIN-KOHA.md), la [validation reproductible avec KTD](KTD-PLUGIN-VALIDATION.md) et la [matrice de compatibilité](COMPATIBILITE-PLUGIN-0.4.0.md).
 
 ## Organisation du dépôt
 
@@ -146,7 +150,7 @@ python3 plugin/build.py \
   --output /tmp/PimpMyKoha-plugin.kpz
 ```
 
-Les tests Chromium nécessitent Playwright et Chromium. Les tests Koha complets nécessitent l’environnement local décrit dans [PLUGIN-KOHA-PMK.md](PLUGIN-KOHA-PMK.md).
+Les tests Chromium nécessitent Playwright et Chromium. Les tests Koha complets utilisent KTD selon [la procédure dédiée](KTD-PLUGIN-VALIDATION.md) et l’environnement décrit dans [PLUGIN-KOHA-PMK.md](PLUGIN-KOHA-PMK.md).
 
 ## Sécurité des données
 
@@ -163,6 +167,8 @@ Les tests Chromium nécessitent Playwright et Chromium. Les tests Koha complets 
 - [Transition non-plugin vers plugin](TRANSITION-NON-PLUGIN-VERS-PLUGIN.md)
 - [Migration des stockages](MIGRATION-STOCKAGES-NATIFS.md)
 - [Recette du plugin](RECETTE-PLUGIN-KOHA.md)
+- [Développement et validation avec KTD](KTD-PLUGIN-VALIDATION.md)
+- [Dossier d’audit de sécurité](AUDIT-SECURITE-PLUGIN.md)
 - [Compatibilité de la version 0.4.0](COMPATIBILITE-PLUGIN-0.4.0.md)
 - [Suivi des améliorations](SUIVI-AMELIORATIONS-0.4.0.md)
 

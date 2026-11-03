@@ -33,7 +33,7 @@ effet à la prochaine ouverture de l’outil.
 Un enregistrement depuis une page utilise aussi cette configuration centrale.
 Les anciens réglages locaux sont archivés et leur source reste intacte. Pour
 l’inventaire, les inventaires et scans IndexedDB ne sont pas réécrits lors d’un
-changement de réglages. Les valeurs Dracénie restent les valeurs par défaut.
+changement de réglages. Les valeurs d’origine restent les valeurs par défaut.
 L’export d’un réglage n’exporte pas les inventaires, projets ou données Firebase.
 
 L’accueil reste réservé aux superlibrarians par défaut. Les trois outils Grilles
@@ -556,7 +556,7 @@ Fonctions :
 - Vérifier les écritures et reprendre les dossiers
 
 
-Prérequis : Rapport compatible avec le contrat de colonnes ; permissions Koha de rapports et circulation. Le SQL générique fourni ne reproduit pas les règles Dracénie du rapport 5261 ; ce dernier reste la source par défaut.
+Prérequis : Rapport compatible avec le contrat de colonnes ; permissions Koha de rapports et circulation. Le SQL générique fourni ne reproduit pas les règles d’origine du rapport 5261 ; ce dernier reste la source par défaut.
 
 
 Réglages utiles : Identifiant du rapport SQL, Site proposé par défaut (code Koha), Devise (ex. EUR), Titre de la page, Messages proposés (un par ligne), Proposer le parcours spécialisé DNR, Code de catégorie pour le dossier DNR, Consignes de traitement (un paragraphe par ligne), Consigne proposée avant les retours, Consigne d’impression et de transmission.
@@ -593,10 +593,10 @@ formulaire des dix-huit autres pages.
   le filtre nominatif et le lecteur technique historiques sont conservés par
   défaut mais paramétrables ; ils ne sont pas supposés exister ailleurs.
 - Retards : rapport 5261 inchangé par défaut. Le SQL générique fourni ne reproduit
-  pas les règles Dracénie de ce rapport : il identifie les lecteurs en retard et
+  pas les règles d’origine de ce rapport : il identifie les lecteurs en retard et
   les place « À contrôler ». Les sites, colonnes, étapes, messages, consignes,
   catégorie DNR et cibles des formulaires deviennent configurables.
-- Journal, rendez-vous et compteur : projets et collections Dracénie préservés,
+- Journal, rendez-vous et compteur : projets et collections d’origine préservés,
   autres projets configurables. Les règles d’accès du backend restent nécessaires.
   Le mode administrateur du rendez-vous n’est pas une authentification serveur.
 - XSLT : l’aperçu navigateur ne reproduit pas toutes les extensions et paramètres

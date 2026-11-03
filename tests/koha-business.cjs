@@ -30,7 +30,7 @@ const assert=require('node:assert/strict');const fs=require('node:fs');
   const start=h.requests.length;await p.getByRole('button',{name:'Modifier les statuts pour exemplaire '+f.items.available.id,exact:true}).click();
   await p.locator('#pmk145-content select').first().waitFor({state:'attached'});
   assert(h.requests.slice(start).some(r=>r.path.includes('/authorised_value_categories/NOT_LOAN/authorised_values')),'Uses configured category');
-  assert(!h.requests.slice(start).some(r=>r.path.includes('/authorised_value_categories/statut/')),'No fallback to Dracénie category');
+  assert(!h.requests.slice(start).some(r=>r.path.includes('/authorised_value_categories/statut/')),'No fallback to d’origine category');
   await p.locator('#pmk145-foot').getByRole('button',{name:'Annuler',exact:true}).click();return {category:'NOT_LOAN'};
  });
  await check('Status editing writes and clears a native status without losing item data',async()=>{

@@ -10,7 +10,7 @@
  - rendre la règle portable et configurable sans toucher au JavaScript ;
  - permettre, champ par champ, trois états : ignoré, obligatoire seul, ou membre d'un groupe ;
  - permettre à chaque groupe d'exiger au moins N champs renseignés ;
- - conserver exactement le preset Dracénie par défaut :
+ - conserver exactement le préréglage initial :
       #phone, #mobile, #email, #emailpro dans le groupe "contact",
       minimum 1, aucun champ individuellement obligatoire ;
  - conserver le rendu historique par défaut : messages sous champs, bordures rouges,
@@ -20,7 +20,7 @@
  - utiliser stopImmediatePropagation uniquement quand notre validation échoue, comme le legacy.
 
  Dépendance : 000-pmk-config-firestore.js optionnelle au runtime.
- Sans PMK, les valeurs Dracénie intégrées ci-dessous sont appliquées.
+ Sans PMK, les valeurs d’origine intégrées ci-dessous sont appliquées.
 */
 (function (window, document) {
     "use strict";
@@ -738,8 +738,8 @@
             schemaVersion: 3,
             name: { fr: "Coordonnées obligatoires", en: "Required contact details" },
             description: {
-                fr: "Contrôle les coordonnées sur memberentry.pl. Chaque champ peut être ignoré, obligatoire individuellement ou intégré à un groupe exigeant au moins N valeurs renseignées. Le preset Dracénie historique est fourni par défaut.",
-                en: "Validates contact details on memberentry.pl. Each field can be ignored, individually required, or placed in a group requiring at least N filled values. The historical Dracénie preset is the default."
+                fr: "Contrôle les coordonnées sur memberentry.pl. Chaque champ peut être ignoré, obligatoire individuellement ou intégré à un groupe exigeant au moins N valeurs renseignées. Le préréglage initial est fourni par défaut.",
+                en: "Validates contact details on memberentry.pl. Each field can be ignored, individually required, or placed in a group requiring at least N filled values. The original preset is the default."
             },
             category: { fr: "Adhérents", en: "Patrons" },
             supportedPages: [MEMBERENTRY_FRAGMENT],

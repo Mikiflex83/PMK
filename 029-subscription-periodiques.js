@@ -23,7 +23,7 @@
    pendant la phase de recette ;
  - intègre désormais intégralement l'ancien 073-serials-bulletinage.js sur serials-edit.pl :
    remplissage assisté, prix fascicule, HS, préconfigurations d'exemplaire, signalement et protection.
- - les préconfigurations historiques Dracénie sont conservées à l'identique comme valeurs par défaut,
+ - les préconfigurations historiques d’origine sont conservées à l'identique comme valeurs par défaut,
    mais deviennent configurables, extensibles et désactivables individuellement.
  - absorbe la fonction utile de l'ancien 094 sur serials-collection.pl : tri naturel configurable
    de la colonne Numéro dans chaque tableau annuel, sans clic simulé et sans modification métier ;
@@ -794,7 +794,7 @@
 
         // Koha peut rendre les en-têtes soit dans <thead>, soit directement
         // dans le premier <tr> du <tbody> (cas réel subscription-detail.pl
-        // observé sur l'installation Dracénie en Koha 25.11).
+        // observé sur l'installation d’origine en Koha 25.11).
         const theadRow = safeQuery(table, "thead tr:last-child") || safeQuery(table, "thead tr");
         if (theadRow && theadRow.querySelector("th")) return theadRow;
 

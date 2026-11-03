@@ -20,12 +20,12 @@ jobs:
 
       - name: Vérifier les paquets
         run: |
-          test -f releases/0.4.0/PimpMyKoha-livraison-complete-2026-10-29.zip
-          test -f releases/0.4.0/PimpMyKoha-non-plugin-0.4.0-transition.3.zip
+          test -f releases/0.4.0/PimpMyKoha-livraison-complete-2026-10-30.zip
+          test -f releases/0.4.0/PimpMyKoha-non-plugin-0.4.0-transition.4.zip
           test -f releases/0.4.0/PimpMyKoha-plugin-0.4.0.kpz
           python3 tests/publication-safety.py \
-            releases/0.4.0/PimpMyKoha-livraison-complete-2026-10-29.zip \
-            releases/0.4.0/PimpMyKoha-non-plugin-0.4.0-transition.3.zip \
+            releases/0.4.0/PimpMyKoha-livraison-complete-2026-10-30.zip \
+            releases/0.4.0/PimpMyKoha-non-plugin-0.4.0-transition.4.zip \
             releases/0.4.0/PimpMyKoha-plugin-0.4.0.kpz
 
       - name: Créer la Release v0.4.0
@@ -37,8 +37,8 @@ jobs:
             exit 0
           fi
           gh release create v0.4.0 \
-            releases/0.4.0/PimpMyKoha-livraison-complete-2026-10-29.zip \
-            releases/0.4.0/PimpMyKoha-non-plugin-0.4.0-transition.3.zip \
+            releases/0.4.0/PimpMyKoha-livraison-complete-2026-10-30.zip \
+            releases/0.4.0/PimpMyKoha-non-plugin-0.4.0-transition.4.zip \
             releases/0.4.0/PimpMyKoha-plugin-0.4.0.kpz \
             --verify-tag \
             --title "PimpMyKoha 0.4.0" \

@@ -645,7 +645,7 @@
         }
 
         /*
-         * Priorité réseau Dracénie :
+         * Priorité réseau initiale :
          * les codes-barres exemplaires internes suivent le format 0000 + 6 chiffres.
          * Cette signature est suffisamment spécifique pour être reconnue avant
          * ISBN/EAN et indépendamment de l'index Koha mémorisé.
@@ -1339,11 +1339,11 @@
                     id: "profiles",
                     label: { fr: "Profils de codes-barres", en: "Barcode profiles" },
                     description: {
-                        fr: "Le premier profil correspondant décide de l’action, sauf si la priorité historique Dracénie est active. Le test signale les formats concurrents ; désactivez cette priorité pour respecter strictement votre ordre.",
-                        en: "The first matching profile decides the action, unless historical Dracénie priority is active. The test shows competing formats; disable this priority to strictly follow your order."
+                        fr: "Le premier profil correspondant décide de l’action, sauf si la priorité initiale est active. Le test signale les formats concurrents ; désactivez cette priorité pour respecter strictement votre ordre.",
+                        en: "The first matching profile decides the action, unless original priority is active. The test shows competing formats; disable this priority to strictly follow your order."
                     },
                     fields: [
-                        {key:"scanner.preferHistoricalSignatures",type:"boolean",label:{fr:"Priorité aux formats historiques Dracénie",en:"Prefer historical Dracénie formats"},description:{fr:"Activée par défaut : formats 0000 + 6 chiffres, 14 chiffres, DR + chiffres et arbitrage numérique/ISBN. Désactivez pour appliquer uniquement l’ordre et les index de vos profils.",en:"Enabled by default: 0000 + 6 digits, 14 digits, DR + digits and numeric/ISBN arbitration. Disable to use only your profile order and indexes."}},
+                        {key:"scanner.preferHistoricalSignatures",type:"boolean",label:{fr:"Priorité aux formats initiaux",en:"Prefer original formats"},description:{fr:"Activée par défaut : formats 0000 + 6 chiffres, 14 chiffres, DR + chiffres et arbitrage numérique/ISBN. Désactivez pour appliquer uniquement l’ordre et les index de vos profils.",en:"Enabled by default: 0000 + 6 digits, 14 digits, DR + digits and numeric/ISBN arbitration. Disable to use only your profile order and indexes."}},
                         {
                             key: "profiles",
                             type: "repeater",

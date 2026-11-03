@@ -2234,7 +2234,7 @@ const catalog={
       "Préparer et enregistrer un message",
       "Vérifier les écritures et reprendre les dossiers"
     ],
-    "prerequisites": "Rapport compatible avec le contrat de colonnes ; permissions Koha de rapports et circulation. Le SQL générique fourni ne reproduit pas les règles Dracénie du rapport 5261 ; ce dernier reste la source par défaut.",
+    "prerequisites": "Rapport compatible avec le contrat de colonnes ; permissions Koha de rapports et circulation. Le SQL générique fourni ne reproduit pas les règles d’origine du rapport 5261 ; ce dernier reste la source par défaut.",
     "runtime": {
       "reportId": 5261,
       "defaultBranch": "",
@@ -2683,7 +2683,7 @@ function create(tag,text,className){const el=document.createElement(tag);if(text
 function hint(field){
     const key=field.path.split('.').at(-1);
     if(/Collection$|^collections\./.test(field.path)||/Collection$/.test(key))return 'Nom exact de la collection de ce projet Koha. Les données existantes ne sont pas déplacées.';
-    if(/excluded|Statuses|Category|av_/.test(key))return 'Utilisez les codes réels de votre Koha. Les valeurs Dracénie restent proposées par défaut.';
+    if(/excluded|Statuses|Category|av_/.test(key))return 'Utilisez les codes réels de votre Koha. Les valeurs d’origine restent proposées par défaut.';
     if(/reportId|signatureReportId/.test(key))return 'Créez le rapport dans ce Koha, puis indiquez son numéro. 0 laisse la source non configurée.';
     if(key==='allowedUsernames')return 'Identifiants de connexion Koha, un par ligne. Vide : aucun filtre nominatif supplémentaire ; le niveau d’accès de la page reste requis.';
     if(field.type==='list')return 'Une valeur par ligne. Une liste vide n’impose aucune valeur.';
@@ -2718,7 +2718,7 @@ function renderEditor(ctx){
         panel.appendChild(create('h5',definition.objective));const info=create('details');info.appendChild(create('summary','Fonctions, moteur et prérequis'));info.appendChild(create('p',definition.engine));const list=create('ul');definition.functions.forEach(text=>list.appendChild(create('li',text)));info.append(list,create('p',definition.prerequisites));panel.appendChild(info);
         const source=create('p','Lecture des réglages existants…');panel.appendChild(source);
         const local=id==='inventory'?await readInventorySettings():readLocal(id);if(version!==revision)return;
-        source.textContent=Object.keys(local).length?'Réglages de ce navigateur disponibles et conservés. Les surcharges PMK ont priorité.':'Valeurs Dracénie proposées ; aucune configuration existante n’est effacée.';
+        source.textContent=Object.keys(local).length?'Réglages de ce navigateur disponibles et conservés. Les surcharges PMK ont priorité.':'Valeurs d’origine proposées ; aucune configuration existante n’est effacée.';
         const effective=()=>merge({runtime:definition.runtime,settings:merge(definition.settings,local)},ctx.rootObject.pageOptions?.[id]);
         function store(path,value){ctx.rootObject.pageOptions ||= {};ctx.rootObject.pageOptions[id] ||= {};put(ctx.rootObject.pageOptions[id],path,value);ctx.markDirty?.();}
         const access=create('label','Accès à cette page : '),policy=create('select');policy.setAttribute('aria-label','Accès à '+definition.title);for(const [value,label]of [['default','Conserver l’accès actuel'],['superlibrarian','Superlibrarian Koha'],['staff','Personnel Koha']]){const option=create('option',label);option.value=value;policy.appendChild(option);}policy.value=ctx.rootObject.pageOptions?.[id]?.access||'default';policy.onchange=()=>store('access',policy.value);access.appendChild(policy);panel.appendChild(access);

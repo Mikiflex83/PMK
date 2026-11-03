@@ -100,7 +100,7 @@ jobs:
                           'FIREBASE-NON-PLUGIN.md',
                       ):
                           assert prefix + required in files, required
-                      assert prefix + 'IntranetUserJS-Dracenie.js' not in files
+                      assert prefix + 'IntranetUserJS-original.js' not in files
                       assert prefix + 'pmk-legacy-private-config.example.js' not in files
               print(f'{name}: {path.stat().st_size} octets, archive valide')
           PY

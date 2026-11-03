@@ -1,6 +1,6 @@
 # Créer et connecter Firebase au mode non-plugin
 
-Le mode non-plugin ne contient aucun identifiant Firebase Dracénie et ne se
+Le mode non-plugin ne contient aucun identifiant Firebase préconfiguré et ne se
 connecte à aucune base PMK partagée. Chaque établissement utilise des projets
 Firebase dont il est propriétaire et reste responsable de leur facturation, de
 leurs sauvegardes, de leurs droits et de leur disponibilité.
@@ -37,7 +37,7 @@ chaque espace dans `PMK_FIREBASE_NAMESPACE_CONFIGS`.
 Une clé d’espace peut reprendre `PMK_FIREBASE_CONFIG`, pointer vers un autre
 projet de l’établissement ou être retirée lorsque la fonction n’est pas utilisée.
 PMK ne cherche alors aucune base de remplacement et n’utilise jamais un projet
-Dracénie par défaut.
+tiers par défaut.
 
 ## 2. Configurer PMK
 

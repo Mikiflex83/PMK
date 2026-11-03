@@ -23,7 +23,7 @@ situation réelle.
 | Migration | Testée sur scénarios contrôlés | Export historique simulé, analyse, conflits, import, relecture et conservation après réinstallation | Aucune transition réelle vers le plugin n’est encore validée |
 
 La maturité finale d’un module signifie ici : configuration compréhensible,
-valeurs Dracénie conservées, personnalisations et clés inconnues préservées,
+valeurs d’origine conservées, personnalisations et clés inconnues préservées,
 échec circonscrit, et recette ciblée sur ses risques réels. Elle ne signifie pas
 une certification de chaque combinaison possible de version, fournisseur et
 équipement. La validation terrain du plugin, de la migration, des services

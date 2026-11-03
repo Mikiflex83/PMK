@@ -31,7 +31,7 @@ Les changements majeurs de PimpMyKoha sont consignés dans ce fichier.
 ### Limites connues
 
 - Le mode plugin est expérimental et en cours de test ; seul le mode non-plugin bénéficie actuellement d’un retour d’utilisation en situation réelle.
-- Le mode non-plugin dépend de projets Firebase créés, sécurisés et administrés par chaque établissement ; aucune configuration Firebase Dracénie n’est distribuée.
+- Le mode non-plugin dépend de projets Firebase créés, sécurisés et administrés par chaque établissement ; aucune configuration Firebase préconfigurée n’est distribuée.
 - Aucune transition complète vers le plugin n’est encore validée sur une installation de production.
 - Qualification finale à effectuer avec le compte NEDAP/Libnet réel de l’installation.
 - Lecture caméra à confirmer sur le matériel mobile utilisé en production.

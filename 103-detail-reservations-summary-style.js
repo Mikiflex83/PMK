@@ -15,7 +15,7 @@
  *     cette responsabilité appartient au module 033.
  *
  * Le rendu historique est la configuration par défaut pour toutes les
- * installations, pas un preset spécifique Dracénie.
+ * installations, pas un preset spécifique d’origine.
  */
 (function () {
     "use strict";

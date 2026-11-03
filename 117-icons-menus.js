@@ -1139,7 +1139,7 @@
             },
             description: {
                 fr: "Choisissez l’icône ou le logo d’un menu Koha. Les icônes préconfigurées des menus latéraux sont conservées ; vos personnalisations s’appliquent ensuite aux éléments choisis.",
-                en: "Customizes Koha menu and submenu icons using a visual Font Awesome library or a custom logo. The historical Dracénie rendering remains the default preset."
+                en: "Customizes Koha menu and submenu icons using a visual Font Awesome library or a custom logo. The original rendering remains the default preset."
             },
             category: {
                 fr: "Navigation et interface",

@@ -14,7 +14,7 @@
    - permet de sélectionner visuellement un élément directement
      sur la page Koha depuis la configuration PMK ;
    - conserve les formulaires, événements et interactions natives ;
-   - applique par défaut les adaptations historiques Dracénie.
+   - applique par défaut les adaptations historiques d’origine.
 
    Préparation PimpMyKoha :
    - identifiant fonctionnel stable : moredetail-layout ;

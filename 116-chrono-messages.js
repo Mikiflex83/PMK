@@ -7,7 +7,7 @@
  * Fonction historique conservée :
  * - circulation.pl et moremember.pl uniquement ;
  * - cible historique : #messages.circmessage ul ;
- * - affichage Dracénie par défaut : plus ancien -> plus récent.
+ * - affichage initial par défaut : plus ancien -> plus récent.
  *
  * Configuration PMK volontairement minimale :
  * - activer / désactiver ;
@@ -235,8 +235,8 @@
                                 {
                                     value: "oldest-first",
                                     label: {
-                                        fr: "Plus ancien → plus récent — historique Dracénie",
-                                        en: "Oldest → newest — Dracénie historical default"
+                                        fr: "Plus ancien → plus récent — ordre initial",
+                                        en: "Oldest → newest — original default"
                                     }
                                 },
                                 {

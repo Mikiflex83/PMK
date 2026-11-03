@@ -229,7 +229,7 @@
          * 3. sinon dans la première section de la fiche notice.
          *
          * On conserve volontairement ce comportement pour que le module
-         * retrouve sa place habituelle dans l'interface Dracénie.
+         * retrouve sa place habituelle dans l'interface d’origine.
          */
         const zone330 = document.querySelector("li[title='Zone : 330']");
         if (zone330) return { element: zone330, placement: "append", matched: "330" };

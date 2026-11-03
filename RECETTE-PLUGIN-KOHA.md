@@ -3,7 +3,7 @@
 Vérifications effectuées du 18 au 28 octobre 2026 sur une vraie installation
 Koha 25.11 UNIMARC / MariaDB 10.11, dédiée à la recette, avec Chromium et le plugin
 installé. Sources Koha : commit `5ac93102a123496ae0561cd217d4d7e3a8518e0a`.
-Aucune donnée Dracénie ni aucun service de production n’a été modifié.
+Aucune donnée d’origine ni aucun service de production n’a été modifié.
 
 ## Parcours réellement exécutés
 

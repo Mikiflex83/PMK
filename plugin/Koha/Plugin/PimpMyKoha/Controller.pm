@@ -20,7 +20,7 @@ sub report_diagnostic {
     my $p=$c->stash('koha.user');
     $c->res->headers->cache_control('no-store');
     return $c->render(status=>403,openapi=>{error=>'configuration_permission_required'}) unless $p && (($p->flags // 0)&1);
-    my $report=Koha::Reports->find($c->validation->param('report_id'));
+    my $report=Koha::Reports->find($c->param('report_id'));
     return $c->render(status=>404,openapi=>{error=>'report_missing'}) unless $report;
     # Metadata only: no saved SQL is executed or returned by this diagnostic.
     my @parameters=($report->savedsql // '') =~ /<<([^<>]+)>>/g;

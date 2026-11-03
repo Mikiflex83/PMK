@@ -96,7 +96,7 @@ sub exchange {
     $c->res->headers->cache_control('no-store');
     my $dbh=C4::Context->dbh;my $transaction=0;
     return try {
-        my $p=_authorize($c);my $id=$c->validation->param('item_id');
+        my $p=_authorize($c);my $id=$c->param('item_id');
         if ($c->req->method eq 'GET') {
             my $plan=_plan($id,$p,0);delete $plan->{source};
             return $c->render(status=>200,openapi=>$plan);

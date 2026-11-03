@@ -26,7 +26,7 @@
 
     const CORE_VERSION = "0.8.0";
     const STORAGE_LABEL = window.PMKConfigNativeStorage ? "Koha" : "Firestore";
-    const DEFAULT_PMK_BRAND_LOGO_URL = "https://mediatheques.dracenie.com/userfiles/media/Pimp-my-koha.png";
+    const DEFAULT_PMK_BRAND_LOGO_URL = "/public/koha-scripts/pimp-my-koha.png";
     if (!window.PMK_BRAND_LOGO_URL) window.PMK_BRAND_LOGO_URL = DEFAULT_PMK_BRAND_LOGO_URL;
 
     const FIRESTORE_COLLECTION = "pimpmykoha_preplugin_modules";
@@ -344,9 +344,9 @@
             [/\brendu historique\b/gi, "rendu par défaut"],
             [/\bconfiguration historique\b/gi, "configuration par défaut"],
             [/\bportée historique\b/gi, "portée par défaut"],
-            [/\bprofil Dracénie historique\b/gi, "profil Dracénie par défaut"],
-            [/\bDracénie historique\b/gi, "Dracénie par défaut"],
-            [/\bRéférentiel local Dracénie\b/gi, "référentiel Firebase de l’établissement"],
+            [/\bprofil initial historique\b/gi, "profil initial par défaut"],
+            [/\bd’origine historique\b/gi, "d’origine par défaut"],
+            [/\bRéférentiel local d’origine\b/gi, "référentiel Firebase de l’établissement"],
             [/\bRéférentiel local\b/gi, "référentiel Firebase configuré"],
             [/\bmode historique\b/gi, "mode classique"],
             [/\bbloc historique\b/gi, "bloc classique"],
@@ -360,7 +360,7 @@
             [/\bhistorical configuration\b/gi, "default configuration"],
             [/\bhistorical scope\b/gi, "default scope"],
             [/\bhistorical profile\b/gi, "default profile"],
-            [/\bLocal Dracénie reference\b/g, "institution Firebase reference"],
+            [/\bLocal d’origine reference\b/g, "institution Firebase reference"],
             [/\blocal reference\b/gi, "configured Firebase reference"],
             [/\blegacy block\b/gi, "classic block"],
             [/\blegacy appearance\b/gi, "default appearance"],
@@ -1259,7 +1259,7 @@
                 }}
             ]});
             definition.schema=definition.schema.filter(field=>field.id!=='placement');
-            definition.schema.push({type:'section',id:'placement',label:{fr:'Emplacement du résumé',en:'Summary placement'},description:{fr:'Choisissez l’élément de la fiche près duquel afficher le résumé, puis sa position. Sans cible personnalisée, l’emplacement Dracénie est conservé : zone 330, zone 215, puis première section disponible.',en:'Pick the element near which the summary should appear, then choose the position. An empty target preserves the historical 330/215/first-section placement.'},fields:[
+            definition.schema.push({type:'section',id:'placement',label:{fr:'Emplacement du résumé',en:'Summary placement'},description:{fr:'Choisissez l’élément de la fiche près duquel afficher le résumé, puis sa position. Sans cible personnalisée, l’emplacement d’origine est conservé : zone 330, zone 215, puis première section disponible.',en:'Pick the element near which the summary should appear, then choose the position. An empty target preserves the historical 330/215/first-section placement.'},fields:[
                 {key:'targetSelector',type:'elementPicker',allowManual:true,manualAlways:true,label:{fr:'Élément de référence','en':'Reference element'},pick:ctx=>commonPickerPickForConfig({moduleId:id,targetUrl:'/cgi-bin/koha/catalogue/detail.pl',rootObject:ctx.rootObject,fieldPath:ctx.fieldPath,persistAfterPick:false,options:{rootSelector:'body'}})},
                 {key:'targetPlacement',type:'select',label:{fr:'Position du résumé','en':'Summary position'},options:[{value:'after',label:{fr:'Après l’élément','en':'After element'}},{value:'before',label:{fr:'Avant l’élément','en':'Before element'}},{value:'append',label:{fr:'Dans l’élément, à la fin','en':'Inside element, at the end'}},{value:'prepend',label:{fr:'Dans l’élément, au début','en':'Inside element, at the start'}}]}
             ]});
@@ -1269,7 +1269,7 @@
         if(id==='moredetail-layout'){
             definition.defaults.structure=deepMerge(MOREDETAIL_STRUCTURE_DEFAULTS,definition.defaults.structure || {});
             definition.schema=definition.schema.filter(field=>!['activation','structure'].includes(field.id));
-            definition.schema.push({type:'section',id:'structure',label:{fr:'Page et éléments à reconnaître',en:'Page and structure'},description:{fr:'Les cibles préremplies correspondent au Koha de Dracénie. Sur un autre Koha, choisissez le conteneur général, une carte d’exemplaire, puis ses blocs. Les sélecteurs relatifs sont recherchés à l’intérieur du conteneur indiqué.',en:'Pre-filled selectors preserve Dracénie. On another Koha, select the main container, item cards and their sections. Relative selectors are evaluated inside their parent container.'},fields:[
+            definition.schema.push({type:'section',id:'structure',label:{fr:'Page et éléments à reconnaître',en:'Page and structure'},description:{fr:'Les cibles préremplies correspondent à la configuration initiale. Sur un autre Koha, choisissez le conteneur général, une carte d’exemplaire, puis ses blocs. Les sélecteurs relatifs sont recherchés à l’intérieur du conteneur indiqué.',en:'Pre-filled selectors preserve the initial defaults. On another Koha, select the main container, item cards and their sections. Relative selectors are evaluated inside their parent container.'},fields:[
                 {key:'pages.0.path',type:'text',label:{fr:'Page des détails des exemplaires',en:'Item details page'},help:{fr:'Chemin interne Koha, par exemple catalogue/moredetail.pl.',en:'Internal Koha path, for example catalogue/moredetail.pl.'}},
                 {key:'pages.0.enabled',type:'boolean',advanced:true,label:{fr:'Autoriser cette page',en:'Allow this page'}},
                 ...Object.entries({root:['Zone générale de la page','Main area'],biblioSection:['Bloc bibliographique','Bibliographic block'],items:['Conteneurs des exemplaires','Item containers'],itemHeading:['En-tête de chaque exemplaire','Item heading'],itemContent:['Contenu de chaque exemplaire','Item content'],groups:['Blocs à l’intérieur d’un exemplaire','Item sections'],groupHeading:['Titre de chaque bloc','Section heading'],groupRows:['Contenu de chaque bloc','Section content'],fieldList:['Liste recevant les champs déplacés','Destination field list'],field:['Ligne contenant un champ','Field row'],label:['Libellé d’un champ','Field label']}).map(([key,labels])=>catalogueSelectorField(id,'structure.'+key,...labels,undefined,!['root','items','biblioSection'].includes(key)))
@@ -1309,7 +1309,7 @@
             ['codeAttribute','nameAttribute'].forEach(key=>fields.push({key:'library.'+key,type:'text',advanced:true,label:{fr:key==='codeAttribute'?'Attribut HTML du code de site':'Attribut HTML du nom de site',en:'Library HTML attribute'}}));
             Object.entries(HOLDINGS_STRUCTURE_DEFAULTS.dataFields).forEach(([key,value])=>fields.push({key:'dataFields.'+key,type:'text',advanced:true,label:{fr:'Champ des données Koha : '+key,en:'Koha data field: '+key},help:{fr:'Chemin dans la ligne DataTables (points pour les propriétés imbriquées). Valeur native : '+value,en:'DataTables row property path; native value: '+value}}));
             fields.push({key:'observerDelay',type:'number',advanced:true,min:0,max:2000,label:{fr:'Délai après actualisation (ms)',en:'Refresh delay (ms)'}});
-            definition.schema.push({type:'section',id:'targets',label:{fr:'Pages et éléments à reconnaître',en:'Pages and targets'},description:{fr:'Les valeurs préremplies conservent Dracénie. Choisissez le tableau complet, puis une cellule représentative pour adapter le module à votre thème Koha. Les styles de statut peuvent utiliser les données Koha, une cible visuelle et un texte local.',en:'Defaults preserve Dracénie. Pick the table and representative cells to adapt to your Koha theme. Status rules can use structured data, a selected target and local wording.'},fields});
+            definition.schema.push({type:'section',id:'targets',label:{fr:'Pages et éléments à reconnaître',en:'Pages and targets'},description:{fr:'Les valeurs préremplies conservent la configuration initiale. Choisissez le tableau complet, puis une cellule représentative pour adapter le module à votre thème Koha. Les styles de statut peuvent utiliser les données Koha, une cible visuelle et un texte local.',en:'Defaults preserve the initial configuration. Pick the table and representative cells to adapt to your Koha theme. Status rules can use structured data, a selected target and local wording.'},fields});
         }
         if(['moredetail-layout','holdings-table-presentation'].includes(id) && !definition.validate?.pmkCatalogueTargetsValidated){
             const previous=definition.validate;
@@ -1437,7 +1437,7 @@
                 field.help={fr:'Créez un rapport SQL Koha avec cette requête, puis renseignez son ID ci-dessous. Les paramètres et colonnes doivent garder ces intitulés.',en:'Create a Koha SQL report with this query and enter its ID below. Keep these parameter and column names.'};
             }
             if (id === 'loan-history-timeline' && /^transferReportSetup/.test(field.key || '')) return null;
-            if (id === 'loan-history-timeline' && field.key === 'transferReportId') field.help={fr:'Le rapport « Mouvements des documents » est compatible : ID historique Dracénie 5254. Vous pouvez le réutiliser après vérification, ou créer le SQL ci-dessus et saisir son ID. 0 désactive les transferts historiques.',en:'The document movements report is compatible (historical Dracénie ID 5254). Reuse the verified report or create the SQL above and enter its ID. 0 disables transfer history.'};
+            if (id === 'loan-history-timeline' && field.key === 'transferReportId') field.help={fr:'Le rapport « Mouvements des documents » est compatible : ID initial 5254. Vous pouvez le réutiliser après vérification, ou créer le SQL ci-dessus et saisir son ID. 0 désactive les transferts historiques.',en:'The document movements report is compatible (initial ID 5254). Reuse the verified report or create the SQL above and enter its ID. 0 disables transfer history.'};
             return field;
         }).filter(Boolean); }
         definition.schema = walk(definition.schema);
@@ -1445,7 +1445,7 @@
             function addReuse(fields){for(const field of fields || [])if(field.fields)addReuse(field.fields);
                 const index=(fields || []).findIndex(field=>field.key==='transferReportId');
                 if(index>=0 && !fields.some(field=>field.id==='reuse-movements-report'))fields.splice(index+1,0,{type:'action',id:'reuse-movements-report',buttonLabel:{fr:'Reprendre l’ID configuré dans Mouvements des documents',en:'Use the configured document movements report ID'},when:root=>root.showTransfers===true,action:async ctx=>{
-                    if(!modules.has('document-movements'))return {changed:false,level:'info',message:'Le rapport historique est 5254 dans le profil Dracénie. Vérifiez ce rapport dans votre Koha, ou chargez le module Mouvements pour reprendre son ID configuré.'};
+                    if(!modules.has('document-movements'))return {changed:false,level:'info',message:'Le rapport historique est 5254 dans le profil initial. Vérifiez ce rapport dans votre Koha, ou chargez le module Mouvements pour reprendre son ID configuré.'};
                     const movements=await getConfig('document-movements',{ignoreGlobal:true});
                     const value=Number(movements.reportId);
                     if(!Number.isInteger(value)||value<=0)return {changed:false,level:'warning',message:'Aucun rapport actif dans Mouvements des documents.'};
@@ -8224,21 +8224,21 @@
         "https://cdn-icons-png.flaticon.com/512/15955/15955603.png";
 
     const HISTORICAL_LINK_IMAGES = {
-        electre: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/koha/electre.png",
-        babelio: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/koha/1200px-Logo_Babelio.png",
-        google: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/koha/img.icons8.png"
+        electre: "",
+        babelio: "",
+        google: ""
     };
 
     const HISTORICAL_CUSTOM_LINKS = [
         { id: "electre", enabled: true, labelFr: "Electre", labelEn: "Electre",
           urlTemplate: "https://www.electre-ng.com/#/search?q%3D(identifiant%3A%22{ISBN_FORMATTED}%22)%26debut%3D0%26resultat-max%3D50%26perimetre%3D%5Bperimetre-hors-numerique%5DHors%20num%C3%A9rique__%26tri.champ%3D%22date-parution%22%26tri.sens%3D%22desc%22%26inclure-embargos%3D%22true%22%26type%3D%22rapide%22",
-          scope: "all", newWindow: true, showLabel: false, iconType: "image", iconClass: "fa fa-external-link", imageUrl: HISTORICAL_LINK_IMAGES.electre },
+          scope: "all", newWindow: true, showLabel: true, iconType: "fa", iconClass: "fa fa-external-link", imageUrl: HISTORICAL_LINK_IMAGES.electre },
         { id: "babelio", enabled: true, labelFr: "Babelio", labelEn: "Babelio",
           urlTemplate: "https://www.google.com/search?q=babelio+{AUTHOR}+{TITLE}%20",
-          scope: "all", newWindow: true, showLabel: false, iconType: "image", iconClass: "fa fa-external-link", imageUrl: HISTORICAL_LINK_IMAGES.babelio },
+          scope: "all", newWindow: true, showLabel: true, iconType: "fa", iconClass: "fa fa-external-link", imageUrl: HISTORICAL_LINK_IMAGES.babelio },
         { id: "google", enabled: true, labelFr: "Google", labelEn: "Google",
           urlTemplate: "https://www.google.com/search?q={AUTHOR}%20{TITLE}%20",
-          scope: "all", newWindow: true, showLabel: false, iconType: "image", iconClass: "fa fa-external-link", imageUrl: HISTORICAL_LINK_IMAGES.google }
+          scope: "all", newWindow: true, showLabel: true, iconType: "fa", iconClass: "fa fa-external-link", imageUrl: HISTORICAL_LINK_IMAGES.google }
     ];
 
     const HISTORICAL_SEARCH_ELSE_LINKS = [
@@ -11447,26 +11447,26 @@
         const moduleId = "bibliographic-markers";
 
         const defaultRules = [
-            { id: "films-se-detendre", enabled: true, label: "Films-Se détendre", searchText: "Sujet - Indexation: Films-Se détendre", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Detente-ptif.png" },
-            { id: "film-drame", enabled: true, label: "Film-Drame", searchText: "Sujet - Indexation: Film-Drame", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/drame.png" },
-            { id: "films-aventure", enabled: true, label: "Films-Aventure", searchText: "Sujet - Indexation: Films-Aventure", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Aventure.png" },
-            { id: "film-vintage", enabled: true, label: "Film-Vintage", searchText: "Sujet - Indexation: Film-Vintage", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Vintage-Enfant-ptif.png" },
-            { id: "film-famille", enabled: true, label: "Film Famille", searchText: "Sujet - Indexation: Film Famille", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/En-Famille-ptif.png" },
-            { id: "films-historiques", enabled: true, label: "Films historiques", searchText: "Sujet - Indexation: Films historiques", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Historique-ptif.png" },
-            { id: "films-regards-de-femmes", enabled: true, label: "Films-Regards de femmes", searchText: "Sujet - Indexation: Films-Regards de femmes", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Female-gaze-ptif.png" },
-            { id: "films-muets", enabled: true, label: "Films muets", searchText: "Sujet - Indexation: Films muets", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Films-Muets-ptif.png" },
-            { id: "films-musicaux", enabled: true, label: "Films musicaux", searchText: "Sujet - Indexation: Films musicaux", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Musicaux-ptif.png" },
-            { id: "films-noirs", enabled: true, label: "Films noirs", searchText: "Sujet - Indexation: Films noirs", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Films-Noirs-ptif.png" },
-            { id: "films-grands-classiques", enabled: true, label: "Films-Grands classiques", searchText: "Sujet - Indexation: Films-Grands classiques", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Grands-Classiques-ptif.png" },
-            { id: "films-japanimation", enabled: true, label: "Japanimation", searchText: "Sujet - Indexation: Films-Japanimation", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Japanimation-ptif.png" },
-            { id: "films-science-fiction", enabled: true, label: "Science-fiction", searchText: "Sujet - Indexation: Films-Science-fiction", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Science-fiction-ptif.png" },
-            { id: "films-western", enabled: true, label: "Western", searchText: "Sujet - Indexation: Films-Western", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Western-ptif.png" },
-            { id: "series-courtes", enabled: true, label: "Séries courtes", searchText: "Sujet - Indexation: Séries courtes", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/series-courtes.png" },
-            { id: "films-vintage", enabled: true, label: "Films-Vintage", searchText: "Sujet - Indexation: Films-Vintage", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Vintage-Enfant-ptif.png" },
-            { id: "comics", enabled: true, label: "Comics", searchText: "Sujet - Indexation: Comics", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Comics-ptif.png" },
-            { id: "films-action", enabled: true, label: "Films-Action", searchText: "Sujet - Indexation: Films-Action", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/action.png" },
-            { id: "films-courts-metrages", enabled: true, label: "Court metrage", searchText: "Sujet - Indexation: Films-Courts métrages", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Court-metrage-ptif.png" },
-            { id: "films-horreur", enabled: true, label: "Horreur", searchText: "Sujet - Indexation: Films d'horreur", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Horreur-ptif.png" }
+            { id: "films-se-detendre", enabled: true, label: "Films-Se détendre", searchText: "Sujet - Indexation: Films-Se détendre", iconUrl: "" },
+            { id: "film-drame", enabled: true, label: "Film-Drame", searchText: "Sujet - Indexation: Film-Drame", iconUrl: "" },
+            { id: "films-aventure", enabled: true, label: "Films-Aventure", searchText: "Sujet - Indexation: Films-Aventure", iconUrl: "" },
+            { id: "film-vintage", enabled: true, label: "Film-Vintage", searchText: "Sujet - Indexation: Film-Vintage", iconUrl: "" },
+            { id: "film-famille", enabled: true, label: "Film Famille", searchText: "Sujet - Indexation: Film Famille", iconUrl: "" },
+            { id: "films-historiques", enabled: true, label: "Films historiques", searchText: "Sujet - Indexation: Films historiques", iconUrl: "" },
+            { id: "films-regards-de-femmes", enabled: true, label: "Films-Regards de femmes", searchText: "Sujet - Indexation: Films-Regards de femmes", iconUrl: "" },
+            { id: "films-muets", enabled: true, label: "Films muets", searchText: "Sujet - Indexation: Films muets", iconUrl: "" },
+            { id: "films-musicaux", enabled: true, label: "Films musicaux", searchText: "Sujet - Indexation: Films musicaux", iconUrl: "" },
+            { id: "films-noirs", enabled: true, label: "Films noirs", searchText: "Sujet - Indexation: Films noirs", iconUrl: "" },
+            { id: "films-grands-classiques", enabled: true, label: "Films-Grands classiques", searchText: "Sujet - Indexation: Films-Grands classiques", iconUrl: "" },
+            { id: "films-japanimation", enabled: true, label: "Japanimation", searchText: "Sujet - Indexation: Films-Japanimation", iconUrl: "" },
+            { id: "films-science-fiction", enabled: true, label: "Science-fiction", searchText: "Sujet - Indexation: Films-Science-fiction", iconUrl: "" },
+            { id: "films-western", enabled: true, label: "Western", searchText: "Sujet - Indexation: Films-Western", iconUrl: "" },
+            { id: "series-courtes", enabled: true, label: "Séries courtes", searchText: "Sujet - Indexation: Séries courtes", iconUrl: "" },
+            { id: "films-vintage", enabled: true, label: "Films-Vintage", searchText: "Sujet - Indexation: Films-Vintage", iconUrl: "" },
+            { id: "comics", enabled: true, label: "Comics", searchText: "Sujet - Indexation: Comics", iconUrl: "" },
+            { id: "films-action", enabled: true, label: "Films-Action", searchText: "Sujet - Indexation: Films-Action", iconUrl: "" },
+            { id: "films-courts-metrages", enabled: true, label: "Court metrage", searchText: "Sujet - Indexation: Films-Courts métrages", iconUrl: "" },
+            { id: "films-horreur", enabled: true, label: "Horreur", searchText: "Sujet - Indexation: Films d'horreur", iconUrl: "" }
         ];
 
         const defaults = {
@@ -11926,7 +11926,7 @@
        - restitution historique par défaut, notamment la vue abonnement
          regroupée en 3 colonnes ;
        - toutes les aides au bulletinage de l'ancien 073 sont intégrées ;
-       - les préconfigurations historiques Dracénie sont conservées comme
+       - les préconfigurations historiques d’origine sont conservées comme
          valeurs par défaut mais deviennent extensibles et modifiables ;
        - chaque fonction sensible est activable/désactivable séparément.
        ============================================================ */
@@ -12369,8 +12369,8 @@
                     id: "general",
                     label: { fr: "Fonctionnement du module", en: "Module behavior" },
                     description: {
-                        fr: "Les valeurs par défaut reproduisent le fonctionnement historique Dracénie. Chaque fonction peut être désactivée séparément sans désactiver le reste du module.",
-                        en: "Defaults reproduce the historical Dracénie behavior. Each function can be disabled independently without disabling the rest of the module."
+                        fr: "Les valeurs par défaut reproduisent le fonctionnement initial. Chaque fonction peut être désactivée séparément sans désactiver le reste du module.",
+                        en: "Defaults reproduce the original behavior. Each function can be disabled independently without disabling the rest of the module."
                     },
                     fields: []
                 },
@@ -12568,7 +12568,7 @@
                 {
                     type: "section", id: "receiving-presets",
                     label: { fr: "Bulletinage — préconfigurations d'exemplaire", en: "Receiving — item presets" },
-                    description: { fr: "Chaque préconfiguration crée un bouton. Vous pouvez en créer autant que nécessaire. Dans chaque bouton, ajoutez autant de champs Koha que souhaité avec leur valeur. Les cinq boutons Dracénie de l'ancien 073 sont déjà présents avec exactement leurs valeurs historiques.", en: "Each preset creates a button. Create as many as needed. Each button can write any number of Koha fields. The five historical Dracénie buttons are already present with their original values." },
+                    description: { fr: "Chaque préconfiguration crée un bouton. Vous pouvez en créer autant que nécessaire. Dans chaque bouton, ajoutez autant de champs Koha que souhaité avec leur valeur. Les cinq boutons d’origine de l'ancien 073 sont déjà présents avec exactement leurs valeurs historiques.", en: "Each preset creates a button. Create as many as needed. Each button can write any number of Koha fields. The five original buttons are already present with their original values." },
                     fields: [
                         { key: "receivingAssistant.presetsEnabled", type: "boolean", label: { fr: "Afficher les boutons de préconfiguration", en: "Show preset buttons" } },
                         {
@@ -17268,7 +17268,7 @@
                         }
                     ]
                 },
-                {key:"presetReportId",type:"number",min:0,label:{fr:"ID du rapport utilisant le préréglage de colonnes",en:"Report ID using the column preset"},help:{fr:"5191 conserve le réglage Dracénie. Indiquez l’ID équivalent sur ce Koha, ou 0 pour aucun rapport. Le tri, la recherche et les statistiques concernent uniquement les lignes chargées.",en:"5191 preserves the Dracénie default. Enter this Koha’s report ID, or 0 for no report. Sorting, search and statistics cover loaded rows only."}},
+                {key:"presetReportId",type:"number",min:0,label:{fr:"ID du rapport utilisant le préréglage de colonnes",en:"Report ID using the column preset"},help:{fr:"5191 conserve le réglage d’origine. Indiquez l’ID équivalent sur ce Koha, ou 0 pour aucun rapport. Le tri, la recherche et les statistiques concernent uniquement les lignes chargées.",en:"5191 preserves the original default. Enter this Koha’s report ID, or 0 for no report. Sorting, search and statistics cover loaded rows only."}},
                 {
                     type: "section",
                     id: "pages",
@@ -18918,7 +18918,7 @@
                             type: "text",
                             advanced: true,
                             label: { fr: "Adresse HTTPS du service d’autocomplétion", en: "Autocomplete service HTTPS endpoint" },
-                            help: { fr: "La Géoplateforme reste la valeur Dracénie. Une installation peut indiquer ici un relais compatible servi par son propre domaine.", en: "Géoplateforme remains the Dracénie default. An installation may enter a compatible proxy served from its own domain." }
+                            help: { fr: "La Géoplateforme reste la valeur d’origine. Une installation peut indiquer ici un relais compatible servi par son propre domaine.", en: "Géoplateforme remains the original default. An installation may enter a compatible proxy served from its own domain." }
                         }
                     ]
                 },
@@ -19752,7 +19752,7 @@
 
        Le calcul métier reste autonome : aucune dépendance au module 129.
        Les données sont lues prioritairement via l'API REST Koha.
-       Les valeurs ci-dessous reproduisent le legacy Dracénie.
+       Les valeurs ci-dessous reproduisent le legacy d’origine.
        ============================================================ */
     (function preregisterEfficiencyIndicators099() {
         const moduleId = "efficiency-indicators";
@@ -20029,8 +20029,8 @@
                     id: "calculation",
                     label: { fr: "Calcul", en: "Calculation" },
                     description: {
-                        fr: "Valeurs historiques Dracénie par défaut. Le score reste : (prêts cumulés / âge) × pondération d’inactivité.",
-                        en: "Historical Dracénie values are the defaults. Score remains: (cumulative checkouts / age) × inactivity weight."
+                        fr: "Valeurs historiques d’origine par défaut. Le score reste : (prêts cumulés / âge) × pondération d’inactivité.",
+                        en: "Original values are the defaults. Score remains: (cumulative checkouts / age) × inactivity weight."
                     },
                     fields: [
                         { key: "calculation.minAgeYears", type: "number", label: { fr: "Âge minimum utilisé dans le calcul (années)", en: "Minimum age used in calculation (years)" }, help: { fr: "Historique : 1 an. Évite de surévaluer un exemplaire très récent.", en: "Historical value: 1 year. Prevents overrating very recent items." } },
@@ -20893,7 +20893,7 @@
 
     /* ============================================================
        Module 109 — Assistant domaine / arborescence
-       - profil Dracénie historique conservé par défaut ;
+       - profil initial historique conservé par défaut ;
        - moteur générique MARC / UNIMARC disponible en option ;
        - valeurs issues de Référentiel local, des VA Koha ou d'une liste manuelle ;
        - relations parent -> enfants configurables, avec plusieurs parents possibles ;
@@ -20989,7 +20989,7 @@
 
         const defaults109 = {
             enabled: true,
-            runtimeMode: "legacy_dracenie",
+            runtimeMode: "legacy_default",
             page: {
                 path: "/cgi-bin/koha/cataloguing/addbiblio.pl",
                 enabled: true
@@ -21490,8 +21490,8 @@
                 en: "Cataloguing hierarchy assistant"
             },
             description: {
-                fr: "Assistant de catalogage hiérarchique configurable. Un profil Dracénie prêt à l’emploi est fourni par défaut. Accepte toute zone/sous-zone MARC ou UNIMARC, les valeurs autorisées Koha et des relations parent/enfants configurables.",
-                en: "Configurable hierarchical cataloguing assistant. A ready-to-use Dracénie profile is provided by default. The generic engine accepts any MARC/UNIMARC tag/subfield, Koha authorised values and configurable parent/child relations."
+                fr: "Assistant de catalogage hiérarchique configurable. Un profil initial prêt à l’emploi est fourni par défaut. Accepte toute zone/sous-zone MARC ou UNIMARC, les valeurs autorisées Koha et des relations parent/enfants configurables.",
+                en: "Configurable hierarchical cataloguing assistant. A ready-to-use initial profile is provided by default. The generic engine accepts any MARC/UNIMARC tag/subfield, Koha authorised values and configurable parent/child relations."
             },
             category: {
                 fr: "Catalogue / catalogage",
@@ -21517,7 +21517,7 @@
                             type: "select",
                             label: { fr: "Moteur utilisé", en: "Runtime engine" },
                             options: [
-                                { value: "legacy_dracenie", label: { fr: "Dracénie historique — production inchangée", en: "Historical Dracénie — unchanged production" } },
+                                { value: "legacy_default", label: { fr: "Configuration initiale — production inchangée", en: "Original — unchanged production" } },
                                 { value: "generic", label: { fr: "Moteur générique MARC / UNIMARC", en: "Generic MARC / UNIMARC engine" } }
                             ],
                             refreshOnChange: true
@@ -21607,8 +21607,8 @@
                     id: "extras",
                     label: { fr: "Champs complémentaires", en: "Additional fields" },
                     description: {
-                        fr: "Ces champs apparaissent dans l'assistant mais ne sont pas obligatoirement des niveaux successifs. Par défaut Dracénie : 608$a et 615$a.",
-                        en: "These fields appear in the assistant but do not have to be successive hierarchy levels. Dracénie defaults: 608$a and 615$a."
+                        fr: "Ces champs apparaissent dans l'assistant mais ne sont pas obligatoirement des niveaux successifs. Par défaut d’origine : 608$a et 615$a.",
+                        en: "These fields appear in the assistant but do not have to be successive hierarchy levels. Original installation defaults: 608$a and 615$a."
                     },
                     fields: [
                         {
@@ -23408,7 +23408,7 @@ function PMK147_isManagementLink(section,url,anchor){
         host.classList.add('pmk-shared-menu-builder-147'); return host;
       }
     });
-      const DEFAULT_SECTIONS=/(?:^|\.)dracenie\.com$|dracenie.*\.biblibre\.eu$/i.test(location.hostname)?sharedMenuEngine.defaultHomeProfile():[];
+      const DEFAULT_SECTIONS=[];
       registerModule({
         id:'147-home-submenus',schemaVersion:3,
         name:{fr:'Menus de l’accueil',en:'Home menus'},

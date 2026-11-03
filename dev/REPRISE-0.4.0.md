@@ -20,7 +20,7 @@ simulées, le relais Koha, les droits et la conservation du secret sont vérifi�
 
 La page Autorités conserve ses moteurs métier protégés. Seuls son ancien accès
 d’apprentissage distant et ses contrôles devenus sans effet ont été retirés.
-Les valeurs Dracénie, les personnalisations et les clés inconnues sont conservées
+Les valeurs d’origine, les personnalisations et les clés inconnues sont conservées
 par les formulaires, les migrations et les tests de réinstallation.
 
 Les fichiers de référence sont :

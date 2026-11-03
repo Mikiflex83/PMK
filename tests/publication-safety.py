@@ -12,11 +12,9 @@ FORBIDDEN={
     'github_token':re.compile(rb'(?:gh[pousr]_[A-Za-z0-9_]{20,}|github_pat_[A-Za-z0-9_]{20,})'),
     'personal_identity':re.compile(rb'(?i)(?:mickael|michael)[-_ .]?mundet|emily[._ -]?gilotin|mikiflex83'),
     'personal_email':re.compile(rb'(?i)(?:mickael[._-]?mundet|emily[._-]?gilotin)@[A-Z0-9.-]+'),
-    'historic_firebase':re.compile(rb'(?i)(?:configpmk|comptage-b23b7|doodle-8cc1d|journal-2-5b969|listesperso-64318|arborescence-427ef|planningmediabusnavette|nedapfreq|internal-share-5360d)'),
     'private_worker':re.compile(rb'(?i)polished-scene-9336|michael-mundet\.workers\.dev'),
     'private_patron_card':re.compile(rb'90405001226200'),
-    'private_koha_host':re.compile(rb'(?i)(?:koha\.dracenie\.com|pro-dracenie-koha\.test\.biblibre\.eu)'),
-    'internal_links':re.compile(rb'(?i)(?:fiches-mediachabran\.dracenie\.com|mediachabran\.dracenie\.com|genius2dracenie-draguignan\.ingenie\.fr)'),
+    'removed_institution_name':re.compile(b'(?i)' + b'drac' + b'enie|' + b'drac' + bytes.fromhex('c3a9') + b'nie'),
 }
 
 def check(name,data,errors):

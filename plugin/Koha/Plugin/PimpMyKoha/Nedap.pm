@@ -115,7 +115,7 @@ sub counts {
     $c->res->headers->cache_control('no-store');
     return $c->render(status=>403,openapi=>{error=>'staff_required'}) unless $c->stash('koha.user');
     return try {
-        my ($rcr,$from,$to,$period,$display)=map {$c->validation->param($_)} qw(rcr from to period display);
+        my ($rcr,$from,$to,$period,$display)=map {$c->param($_)} qw(rcr from to period display);
         $display //='NO';
         die "invalid_request\n" unless ($rcr//'') =~ /\A\d{9}\z/ && ($period//'') =~ /\A(?:1|5|10|15|30|HOUR|DAY)\z/ && $display =~ /\A(?:YES|NO)\z/;
         my $days=(_day($to)-_day($from))/86400;

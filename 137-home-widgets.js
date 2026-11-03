@@ -22,7 +22,7 @@
     if (window.PMKHomeWidgets && window.PMKHomeWidgets.version) return;
 
     const MODULE_ID = 'home-widgets';
-    const IS_LEGACY_INSTALLATION = /(^|\.)dracenie\.com$/i.test(window.location.hostname);
+    const IS_LEGACY_INSTALLATION = false;
     const VERSION = '1.2.1-preplugin';
     const currentScript = document.currentScript;
     const selfUrl = currentScript && currentScript.src

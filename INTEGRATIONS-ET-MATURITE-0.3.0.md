@@ -21,8 +21,8 @@ Une seule rubrique **Interface — améliorations historiques** expose les régl
 | Script | Traitement |
 |---|---|
 | 003 | Action d’impression rattachée au véritable menu Imprimer ; cible et libellés date/genre modifiables. |
-| 013 | Tournées jour/période/site, heures limites et semaines exclues configurables ; tournées Dracénie conservées. |
-| 019 | URLs relatives au Koha courant ; index et liste des prix réglables ; liste Dracénie conservée. |
+| 013 | Tournées jour/période/site, heures limites et semaines exclues configurables ; tournées d’origine conservées. |
+| 019 | URLs relatives au Koha courant ; index et liste des prix réglables ; liste d’origine conservée. |
 | 023 | Déplacement de la commande native, sans recréer un bouton ni perdre son comportement. |
 | 091 et 093 | Relais vers des URL non natives retirés de l’exécution ; sources conservées dans `dev/legacy-archive`. Utiliser les commandes natives de Koha pour les annulations et transferts. |
 | 092 | Ancienne page personnalisée, cible et fenêtre configurables ; aucune action sur une page inexistante. |
@@ -35,7 +35,7 @@ Une seule rubrique **Interface — améliorations historiques** expose les régl
 
 ## NEDAP : contrat de connexion
 
-Le widget reste un lecteur de compteurs NEDAP, pas un connecteur universel à tous les fournisseurs. Ses options choisissent le RCR, la période et le mode de connexion. Le profil Dracénie conserve ses valeurs ; son Worker personnel n’est pas imposé aux autres domaines.
+Le widget reste un lecteur de compteurs NEDAP, pas un connecteur universel à tous les fournisseurs. Ses options choisissent le RCR, la période et le mode de connexion. Le profil initial conserve ses valeurs ; son Worker personnel n’est pas imposé aux autres domaines.
 
 - En direct : `GET https://api.libnet.online/CCinfo.php/<RCR>/<AAAA-MM-JJ>/<lendemain-AAAA-MM-JJ>/<période>?key=<clé>&display=NO`. La fin de l’intervalle est exclusive. Le navigateur doit pouvoir joindre le fournisseur et recevoir son autorisation CORS. Les identifiants Koha ne sont pas transmis.
 - Via votre relais : `GET <workerUrl>/CCinfo/<RCR>/<AAAAMMJJhhmmss>/<AAAAMMJJhhmmss>/<période>`. Le relais gère sa clé NEDAP et autorise explicitement l’origine de votre Koha. Il doit renvoyer le JSON natif, sans page HTML ni redirection de connexion.

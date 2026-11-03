@@ -6,7 +6,7 @@
  PimpMyKoha — Assistant de saisie des exemplaires
 
  Principes :
- - conserve le rendu et le profil Dracénie historique par défaut ;
+ - conserve le rendu et le profil initial historique par défaut ;
  - reste totalement autonome du 102 "Boutons modèles exemplaires" ;
  - ne soumet JAMAIS le formulaire Koha et n'enregistre jamais un exemplaire automatiquement ;
  - fonctionne sur additem.pl et batchMod.pl ;
@@ -1822,7 +1822,7 @@
                     {key:"panel.rememberStateAndPosition",type:"boolean",label:{fr:"Mémoriser état et position sur ce navigateur",en:"Remember state and position in this browser"}},
                     {key:"panel.refreshOptionsMs",type:"number",min:1000,max:60000,advanced:true,label:{fr:"Rafraîchissement des listes Koha (ms)",en:"Koha list refresh interval (ms)"}}
                 ]},
-                { type:"section", id:"fields", label:{fr:"Champs de l’assistant",en:"Assistant fields"}, description:{fr:"Les 17 champs Dracénie historiques restent dans le même ordre. Pour chaque champ, la source des choix peut venir du formulaire Koha, d’une catégorie de valeurs autorisées, d’un endpoint REST Koha ou d’une liste manuelle. Le mode Auto garde le formulaire comme repli sûr.",en:"The 17 historical Dracénie fields remain in the same order. Each field can source choices from the Koha form, an authorised-value category, a Koha REST endpoint or a manual list. Auto mode keeps the form as a safe fallback."}, fields:[
+                { type:"section", id:"fields", label:{fr:"Champs de l’assistant",en:"Assistant fields"}, description:{fr:"Les 17 champs préconfigurés restent dans le même ordre. Pour chaque champ, la source des choix peut venir du formulaire Koha, d’une catégorie de valeurs autorisées, d’un endpoint REST Koha ou d’une liste manuelle. Le mode Auto garde le formulaire comme repli sûr.",en:"The 17 original fields remain in the same order. Each field can source choices from the Koha form, an authorised-value category, a Koha REST endpoint or a manual list. Auto mode keeps the form as a safe fallback."}, fields:[
                     {type:"custom",label:{fr:"Contrôler les cibles, mappings et dépendances",en:"Check targets, mappings and dependencies"},render:renderFieldDiagnostics},
                     {key:"fields",type:"repeater",label:{fr:"Champs",en:"Fields"},addLabel:{fr:"Ajouter un champ exemplaire",en:"Add item field"},reorder:true,newItem:newField,liveTitleKey:"labelFr",itemTitle:function(item,index,lang){return lang==="en"?String(item&&item.labelEn||item&&item.labelFr||("Field "+(index+1))):String(item&&item.labelFr||item&&item.labelEn||("Champ "+(index+1)));},fields:[
                         {key:"enabled",type:"boolean",label:{fr:"Champ actif",en:"Field enabled"}},

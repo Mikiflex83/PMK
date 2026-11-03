@@ -44,7 +44,7 @@
     window[SCRIPT_GUARD] = true;
 
     const VERSION = "4.1.0-pmk-split-responsive";
-    const BASE_URL = "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/grenouilles/";
+    const BASE_URL = "";
 
     const FROG_MODULE_ID = "mascot-frogs";
     const AGENT_MODULE_ID = "mascot-agents";
@@ -55,7 +55,7 @@
     const AGENT_NAMES = Array.from({length:25},(_,i)=>"Mascotte "+(i+1));
 
     const FROG_DEFAULTS = {
-        enabled: true,
+        enabled: false,
         pages: "*",
         locationSelector: "#logo",
         locationName: "Logo Koha",
@@ -91,7 +91,7 @@
     };
 
     const AGENT_DEFAULTS = {
-        enabled: true,
+        enabled: false,
         pages: "*",
         locationSelector: "#header_search",
         locationName: "Barre de recherche Koha",

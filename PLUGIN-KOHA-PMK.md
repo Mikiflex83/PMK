@@ -51,7 +51,7 @@ docker compose -f dev/koha/compose.yml up -d
 Le fichier `.env` est créé à partir de `.env.example` seulement s’il n’existe
 pas. Le profil de démonstration est Koha 25.11, UNIMARC, interface en anglais,
 avec les données et comptes de démonstration Koha Testing Docker. Il ne copie
-aucune donnée Dracénie. Les ports sont limités à la machine locale :
+aucune donnée d’origine. Les ports sont limités à la machine locale :
 
 - interface professionnelle : `http://127.0.0.1:18081` ;
 - OPAC : `http://127.0.0.1:18080`.

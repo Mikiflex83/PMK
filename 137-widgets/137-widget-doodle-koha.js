@@ -39,15 +39,8 @@ async function mount(container) {
       transact: (operation) => runTransaction(db, operation)
     });
 
-    // Le numéro de page 133 appartient à l'installation historique.
-    // Une installation différente revient sur l'accueil Koha tant qu'aucune
-    // page dédiée n'est configurée (sans inventer de page ni d'API).
-    const MAIN_PAGE = new URL(
-      /(^|\.)dracenie\.com$/i.test(window.location.hostname)
-        ? '/cgi-bin/koha/tools/page.pl?page_id=133'
-        : '/cgi-bin/koha/mainpage.pl',
-      window.location.origin
-    ).href;
+    // Retour sûr vers l'accueil Koha lorsqu'aucune page dédiée n'est configurée.
+    const MAIN_PAGE = new URL('/cgi-bin/koha/mainpage.pl', window.location.origin).href;
 
     const MAX_SLOTS = 4;
 

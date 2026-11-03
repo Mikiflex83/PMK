@@ -28,7 +28,7 @@
     "Address autocomplete: six custom targets and historical disabled state",
     "Patron phone automation: source/target choices, overwrite preference and independent function switch",
     "Catalogue refresh: requested forms, explanations, defaults and preservation",
-    "Catalogue refresh: native item cards retain Dracenie rules, fields, events and original order",
+    "Catalogue refresh: native item cards retain original rules, fields, events and original order",
     "Catalogue refresh: custom item page and structure, extra sections and shared picker",
     "Catalogue refresh: native holdings colors, sorting controls and links restore without cloning",
     "Catalogue refresh: custom holdings and course targets, local statuses and redraws",

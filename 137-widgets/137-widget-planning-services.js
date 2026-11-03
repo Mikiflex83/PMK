@@ -1321,7 +1321,7 @@ async function mount(container) {
 
         return {
           schemaVersion: 1,
-          source: "legacy-dracenie-2026",
+          source: "legacy-default-2026",
           services: [
             {
               id: "navette",
@@ -1337,7 +1337,7 @@ async function mount(container) {
               showStopTimes: false,
               gifEnabled: true,
               gifSegmentWidth: 65,
-              gifUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/icons8-camion.gif",
+              gifUrl: "",
               slots: navetteSlots,
               exceptions: navetteExceptions
             },
