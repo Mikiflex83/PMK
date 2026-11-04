@@ -16,7 +16,9 @@ target = stage / 'Koha/Plugin/PimpMyKoha'
 if target.exists():
     shutil.rmtree(target)
 shutil.copytree(ROOT / 'plugin/Koha', stage / 'Koha', dirs_exist_ok=True)
-for notice in ('LICENSE','THIRD_PARTY_NOTICES.md'):
+# Ces fichiers sont à la racine du dépôt. La boutique les cherche dans le
+# paquet extrait (README ou CONTRIBUTING), pas seulement sur la page GitHub.
+for notice in ('LICENSE','THIRD_PARTY_NOTICES.md','README.md','CONTRIBUTING.md'):
     shutil.copy2(ROOT / notice, target / notice)
 assets = target / 'assets'
 assets.mkdir()

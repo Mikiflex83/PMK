@@ -11,6 +11,7 @@ our $metadata = {
     description => 'Modules et pages PMK, avec ressources embarquées et configuration native dans Koha.',
     date_authored => '2026-10-18', date_updated => '2026-10-28',
     minimum_version => '25.11.00.000', version => $VERSION,
+    license => 'GPL-3.0-or-later',
 };
 
 sub new {
