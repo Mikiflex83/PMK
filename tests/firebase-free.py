@@ -22,6 +22,6 @@ for name in ['items','loans','patrons','serials']:
  assert 'Partage facultatif' not in source,name
  assert 'Firebase reçoit' not in source,name
 assert not any((root/'dev/koha'/name).exists() for name in ['firebase.json','firestore-test.rules','start-auth-emulator.cjs'])
-report={'passed':True,'pluginVersion':'0.4.0','scriptsScanned':len(files),'serviceCalls':0,'externalSdkImports':0,'authoritiesLearningRemoved':True,'retiredSharingControlsRemoved':True,'firebaseEmulatorRequired':False}
+report={'passed':True,'pluginVersion':'0.4.1','scriptsScanned':len(files),'serviceCalls':0,'externalSdkImports':0,'authoritiesLearningRemoved':True,'retiredSharingControlsRemoved':True,'firebaseEmulatorRequired':False}
 (root/'tests/validation/firebase-free.json').write_text(json.dumps(report,indent=2)+'\n')
 print(json.dumps(report))

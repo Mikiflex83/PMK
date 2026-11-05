@@ -1,7 +1,7 @@
 {
   "passed": true,
-  "pluginVersion": "0.4.0",
-  "scriptsScanned": 153,
+  "pluginVersion": "0.4.1",
+  "scriptsScanned": 155,
   "serviceCalls": 0,
   "externalSdkImports": 0,
   "authoritiesLearningRemoved": true,

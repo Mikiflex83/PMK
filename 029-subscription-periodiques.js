@@ -238,7 +238,7 @@
                 }
             ],
             report: {
-                enabled: true,
+                enabled: false,
                 buttonLabelFr: "Signaler un problème de bulletinage",
                 buttonLabelEn: "Report a receiving problem",
                 recipients: "",

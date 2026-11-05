@@ -380,8 +380,8 @@
                 en: "Conditional formatting — Holds and lists"
             },
             description: {
-                fr: "Met en forme et regroupe sur la notice les résumés Réservations, Cours et Listes, avec mise en évidence configurable du nombre de réservations. Le rendu historique du 103 est fourni par défaut. Le tableau des exemplaires reste géré par le 033.",
-                en: "Formats and groups Holds, Courses and Lists summaries on the record detail page, with configurable hold-count highlighting. Legacy module 103 styling is the default. Item-table styling remains handled by module 033."
+                fr: "Sur la fiche d’une notice, regroupe et met en forme les blocs Réservations, Cours et Listes. Vous choisissez comment signaler le nombre de réservations. Le tableau des exemplaires n’est pas modifié.",
+                en: "On a bibliographic record, groups and styles the Holds, Courses and Lists blocks. You choose how the holds count is highlighted. The holdings table is left unchanged."
             },
             category: {
                 fr: "Réservations & transferts",

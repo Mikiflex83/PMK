@@ -39,10 +39,9 @@ async function mount(container) {
       transact: (operation) => runTransaction(db, operation)
     });
 
-    // L'installation historique ouvrait une page locale dédiée.
-    // Une installation neuve reste sur l'accueil Koha tant qu'aucune
-    // page dédiée n'est configurée (sans inventer de page ni d'API).
-    const MAIN_PAGE = new URL('/cgi-bin/koha/mainpage.pl', window.location.origin).href;
+    // Les liens ouvrent la page interne des rendez-vous. Le fragment
+    // #dk=... choisit créneaux, sondage ou créneau précis.
+    const MAIN_PAGE = new URL('/cgi-bin/koha/mainpage.pl?pmk_page=appointments', window.location.origin).href;
 
     const MAX_SLOTS = 4;
 

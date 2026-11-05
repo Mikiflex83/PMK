@@ -9,7 +9,7 @@
   const ID = 'checkout-status-correction';
   if(window.__PMK145_PREPLUGIN_LOADER__)return;
   window.__PMK145_PREPLUGIN_LOADER__=true;
-  const defaults={enabled:false,categoryNotForLoan:'STATUT',categoryLost:'LOST',allowNotForLoan:[],allowLost:[],valuesNotForLoan:[],valuesLost:[]};
+  const defaults={enabled:false,categoryNotForLoan:'STATUT',categoryLost:'LOST',allowNotForLoan:[],allowLost:[],valuesNotForLoan:[],valuesLost:[],targetNotForLoan:'0',targetLost:'0'};
   const validCodes=a=>Array.isArray(a)?[...new Set(a.map(String).filter(x=>/^-?\d+$/.test(x)&&Number(x)!==0))]:[];
   const category=s=>String(s||'').trim().toUpperCase();
   const validCategory=s=>/^[A-Z0-9_-]{1,40}$/.test(category(s));
@@ -18,8 +18,10 @@
     x.enabled=x.enabled===true;
     x.categoryNotForLoan=category(x.categoryNotForLoan);
     x.categoryLost=category(x.categoryLost);
-    x.allowNotForLoan=validCodes(x.allowNotForLoan);
-    x.allowLost=validCodes(x.allowLost);
+    x.targetNotForLoan=/^-?\d+$/.test(String(x.targetNotForLoan ?? '0').trim())?String(x.targetNotForLoan).trim():'0';
+    x.targetLost=/^-?\d+$/.test(String(x.targetLost ?? '0').trim())?String(x.targetLost).trim():'0';
+    x.allowNotForLoan=validCodes(x.allowNotForLoan).filter(code=>code!==x.targetNotForLoan);
+    x.allowLost=validCodes(x.allowLost).filter(code=>code!==x.targetLost);
     x.valuesNotForLoan=Array.isArray(x.valuesNotForLoan)?x.valuesNotForLoan:[];
     x.valuesLost=Array.isArray(x.valuesLost)?x.valuesLost:[];
     return x;
@@ -73,13 +75,110 @@
       return {changed:true,refresh:true,message:values.length+' motif(s) chargés depuis '+cat+'. Sélectionnez les motifs, puis cliquez sur Enregistrer.'};
     };
   }
+  function categoryEditor(categoryKey, valuesKey, allowKey, targetKey, fallback){
+    return function({rootObject}){
+      const host=document.createElement('div');
+      const category=document.createElement('select');
+      category.className='form-select form-select-sm';
+      const target=document.createElement('select');
+      target.className='form-select form-select-sm';
+      target.style.margin='.55rem 0';
+      const motives=document.createElement('div');
+      const status=document.createElement('p');
+      status.className='pmk-field-help';
+      const targetLabel=document.createElement('div');
+      targetLabel.className='pmk-label';
+      targetLabel.textContent='Statut écrit après la correction';
+      host.append(category,status,targetLabel,target,motives);
+      const chosen=()=>new Set(validCodes(rootObject[allowKey]));
+      function paint(rows){
+        motives.replaceChildren();
+        target.replaceChildren();
+        const zero=document.createElement('option');
+        zero.value='0';
+        zero.textContent='0 — aucun motif (empruntable)';
+        target.appendChild(zero);
+        rows.forEach(v=>{
+          const option=document.createElement('option');
+          option.value=String(v.value);
+          option.textContent=String(v.value)+' — '+String(v.description||v.value);
+          target.appendChild(option);
+        });
+        const wanted=String(rootObject[targetKey] ?? '0');
+        target.value=[...target.options].some(option=>option.value===wanted)?wanted:'0';
+        rootObject[targetKey]=target.value;
+        const selected=chosen();
+        rows.forEach(v=>{
+          if(String(v.value)===target.value)return;
+          const label=document.createElement('label');
+          label.style.cssText='display:flex;gap:8px;align-items:center;margin:7px 0';
+          const check=document.createElement('input');
+          check.type='checkbox';
+          check.checked=selected.has(String(v.value));
+          check.addEventListener('change',()=>{
+            const set=chosen();
+            if(check.checked)set.add(String(v.value));else set.delete(String(v.value));
+            set.delete(target.value);
+            rootObject[allowKey]=[...set];
+            if(window.PMKConfig&&typeof window.PMKConfig.touchDraft==='function')window.PMKConfig.touchDraft();
+          });
+          const span=document.createElement('span');
+          span.textContent=String(v.value)+' — '+String(v.description||v.value);
+          label.append(check,span);
+          motives.appendChild(label);
+        });
+      }
+      target.addEventListener('change',()=>{
+        rootObject[targetKey]=target.value;
+        rootObject[allowKey]=validCodes(rootObject[allowKey]).filter(code=>code!==target.value);
+        paint(Array.isArray(rootObject[valuesKey])?rootObject[valuesKey]:[]);
+        if(window.PMKConfig&&typeof window.PMKConfig.touchDraft==='function')window.PMKConfig.touchDraft();
+      });
+      async function loadValues(name){
+        status.textContent='Chargement des motifs…';
+        const response=await fetch('/api/v1/authorised_value_categories/'+encodeURIComponent(name)+'/authorised_values?_per_page=500',{credentials:'same-origin',headers:{Accept:'application/json'},cache:'no-store'});
+        if(!response.ok)throw new Error('HTTP '+response.status);
+        const result=await response.json();
+        const values=(Array.isArray(result)?result:[]).filter(v=>/^-?\d+$/.test(String(v.value))&&Number(v.value)!==0)
+          .map(v=>({value:String(v.value),description:String(v.description||v.opac_description||v.value)}));
+        rootObject[valuesKey]=values;
+        const known=new Set(values.map(v=>v.value));
+        rootObject[allowKey]=validCodes(rootObject[allowKey]).filter(v=>known.has(v)&&v!==String(rootObject[targetKey]??'0'));
+        paint(values);
+        status.textContent=values.length+' motif(s) dans '+name+'. Cochez ceux qui peuvent être corrigés.';
+      }
+      category.addEventListener('change',async()=>{
+        rootObject[categoryKey]=category.value;
+        if(window.PMKConfig&&typeof window.PMKConfig.touchDraft==='function')window.PMKConfig.touchDraft();
+        try{await loadValues(category.value);}catch(error){status.textContent='Chargement impossible : '+error.message;}
+      });
+      (async()=>{
+        let names=[];
+        try{
+          const response=await fetch('/api/v1/authorised_value_categories?_per_page=1000&_order_by=category_name',{credentials:'same-origin',headers:{Accept:'application/json'},cache:'no-store'});
+          const payload=await response.json();
+          names=(Array.isArray(payload)?payload:[]).map(row=>String(row.category_name||'').trim()).filter(Boolean);
+        }catch(_){}
+        const current=String(rootObject[categoryKey]||fallback);
+        if(!names.includes(current))names.unshift(current);
+        names.forEach(name=>{
+          const option=document.createElement('option');
+          option.value=name;option.textContent=name;category.appendChild(option);
+        });
+        category.value=current;
+        rootObject[categoryKey]=current;
+        try{await loadValues(current);}catch(error){status.textContent='Chargement impossible : '+error.message;paint([]);}
+      })();
+      return host;
+    };
+  }
   let registered=false;
   function register(){
     if(registered)return true;
     if(!window.PMKConfig || typeof window.PMKConfig.registerModule!=='function')return false;
     registered=true;
     window.PMKConfig.registerModule({
-      id:ID,schemaVersion:1,
+      id:ID,schemaVersion:2,
       name:{fr:'Correction du statut au prêt',en:'Checkout status correction'},
       description:{fr:'Lors d’un prêt forcé, permet de rendre empruntable un exemplaire pour les seuls motifs autorisés. Le prêt reste géré par Koha.',en:'Safely correct eligible item statuses after a native Koha checkout.'},
       category:{fr:'Circulation',en:'Circulation'},
@@ -87,15 +186,11 @@
       defaults:defaults,normalize:normalize,
       validate:c=>validCategory(c.categoryNotForLoan)&&validCategory(c.categoryLost)?{ok:true}:{ok:false,message:'Catégories VA invalides (1 à 40 caractères : lettres, chiffres, _ ou -).'},
       schema:[
-        {type:'section',id:'statut',label:txt('1. Exclusion du prêt (STATUT)'),description:txt('Choisissez la catégorie VA de votre Koha, chargez ses motifs puis cochez uniquement les corrections autorisées.'),fields:[
-          {key:'categoryNotForLoan',type:'text',label:txt('Catégorie VA pour le statut de prêt'),help:txt('Par défaut : STATUT. Modifiable selon votre paramétrage Koha.')},
-          {type:'action',label:txt('Motifs du statut'),buttonLabel:txt('Charger les motifs'),action:sync('categoryNotForLoan','valuesNotForLoan','allowNotForLoan')},
-          {type:'custom',label:txt('Motifs autorisés'),render:checkRenderer('allowNotForLoan','valuesNotForLoan')}
+        {type:'section',id:'statut',label:txt('1. Exclusion du prêt'),description:txt('Le module reste désactivé tant que vous ne l’activez pas. Choisissez la catégorie, les motifs qui peuvent être corrigés, puis le statut écrit après le prêt.'),fields:[
+          {type:'custom',label:txt('Catégorie, motifs et statut cible'),render:categoryEditor('categoryNotForLoan','valuesNotForLoan','allowNotForLoan','targetNotForLoan','STATUT')}
         ]},
-        {type:'section',id:'perdu',label:txt('2. Statut perdu (LOST)'),description:txt('Catégorie VA indépendante : modifiez-la ici avant de charger les motifs de perte.'),fields:[
-          {key:'categoryLost',type:'text',label:txt('Catégorie VA pour le statut perdu'),help:txt('Par défaut : LOST. Vous pouvez saisir le code exact de votre installation.')},
-          {type:'action',label:txt('Motifs de perte'),buttonLabel:txt('Charger les motifs'),action:sync('categoryLost','valuesLost','allowLost')},
-          {type:'custom',label:txt('Motifs autorisés'),render:checkRenderer('allowLost','valuesLost')}
+        {type:'section',id:'perdu',label:txt('2. Statut perdu'),description:txt('Même principe, avec la catégorie des motifs de perte. Le statut cible par défaut est 0, c’est-à-dire aucun motif de perte.'),fields:[
+          {type:'custom',label:txt('Catégorie, motifs et statut cible'),render:categoryEditor('categoryLost','valuesLost','allowLost','targetLost','LOST')}
         ]}
       ]
     });
@@ -292,7 +387,10 @@
             button.title='Prêt Koha classique puis remise à zéro du seul champ '+fieldInfo.label+' ('+label+', catégorie '+(match?.pmk145Category||'?')+')';
             nativeYes.insertAdjacentElement('afterend',button);
             debugState('Motif autorisé : bouton de correction disponible');
-            const hint=make('small','Correction proposée : '+fieldInfo.label+' « '+label+' » → 0. Le prêt est d’abord effectué par Koha.', 'pmk145-action-hint');
+            const targetValue=decision.field==='lost_status'?String(c.targetLost??'0'):String(c.targetNotForLoan??'0');
+            const targetLabel=(av.find(x=>String(x.value)===targetValue)?.description)||(targetValue==='0'?'empruntable':targetValue);
+            button.textContent=targetValue==='0'?'Prêter et rendre empruntable':'Prêter et passer au statut « '+targetLabel+' »';
+            const hint=make('small','Correction proposée : '+fieldInfo.label+' « '+label+' » → '+targetLabel+'. Le prêt est d’abord effectué par Koha.', 'pmk145-action-hint');
             button.insertAdjacentElement('afterend',hint);
             const trace=el('details',{id:'pmk145-decision-trace'}),summary=make('summary','Pourquoi cette correction est proposée'),steps=el('ol');
             [
@@ -356,22 +454,23 @@
             const before=await fetchItem(p.itemId);
             if(Number(before.biblio_id)!==p.biblioId||String(before.external_id)!==p.barcode)throw new Error('Identité de l’exemplaire modifiée');
             if(!checkout)throw new Error('Prêt introuvable');
-            if(Number(before[p.field])===0){
-              // Certains paramétrages natifs Koha changent déjà le statut au prêt.
+            const expected=p.field==='lost_status'?String(freshConfig.targetLost??'0'):String(freshConfig.targetNotForLoan??'0');
+            if(Number(before[p.field])===Number(expected)){
               clearPending();
-              notice('Prêt confirmé : Koha avait déjà remis le statut à empruntable pour '+p.barcode+'.','ok');
+              notice('Prêt confirmé : le statut de '+p.barcode+' est déjà celui qui était demandé.','ok');
               return;
             }
             const rule=decide(before,freshConfig);
             if(!rule||rule.field!==p.field||rule.value!==p.from)throw new Error('Le statut a évolué ou sa correction n’est plus autorisée');
-            const changes={[p.field]:0};
+            const target=p.field==='lost_status'?String(freshConfig.targetLost??'0'):String(freshConfig.targetNotForLoan??'0');
+            const changes={[p.field]:Number(target)};
             // PUT ne doit pas modifier d'autres champs : on transmet exclusivement le champ concerné.
             await api('/biblios/'+p.biblioId+'/items/'+p.itemId,'PUT',changes);
             const after=await fetchItem(p.itemId);
-            if(Number(after[p.field])!==0)throw new Error('Koha n’a pas confirmé la remise à zéro');
+            if(Number(after[p.field])!==Number(target))throw new Error('Koha n’a pas confirmé le statut cible');
             await verifyCheckout(p);
             clearPending();
-            notice('Prêt confirmé et statut corrigé sur l’exemplaire '+p.barcode+' (valeur '+p.from+' → 0).','ok');
+            notice('Prêt confirmé et statut corrigé sur l’exemplaire '+p.barcode+' (valeur '+p.from+' → '+target+').','ok');
           }catch(e){
             clearPending();
             notice('Le prêt Koha n’a PAS été annulé. Correction PMK non confirmée : '+e.message+'. Vérifiez le prêt et le statut de l’exemplaire avant toute autre action.','warn');

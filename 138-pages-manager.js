@@ -47,11 +47,11 @@
     },
     {
         "id": "action-journal",
-        "title": "Journal des actions",
+        "title": "Journaux de suivis",
         "out": "138-page-action-journal",
         "icon": "fa-book",
         "group": "Outils généraux",
-        "desc": "Journal partagé des actions et suivi."
+        "desc": "Plusieurs journaux de suivi pour l’équipe, distincts du journal Koha."
     },
     {
         "id": "restore-deleted-items",
@@ -67,23 +67,33 @@
         "out": "138-page-weeding",
         "icon": "fa-trash",
         "group": "Outils généraux",
-        "desc": "Outil de désherbage et d’analyse des collections."
+        "desc": "Outil de désherbage et d’analyse des collections.",
+        "caution": true
     },
     {
         "id": "appointments",
-        "title": "Rendez-vous réseau / Doodle",
+        "title": "Rendez-vous et sondages",
         "out": "138-page-appointments",
         "icon": "fa-calendar",
         "group": "Outils généraux",
-        "desc": "Créneaux, rendez-vous et sondages réseau."
+        "desc": "Créneaux, rendez-vous et sondages."
+    },
+    {
+        "id": "patron-map",
+        "title": "Cartographie des adhérents",
+        "out": "138-page-patron-map",
+        "icon": "fa-map-marker",
+        "group": "Outils généraux",
+        "desc": "Domiciles, sites d’inscription et échanges de documents entre les sites."
     },
     {
         "id": "authorities",
-        "title": "Maintenance des autorités",
+        "title": "Qualité des autorités",
         "out": "138-page-authorities",
         "icon": "fa-user-circle",
         "group": "Qualité Koha",
-        "desc": "Doublons, fusions, orphelines, relink et audit des autorités."
+        "desc": "Doublons, fusions, orphelines, relink et audit des autorités.",
+        "caution": true
     },
     {
         "id": "inventory",
@@ -91,15 +101,17 @@
         "out": "138-page-inventory",
         "icon": "fa-clipboard",
         "group": "Outils généraux",
-        "desc": "Inventaire autonome des collections."
+        "desc": "Inventaire autonome des collections.",
+        "caution": true
     },
     {
         "id": "reservations",
-        "title": "Maintenance des réservations",
+        "title": "Nettoyage des réservations",
         "out": "138-page-reservations",
         "icon": "fa-hand-paper-o",
         "group": "Qualité Koha",
-        "desc": "Analyse et maintenance des réservations."
+        "desc": "Analyse et maintenance des réservations.",
+        "caution": true
     },
     {
         "id": "loans",
@@ -107,31 +119,35 @@
         "out": "138-page-loans",
         "icon": "fa-retweet",
         "group": "Qualité Koha",
-        "desc": "Analyse des prêts anciens, litiges et réclamations."
+        "desc": "Analyse des prêts anciens, litiges et réclamations.",
+        "caution": true
     },
     {
         "id": "transfers",
-        "title": "Transferts / navette",
+        "title": "Nettoyage des transferts",
         "out": "138-page-transfers",
         "icon": "fa-exchange",
         "group": "Qualité Koha",
-        "desc": "Analyse des transferts et navette."
+        "desc": "Analyse des transferts et navette.",
+        "caution": true
     },
     {
         "id": "items",
-        "title": "Maintenance des exemplaires",
+        "title": "Qualité des exemplaires",
         "out": "138-page-items",
         "icon": "fa-barcode",
         "group": "Qualité Koha",
-        "desc": "Contrôle d’intégrité et maintenance des exemplaires."
+        "desc": "Contrôle d’intégrité et maintenance des exemplaires.",
+        "caution": true
     },
     {
         "id": "biblios",
-        "title": "Qualité du catalogue bibliographique",
+        "title": "Qualité des notices",
         "out": "138-page-biblios",
         "icon": "fa-book",
         "group": "Qualité Koha",
-        "desc": "Audit bibliographique, doublons et enrichissement assisté."
+        "desc": "Audit bibliographique, doublons et enrichissement assisté.",
+        "caution": true
     },
     {
         "id": "serials",
@@ -139,7 +155,8 @@
         "out": "138-page-serials",
         "icon": "fa-newspaper-o",
         "group": "Qualité Koha",
-        "desc": "Abonnements, fascicules attendus et réclamations."
+        "desc": "Abonnements, fascicules attendus et réclamations.",
+        "caution": true
     },
     {
         "id": "patrons",
@@ -147,15 +164,8 @@
         "out": "138-page-patrons",
         "icon": "fa-users",
         "group": "Qualité Koha",
-        "desc": "Doublons, comptes expirés et coordonnées lecteurs."
-    },
-    {
-        "id": "quality-center",
-        "title": "Centre qualité Koha",
-        "out": "138-page-quality-center",
-        "icon": "fa-check-circle",
-        "group": "Qualité Koha",
-        "desc": "Point d’entrée des outils de qualité Koha."
+        "desc": "Doublons, comptes expirés et coordonnées lecteurs.",
+        "caution": true
     },
     {
         "id": "bulk-framework-change",
@@ -171,6 +181,7 @@
         "icon": "fa-code",
         "group": "Outils généraux",
         "desc": "Ouvrir, modifier, prévisualiser et exporter les feuilles XSLT Koha, avec sauvegarde des projets.",
+        "caution": true,
         "external": true
     },
     {
@@ -183,10 +194,11 @@
     },
     {
         "id": "overdue-management",
-        "title": "Gestion des retards TP4",
+        "title": "Gestion des retards",
         "icon": "fa-clock-o",
         "group": "Outils généraux",
         "desc": "Suivi des dossiers TP4, consultation des prêts en retard et ajout ou modification de messages dans la fiche Koha sans quitter la page.",
+        "caution": true,
         "external": true
     }
 ];
@@ -333,6 +345,9 @@
 #pmk138-page-host .pmk138-app-container > #pmk142-root{position:relative;inset:auto;z-index:auto;min-height:80vh}
 .pmk138-toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 14px;padding:8px 10px;border:1px solid #d9dee3;border-radius:7px;background:#f7f8f9}
 .pmk138-toolbar .pmk138-title{font-weight:700;color:#39444d;margin-right:auto}
+.pmk138-inline-settings .form-control{max-width:640px;margin-top:4px}
+.pmk138-inline-settings label{display:block;margin:10px 0}
+.pmk138-inline-settings h5{margin:8px 0}
 .pmk138-hub{max-width:1500px;margin:0 auto}
 .pmk138-hub-head{padding:18px 20px;margin-bottom:14px;border:1px solid #cedbbd;border-left:5px solid #6f8f32;border-radius:8px;background:linear-gradient(135deg,#fff,#f5f9ef)}
 .pmk138-hub-head h1{font-size:26px;margin:0 0 4px;color:#526d22}
@@ -344,6 +359,8 @@
 .pmk138-card h3{font-size:16px;margin:0 0 6px;color:#39444d}
 .pmk138-card p{color:#697680;margin:0 0 12px;font-size:13px;flex:1}
 .pmk138-card .btn{align-self:flex-start}
+.pmk138-caution{margin:0 0 12px;padding:10px 12px;border:1px solid #e4cf96;border-radius:6px;background:#fff8e8;color:#725c22;font-size:13px;line-height:1.4}
+.pmk138-card .pmk138-caution{margin:0 0 10px}
 .pmk138-denied{max-width:760px;margin:35px auto;padding:20px;border:1px solid #e1b5b5;border-radius:8px;background:#fff1f1;color:#822929}
 @media(max-width:1050px){.pmk138-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:680px){#pmk138-page-host{padding:10px}.pmk138-grid{grid-template-columns:1fr}}
@@ -356,11 +373,23 @@
         const back=document.createElement('a');back.className='btn btn-default btn-sm';back.href=urlFor(HUB_ID);back.innerHTML='<i class="fa fa-arrow-left" aria-hidden="true"></i> Pages & outils internes';
         const t=document.createElement('div');t.className='pmk138-title';t.textContent=title || '';
         const home=document.createElement('a');home.className='btn btn-default btn-sm';home.href='/cgi-bin/koha/mainpage.pl';home.innerHTML='<i class="fa fa-home" aria-hidden="true"></i> Accueil Koha';
-        if(canOpen(HUB_ID))bar.appendChild(back);bar.append(t,home);if(isSuperlibrarian() && requestedPage()!=='authorities'){const settings=document.createElement('button');settings.type='button';settings.className='btn btn-default btn-sm';settings.textContent='Configurer cette page';settings.onclick=()=>window.PMKPagesSettings?.openSettings(requestedPage());bar.appendChild(settings);}return bar;
+        if(canOpen(HUB_ID) && requestedPage()!==HUB_ID)bar.appendChild(back);bar.append(t,home);
+        const pageId=requestedPage();
+        const configurable=pageId==='hub'||pageId==='authorities'||!!window.PMKPagesSettings?.catalog?.[pageId];
+        if(isSuperlibrarian() && configurable){const settings=document.createElement('button');settings.type='button';settings.className='btn btn-default btn-sm';settings.textContent='Réglages de cette page';settings.onclick=()=>window.PMKPagesSettings?.openSettings(pageId);bar.appendChild(settings);}return bar;
+    }
+
+    const CAUTION_TEXT = 'En cours de développement. À utiliser avec précaution : cette page n’est pas forcément adaptée à toutes les installations Koha.';
+    function cautionNote() {
+        const note=document.createElement('p');
+        note.className='pmk138-caution';
+        note.textContent=CAUTION_TEXT;
+        return note;
     }
 
     function renderHub(host) {
         host.replaceChildren();
+        host.appendChild(toolbar('Pages & outils internes'));
         const wrap=document.createElement('div');wrap.className='pmk138-hub';
         const head=document.createElement('div');head.className='pmk138-hub-head';head.innerHTML='<h1>Pages & outils internes</h1><p>Retrouvez les outils accessibles avec votre compte Koha.</p>';
         wrap.appendChild(head);
@@ -382,7 +411,9 @@
                 const h3=document.createElement('h3');h3.innerHTML='<i class="fa '+item.icon+' fa-fw" aria-hidden="true"></i> '+escapeHtml(item.title);
                 const p=document.createElement('p');p.textContent=item.desc;
                 const a=document.createElement('a');a.className='btn btn-primary btn-sm';a.href=urlFor(item.id);a.textContent='Ouvrir';
-                card.append(h3,p,a);grid.appendChild(card);
+                card.append(h3,p);
+                if(item.caution)card.appendChild(cautionNote());
+                card.appendChild(a);grid.appendChild(card);
             });
             sec.appendChild(grid);wrap.appendChild(sec);
         });
@@ -483,6 +514,7 @@
     async function renderPage(id, host, generation) {
         const meta=byId.get(id);if(!meta) { host.textContent='Page inconnue.'; return; }
         host.replaceChildren();host.appendChild(toolbar(meta.title));
+        if(meta.caution)host.appendChild(cautionNote());
         const app=document.createElement('div');app.className='pmk138-app-container';host.appendChild(app);
         const controller=routeController;const cleanups=[];
         const context={id,meta,isSuperlibrarian,urlFor,open,mountLegacyHtml,signal:controller.signal,onDispose:callback=>{if(typeof callback!=='function')return;if(controller.signal.aborted)callback();else cleanups.push(callback);}};
@@ -519,13 +551,13 @@
 
     function renderPmkLauncher() {
         const wrap=document.createElement('div');
-        const description=document.createElement('p');description.textContent='Les dix-neuf pages utilisent le même point d’entrée. Les droits ci-dessous concernent leur ouverture ; les contrôles Koha, les comptes Koha et les éventuels filtres propres à une page restent nécessaires.';
+        const description=document.createElement('p');description.textContent='Les pages s’ouvrent depuis la liste commune. Les réglages de chaque page sont sur la page, avec le bouton « Réglages de cette page ».';
         const link=document.createElement('a');link.className='btn btn-primary';link.href=urlFor(HUB_ID);link.target='_blank';link.rel='noopener';link.textContent='Ouvrir les pages & outils internes';
         const table=document.createElement('table');table.className='table table-striped';
         const head=table.createTHead().insertRow();['Page','Accès à la page','Prérequis particuliers'].forEach(label=>{const cell=document.createElement('th');cell.textContent=label;head.appendChild(cell);});
         const details={
             'attendance-counter':'Authentification et droits du compteur Koha',
-            'action-journal':'Accès au journal stockage Koha',appointments:'Accès stockage Koha ; contrôle administrateur propre aux rendez-vous',
+            'action-journal':'Accès au journal stockage Koha',appointments:'Accès stockage Koha ; contrôle administrateur propre aux rendez-vous','patron-map':'Rapport SQL de ce Koha. Le géocodage envoie les adresses au service IGN.',
             'restore-deleted-items':'Filtre nominatif supplémentaire dans la page ; droits Koha de restauration',inventory:'Stockage local IndexedDB et droits API Koha',
             'quality-center':'Navigation et état des prérequis',transfers:'Droits Koha et rapport SQL configuré',serials:'Droits Koha et rapport SQL configuré',
             weeding:'Droits Koha ; référentiel Koha facultatif',
@@ -536,7 +568,7 @@
         };
         const body=table.createTBody();
         manifest.forEach(item=>{const row=body.insertRow();const a=document.createElement('a');a.href=urlFor(item.id);a.target='_blank';a.rel='noopener';a.textContent=item.title;row.insertCell().appendChild(a);row.insertCell().textContent=(item.id!=='authorities'&&config.pageOptions?.[item.id]?.access && config.pageOptions[item.id].access!=='default'?config.pageOptions[item.id].access:item.access)==='staff'?'Personnel Koha':'Superlibrarian Koha';row.insertCell().textContent=details[item.id] || 'Droits API Koha et paramètres de la page';});
-        const detail=document.createElement('details'),summary=document.createElement('summary');summary.textContent='Voir les dix-neuf pages, leurs accès et leurs prérequis';detail.append(summary,table);wrap.append(description,link,detail);return wrap;
+        const detail=document.createElement('details'),summary=document.createElement('summary');summary.textContent='Voir les pages, leurs accès et leurs prérequis';detail.append(summary,table);wrap.append(description,link,detail);return wrap;
     }
     function registerPmk() {
         if (!window.PMKConfig || typeof window.PMKConfig.registerModule!=='function') return false;
@@ -544,14 +576,12 @@
             window.PMKConfig.registerModule({
                 id:MODULE_ID,schemaVersion:4,compactActivation:true,hidePageCount:true,
                 name:{fr:'Pages & outils internes',en:'Internal pages & tools'},
-                description:{fr:'Retrouvez et ouvrez les outils internes depuis une page commune. Configurez les accès et les paramètres de chaque page ; la page Autorités conserve ses réglages actuels.',en:'Open internal tools from a shared hub. Configure access and settings for each page; the Authorities page retains its existing settings.'},
+                description:{fr:'La liste s’ouvre par le bouton Outils, en haut de l’écran. Les réglages de chaque page, y compris qui peut l’ouvrir, sont sur la page elle-même.',en:'The list opens from the Tools button at the top of the screen. Each page carries its own settings, including who may open it.'},
                 category:{fr:'Navigation et interface',en:'Navigation and interface'},
                 supportedPages:['*'],prerequisites:[],dependencies:[],defaults:{enabled:true,hubAccess:'superlibrarian',pageOptions:{}},
                 validate:cfg=>window.PMKPagesSettings?.validate(cfg)||{ok:true},
                 schema:[
-                    {type:'section',id:'page-settings',label:{fr:'Configurer une page',en:'Configure a page'},fields:[{type:'custom',render:ctx=>window.PMKPagesSettings.renderEditor(ctx)}]},
-                    {type:'section',id:'pages',label:{fr:'Accès et inventaire des pages',en:'Page access and inventory'},fields:[
-                        {key:'hubAccess',type:'select',label:{fr:'Accès à l’accueil des outils',en:'Tools hub access'},options:[{value:'superlibrarian',label:{fr:'Superlibrarian Koha',en:'Koha superlibrarian'}},{value:'staff',label:{fr:'Personnel Koha — uniquement ses outils autorisés',en:'Koha staff — permitted tools only'}}]},
+                    {type:'section',id:'pages',label:{fr:'Ouvrir les pages',en:'Open the pages'},fields:[
                         {type:'custom',render:renderPmkLauncher}
                     ]}
                 ]
@@ -583,7 +613,11 @@
         document.title=originalTitle;
     }
     async function renderRoute() {
-        const id=requestedPage();
+        let id=requestedPage();
+        if (id==='quality-center') {
+            id=HUB_ID;
+            try { history.replaceState(history.state,'',urlFor(HUB_ID)); } catch (_) {}
+        }
         if (!id || config.enabled === false) {clearSurface();return;}
         clearSurface();
         document.documentElement.classList.add('pmk138-virtual-route');

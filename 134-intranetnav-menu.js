@@ -262,11 +262,6 @@
                 labelEn: 'Tools',
                 audience: 'all'
             }),
-            makeItem('link', {
-                id: 'collections-tree', parentId: 'tools-group',
-                labelFr: 'Arborescence des collections', labelEn: 'Collections tree',
-                icon: 'fa-sitemap', url: '/cgi-bin/koha/tools/page.pl?page_id=114', target: 'new'
-            }),
             makeItem('action', {
                 id: 'dashboard', parentId: 'tools-group',
                 labelFr: 'Tableau de bord', labelEn: 'Dashboard',
@@ -351,11 +346,6 @@
                 labelFr: 'Centre qualité', labelEn: 'Quality center',
                 icon: 'fa-check-circle', audience: 'inherit'
             }),
-            makeItem('link', {
-                id: 'quality-home', parentId: 'quality-center',
-                labelFr: 'Ouvrir le Centre qualité', labelEn: 'Open Quality center',
-                icon: 'fa-home', url: '/cgi-bin/koha/mainpage.pl?pmk_page=quality-center', target: 'new'
-            }),
             makeItem('separator', { id: 'quality-sep', parentId: 'quality-center' }),
             makeItem('link', {
                 id: 'quality-notices', parentId: 'quality-center',
@@ -414,13 +404,8 @@
             }),
             makeItem('link', {
                 id: 'patron-map', parentId: 'admin-group',
-                labelFr: 'Carto adhérents', labelEn: 'Patron map', icon: 'fa-map-marker',
-                url: '/cgi-bin/koha/tools/page.pl?page_id=130', target: 'new'
-            }),
-            makeItem('link', {
-                id: 'heritage-funds', parentId: 'admin-group',
-                labelFr: 'Suivi Fonds Pat.', labelEn: 'Heritage funds follow-up', icon: 'fa-book',
-                url: '/cgi-bin/koha/tools/page.pl?page_id=119', target: 'new'
+                labelFr: 'Cartographie des adhérents', labelEn: 'Patron map', icon: 'fa-map-marker',
+                url: '/cgi-bin/koha/mainpage.pl?pmk_page=patron-map', target: 'new'
             }),
             makeItem('link', {
                 id: 'serials-delete', parentId: 'admin-group',
@@ -445,7 +430,7 @@
 
     const DEFAULTS = {
         enabled: true,
-        migrationVersion: 7,
+        migrationVersion: 8,
         removeLegacyHardcodedMenu: true,
         hideLegacyListsButton: true,
         hideLegacyHistoryButton: true,
@@ -1520,6 +1505,13 @@
         };
         (config.menus || []).forEach(function(menu){
             const items = Array.isArray(menu.items) ? menu.items : [];
+            for (let index = items.length - 1; index >= 0; index--) {
+                const item = items[index];
+                if (item && (item.id === 'quality-home' || item.url === '/cgi-bin/koha/mainpage.pl?pmk_page=quality-center')) {
+                    items.splice(index, 1);
+                    changed = true;
+                }
+            }
             items.forEach(function(item){
                 if (!item || !byId[item.id]) return;
                 if (item.url !== byId[item.id]) { item.url = byId[item.id]; changed = true; }
@@ -1534,6 +1526,14 @@
                 changed = true;
             }
             const quality = items.find(function(item){ return item && item.id === 'quality-center'; });
+            if (admin && !items.some(function(item){ return item && item.id === 'patron-map'; })) {
+                items.push(makeItem('link', {
+                    id:'patron-map', parentId:'admin-group',
+                    labelFr:'Cartographie des adhérents', labelEn:'Patron map', icon:'fa-map-marker',
+                    url:'/cgi-bin/koha/mainpage.pl?pmk_page=patron-map', target:'new', audience:'inherit'
+                }));
+                changed = true;
+            }
             if (quality && !items.some(function(item){ return item && item.id === 'quality-serials'; })) {
                 items.push(makeItem('link', {
                     id:'quality-serials', parentId:'quality-center',
@@ -1562,6 +1562,26 @@
         if (!menu.items.some(function(item){ return item && item.id === 'admin-group'; })) migrated.parentId = '';
         menu.items.push(migrated);
         return true;
+    }
+
+    function removeInstallationPageLinks(config) {
+        const legacy = {
+            'collections-tree': '/cgi-bin/koha/tools/page.pl?page_id=114',
+            'patron-map': '/cgi-bin/koha/tools/page.pl?page_id=130',
+            'heritage-funds': '/cgi-bin/koha/tools/page.pl?page_id=119'
+        };
+        let changed = false;
+        (config.menus || []).forEach(function (menu) {
+            if (!Array.isArray(menu.items)) return;
+            menu.items = menu.items.filter(function (item) {
+                if (item && legacy[item.id] && item.url === legacy[item.id]) {
+                    changed = true;
+                    return false;
+                }
+                return true;
+            });
+        });
+        return changed;
     }
 
     function migrateConfig(config) {
@@ -1608,6 +1628,10 @@
             changed = insertAttendanceReportLink(cfg) || changed;
             version = 7;
         }
+        if (version < 8) {
+            changed = removeInstallationPageLinks(cfg) || changed;
+            version = 8;
+        }
 
         if (cfg.migrationVersion !== version) {
             cfg.migrationVersion = version;
@@ -1634,7 +1658,8 @@
 
         window.PMKConfig.registerModule({
             id: MODULE_ID,
-            schemaVersion: 8,
+            schemaVersion: 9,
+            normalize: function (config) { return migrateConfig(config).config; },
             name: {
                 fr: 'Menu IntranetNav',
                 en: 'IntranetNav menu'

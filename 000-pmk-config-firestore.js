@@ -458,14 +458,43 @@
         }catch(_){ /* Export remains available when browser storage is full or unavailable. */ }
     }
 
+    function applyBlankPickerDefaults(definition, config) {
+        function visit(fields) {
+            (fields || []).forEach(function (field) {
+                if (!field || typeof field !== "object") return;
+                if (field.type === "elementPicker" && field.key && config && typeof config === "object") {
+                    const path = fieldKeyPath(field.key);
+                    let parent = config;
+                    let defaultsParent = definition.defaults;
+                    let applicable = true;
+                    for (let i = 0; i < path.length - 1; i += 1) {
+                        if (!parent || typeof parent !== "object" || Array.isArray(parent)) { applicable = false; break; }
+                        parent = parent[path[i]];
+                        defaultsParent = defaultsParent && typeof defaultsParent === "object" ? defaultsParent[path[i]] : undefined;
+                    }
+                    if (applicable && parent && typeof parent === "object" && !Array.isArray(parent)) {
+                        const leaf = path[path.length - 1];
+                        const current = parent[leaf];
+                        const fallback = defaultsParent && typeof defaultsParent === "object" ? defaultsParent[leaf] : undefined;
+                        if ((current == null || String(current).trim() === "") && typeof fallback === "string" && fallback.trim()) parent[leaf] = fallback;
+                    }
+                }
+                if (Array.isArray(field.fields) && field.type !== "repeater") visit(field.fields);
+            });
+        }
+        try { if (definition && config) visit(definition.schema); } catch (_) {}
+        return config;
+    }
+
     function normalizeModuleConfig(definition, config) {
         const value = deepClone(config || {});
-        if (!definition || typeof definition.normalize !== "function") return value;
+        if (!definition || typeof definition.normalize !== "function") return applyBlankPickerDefaults(definition, value);
         try {
             const normalized = definition.normalize(deepClone(value));
-            return normalized && typeof normalized === "object" ? preserveConfigurationFields(value, normalized) : value;
+            const preserved = normalized && typeof normalized === "object" ? preserveConfigurationFields(value, normalized) : value;
+            return applyBlankPickerDefaults(definition, preserved);
         } catch (_) {
-            return value;
+            return applyBlankPickerDefaults(definition, value);
         }
     }
 
@@ -836,7 +865,7 @@
          * module paraisse enregistré dans l'UI puis disparaisse au prochain
          * chargement. Firestore fournit une lecture cohérente après écriture.
          */
-        const storedAfterWrite = await readFromFirestore(moduleId);
+        const storedAfterWrite = await readFromFirestore(moduleId, true);
         if (!storedAfterWrite) {
             const missing = new Error("firestore_write_not_persisted");
             missing.code = "firestore_write_not_persisted";
@@ -1233,7 +1262,7 @@
         if (names[id]) definition.name = {fr:names[id][0], en:names[id][1]};
         if(id==='history-row-highlights') {
             definition.schema=definition.schema.filter(field=>field.id!=='targets');
-            definition.schema.push({type:'section',id:'targets',label:{fr:'Pages et colonnes à reconnaître',en:'Pages and columns'},description:{fr:'Les valeurs initiales conservent les deux historiques Koha. Choisissez les en-têtes pour adapter les colonnes à votre thème ou à votre langue. Un index de secours vaut −1 pour être désactivé.',en:'Defaults preserve both Koha history tables. Pick headings to adapt to your theme or language. Use −1 to disable a fallback index.'},fields:['members.readingrec','catalogue.issuehistory'].map((pageId,index)=>({type:'section',id:'target-'+index,label:index===0?'Historique d’un lecteur':'Historique d’une notice',fields:[
+            definition.schema.push({type:'section',id:'targets',label:{fr:'Pages et colonnes à reconnaître',en:'Pages and columns'},description:{fr:'Les sélecteurs proposés correspondent aux colonnes des historiques Koha. Ils restent modifiables si votre thème ou votre langue déplace une colonne. Un index de secours vaut −1 pour être désactivé.',en:'The suggested selectors match the Koha history columns. They stay editable if your theme or language moves a column. Use −1 to disable a fallback index.'},fields:['members.readingrec','catalogue.issuehistory'].map((pageId,index)=>({type:'section',id:'target-'+index,label:index===0?'Historique d’un lecteur':'Historique d’une notice',fields:[
                 {key:'pages.'+index+'.path',type:'text',label:'Chemin de la page Koha'},
                 ...[['tableSelector','Tableau de l’historique'],['columnSelectors.checkout','Colonne de la date de prêt'],['columnSelectors.due','Colonne de la date d’échéance'],['columnSelectors.returned','Colonne de la date de retour']].map(([key,label])=>({key:'pages.'+index+'.'+key,type:'elementPicker',allowManual:true,manualAlways:true,label,pick:ctx=>{
 
@@ -1474,7 +1503,7 @@
                 definition.unifiedDatesValidation = true;
             }
         }
-        if (id === "patron-age-display" || DATE_LEGACY_IDS.includes(id)) definition.navigationHidden = true;
+        if (id === "patron-age-display" || DATE_LEGACY_IDS.includes(id) || id === "authority-installation-options") definition.navigationHidden = true;
         if (id === "patron-astrological-sign") {
             definition.defaults.targets = definition.defaults.targets || [];
             definition.schema = definition.schema.filter(function (f) { return f.id !== "targets"; });
@@ -4358,6 +4387,14 @@
         main.prepend(alert);
     }
 
+    async function saveModuleSwitch(id, enabled) {
+        const config = await getConfig(id, { force: true, ignoreGlobal: true });
+        config.enabled = enabled;
+        const report = id === "serials-tracking" && config.receivingAssistant && config.receivingAssistant.report;
+        if (enabled && report && !String(report.recipients || "").trim()) report.enabled = false;
+        await saveConfig(id, config);
+    }
+
     async function applyBulkModuleChange(kind) {
         const ids = Array.from(modules.keys());
         const current = normalizeGlobalSettings(globalSettingsCache || DEFAULT_GLOBAL_SETTINGS);
@@ -4369,10 +4406,10 @@
                 const config = await getConfig(id, { force: true, ignoreGlobal: true });
                 if (!config || config.enabled === false) continue;
                 try {
-                    await saveConfig(id, { enabled: false });
+                    await saveModuleSwitch(id, false);
                     changed.push(id);
                 } catch (error) {
-                    failures.push(id);
+                    failures.push({ id: id, message: error && error.message });
                 }
             }
             current.massDisabledIds = Array.from(new Set(current.massDisabledIds.concat(changed)));
@@ -4381,19 +4418,19 @@
             for (const id of current.massDisabledIds) {
                 if (!modules.has(id)) continue;
                 try {
-                    await saveConfig(id, { enabled: true });
+                    await saveModuleSwitch(id, true);
                 } catch (error) {
                     pending.push(id);
-                    failures.push(id);
+                    failures.push({ id: id, message: error && error.message });
                 }
             }
             current.massDisabledIds = pending;
         } else {
             for (const id of ids) {
                 try {
-                    await saveConfig(id, { enabled: true });
+                    await saveModuleSwitch(id, true);
                 } catch (error) {
-                    failures.push(id);
+                    failures.push({ id: id, message: error && error.message });
                 }
             }
             if (!failures.length) current.massDisabledIds = [];
@@ -4401,9 +4438,10 @@
 
         current.enabled = true;
         await saveGlobalSettings(current);
-        return failures.map(function (id) {
-            const def = modules.get(id);
-            return def ? text(def.name, detectLanguage()) : id;
+        return failures.map(function (failure) {
+            const def = modules.get(failure.id);
+            const name = def ? text(def.name, detectLanguage()) : failure.id;
+            return failure.message ? name + " (" + failure.message + ")" : name;
         });
     }
 
@@ -7169,6 +7207,7 @@
         canOpenAdmin: canOpenAdmin,
         isKohaSuperlibrarian: isKohaSuperlibrarian,
         getLanguage: detectLanguage,
+        touchDraft: function () { markAdminDirty(); },
         text: text,
         getStatus: function (moduleId) {
             return Object.assign({}, status.get(moduleId) || {});
@@ -12067,7 +12106,7 @@
                 presetsEnabled: true,
                 presets: deepClone(defaultPresets),
                 report: {
-                    enabled: true,
+                    enabled: false,
                     buttonLabelFr: "Signaler un problème de bulletinage",
                     buttonLabelEn: "Report a receiving problem",
                     recipients: "",
@@ -15754,8 +15793,10 @@
                 pageId: pageId,
                 path: pagePath
             },
+            lostCategory: "LOST",
             lostStatuses: [],
             unknownLostAction: "handle",
+            notLoanCategory: "NOT_LOAN",
             notLoanRules: [],
             unknownNotLoanAction: "ask"
         };
@@ -15784,6 +15825,8 @@
             value.notLoanRules = Array.isArray(value.notLoanRules)
                 ? value.notLoanRules.map(function (row) { return normalizeRow(row, "notLoan"); }).filter(function (row) { return row.value !== "" && row.value !== "0"; })
                 : [];
+            value.lostCategory = String(value.lostCategory || defaults.lostCategory).trim() || defaults.lostCategory;
+            value.notLoanCategory = String(value.notLoanCategory || defaults.notLoanCategory).trim() || defaults.notLoanCategory;
             if (!["handle", "ignore"].includes(value.unknownLostAction)) value.unknownLostAction = defaults.unknownLostAction;
             if (!["ask", "keep"].includes(value.unknownNotLoanAction)) value.unknownNotLoanAction = defaults.unknownNotLoanAction;
             return value;
@@ -15875,6 +15918,136 @@
         }
         function mergeLostRows(existingRows, fetchedRows) { return mergeStatusRows(existingRows,fetchedRows,false); }
         function mergeNotLoanRows(existingRows, fetchedRows) { return mergeStatusRows(existingRows,fetchedRows,true); }
+
+        function renderLiveStatusRules(kind) {
+            const categoryKey = kind === "lost" ? "lostCategory" : "notLoanCategory";
+            const rowsKey = kind === "lost" ? "lostStatuses" : "notLoanRules";
+            const fallback = kind === "lost" ? "LOST" : "NOT_LOAN";
+            return function (context) {
+                const root = context.rootObject || {};
+                const lang = context.language || detectLanguage();
+                const wrap = document.createElement("div");
+                const status = document.createElement("p");
+                status.className = "pmk-field-help";
+                const category = document.createElement("select");
+                category.className = "form-select form-select-sm";
+                const list = document.createElement("div");
+                list.style.marginTop = ".65rem";
+                wrap.append(category, status, list);
+
+                const saved = new Map((Array.isArray(root[rowsKey]) ? root[rowsKey] : []).map(function (row) {
+                    return [String(row.value), row];
+                }));
+                let values = [];
+
+                function write(fromUser) {
+                    root[rowsKey] = values.map(function (row) {
+                        const previous = saved.get(row.value) || {};
+                        const next = {
+                            value: row.value,
+                            description: row.description || row.value,
+                            enabled: previous.enabled !== false
+                        };
+                        if (kind !== "lost") next.action = ["ask", "keep", "available"].includes(previous.action) ? previous.action : "ask";
+                        return next;
+                    });
+                    root[rowsKey].forEach(function (row) { saved.set(row.value, row); });
+                    if (fromUser) markAdminDirty();
+                }
+
+                function paint() {
+                    list.replaceChildren();
+                    if (!values.length) return;
+                    values.forEach(function (row) {
+                        const current = saved.get(row.value) || { enabled: true, action: "ask" };
+                        const line = document.createElement("div");
+                        line.style.cssText = "display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin:.4rem 0";
+                        const label = document.createElement("label");
+                        label.style.cssText = "display:flex;gap:.4rem;align-items:center;margin:0;min-width:16rem";
+                        const check = document.createElement("input");
+                        check.type = "checkbox";
+                        check.checked = current.enabled !== false;
+                        check.addEventListener("change", function () {
+                            const entry = saved.get(row.value) || { value: row.value, description: row.description, action: "ask" };
+                            entry.enabled = check.checked;
+                            saved.set(row.value, entry);
+                            write(true);
+                        });
+                        const name = document.createElement("span");
+                        name.textContent = (row.description || row.value) + " (" + row.value + ")";
+                        label.append(check, name);
+                        line.appendChild(label);
+                        if (kind !== "lost") {
+                            const action = document.createElement("select");
+                            action.className = "form-select form-select-sm";
+                            action.style.maxWidth = "28rem";
+                            [
+                                ["ask", "Demander à l’agent", "Ask staff"],
+                                ["keep", "Conserver ce statut", "Keep this status"],
+                                ["available", "Remettre en circulation", "Make available"]
+                            ].forEach(function (option) {
+                                const node = document.createElement("option");
+                                node.value = option[0];
+                                node.textContent = lang === "en" ? option[2] : option[1];
+                                action.appendChild(node);
+                            });
+                            action.value = ["ask", "keep", "available"].includes(current.action) ? current.action : "ask";
+                            action.addEventListener("change", function () {
+                                const entry = saved.get(row.value) || { value: row.value, description: row.description, enabled: true };
+                                entry.action = action.value;
+                                saved.set(row.value, entry);
+                                write(true);
+                            });
+                            line.appendChild(action);
+                        }
+                        list.appendChild(line);
+                    });
+                }
+
+                async function loadValues(name) {
+                    status.textContent = lang === "en" ? "Loading values…" : "Chargement des valeurs…";
+                    try {
+                        const rows = await fetchAuthorisedValues(name);
+                        values = rows.filter(function (row) { return kind === "lost" || row.value !== "0"; }).sort(numericAwareSort);
+                        paint();
+                        status.textContent = values.length + (lang === "en" ? " values from this Koha." : " valeurs de ce Koha.");
+                    } catch (_) {
+                        values = [];
+                        list.replaceChildren();
+                        status.textContent = lang === "en"
+                            ? "The values could not be loaded. The saved rules remain unchanged."
+                            : "Les valeurs n’ont pas pu être chargées. Les règles enregistrées restent inchangées.";
+                    }
+                }
+
+                category.addEventListener("change", function () {
+                    root[categoryKey] = category.value;
+                    markAdminDirty();
+                    loadValues(category.value);
+                });
+
+                (async function () {
+                    let names = [];
+                    try {
+                        const response = await fetch("/api/v1/authorised_value_categories?_per_page=1000&_order_by=category_name", { credentials: "same-origin", headers: { Accept: "application/json" } });
+                        const payload = await response.json();
+                        names = (Array.isArray(payload) ? payload : []).map(function (row) { return String(row.category_name || "").trim(); }).filter(Boolean);
+                    } catch (_) {}
+                    const current = String(root[categoryKey] || fallback);
+                    if (!names.includes(current)) names.unshift(current);
+                    names.forEach(function (name) {
+                        const option = document.createElement("option");
+                        option.value = name;
+                        option.textContent = name;
+                        category.appendChild(option);
+                    });
+                    category.value = current;
+                    root[categoryKey] = current;
+                    await loadValues(current);
+                })();
+                return wrap;
+            };
+        }
 
         async function syncStatuses(context) {
             const lang = context.language || detectLanguage();
@@ -15988,60 +16161,21 @@
                 },
                 {
                     type: "section",
-                    id: "synchronization",
-                    label: { fr: "Valeurs autorisées de ce Koha", en: "Authorised values from this Koha" },
-                    description: {
-                        fr: "Utilisez ce bouton après l’installation puis lorsque vous ajoutez ou renommez une valeur LOST ou NOT_LOAN dans Koha. La synchronisation récupère les codes et libellés réels de cette installation. Elle conserve vos choix existants. Toute nouvelle valeur est proposée active avec le mode prudent « Demander à l’agent ».",
-                        en: "Use this button after installation and whenever LOST or NOT_LOAN values are added or renamed in Koha. Synchronisation loads the real codes and labels from this installation and preserves existing choices. New values are proposed enabled with the cautious “Ask staff” mode."
-                    },
-                    fields: [
-                        {
-                            type: "action",
-                            label: { fr: "Synchronisation", en: "Synchronisation" },
-                            buttonLabel: { fr: "Actualiser et proposer les règles depuis Koha", en: "Refresh and propose rules from Koha" },
-                            iconClass: "fa fa-refresh",
-                            buttonClass: "btn btn-sm btn-outline-primary",
-                            action: syncStatuses,
-                            help: {
-                                fr: "Cette action ne modifie aucun exemplaire. Elle met uniquement à jour le brouillon de configuration ; cliquez ensuite sur Enregistrer.",
-                                en: "This action does not modify any item. It only updates the configuration draft; click Save afterwards."
-                            }
-                        }
-                    ]
-                },
-                {
-                    type: "section",
                     id: "lost-statuses",
                     label: { fr: "1. Motifs LOST qui déclenchent le contrôle", en: "1. LOST statuses that trigger the control" },
                     description: {
-                        fr: "Le marqueur technique .ret_checkedin indique qu’un document perdu a été retrouvé. Lorsque plusieurs motifs LOST existent, cette liste permet de choisir lesquels doivent déclencher le contrôle. Désactivez par exemple un motif qui ne doit jamais conduire à une vérification du statut de prêt.",
-                        en: "Koha's .ret_checkedin marker indicates that a lost item was found. When several LOST values exist, this list selects which ones should trigger the control. Disable a value that should never lead to a loan-status check."
+                        fr: "Choisissez la catégorie de valeurs autorisées de votre Koha. Les motifs s’affichent directement : cochez ceux qui doivent déclencher le contrôle. Le chargement des statuts met à jour les codes et conserve vos choix.",
+                        en: "Choose your Koha authorised-value category. The statuses appear directly: tick the ones that should trigger the control. No separate synchronisation is required."
                     },
                     fields: [
-                        {
-                            key: "lostStatuses",
-                            type: "repeater",
-                            reorder: false,
-                            removable: false,
-                            canAdd: function () { return false; },
-                            addLabel: { fr: "Synchroniser depuis Koha", en: "Synchronise from Koha" },
-                            itemTitle: function (item, index, lang) {
-                                const row = item || {};
-                                return String(row.description || row.value || ((lang === "en" ? "LOST status " : "Motif LOST ") + (index + 1)));
-                            },
-                            fields: [
-                                { key: "enabled", type: "boolean", label: { fr: "Déclencher le contrôle pour ce motif", en: "Trigger the control for this status" } },
-                                { key: "description", type: "readonly", label: { fr: "Libellé Koha", en: "Koha label" } },
-                                { key: "value", type: "readonly", advanced: true, label: { fr: "Code LOST", en: "LOST code" } }
-                            ]
-                        },
+                        { type: "custom", label: { fr: "Catégorie et motifs", en: "Category and statuses" }, render: renderLiveStatusRules("lost") },
                         {
                             key: "unknownLostAction",
                             type: "select",
-                            label: { fr: "Nouveau motif LOST non encore synchronisé", en: "New LOST status not yet synchronised" },
+                            label: { fr: "Motif absent de la liste affichée", en: "Status missing from the displayed list" },
                             options: [
                                 { value: "handle", label: { fr: "Traiter par sécurité, avec confirmation si nécessaire", en: "Handle for safety, asking for confirmation when needed" } },
-                                { value: "ignore", label: { fr: "Ignorer jusqu’à la prochaine synchronisation", en: "Ignore until the next synchronisation" } }
+                                { value: "ignore", label: { fr: "Ignorer", en: "Ignore" } }
                             ],
                             help: {
                                 fr: "Si une sélection fine est configurée mais que le motif exact ne peut pas être identifié, une remise en circulation automatique est toujours dégradée en confirmation humaine.",
@@ -16055,70 +16189,15 @@
                     id: "status-rules",
                     label: { fr: "2. Statuts NOT_LOAN à traiter", en: "2. NOT_LOAN statuses to handle" },
                     description: {
-                        fr: "Cette liste correspond au statut « Non prêtable / Exclu du prêt » réel de l’exemplaire après le retour. Pour chaque valeur, choisissez si elle doit être ignorée, conservée, confirmée par l’agent ou supprimée automatiquement. Le mode par défaut est « Demander à l’agent » : aucune remise en circulation automatique n’est donc activée simplement par l’installation du module.",
-                        en: "This list is the item's real not-for-loan status after check-in. For each value, choose whether it is ignored, kept, confirmed by staff, or removed automatically. The default mode is “Ask staff”, so installing the module alone never enables automatic availability changes."
+                        fr: "Choisissez la catégorie du statut « non prêtable » de votre Koha. Pour chaque valeur, indiquez si l’agent doit choisir, si le statut est conservé, ou si l’exemplaire redevient prêtable. Le mode par défaut reste « Demander à l’agent ».",
+                        en: "Choose the not-for-loan category used by your Koha. For each value, ask staff, keep the status, or make the item available. The default remains “Ask staff”."
                     },
                     fields: [
-                        {
-                            key: "notLoanRules",
-                            type: "repeater",
-                            reorder: false,
-                            removable: false,
-                            canAdd: function () { return false; },
-                            itemTitle: function (item, index, lang) {
-                                const row = item || {};
-                                return String(row.description || row.value || ((lang === "en" ? "NOT_LOAN status " : "Statut NOT_LOAN ") + (index + 1)));
-                            },
-                            fields: [
-                                {
-                                    key: "enabled",
-                                    type: "boolean",
-                                    label: { fr: "Traiter ce statut après le retour d’un perdu", en: "Handle this status after a lost item check-in" },
-                                    help: {
-                                        fr: "Désactivé = le module laisse entièrement ce statut à Koha et n’affiche rien.",
-                                        en: "Disabled = the module leaves this status entirely to Koha and displays nothing."
-                                    }
-                                },
-                                { key: "description", type: "readonly", label: { fr: "Libellé Koha", en: "Koha label" } },
-                                {
-                                    key: "action",
-                                    type: "select",
-                                    label: { fr: "Comportement", en: "Behavior" },
-                                    options: [
-                                        {
-                                            value: "ask",
-                                            label: {
-                                                fr: "Demander à l’agent : conserver ou remettre en circulation",
-                                                en: "Ask staff: keep or make available"
-                                            }
-                                        },
-                                        {
-                                            value: "keep",
-                                            label: {
-                                                fr: "Conserver automatiquement ce statut",
-                                                en: "Automatically keep this status"
-                                            }
-                                        },
-                                        {
-                                            value: "available",
-                                            label: {
-                                                fr: "Remettre automatiquement en circulation",
-                                                en: "Automatically make available for loan"
-                                            }
-                                        }
-                                    ],
-                                    help: {
-                                        fr: "« Remettre automatiquement » met NOT_LOAN à 0 uniquement après relecture de l’exemplaire. Koha est relu une seconde fois après l’écriture pour confirmer le résultat.",
-                                        en: "“Automatically make available” sets NOT_LOAN to 0 only after rereading the item. Koha is read again after the update to confirm the result."
-                                    }
-                                },
-                                { key: "value", type: "readonly", advanced: true, label: { fr: "Code NOT_LOAN", en: "NOT_LOAN code" } }
-                            ]
-                        },
+                        { type: "custom", label: { fr: "Catégorie et statuts", en: "Category and statuses" }, render: renderLiveStatusRules("notLoan") },
                         {
                             key: "unknownNotLoanAction",
                             type: "select",
-                            label: { fr: "Nouveau statut NOT_LOAN non encore synchronisé", en: "New NOT_LOAN status not yet synchronised" },
+                            label: { fr: "Statut absent de la liste affichée", en: "Status missing from the displayed list" },
                             options: [
                                 { value: "ask", label: { fr: "Demander à l’agent par sécurité", en: "Ask staff for safety" } },
                                 { value: "keep", label: { fr: "Conserver silencieusement", en: "Keep silently" } }
@@ -16127,6 +16206,18 @@
                                 fr: "Une valeur inconnue n’est jamais supprimée automatiquement. Le choix prudent par défaut est de demander à l’agent.",
                                 en: "An unknown value is never removed automatically. The cautious default is to ask staff."
                             }
+                        }
+                    ]
+                },
+                {
+                    type: "section",
+                    id: "synchronization",
+                    label: { fr: "Charger les statuts de votre Koha", en: "Load statuses from your Koha" },
+                    fields: [
+                        {
+                            type: "action",
+                            buttonLabel: { fr: "Charger les statuts LOST et NOT_LOAN", en: "Load LOST and NOT_LOAN statuses" },
+                            action: syncStatuses
                         }
                     ]
                 },
@@ -20832,8 +20923,8 @@
     })();
 
     /* ============================================================
-       Module 109 — Assistant domaine / arborescence
-       - profil Dracénie historique conservé par défaut ;
+       Module 109 — Saisie de l'arborescence au catalogage
+       - arborescence d'origine conservée par défaut ;
        - moteur générique MARC / UNIMARC disponible en option ;
        - valeurs issues de Référentiel local, des VA Koha ou d'une liste manuelle ;
        - relations parent -> enfants configurables, avec plusieurs parents possibles ;
@@ -21426,12 +21517,12 @@
             id: moduleId,
             schemaVersion: 1,
             name: {
-                fr: "Assistant domaine / arborescence",
-                en: "Cataloguing hierarchy assistant"
+                fr: "Saisie de l'arborescence au catalogage",
+                en: "Hierarchy entry while cataloguing"
             },
             description: {
-                fr: "Assistant de catalogage hiérarchique configurable. Un profil Dracénie prêt à l’emploi est fourni par défaut. Accepte toute zone/sous-zone MARC ou UNIMARC, les valeurs autorisées Koha et des relations parent/enfants configurables.",
-                en: "Configurable hierarchical cataloguing assistant. A ready-to-use Dracénie profile is provided by default. The generic engine accepts any MARC/UNIMARC tag/subfield, Koha authorised values and configurable parent/child relations."
+                fr: "Panneau sur la page de catalogage. Il propose les valeurs de l'arborescence de l'établissement, niveau par niveau, puis les champs d'indexation associés, et conserve les combinaisons mémorisées.",
+                en: "Panel on the cataloguing page. It offers the institution hierarchy level by level, then the related indexing fields, and keeps the combinations staff save."
             },
             category: {
                 fr: "Catalogue / catalogage",
@@ -21457,7 +21548,7 @@
                             type: "select",
                             label: { fr: "Moteur utilisé", en: "Runtime engine" },
                             options: [
-                                { value: "legacy_dracenie", label: { fr: "Dracénie historique — production inchangée", en: "Historical Dracénie — unchanged production" } },
+                                { value: "legacy_dracenie", label: { fr: "Arborescence d'origine", en: "Original hierarchy" } },
                                 { value: "generic", label: { fr: "Moteur générique MARC / UNIMARC", en: "Generic MARC / UNIMARC engine" } }
                             ],
                             refreshOnChange: true
@@ -21547,8 +21638,8 @@
                     id: "extras",
                     label: { fr: "Champs complémentaires", en: "Additional fields" },
                     description: {
-                        fr: "Ces champs apparaissent dans l'assistant mais ne sont pas obligatoirement des niveaux successifs. Par défaut Dracénie : 608$a et 615$a.",
-                        en: "These fields appear in the assistant but do not have to be successive hierarchy levels. Dracénie defaults: 608$a and 615$a."
+                        fr: "Ces champs apparaissent dans l'assistant mais ne sont pas obligatoirement des niveaux successifs. Par défaut : genre littéraire 608$a et sujet 615$a.",
+                        en: "These fields appear in the assistant but do not have to be successive hierarchy levels. Defaults: literary genre 608$a and subject 615$a."
                     },
                     fields: [
                         {
@@ -22372,7 +22463,6 @@ function PMK147_isManagementLink(section,url,anchor){
                     path.addEventListener('input',function(){ menu.pmk147Path = path.value; builderMarkDirty(host); });
                     settings.appendChild(builderField('URL du bouton Koha',path,true));
                 }
-                if(homeMode){const selector=document.createElement('input');selector.className='form-control form-control-sm';selector.value=menu.discoverySelector||'';selector.placeholder=tr('Détection native automatique','Automatic native detection');selector.addEventListener('input',function(){menu.discoverySelector=selector.value;builderMarkDirty(host);});settings.appendChild(builderField(tr('Sélecteur des liens sur cette page','Link selector on this page'),selector,true));}
                 const english=document.createElement('input');english.className='form-control form-control-sm';english.value=menu.labelEn||'';english.addEventListener('input',function(){menu.labelEn=english.value;builderMarkDirty(host);});settings.appendChild(builderField(tr('Nom anglais','English menu name'),english));
                 const customIcon=document.createElement('input');customIcon.className='form-control form-control-sm';customIcon.value=menu.iconCustom||'';customIcon.addEventListener('input',function(){menu.iconCustom=customIcon.value;builderMarkDirty(host);});settings.appendChild(builderField(tr('Icône personnalisée','Custom icon'),customIcon));
                 top.appendChild(settings);
@@ -23352,58 +23442,11 @@ function PMK147_isManagementLink(section,url,anchor){
       registerModule({
         id:'147-home-submenus',schemaVersion:3,
         name:{fr:'Menus de l’accueil',en:'Home menus'},
-        description:{fr:'Organisation commune des liens de l’accueil Koha : rubriques, catégories, séparateurs et masquage. Les agents ne modifient que leurs favoris.',en:'Shared home-page submenu structure with personal favorites.'},
+        description:{fr:'Ajoute un sous-menu sur chaque icône de l’accueil Koha, à partir des liens enregistrés ici. Chaque agent peut seulement marquer ses favoris.',en:'Adds a submenu on each Koha home icon from the links saved here. Each staff member only marks personal favorites.'},
         category:{fr:'Interface / navigation',en:'Interface / navigation'},supportedPages:['mainpage'],prerequisites:[],dependencies:[],
         defaults:{enabled:true,sections:DEFAULT_SECTIONS,discovery:deepClone(sharedMenuEngine.homeDiscoveryDefaults)},
         schema:[
           {key:'enabled',type:'boolean',label:{fr:'Activer les sous-menus',en:'Enable submenus'}},
-          {type:'section',id:'discovery',advanced:true,label:{fr:'Pages et liens proposés par défaut',en:'Default pages and links'},fields:[
-            {key:'discovery.excludedPaths',type:'textarea',rows:4,label:{fr:'Liens exclus par défaut — un chemin ou une URL par ligne',en:'Default excluded links — one path or URL per line'}},
-            {key:'discovery.ignoredSections',type:'textarea',rows:4,label:{fr:'Menus ignorés par défaut — un chemin par ligne',en:'Default ignored menus — one path per line'}},
-            {key:'discovery.allowExternalLinks',type:'boolean',label:{fr:'Inclure les liens externes présents dans les pages Koha',en:'Include external links from Koha pages'}},
-            {key:'discovery.maxLinks',type:'number',min:1,max:2000,label:{fr:'Nombre maximal de liens par page',en:'Maximum links per page'}},
-            {key:'discovery.timeoutMs',type:'number',min:500,max:30000,label:{fr:'Délai maximal de chargement d’une page (ms)',en:'Page load timeout (ms)'}}
-          ]},
-          {type:'custom',label:{fr:'Synchroniser le catalogue natif depuis Koha',en:'Synchronize Koha native links'},help:{fr:'Lit les pages Koha pour la session en cours et conserve les réglages personnalisés. Pour un inventaire exhaustif des permissions, effectuer la synchronisation avec un compte autorisé puis vérifier l’affichage sur un compte limité.',en:'Reads Koha pages for the current session.'},render:function(){
-            const wrap=document.createElement('div');
-            const btn=document.createElement('button');btn.type='button';btn.className='btn btn-outline-primary';btn.textContent='Découvrir les liens Koha et mettre à jour PMK';
-            const status=document.createElement('div');status.className='small text-muted mt-2';
-            wrap.append(btn,status);
-            btn.addEventListener('click',async function(){
-              btn.disabled=true;status.textContent='Analyse des pages Koha en cours…';
-              const paths=['circ/circulation-home.pl','members/members-home.pl','virtualshelves/shelves.pl','course_reserves/course-reserves.pl','cataloguing/cataloging-home.pl','serials/serials-home.pl','acqui/acqui-home.pl','reports/reports-home.pl','tools/tools-home.pl','admin/admin-home.pl'];
-              const root='/cgi-bin/koha/';const clean=t=>(t||'').replace(/\s+/g,' ').trim();
-              const normalize=u=>{try{const x=new URL(u,location.origin);if(x.origin!==location.origin||!x.pathname.startsWith(root))return null;return x.pathname+x.search;}catch{return null;}};
-              try{
-                const pmk=window.PMKConfig;let cfg=await pmk.getConfig('147-home-submenus',{ignoreGlobal:true});
-                cfg=cfg||{enabled:true,sections:[]};const excluded147=new Set(['/cgi-bin/koha/catalogue/search.pl','/cgi-bin/koha/catalogue/itemsearch.pl','/cgi-bin/koha/course_reserves/course-reserves.pl']);const sections=Array.isArray(cfg.sections)?cfg.sections:[];
-                let total=0;
-                for(const path of paths){
-                  if(String(cfg.discovery?.ignoredSections||'').split(/\n/).map(value=>value.trim()).includes(root+path))continue;
-                  let resp;try{resp=await fetch(root+path,{credentials:'same-origin',redirect:'follow',headers:{Accept:'text/html'}});}catch{continue;}
-                  if(!resp.ok||!String(resp.headers.get('content-type')).includes('text/html'))continue;
-                  const doc=new DOMParser().parseFromString(await resp.text(),'text/html');
-                  if(doc.querySelector('#loginform,form[action*="auth.pl"]'))continue;
-                  const links=sharedMenuEngine.extractNativePage(doc,location.origin+root+path,Object.assign({},cfg.discovery||{}, {linkSelector:(cfg.sections||[]).find(section=>section.path===root+path)?.pmkMenu?.discoverySelector}));
-                  if(!links.length)continue;
-                  let section=sections.find(x=>normalize(x.path)===root+path);
-                  if(!section){section={label:PMK147_HOME_META['/'+path]||path,path:root+path,entries:[]};sections.push(section);}else{section.label=section.label||PMK147_HOME_META['/'+path]||path;}
-                  const existing=Array.isArray(section.entries)?section.entries:[];
-                  const merged=existing.map(entry => entry && Object.assign({},entry));
-                  const byUrl=new Map(merged.filter(entry=>entry&&entry.type==='link').map(entry=>[normalize(entry.url),entry]));
-                  for(const link of links){
-                    const old=byUrl.get(link.url);
-                    if(old){for(const [key,value] of Object.entries(link))if(old[key]===undefined||old[key]===null)old[key]=value;}
-                    else{merged.push(link);byUrl.set(link.url,link);}
-                  }
-                  section.entries=merged;total+=links.length;
-                }
-                cfg.sections=sections;await pmk.saveConfig('147-home-submenus',cfg);
-                status.textContent=total+' outils trouvés ; libellés, rubriques et catégories actualisés dans PMK. Les exclusions suivent les réglages du module. Actualiser la page pour voir les changements.';
-              }catch(error){status.textContent='Synchronisation impossible : '+String(error?.message||error);}
-              finally{btn.disabled=false;}
-            });return wrap;
-          }},
           {type:'custom',label:{fr:'Éditeur visuel des menus',en:'Visual menu editor'},render:function(context){return window.PMKMenuEditorCore.renderHome(context)}},
           {key:'sections',type:'repeater',advanced:true,reorder:true,label:{fr:'Menus principaux de l’accueil Koha',en:'Home sections'},addLabel:{fr:'Ajouter une rubrique',en:'Add a section'},emptyLabel:{fr:'Aucune rubrique',en:'No sections'},itemTitleKey:'label',
             newItem:()=>({label:'Nouvelle rubrique',path:'/cgi-bin/koha/',entries:[]}),fields:[
