@@ -398,7 +398,7 @@ async function check(name,fn){if(process.env.PMK_TEST_FILTER&&!name.includes(pro
   assert(!definitions['search-results-master'].schema.some(f=>f.label?.fr==='API et performances'||/rendu historique V8.1/.test(f.description?.fr||'')));
   assert(definitions['search-results-master'].schema.some(f=>f.key==='performance.apiPerPage'));
   assert(definitions['detail-fourth-cover'].schema.some(f=>f.key==='targetSelector'&&f.type==='elementPicker'));
-  assert.equal(definitions['search-results-master'].defaults.reports.statisticsReportId,4537);assert.equal(definitions['search-results-master'].defaults.reports.statisticsReportFormat,'legacy-dracenie');
+  assert.equal(definitions['search-results-master'].defaults.reports.statisticsReportId,0);assert.equal(definitions['search-results-master'].defaults.reports.statisticsReportFormat,'legacy-dracenie');
   assert(definitions['moredetail-layout'].defaults.fieldRules.some(rule=>rule.selector==='.copynumber'&&rule.labelFr==='Sous-localisation'));
   assert.equal(definitions['holdings-table-presentation'].defaults.detail.statusRules.find(rule=>rule.statusKey==='available').rowBackground,'#ebfaeb');
   for(const id of ['detail-bibliographic-groups','moredetail-layout','holdings-table-presentation','callnumber-progressive-search','barcode-highlights','search-results-master','detail-fourth-cover','transfer-button-holdings','checkout-status-correction']){await p.evaluate(id=>PMKConfig.openAdmin(id),id);assert.equal(await p.locator('.pmk-settings-intro').count(),0);}
@@ -408,7 +408,7 @@ async function check(name,fn){if(process.env.PMK_TEST_FILTER&&!name.includes(pro
  await check('Catalogue refresh: native item cards retain Dracenie rules, fields, events and original order',async()=>{
   const item=id=>'<div id="container'+id+'"><h3 id="item'+id+'">CB'+id+'</h3><div class="page-section" id="collapse_item'+id+'"><div class="listgroup" id="info'+id+'"><h4>Informations</h4><div class="rows"><ol class="bibliodetails"><li class="copynumber"><span class="label">Copie :</span> A'+id+'</li><li class="custom-field"><span class="label">Personnel :</span><input value="initial" id="input'+id+'"></li></ol></div></div><div class="listgroup" id="history'+id+'"><h4>Historique</h4><div class="rows"><ol class="bibliodetails"><li class="issues"><span class="label">Prêts :</span> 1</li></ol></div></div></div></div>';
   const body='<div id="catalogue_detail_biblio"><div class="page-section" id="bib"><h2>Notice</h2><ol class="bibliodetails"><li class="rentalcharge">Prix</li></ol></div>'+item(1)+'<p id="between">Intercalé</p>'+item(2)+'<p id="after">Après</p></div>';
-  const p=await fixture('/cgi-bin/koha/catalogue/moredetail.pl',body,{},true);
+  const p=await fixture('/cgi-bin/koha/catalogue/moredetail.pl',body,{'moredetail-layout':{enabled:true}},true);
   await p.evaluate(()=>{window.__originalOrder=[...document.querySelector('#catalogue_detail_biblio').children].map(n=>n.id);window.__originalInput=document.querySelector('#input1');window.__inputEvents=0;__originalInput.addEventListener('change',()=>__inputEvents++)});
   await load(p,'011-moredetail-layout.js');await p.waitForSelector('.pmk-md-item-card');assert.equal(await p.locator('.pmk-md-item-card').count(),2);assert.equal(await p.locator('#info1 .copynumber .label').textContent(),'Sous-localisation:');assert.equal(await p.locator('.rentalcharge.pmk-md-hidden').count(),1);
   await p.evaluate(async()=>{const c=await PMKConfig.getConfig('moredetail-layout');c.fieldRules.push({enabled:true,scope:'item',selector:'.custom-field',destinationGroup:'history',order:1,visible:true});await PMKConfig.saveConfig('moredetail-layout',c)});
@@ -425,7 +425,7 @@ async function check(name,fn){if(process.env.PMK_TEST_FILTER&&!name.includes(pro
  });
  await check('Catalogue refresh: native holdings colors, sorting controls and links restore without cloning',async()=>{
   const body='<span data-branchcode="LIB"></span><table id="holdings_table"><thead><tr><th data-colname="copynumber"><span class="dt-column-title">Copie</span><button id="sort">Tri</button></th></tr></thead><tbody><tr><td class="status"><span>Disponible</span></td><td class="location">Lib</td><td><span class="shelvingloc"><a id="shelflink" href="#shelf">Permanent (Courant)</a></span></td></tr></tbody></table>';
-  const p=await fixture('/cgi-bin/koha/catalogue/detail.pl',body,{},true);
+  const p=await fixture('/cgi-bin/koha/catalogue/detail.pl',body,{'holdings-table-presentation':{enabled:true}},true);
   await p.evaluate(()=>{window.__sort=document.querySelector('#sort');window.__link=document.querySelector('#shelflink');window.__sortClicks=0;__sort.addEventListener('click',()=>__sortClicks++);window.jQuery=el=>el===document?{on:()=>{}}:{DataTable:()=>({row:()=>({data:()=>({_status:['available'],holding_library_id:'LIB',_strings:{location:{str:'Courant'}}})})})};jQuery.fn={dataTable:{isDataTable:()=>true}}});
   await load(p,'033-mod-table-exemplaires.js');await p.waitForSelector('.pmk033-current-library-icon',{state:'attached'});assert.equal(await p.locator('.dt-column-title').textContent(),'Sous-localisation');assert.equal(await p.locator('.shelvingloc').textContent(),'Courant');assert.equal(await p.locator('tbody tr').evaluate(n=>n.style.getPropertyValue('--pmk033-row-background')),'#ebfaeb');await p.locator('#sort').click();assert.equal(await p.evaluate(()=>__sortClicks),1);
   await p.evaluate(async()=>{const c=await PMKConfig.getConfig('holdings-table-presentation');c.enabled=false;await PMKConfig.saveConfig('holdings-table-presentation',c)});assert.equal(await p.locator('.dt-column-title').textContent(),'Copie');assert(await p.evaluate(()=>document.querySelector('#sort')===__sort&&document.querySelector('#shelflink')===__link));assert.equal(await p.locator('.pmk033-current-library-icon').count(),0);assert(!p.errors.length,p.errors.join('\n'));await p.close();
@@ -445,10 +445,12 @@ async function check(name,fn){if(process.env.PMK_TEST_FILTER&&!name.includes(pro
  });
  await check('Catalogue refresh: statistics SQL contract, custom report ID and historical parameters',async()=>{
   const p=await fixture('/cgi-bin/koha/mainpage.pl','',{},true);await load(p,'129-mise-en-forme-exemplaire.js');
+  assert.equal(await p.evaluate(()=>PMK129SearchResults.getStatisticsUrl(123)),'');
+  await p.evaluate(async()=>{const c=await PMKConfig.getConfig('search-results-master');c.reports.statisticsReportId=4537;c.reports.statisticsReportFormat='legacy-dracenie';await PMKConfig.saveConfig('search-results-master',c)});
   const legacy=await p.evaluate(()=>PMK129SearchResults.getStatisticsUrl(123));const legacyUrl=new URL(legacy,'http://pmk.test');assert.equal(legacyUrl.searchParams.get('id'),'4537');assert.equal(legacyUrl.searchParams.getAll('param_name').length,13);assert(legacyUrl.searchParams.getAll('param_name').includes('Numéro exemplaire'));
   await p.evaluate(async()=>{const c=await PMKConfig.getConfig('search-results-master');c.reports.statisticsReportId=999;c.reports.statisticsReportFormat='standard';await PMKConfig.saveConfig('search-results-master',c)});
   const standard=new URL(await p.evaluate(()=>PMK129SearchResults.getStatisticsUrl(123)),'http://pmk.test');assert.equal(standard.searchParams.get('id'),'999');assert.deepEqual(standard.searchParams.getAll('param_name'),['Numéro exemplaire']);assert.deepEqual(standard.searchParams.getAll('sql_params'),['123']);
-  const sql=await p.evaluate(()=>PMK129SearchResults.getConfig().reports.statisticsReportSql);assert.equal(sql.trim(),fs.readFileSync(root+'sql/129-statistiques-prets-exemplaire.sql','utf8').trim());assert.equal((sql.match(/<<Numéro exemplaire>>/g)||[]).length,1);
+  const sql=await p.evaluate(()=>PMK129SearchResults.getConfig().reports.statisticsReportSql);assert.equal(sql.replace(/\r/g,'').trim(),fs.readFileSync(root+'sql/129-statistiques-prets-exemplaire.sql','utf8').replace(/\r/g,'').trim());assert.equal((sql.match(/<<Numéro exemplaire>>/g)||[]).length,1);
   assert(!p.errors.length,p.errors.join('\n'));await p.close();
  });
  await check('Catalogue refresh: statistics SQL counts preserved history without multiplying checkouts',async()=>{
@@ -460,7 +462,15 @@ db.executescript("CREATE TABLE items(itemnumber INTEGER, barcode TEXT, biblionum
 result=db.execute(sql).fetchone()
 empty=db.execute(sql.replace('i.itemnumber = 1','i.itemnumber = 3')).fetchall()
 print(json.dumps({'row':result,'empty':empty}))`;
-  const result=JSON.parse(execFileSync('python3',['-c',program,root+'sql/129-statistiques-prets-exemplaire.sql'],{encoding:'utf8'}));assert.equal(result.row[3],8);assert.equal(result.row[4],1);assert.equal(result.row[5],2);assert.equal(result.row[6],3);assert.equal(result.row[7],3);assert.deepEqual(result.empty,[]);
+  const sqlPath=root+'sql/129-statistiques-prets-exemplaire.sql';
+  let raw;
+  try { raw=execFileSync('python3',['-c',program,sqlPath],{encoding:'utf8'}); }
+  catch (error) {
+    if (process.platform!=='win32') throw error;
+    const linuxPath='/mnt/'+sqlPath[0].toLowerCase()+sqlPath.slice(2).replace(/\\/g,'/');
+    raw=execFileSync('wsl',['-d','Ubuntu','-e','python3','-c',program,linuxPath],{encoding:'utf8'});
+  }
+  const result=JSON.parse(raw);assert.equal(result.row[3],8);assert.equal(result.row[4],1);assert.equal(result.row[5],2);assert.equal(result.row[6],3);assert.equal(result.row[7],3);assert.deepEqual(result.empty,[]);
  });
 
  await check('Transfer shortcut survives delayed holdings, tbody replacement and deactivation',async()=>{
@@ -494,7 +504,7 @@ print(json.dumps({'row':result,'empty':empty}))`;
   assert(defs['loan-history-timeline'].fields.some(f=>f.key==='transferReportSql'&&f.type==='readonly'&&f.showInSimple));
   assert(!defs['copy-actions'].fields.some(f=>f.label?.fr==='Chargement dynamique'||f.key==='feedbackPlacement'));
   assert.equal(defs['attendance-mediabus-mini'].name.fr,'Compteur de fréquentation');
-  const sql=await p.evaluate(()=>PMKConfig.getDefinition('loan-history-timeline').defaults.transferReportSql);assert.equal(sql.replace(/\r/g,'').trim(),fs.readFileSync(root+'sql/008-historique-transferts.sql','utf8').trim());
+  const sql=await p.evaluate(()=>PMKConfig.getDefinition('loan-history-timeline').defaults.transferReportSql);assert.equal(sql.replace(/\r/g,'').trim(),fs.readFileSync(root+'sql/008-historique-transferts.sql','utf8').replace(/\r/g,'').trim());
   await p.evaluate(async()=>{const c=await PMKConfig.getConfig('loan-history-timeline');c.showTransfers=true;await PMKConfig.saveConfig('loan-history-timeline',c);await PMKConfig.openAdmin('loan-history-timeline')});
   assert(await p.locator('.pmk-code-value').isVisible());assert(await p.locator('.pmk-readonly-actions button').isVisible());
   assert(!p.errors.length,p.errors.join('\n'));await p.close();
@@ -514,7 +524,7 @@ print(json.dumps({'row':result,'empty':empty}))`;
   assert(!p.errors.length,p.errors.join('\n'));await p.close();
  });
  await check('Circulation refresh: waiting hold days, alerts, future dates, editable targeting and one renderer',async()=>{
-  const p=await fixture('/cgi-bin/koha/circ/waitingreserves.pl','<table id="holdst"><thead><tr><th>Choix</th><th>En attente depuis</th></tr></thead><tbody><tr><td></td><td data-order="2026-09-01">1 septembre</td></tr><tr><td></td><td data-order="2026-10-18">demain</td></tr></tbody></table>',{},true);
+  const p=await fixture('/cgi-bin/koha/circ/waitingreserves.pl','<table id="holdst"><thead><tr><th>Choix</th><th>En attente depuis</th></tr></thead><tbody><tr><td></td><td data-order="2026-09-01">1 septembre</td></tr><tr><td></td><td data-order="2026-10-18">demain</td></tr></tbody></table>',{'relative-dates':{enabled:true}},true);
   await p.clock.setFixedTime(new Date('2026-10-17T10:00:00+02:00'));
   await p.addScriptTag({url:'http://pmk.test/public/koha-scripts/014-calcule-dates-reservations.js'});
   await p.waitForSelector('#holdst [data-pmk-relative-date-generated]');
@@ -531,7 +541,7 @@ print(json.dumps({'row':result,'empty':empty}))`;
  await check('Circulation refresh: due dates use structured Koha data and retain independent visibility and language',async()=>{
   const p=await fixture('/cgi-bin/koha/catalogue/detail.pl','<table id="holdings_table"><thead><tr><th data-colname="status">Statut</th></tr></thead><tbody><tr><td>Emprunté</td></tr><tr><td>Emprunté</td></tr><tr><td>Disponible</td></tr></tbody></table>',{'relative-dates':{enabled:false,nativeAge:{enabled:true},relativeDatesEnabled:true,migrations:{ageDatesUnified:1}},'loan-duration-detail':{enabled:true,displayLanguage:'en',showToday:false}},true);
   await p.clock.setFixedTime(new Date('2026-10-17T10:00:00+02:00'));
-  await p.addScriptTag({path:process.env.PMK_JQUERY_PATH||'/usr/share/javascript/jquery/jquery.min.js'});
+  await p.addScriptTag({path:process.env.PMK_JQUERY_PATH||require.resolve('jquery')});
   await p.evaluate(()=>{jQuery.fn.dataTable={isDataTable:()=>true};jQuery.fn.DataTable=function(){return {row:node=>({data:()=>({checkout:{due_date:node.rowIndex===1?'2026-10-20':node.rowIndex===2?'2026-10-17':null}})})}}});
   await load(p,'070-date-utils.js');await p.waitForSelector('.pmk-loan-duration-indicator');
   assert.equal(await p.locator('.pmk-loan-duration-indicator').count(),1);assert.equal(await p.locator('.pmk-loan-duration-indicator').textContent(),'3 days remaining');
@@ -720,7 +730,7 @@ print(json.dumps({'row':result,'empty':empty}))`;
  });
  await check('Request audit: every requested form is available without removed boilerplate',async()=>{
   const p=await fixture('/cgi-bin/koha/mainpage.pl','',{'attendance-mediabus-mini':{autoOpen:false}},true);
-  await p.addScriptTag({path:process.env.PMK_JQUERY_PATH||'/usr/share/javascript/jquery/jquery.min.js'});
+  await p.addScriptTag({path:process.env.PMK_JQUERY_PATH||require.resolve('jquery')});
   for(const file of ['006-copy-patron-identifiers.js','007-highlight-readingrec.js','008-issuehistory-timeline.js','009-4eme-de-couv.js','010-boutons-recherche-externe.js','011-moredetail-layout.js','017-gestion-litiges-select.js','027-genre-icons-detail.js','028-transfer-buttons-holdings.js','031-alert-vide-champ-modif-lot.js','033-mod-table-exemplaires.js','035-resize-z3950.js','049-astrological-sign.js','055-facets-drawer.js','057-member-pages-utils.js','063-mis-en-page-catalogue.js','065-gen-callnum-links.js','068-blinking-barcode.js','070-address-autocomplete-memberentry.js','070-date-utils.js','079-new-release-logos.js','081-084-6xx-suggestions.js','088-musicbrainz-coverart.js','099-efficiency-indicators.js','102-batchmod-mediabus-buttons.js','109-helper-domaine.js','110-exemplaire-helper.js','113-autocomplete-elestic.js','114-renew-modif.js','120-date-retrait-reservations.js','125-double_clic_resrvation.js','129-mise-en-forme-exemplaire.js','130-mouvements-documents.js','134-intranetnav-menu.js','135-guides-training-pmk-loader.js','136-xslt-assistant.js','137-home-widgets.js','137-widgets/137-widget-liens-utiles.js','139-attendance-mediabus.js','144-controle-doublons-adherents.js','146-checkout-status-correction-pmk.js','147-accueil-sous-menus-pmk.js'])await load(p,file);
   const ids=['home-widgets','relative-dates','070','patron-page-utils','144','patron-astrological-sign','guides-training','cataloging-6xx-suggestions','z3950-workspace','batchmod-empty-field-warning','item-entry-assistant','cataloguing-tree-assistant','xslt-assistant','search-autocomplete-performance','catalogue-search-behavior','item-template-buttons','search-facets','bibliographic-markers','new-release-indicators','musicbrainz-coverart','external-links','document-movements','detail-bibliographic-groups','moredetail-layout','holdings-table-presentation','callnumber-progressive-search','barcode-highlights','search-results-master','detail-fourth-cover','transfer-button-holdings','checkout-status-correction','lost-found-checkin-status','hold-pickup-expiration','history-row-highlights','loan-history-timeline','hold-submit-guard','renewal-enhancements','attendance-mediabus-mini','efficiency-indicators','copy-actions','patron-message-templates','intranet-nav-menu','147-home-submenus'];
   const available=await p.evaluate(()=>[...__defs.keys()]);
@@ -750,7 +760,7 @@ print(json.dumps({'row':result,'empty':empty}))`;
   assert(!p.errors.length,p.errors.join('\n'));await p.close();
  });
  await check('Navigation refresh: QR visual selection changes its real location only after saving',async()=>{
-  const p=await fixture('/cgi-bin/koha/catalogue/detail.pl','<main><h1 id="heading">Titre</h1><div class="technique">Informations</div><div id="chosen-location">Zone voulue</div></main>',{},true);
+  const p=await fixture('/cgi-bin/koha/catalogue/detail.pl','<main><h1 id="heading">Titre</h1><div class="technique">Informations</div><div id="chosen-location">Zone voulue</div></main>',{'page-qr-code':{enabled:true}},true);
   await load(p,'page-qr-code.js');await p.waitForSelector('[data-pmk086-host]');
   await p.evaluate(()=>PMKConfig.openAdmin('page-qr-code'));
   const choose=p.getByRole('button',{name:'Choisir sur la page',exact:true,includeHidden:true});assert.equal(await choose.count(),4);await p.locator('[data-pmk-section-id="pages"] .pmk-repeater-toggle').first().click();
@@ -818,7 +828,7 @@ print(json.dumps({'row':result,'empty':empty}))`;
   const saved=await p.evaluate(async()=>PMKConfig.getConfig('menu-icons'));assert.deepEqual(saved.custom,{mine:42});assert.equal(saved.legacy.custom,'base');assert.equal(saved.legacy.rules[0].metadata,'rule');assert.equal(saved.customRules[0].custom,'override');assert.equal(await p.locator('#menu').textContent(),'Détails');assert(!p.errors.length,p.errors.join('\n'));await p.close();
  });
  await check('Navigation refresh: internal hub searches all tools and restores native content when disabled',async()=>{
-  const p=await fixture('/cgi-bin/koha/mainpage.pl?pmk_page=hub','<main><div id="native" style="display:flex!important">Accueil</div><nav id="toplevelmenu">Navigation</nav></main>',{},true);
+  const p=await fixture('/cgi-bin/koha/mainpage.pl?pmk_page=hub','<main><div id="native" style="display:flex!important">Accueil</div><nav id="toplevelmenu">Navigation</nav></main>',{'internal-pages-tools':{enabled:true}},true);
   await p.addScriptTag({url:'http://pmk.test/public/koha-scripts/138-pages-manager.js'});await p.waitForSelector('.pmk138-card');assert.equal(await p.locator('.pmk138-card').count(),19);assert.equal(await p.locator('#native').evaluate(e=>getComputedStyle(e).display),'none');assert.notEqual(await p.locator('#toplevelmenu').evaluate(e=>getComputedStyle(e).display),'none');
   await p.getByRole('searchbox',{name:'Rechercher un outil'}).fill('frequentation');assert.equal(await p.locator('.pmk138-card:visible').count(),1);await p.getByRole('searchbox',{name:'Rechercher un outil'}).fill('aucun outil xyz');assert.equal(await p.locator('.pmk138-card:visible').count(),0);assert(await p.getByText('Aucun outil ne correspond à cette recherche.').isVisible());
   await p.evaluate(()=>PMKConfig.saveConfig('internal-pages-tools',{enabled:false,custom:'keep'}));await p.waitForFunction(()=>!document.querySelector('#pmk138-page-host'));assert.equal(await p.locator('#native').evaluate(e=>e.style.getPropertyValue('display')),'flex');assert.equal(await p.locator('#native').evaluate(e=>e.style.getPropertyPriority('display')),'important');

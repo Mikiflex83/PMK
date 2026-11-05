@@ -1,9 +1,8 @@
 SELECT
--- PMK Gestion des retards — SOURCE GENERIQUE, Koha 25.11+ / MariaDB.
--- Ce rapport NE REPRODUIT PAS le règlement Dracénie du rapport historique 5261.
+-- PMK Gestion des retards — Koha 25.11+ / MariaDB.
 -- Il fournit un dossier par lecteur ayant un prêt en retard, classé « À contrôler ».
--- Le rapport 5261 existant reste la source par défaut ; aucun remplacement automatique.
--- Pour une autre installation : créer ce rapport privé, indiquer son ID dans PMK,
+-- Créer ce rapport privé, puis indiquer son numéro dans la configuration de la page.
+-- Aucun numéro de rapport n’est imposé.
 -- adapter les messages proposés, les colonnes et les règles d'étape à vos procédures.
 -- Le seuil 35 jours ci-dessous sert uniquement aux colonnes de comptage/valeur.
 -- Il est à adapter dans le SQL ; garder les alias ou configurer leur correspondance.

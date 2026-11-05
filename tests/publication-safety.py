@@ -17,10 +17,12 @@ FORBIDDEN={
     'private_patron_card':re.compile(rb'90405001226200'),
     'private_koha_host':re.compile(rb'(?i)(?:koha\.dracenie\.com|pro-dracenie-koha\.test\.biblibre\.eu)'),
     'internal_links':re.compile(rb'(?i)(?:fiches-mediachabran\.dracenie\.com|mediachabran\.dracenie\.com|genius2dracenie-draguignan\.ingenie\.fr)'),
+    'external_library_host':re.compile(rb'(?i)https?://(?:[a-z0-9-]+\.)*dracenie\.(?:com|fr)'),
 }
 
-def check(name,data,errors):
+def check(name,data,errors,skip=()):
     for kind,pattern in FORBIDDEN.items():
+        if kind in skip: continue
         if pattern.search(data): errors.append(f'{kind}: {name}')
 
 def main(paths):
@@ -31,7 +33,10 @@ def main(paths):
         rel=raw.decode();p=ROOT/rel
         if rel == 'tests/publication-safety.py': continue
         if not p.is_file() or p.suffix.lower() in BINARY or p.suffix.lower() in {'.zip','.kpz'}: continue
-        check(rel,p.read_bytes(),errors)
+        # Les rapports locaux conservent d'anciennes adresses observées.
+        # Ils ne sont pas livrés dans les paquets.
+        skip=('external_library_host',) if rel.startswith('tests/validation/') else ()
+        check(rel,p.read_bytes(),errors,skip)
     for value in paths:
         archive=Path(value)
         with ZipFile(archive) as z:

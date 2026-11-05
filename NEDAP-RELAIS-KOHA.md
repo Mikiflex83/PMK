@@ -1,6 +1,6 @@
 # Fréquentation Nedap : relais du plugin Koha
 
-Le widget propose trois connexions. Les modes Cloudflare et API directe existants restent disponibles et aucun réglage n’est changé automatiquement. Le nouveau mode **Relais du plugin Koha — clé côté serveur** confie les appels Libnet au serveur Koha. Le navigateur reçoit uniquement les compteurs.
+Le widget ne demande plus la clé depuis le navigateur. Le mode direct, qui plaçait la clé dans l’adresse appelée par la page, est refusé. Le mode **Relais du plugin Koha — clé côté serveur** confie les appels Libnet au serveur Koha. Le navigateur reçoit uniquement les compteurs. Un relais personnel déjà configuré reste utilisable : il ne reçoit pas la clé Libnet.
 
 ## Configuration
 
@@ -14,11 +14,11 @@ Si une autre personne a modifié la connexion, l’enregistrement est refusé et
 
 ## Périmètre et conservation
 
-Le serveur contacte uniquement `https://api.libnet.online/CCinfo.php`. Il vérifie le certificat TLS, refuse les redirections, limite la réponse à 2 Mo et l’attente à 15 secondes. Les dates et le RCR sont validés côté serveur. L’intervalle est limité à 366 jours pour les totaux journaliers et à 7 jours pour les autres granularités. La date de fin est exclusive, comme pour l’API directe. Les résultats identiques sont conservés 60 secondes en cache.
+Le serveur contacte uniquement `https://api.libnet.online/CCinfo.php`. Il vérifie le certificat TLS, refuse les redirections, n’utilise pas le proxy ambiant, limite la réponse à 2 Mo et l’attente à 15 secondes. Les dates et le RCR sont validés côté serveur. L’intervalle est limité à 366 jours pour les totaux journaliers et à 7 jours pour les autres granularités. La date de fin est exclusive. Libnet ne documente pas d’en-tête pour la clé : elle voyage dans la requête du serveur vers ce seul hôte. Les résultats identiques sont conservés 60 secondes en cache.
 
 La clé est conservée dans la table native Koha `plugin_data`, sous `nedap_server_credentials`, et ne figure pas dans les exports ordinaires de configuration PMK. Elle n’est pas chiffrée dans la base : la sauvegarde et les droits de la base Koha protègent cette valeur. Pour déplacer le plugin vers un autre serveur avec un simple export PMK, renseigner à nouveau la clé. Une sauvegarde complète de Koha doit inclure `plugin_data`.
 
-En passant explicitement du mode direct au relais, le prochain enregistrement retire la clé du document de configuration actif du widget après son enregistrement sur le serveur. Les anciennes sauvegardes et révisions de configuration sont conservées : elles peuvent encore contenir l’ancienne clé. Cette opération ne prétend pas les effacer rétroactivement.
+Un enregistrement en relais Koha retire la clé du document de configuration actif du widget après son enregistrement sur le serveur. Les anciennes sauvegardes et révisions de configuration sont conservées : elles peuvent encore contenir l’ancienne clé. Cette opération ne prétend pas les effacer rétroactivement. Le navigateur ne relit plus cette clé, même si une ancienne sauvegarde la contient.
 
 Le relais utilise un seul couple RCR/clé à la fois, correspondant au compteur configuré. Un compte personnel Koha disposant de l’accès au catalogue peut lire ses compteurs ; seul un superlibrarian peut gérer la clé. Une erreur du fournisseur conserve les dernières valeurs affichées avec un message d’erreur.
 

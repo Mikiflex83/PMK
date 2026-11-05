@@ -2,17 +2,17 @@
  * 143 — Gestion des retards TP4 — v0.2.1 (pilote préplugin)
  * Ajouter ce fichier COMPLET à IntranetUserJS, sans balises <script>.
  * Page : /cgi-bin/koha/mainpage.pl?pmk_page=overdue-management
- * Source de classement : rapport privé 5261 V0.3 sans seuil de montant.
+ * Source de classement : rapport SQL privé créé dans ce Koha. Aucun numéro n'est imposé.
  * Aucun stockage externe. Aucun envoi de mail/SMS. Écrans natifs pour les prêts et statuts.
  * Les écritures réutilisent le formulaire Koha et son jeton CSRF frais.
  * Configuration facultative, avant le script :
- * window.PMK143_CONFIG = { reportId: 5261, defaultBranch: 'BAR' };
+ * window.PMK143_CONFIG = { reportId: 0, defaultBranch: '' };
  */
 (function (window, document) {
   'use strict';
   if (window.PMK143) return;
   const VERSION = '0.2.1';
-  const CONFIG = Object.assign({ reportId: 5261, defaultBranch: '', pageSize: 500, maxPages: 200, timeoutMs: 45000 }, window.PMK143_CONFIG || {});
+  const CONFIG = Object.assign({ reportId: 0, defaultBranch: '', pageSize: 500, maxPages: 200, timeoutMs: 45000, title: 'Gestion des retards' }, window.PMK143_CONFIG || {});
   const PAGE = 'overdue-management';
   let REPORT_PATH = '/cgi-bin/koha/reports/guided_reports.pl';
   let MEMBER_PATH = '/cgi-bin/koha/members/moremember.pl';
@@ -608,7 +608,7 @@
     syncLocks();
     await refresh();
     if (state.reportStale) status('Message enregistré dans Koha ; le tableau n’a pas pu être actualisé. Utilise « Actualiser les dossiers ».', 'error');
-    else status('Message enregistré dans Koha ; classement actualisé depuis 5261.', 'success');
+    else status('Message enregistré dans Koha ; classement actualisé depuis le rapport ' + CONFIG.reportId + '.', 'success');
   }
   async function saveDraft() {
     if (!state.draft || state.busy || state.uncertain) return;
@@ -656,7 +656,7 @@
   async function loadBranches() {
     const doc = parseHTML(await request(reportURL(null)));
     const select = doc.querySelector('select[name="sql_params"]');
-    if (!select) throw new Error('Le paramètre « Site adhérent » du rapport est introuvable. Vérifie le SQL V0.3 de 5261.');
+    if (!select) throw new Error('Le paramètre « Site adhérent » du rapport est introuvable. Vérifiez le SQL copié depuis la configuration.');
     const opts = Array.from(select.options).filter(o => o.value && o.value !== '%');
     $('#tp4-branch').innerHTML = '<option value="%">Tous les sites</option>' + opts.map(o => '<option value="' + esc(o.value) + '">' + esc(o.textContent) + '</option>').join('');
     const pageBranch = url.searchParams.get('tp4_site');
@@ -775,6 +775,87 @@
     if(CONFIG.title)state.root.querySelector('h1').textContent=CONFIG.title;
     host.appendChild(state.root); document.title = (CONFIG.title||'Gestion des retards TP4')+' › Koha'; addStyle(); bind();
     state.loading = true; syncLocks(); renderPanel();
+    if (!Number(CONFIG.reportId)) {
+      state.loading = false; syncLocks();
+      status('Aucun rapport n’est indiqué. Copiez le SQL, créez un rapport privé dans Koha, puis indiquez son numéro dans la configuration de cette page.', 'info');
+      const actions = state.root.querySelector('.tp4-actions');
+      const copy = window.PMKPagesSettings?.sqlButton(PAGE);
+      if (copy && actions) actions.appendChild(copy);
+      const configure = document.createElement('button');
+      configure.type = 'button';
+      configure.textContent = 'Indiquer l’identifiant du rapport';
+      configure.addEventListener('click', () => window.PMKPagesSettings?.openSettings(PAGE));
+      if (actions) actions.appendChild(configure);
+      async function loadOverduesFromKoha() {
+        try {
+          status('Lecture des prêts en retard dans Koha…', 'loading');
+          const today = new Date().toISOString().slice(0, 10);
+          const url = new URL('/api/v1/checkouts', window.location.origin);
+          url.searchParams.set('_page', '1');
+          url.searchParams.set('_per_page', '200');
+          url.searchParams.set('q', JSON.stringify({ due_date: { '<': today } }));
+          const response = await fetch(url, { credentials: 'same-origin', headers: { Accept: 'application/json' } });
+          if (!response.ok) throw new Error('API prêts HTTP ' + response.status + '. Le rapport SQL reste le parcours complet.');
+          const data = await response.json();
+          const rows = Array.isArray(data) ? data : [];
+          const byPatron = new Map();
+          rows.forEach(row => {
+            if (row.patron_id == null || !idOK(row.patron_id)) return;
+            const key = String(row.patron_id);
+            if (!byPatron.has(key)) byPatron.set(key, []);
+            byPatron.get(key).push(row);
+          });
+          const dossiers = [];
+          for (const [id, loans] of [...byPatron.entries()].slice(0, 40)) {
+            let patron = {};
+            try {
+              const patronResponse = await fetch(new URL('/api/v1/patrons/' + encodeURIComponent(id), window.location.origin), { credentials: 'same-origin', headers: { Accept: 'application/json' } });
+              if (patronResponse.ok) patron = await patronResponse.json();
+            } catch (_) { patron = {}; }
+            const dues = loans.map(loan => loan.due_date).filter(Boolean).sort();
+            const oldest = dues[0] ? String(dues[0]).slice(0, 10) : '';
+            const overdueDays = oldest ? Math.max(0, Math.floor((Date.now() - new Date(oldest + 'T12:00:00').getTime()) / 86400000)) : 0;
+            dossiers.push({
+              id, card: patron.cardnumber || '', surname: patron.surname || 'Lecteur', firstname: patron.firstname || id,
+              branch: patron.library_id || loans[0].library_id || '', phone: patron.phone || '', email: patron.email || '',
+              due: oldest, overdue: overdueDays, count: loans.length, active: loans.length, value: 0,
+              step: 'Lu dans Koha', stage: 'control', action: 'Consulter la fiche Koha', age: '',
+              checks: 'Le rapport SQL n’a pas classé ce dossier.', historyText: '', historical: [],
+              called: '', signature: '', sent: '', last: '', suspension: '', notes: '', messages: '',
+              category: patron.category_id || '', procedure: ''
+            });
+          }
+          state.rows = dossiers;
+          state.selected = null;
+          state.loans = [];
+          state.loansLoaded = false;
+          renderList();
+          let list = state.root.querySelector('#pmk-overdue-api');
+          if (!list) {
+            list = document.createElement('div');
+            list.id = 'pmk-overdue-api';
+            (actions || state.root).insertAdjacentElement('afterend', list);
+          }
+          list.replaceChildren();
+          const intro = document.createElement('p');
+          const limited = byPatron.size > dossiers.length;
+          intro.textContent = dossiers.length
+            ? dossiers.length + ' dossier(s) ouvert(s) depuis les prêts en retard. Le classement des relances reste celui du rapport SQL.' + (limited ? ' Lecture limitée à 40 lecteurs.' : '')
+            : (rows.length ? 'Les prêts lus ne portent pas d’identifiant lecteur : le dossier Koha ne peut pas s’ouvrir.' : 'Aucun prêt en retard lu dans Koha. Cela ne prouve pas l’absence d’un dossier si les anciens prêts ont été purgés.');
+          list.appendChild(intro);
+          status(intro.textContent, 'info');
+        } catch (error) {
+          status(error.message, 'error');
+        }
+      }
+      const kohaOverdues = document.createElement('button');
+      kohaOverdues.type = 'button';
+      kohaOverdues.textContent = 'Lire les retards dans Koha';
+      kohaOverdues.addEventListener('click', () => loadOverduesFromKoha());
+      if (actions) actions.appendChild(kohaOverdues);
+      mounting = false;
+      return;
+    }
     try {
       const chosen = await loadBranches();if(pageContext?.signal.aborted)return; state.loading = false; syncLocks();
       if (chosen) await refresh(); else { status('Choisis le site de rattachement des lecteurs pour charger les dossiers.', 'info'); renderList(); }

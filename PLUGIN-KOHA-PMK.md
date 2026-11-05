@@ -182,15 +182,14 @@ Docker ; il active temporairement une préférence de l’instance fictive puis 
 restaure. Les tests contenant Docker supposent le nom de conteneur fourni par
 le Compose livré.
 
-### Dépendance de restauration
+### Restauration native
 
-La restauration utilise le vrai plugin libre
-[inLibro/koha-plugin-undelete-records](https://github.com/inLibro/koha-plugin-undelete-records),
-version 1.1, commit `93fc0729b412a00ddad3fa1b2c8181739e50ae3c`, installé et activé
-séparément dans Koha. Il n’est pas incorporé au KPZ PMK. Vérifier son activation
-dans le gestionnaire de plugins avant `node tests/koha-restoration.cjs`.
-`dev/koha/enable-restoration-plugin.pl` permet cette activation dans la seule
-base dédiée `koha_kohadev` après installation.
+La restauration est dans PimpMyKoha. Elle reprend le parcours d’UndeleteRecords
+sans exiger ce plugin et sans l’incorporer au KPZ. `tests/koha-restoration.cjs`
+supprime un exemplaire fictif préfixé PMKTEST, le cherche, le restaure par
+l’API PMK et relit son identité. `tests/koha-native-restoration.cjs` couvre le
+refus de permission, l’en-tête, l’empreinte périmée et le rejeu d’une réponse
+perdue. Ces preuves viennent d’une instance de recette dédiée.
 
 L’instance fonctionne localement dans cet environnement cloud ; ses URL
 `127.0.0.1` ne sont pas accessibles depuis votre ordinateur. Le Compose permet

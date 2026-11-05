@@ -7,7 +7,7 @@ function perl(code){return execFileSync('docker',['--host=unix:///var/run/docker
  const endpoint=BASE+'/api/v1/contrib/pmk/restoration/items/'+item.id;
  const headers={Accept:'application/json','X-PMK-Request':'1'};
  const preview=()=>h.context.request.get(endpoint,{headers});
- const restore=plan=>h.context.request.post(endpoint,{headers,data:{fingerprint:plan.fingerprint,confirmed:true}});
+ const restore=plan=>h.context.request.post(endpoint,{headers,data:{fingerprint:plan.fingerprint,confirmed:true,barcode:plan.barcode_before||''}});
  async function deleted(){const r=await h.context.request.get(BASE+'/api/v1/items/'+item.id);if(r.status()===200){assert.equal((await r.json()).external_id,item.barcode);assert.equal((await h.context.request.delete(BASE+'/api/v1/items/'+item.id)).status(),204);}else assert.equal(r.status(),404);}
  async function check(name,fn){try{const evidence=await fn();rows.push({name,passed:true,evidence});console.log('PASS '+name);}catch(e){rows.push({name,passed:false,error:e.stack});console.error('FAIL '+name,e);throw e;}finally{fs.writeFileSync(ROOT+'/tests/validation/koha-native-restoration.json',JSON.stringify({kind:'Native PMK restoration, inLibro disabled, local Koha and synthetic data',rows},null,2)+'\n');}}
  assert(item.barcode.startsWith('PMKTEST-')&&available.barcode.startsWith('PMKTEST-'));assert(Number.isInteger(item.id)&&Number.isInteger(item.biblio)&&Number.isInteger(available.id));

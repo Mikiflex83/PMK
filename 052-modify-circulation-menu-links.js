@@ -39,8 +39,8 @@
         rules: [
             {
                 id: "legacy-052-receive-report",
-                enabled: true,
-                name: "Transferts à recevoir → rapport 4639",
+                enabled: false,
+                name: "Transferts à recevoir → rapport à créer",
                 action: "replace-url",
                 allPages: false,
                 pages: "/cgi-bin/koha/circ/circulation-home.pl\n/cgi-bin/koha/circ/circulation.pl",
@@ -48,7 +48,8 @@
                 targetHref: "/cgi-bin/koha/circ/transferstoreceive.pl",
                 targetName: "Transferts à recevoir",
                 destinationKind: "report",
-                reportId: "4639",
+                reportId: "",
+                reportSql: "SELECT bt.branchtransfer_id, i.barcode, b.title, bt.frombranch, bt.tobranch, bt.datesent\nFROM branchtransfers bt\nJOIN items i ON i.itemnumber = bt.itemnumber\nJOIN biblio b ON b.biblionumber = i.biblionumber\nWHERE bt.datearrived IS NULL AND bt.datecancelled IS NULL AND bt.datesent IS NOT NULL\nORDER BY bt.datesent",
                 destinationUrl: "",
                 anchorSelector: "",
                 anchorHref: "",
@@ -91,8 +92,8 @@
             },
             {
                 id: "legacy-052-send-report",
-                enabled: true,
-                name: "Transferts à envoyer → rapport 4344",
+                enabled: false,
+                name: "Transferts à envoyer → rapport à créer",
                 action: "replace-url",
                 allPages: false,
                 pages: "/cgi-bin/koha/circ/circulation-home.pl\n/cgi-bin/koha/circ/circulation.pl",
@@ -100,7 +101,8 @@
                 targetHref: "/cgi-bin/koha/circ/transfers_to_send.pl",
                 targetName: "Transferts à envoyer",
                 destinationKind: "report",
-                reportId: "4344",
+                reportId: "",
+                reportSql: "SELECT bt.branchtransfer_id, i.barcode, b.title, bt.frombranch, bt.tobranch, bt.daterequested\nFROM branchtransfers bt\nJOIN items i ON i.itemnumber = bt.itemnumber\nJOIN biblio b ON b.biblionumber = i.biblionumber\nWHERE bt.datesent IS NULL AND bt.datecancelled IS NULL\nORDER BY bt.daterequested",
                 destinationUrl: "",
                 anchorSelector: "",
                 anchorHref: "",
@@ -143,8 +145,8 @@
             },
             {
                 id: "legacy-076-holdsqueue-report",
-                enabled: true,
-                name: "File de réservations → rapport 4904",
+                enabled: false,
+                name: "File de réservations → rapport à créer",
                 action: "replace-url",
                 allPages: true,
                 pages: "/cgi-bin/koha/circ/view_holdsqueue.pl",
@@ -152,7 +154,8 @@
                 targetHref: "/cgi-bin/koha/circ/view_holdsqueue.pl",
                 targetName: "File de réservations",
                 destinationKind: "report",
-                reportId: "4904",
+                reportId: "",
+                reportSql: "SELECT r.reserve_id, r.biblionumber, b.title, r.borrowernumber, r.branchcode, r.reservedate, r.priority\nFROM reserves r\nJOIN biblio b ON b.biblionumber = r.biblionumber\nORDER BY r.branchcode, r.priority, r.reservedate",
                 destinationUrl: "",
                 anchorSelector: "",
                 anchorHref: "",
@@ -289,6 +292,7 @@
         value.targetName = clean(value.targetName);
         value.destinationKind = value.destinationKind === "report" ? "report" : "url";
         value.reportId = clean(value.reportId);
+        value.reportSql = String(value.reportSql || "");
         value.destinationUrl = clean(value.destinationUrl);
         value.anchorSelector = clean(value.anchorSelector);
         value.anchorHref = clean(value.anchorHref);
@@ -345,6 +349,7 @@
             targetName: "",
             destinationKind: "url",
             reportId: "",
+            reportSql: "",
             destinationUrl: "",
             anchorSelector: "",
             anchorHref: "",
@@ -1301,8 +1306,20 @@
                                     label: { fr: "Identifiant du rapport", en: "Report ID" },
                                     when: isReportDestination,
                                     help: {
-                                        fr: "Indique uniquement le numéro du rapport. PimpMyKoha construit l’URL.",
-                                        en: "Enter only the report number. PimpMyKoha builds the URL."
+                                        fr: "Créez d’abord le rapport privé avec le SQL affiché, puis indiquez son numéro. PimpMyKoha construit l’URL. Vide : le lien n’est pas créé.",
+                                        en: "Create the private report with the displayed SQL, then enter its number. PimpMyKoha builds the URL. Empty: no link is created."
+                                    }
+                                },
+                                {
+                                    key: "reportSql",
+                                    type: "textarea",
+                                    rows: 8,
+                                    readOnly: true,
+                                    label: { fr: "SQL à copier dans Koha", en: "SQL to copy into Koha" },
+                                    when: isReportDestination,
+                                    help: {
+                                        fr: "Créez un rapport guidé privé avec ce SQL, puis indiquez son numéro ci-dessus.",
+                                        en: "Create a private guided report with this SQL, then enter its number above."
                                     }
                                 },
                                 {

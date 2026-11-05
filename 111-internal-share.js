@@ -143,6 +143,7 @@
                 canSend: true, canReceive: true, channel: 'draguignan'
             }
         ],
+        groups: [],
         pages: PAGE_DEFINITIONS.map(clone),
         routing: {
             mode: 'broadcastSite',
@@ -275,6 +276,7 @@
             ? merged.workflow.statuses.map(function (status, i) { return deepMerge(DEFAULT_STATUSES[i] || {}, status || {}); })
             : DEFAULT_STATUSES.map(clone);
         merged.sites = Array.isArray(merged.sites) ? merged.sites : clone(DEFAULT_CONFIG.sites);
+        merged.groups = Array.isArray(merged.groups) ? merged.groups : [];
         merged.routing.targets = Array.isArray(merged.routing.targets) ? merged.routing.targets : [];
         merged.lifetime.ttlMinutes = clampNumber(merged.lifetime.ttlMinutes, 1, 1440, 5);
         merged.lifetime.warningBeforeSeconds = clampNumber(merged.lifetime.warningBeforeSeconds, 0, 86400, 60);
@@ -499,6 +501,7 @@
             return [currentSite.id, currentSite.matchCode, currentSite.matchName, currentSite.labelFr, currentSite.labelEn].filter(Boolean).map(norm).indexOf(value) !== -1;
         }
         if (type === 'channel') return norm(currentSite.channel || currentSite.id) === value;
+        if (type === 'group') return groupsContainingSite(currentSite).some(function (group) { return norm(group.id) === value; });
         if (type === 'user') return currentIdentity && [currentIdentity.id, currentIdentity.username].filter(Boolean).map(norm).indexOf(value) !== -1;
         return false;
     }
@@ -528,6 +531,13 @@
             if (!target) return null;
             return { type:target.type || 'site', value:target.value || target.id, label:tr(target.labelFr, target.labelEn) };
         }
+        if (mode === 'group') {
+            const mine = groupsContainingSite(currentSite);
+            if (!mine.length) return { type:'site', value:currentSite.id, label:tr(currentSite.labelFr, currentSite.labelEn) };
+            const chosen = mine.find(function (group) { return group.id === selectedTargetId; }) || (mine.length === 1 ? mine[0] : null);
+            if (!chosen) return null;
+            return { type:'group', value:chosen.id, label:tr(chosen.labelFr, chosen.labelEn) || chosen.id };
+        }
         return { type:'site', value:currentSite.id, label:tr(currentSite.labelFr, currentSite.labelEn) };
     }
 
@@ -549,7 +559,7 @@
 .pmk111-card{pointer-events:auto;width:100%;background:#fff;color:#212529;border:1px solid #d8dee4;border-left:4px solid #6c757d;border-radius:.35rem;box-shadow:0 2px 8px rgba(0,0,0,.14);overflow:hidden;}
 .pmk111-card[data-variant="success"]{border-left-color:#398439}.pmk111-card[data-variant="danger"]{border-left-color:#ac2925}.pmk111-card[data-variant="info"]{border-left-color:#269abc}.pmk111-card[data-variant="warning"]{border-left-color:#d58512}
 .pmk111-card-head{display:flex;align-items:flex-start;gap:.5rem;padding:.6rem .7rem .35rem;background:#f8f9fa;border-bottom:1px solid #e5e7e9}.pmk111-card-title{flex:1;min-width:0;font-weight:600;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pmk111-card-head .btn{padding:1px 6px;line-height:1.25}.pmk111-body{padding:.55rem .7rem}.pmk111-meta{font-size:.86em;color:#6c757d;margin-bottom:.25rem}.pmk111-recipient{font-weight:600;margin-bottom:.25rem}.pmk111-delivery-state{font-size:.82em;color:#526273;margin:.2rem 0}.pmk111-note,.pmk111-comment{padding:.4rem .5rem;background:#f8f9fa;border-left:3px solid #ced4da;border-radius:.2rem;white-space:pre-wrap;overflow-wrap:anywhere;margin:.35rem 0}.pmk111-statusline{display:flex;align-items:center;gap:.35rem;font-weight:600;margin:.3rem 0}.pmk111-actions{display:flex;align-items:center;flex-wrap:wrap;gap:.35rem;margin-top:.45rem}.pmk111-actions .btn{font-size:12px;padding:3px 7px}.pmk111-footer{display:flex;justify-content:space-between;gap:.5rem;align-items:center;margin-top:.45rem;font-size:.82em;color:#6c757d}.pmk111-footer a{font-weight:600}.pmk111-timer.is-ending{color:#8a6d3b;font-weight:600}.pmk111-collapsed .pmk111-body{display:none}.pmk111-collapse-handle{pointer-events:auto;border-radius:50%;width:32px;height:32px;padding:0;display:none}.pmk111-collapsed .pmk111-collapse-handle{display:inline-flex;align-items:center;justify-content:center}.pmk111-collapsed .pmk111-card{display:none}.pmk111-item{width:100%;display:flex;flex-direction:column;align-items:inherit;gap:4px}.pmk111-row-share{margin-left:6px;padding:1px 5px;font-size:11px;vertical-align:middle}.pmk111-config-anchor{display:inline-flex;align-items:center;margin-left:.35rem}
-.pmk111-overlay{position:fixed;inset:0;z-index:1060;background:rgba(0,0,0,.42);display:none;align-items:center;justify-content:center;padding:1rem}.pmk111-overlay.is-open{display:flex}.pmk111-dialog{width:min(520px,100%);max-height:calc(100vh - 2rem);overflow:auto;background:#fff;border:1px solid rgba(0,0,0,.2);border-radius:.35rem;box-shadow:0 5px 15px rgba(0,0,0,.35)}.pmk111-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:12px 15px;border-bottom:1px solid #e5e5e5}.pmk111-dialog-head h3{font-size:18px;margin:0}.pmk111-dialog-body{padding:15px}.pmk111-dialog-foot{display:flex;justify-content:flex-end;gap:.5rem;padding:10px 15px;border-top:1px solid #e5e5e5;background:#f8f9fa}.pmk111-dialog label{font-weight:600}.pmk111-dialog .form-control{width:100%}.pmk111-statusbox{display:flex;align-items:center;gap:.45rem;font-size:12px;color:#6c757d}.pmk111-dot{width:8px;height:8px;border-radius:50%;display:inline-block;background:#999}.pmk111-dot.connected{background:#398439}.pmk111-dot.connecting{background:#d58512}.pmk111-dot.error{background:#ac2925}.pmk111-diagnostics{position:fixed;z-index:1065;right:18px;bottom:18px;width:min(620px,calc(100vw - 36px));max-height:55vh;overflow:auto;background:#fff;border:1px solid #ccc;border-radius:.35rem;box-shadow:0 4px 16px rgba(0,0,0,.2);display:none}.pmk111-diagnostics.is-open{display:block}.pmk111-diag-head{display:flex;justify-content:space-between;align-items:center;padding:.55rem .7rem;border-bottom:1px solid #ddd;background:#f8f9fa}.pmk111-diag-list{font-family:monospace;font-size:11px}.pmk111-diag-row{display:grid;grid-template-columns:72px 82px minmax(120px,1fr) minmax(100px,1fr);gap:.4rem;padding:.35rem .55rem;border-bottom:1px solid #eee}.pmk111-empty{padding:1rem;color:#6c757d;text-align:center}
+.pmk111-overlay{position:fixed;inset:0;z-index:1060;background:rgba(0,0,0,.42);display:none;align-items:center;justify-content:center;padding:1rem}.pmk111-overlay.is-open{display:flex}.pmk111-dialog{width:min(520px,100%);max-height:calc(100vh - 2rem);overflow:auto;background:#fff;border:1px solid rgba(0,0,0,.2);border-radius:.35rem;box-shadow:0 5px 15px rgba(0,0,0,.35)}.pmk111-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:12px 15px;border-bottom:1px solid #e5e5e5}.pmk111-dialog-head h3{font-size:18px;margin:0}.pmk111-dialog-body{padding:15px}.pmk111-dialog-foot{display:flex;justify-content:flex-end;gap:.5rem;padding:10px 15px;border-top:1px solid #e5e5e5;background:#f8f9fa}.pmk111-dialog label{font-weight:600}.pmk111-dialog .form-control{width:100%}.pmk111-statusbox{display:flex;align-items:center;gap:.45rem;font-size:12px;color:#6c757d}.pmk111-dot{width:8px;height:8px;border-radius:50%;display:inline-block;background:#999}.pmk111-dot.connected{background:#398439}.pmk111-dot.connecting{background:#d58512}.pmk111-dot.error{background:#ac2925}.pmk111-diagnostics{position:fixed;z-index:1065;right:18px;bottom:18px;width:min(620px,calc(100vw - 36px));max-height:55vh;overflow:auto;background:#fff;border:1px solid #ccc;border-radius:.35rem;box-shadow:0 4px 16px rgba(0,0,0,.2);display:none}.pmk111-diagnostics.is-open{display:block}.pmk111-diag-head{display:flex;justify-content:space-between;align-items:center;padding:.55rem .7rem;border-bottom:1px solid #ddd;background:#f8f9fa}.pmk111-diag-list{font-family:monospace;font-size:11px}.pmk111-diag-row{display:grid;grid-template-columns:72px 82px minmax(120px,1fr) minmax(100px,1fr);gap:.4rem;padding:.35rem .55rem;border-bottom:1px solid #eee}.pmk111-empty{padding:1rem;color:#6c757d;text-align:center}.pmk111-site-notice{pointer-events:auto;padding:.7rem .8rem;line-height:1.4}
 .pmk111-legacy .pmk111-card{background:#2c3e50;color:#fff;border-color:#2c3e50}.pmk111-legacy .pmk111-card-head{background:#34495e;border-bottom-color:rgba(255,255,255,.12)}.pmk111-legacy .pmk111-meta,.pmk111-legacy .pmk111-footer{color:#bdc3c7}.pmk111-legacy .pmk111-note,.pmk111-legacy .pmk111-comment{background:rgba(0,0,0,.2);border-left-color:#95a5a6}.pmk111-legacy .pmk111-footer a{color:#7fd37f}
 @media(max-width:${mobile}px){#${ROOT_ID}{left:8px!important;right:8px!important;top:auto!important;bottom:8px!important;width:auto}.pmk111-dialog{max-height:calc(100vh - 1rem)}.pmk111-dialog-body{padding:12px}.pmk111-actions .btn{flex:1 1 auto}.pmk111-diag-row{grid-template-columns:64px 72px 1fr}.pmk111-diag-row span:last-child{grid-column:1/-1}.pmk111-row-share{min-width:30px}.pmk111-compact-mobile .pmk111-note,.pmk111-compact-mobile .pmk111-comment{max-height:5.2em;overflow:auto}}
         `;
@@ -679,10 +689,14 @@
 
         const targetWrap = overlay.querySelector('[data-role="target-wrap"]');
         const targetSelect = overlay.querySelector('[data-role="target"]');
-        if (currentConfig.routing.mode === 'targeted') {
+        const groupChoices = currentConfig.routing.mode === 'group' ? groupsContainingSite(currentSite) : [];
+        if (currentConfig.routing.mode === 'targeted' || groupChoices.length > 1) {
             targetWrap.style.display = '';
+            const options = currentConfig.routing.mode === 'group'
+                ? groupChoices
+                : (currentConfig.routing.targets || []).filter(function (t) { return t && t.enabled !== false; });
             targetSelect.innerHTML = '<option value="">' + esc(tr('Choisir…', 'Choose…')) + '</option>' +
-                (currentConfig.routing.targets || []).filter(function (t) { return t && t.enabled !== false; }).map(function (t) {
+                options.map(function (t) {
                     return '<option value="' + esc(t.id) + '">' + esc(tr(t.labelFr, t.labelEn) || t.id) + '</option>';
                 }).join('');
         } else {
@@ -727,7 +741,7 @@
             return;
         }
         const target = currentTargetForNewShare(targetId);
-        if (currentConfig.routing.mode === 'targeted' && !target) {
+        if ((currentConfig.routing.mode === 'targeted' || currentConfig.routing.mode === 'group') && !target) {
             alert(tr('Veuillez choisir une destination.', 'Please choose a destination.'));
             return;
         }
@@ -1187,6 +1201,11 @@
 
     async function startRuntime() {
         const myGeneration = ++runtimeGeneration;
+        if (currentConfig.enabled === false) {
+            document.getElementById(STYLE_ID)?.remove();
+            document.getElementById(ROOT_ID)?.remove();
+            return;
+        }
         ensureStyles(); ensureRoot(); ensureModals();
         currentIdentity = resolveIdentity();
         currentPage = pageConfigForPath(currentPath());
@@ -1194,7 +1213,9 @@
         if (myGeneration !== runtimeGeneration) return;
         currentSite = resolveSite(info);
         if (!currentConfig.enabled || !currentSite) {
-            addDiagnostic('disconnected', tr('Module inactif sur ce site','Module inactive on this site'), info.name || info.code || '');
+            const libraryName = clean(info.name || info.code);
+            addDiagnostic('disconnected', tr('Module inactif sur ce site','Module inactive on this site'), libraryName);
+            showOutsideSite(libraryName);
             return;
         }
         startInjectionObserver();
@@ -1222,9 +1243,43 @@
         });
     }
 
+    function showOutsideSite(libraryName) {
+        const root = ensureRoot();
+        root.replaceChildren();
+        const card = document.createElement('div');
+        card.className = 'pmk111-card';
+        card.setAttribute('data-variant', 'warning');
+        const body = document.createElement('div');
+        body.className = 'pmk111-body pmk111-site-notice';
+        const name = libraryName || tr('Cette bibliothèque', 'This library');
+        body.textContent = tr(
+            name + ' n’est pas dans les sites du partage interne. Aucune demande n’est envoyée ni reçue.',
+            name + ' is not one of the internal-share sites. Nothing is sent or received.'
+        );
+        card.appendChild(body);
+        root.appendChild(card);
+    }
+
+    function listedSiteIds(group) {
+        return String(group && group.siteIds || '').split(/[\s,;]+/).map(clean).filter(Boolean);
+    }
+
+    function groupsContainingSite(site) {
+        if (!site) return [];
+        const id = norm(site.id);
+        return (currentConfig.groups || []).filter(function (group) {
+            return group && group.enabled !== false && clean(group.id) && listedSiteIds(group).some(function (siteId) { return norm(siteId) === id; });
+        });
+    }
+
     function newSite() {
         const id = 'site-' + Date.now().toString(36);
         return { id:id, enabled:true, labelFr:'Nouveau site', labelEn:'New site', matchName:'', matchCode:'', canSend:true, canReceive:true, channel:id };
+    }
+
+    function newGroup() {
+        const id = 'groupe-' + Date.now().toString(36);
+        return { id:id, enabled:true, labelFr:'Nouveau groupe', labelEn:'New group', siteIds:'' };
     }
 
     function newTarget() {
@@ -1289,6 +1344,17 @@
             ids.add(site.id);
             if (!clean(site.matchName) && !clean(site.matchCode)) return { ok:false, message:tr('Chaque site actif doit indiquer un nom ou un code Koha à reconnaître.','Each enabled site must provide a Koha name or code to match.') };
         }
+        const groupIds = new Set();
+        for (const group of cfg.groups || []) {
+            if (!group || group.enabled === false) continue;
+            if (!clean(group.id) || groupIds.has(group.id)) return { ok:false, message:tr('Chaque groupe actif doit avoir un identifiant unique.','Each enabled group needs a unique identifier.') };
+            groupIds.add(group.id);
+            const members = listedSiteIds(group);
+            if (!members.length) return { ok:false, message:tr('Chaque groupe actif doit citer au moins un site.','Each enabled group must name at least one site.') };
+            for (const siteId of members) {
+                if (!ids.has(siteId)) return { ok:false, message:tr('Groupe « ','Group “') + (group.labelFr || group.id) + tr(' » : site inconnu ','”: unknown site ') + siteId };
+            }
+        }
         if (cfg.routing.mode === 'targeted' && !(cfg.routing.targets || []).some(function(t){return t && t.enabled !== false;})) return { ok:false, message:tr('Le mode ciblé nécessite au moins une destination active.','Targeted mode requires at least one enabled destination.') };
         for (const page of cfg.pages || []) {
             if (!page || page.enabled === false || page.shareMode === 'reservationRows') continue;
@@ -1321,6 +1387,13 @@
                     { key:'enabled', type:'boolean', label:{fr:'Activer le partage interne',en:'Enable internal sharing'} },
                     { key:'sites', type:'repeater', label:{fr:'Sites Koha concernés',en:'Koha sites'}, addLabel:{fr:'Ajouter un site',en:'Add site'}, reorder:true, newItem:newSite, itemTitle:function(item){return clean(item && (item.labelFr || item.matchName || item.id)) || 'Site';}, fields:[
                         {key:'enabled',type:'boolean',label:{fr:'Actif',en:'Enabled'}},{key:'id',type:'text',label:{fr:'Identifiant interne',en:'Internal ID'}},{key:'labelFr',type:'text',label:{fr:'Nom FR',en:'FR name'}},{key:'labelEn',type:'text',label:{fr:'Nom EN',en:'EN name'}},{key:'matchName',type:'text',label:{fr:'Nom du site tel qu’affiché par Koha',en:'Branch name as shown by Koha'}},{key:'matchCode',type:'text',label:{fr:'Code site Koha',en:'Koha branch code'}},{key:'canSend',type:'boolean',label:{fr:'Peut envoyer',en:'Can send'}},{key:'canReceive',type:'boolean',label:{fr:'Reçoit les demandes',en:'Receives requests'}},{key:'channel',type:'text',advanced:true,label:{fr:'Canal de diffusion',en:'Broadcast channel'}}
+                    ]},
+                    { key:'groups', type:'repeater', label:{fr:'Groupes de partage entre sites',en:'Share groups between sites'}, addLabel:{fr:'Ajouter un groupe',en:'Add a group'}, reorder:true, newItem:newGroup, itemTitle:function(item){return clean(item && (item.labelFr || item.id)) || 'Groupe';}, fields:[
+                        {key:'enabled',type:'boolean',label:{fr:'Actif',en:'Enabled'}},
+                        {key:'id',type:'text',label:{fr:'Identifiant du groupe',en:'Group ID'}},
+                        {key:'labelFr',type:'text',label:{fr:'Nom du groupe',en:'Group name'}},
+                        {key:'labelEn',type:'text',label:{fr:'Nom anglais',en:'English name'}},
+                        {key:'siteIds',type:'textarea',rows:3,label:{fr:'Sites du groupe',en:'Sites in the group'}, help:{fr:'Identifiants internes des sites, séparés par une virgule ou un retour à la ligne. Seuls les sites d’un même groupe voient les demandes de ce groupe.',en:'Internal site IDs, separated by a comma or a new line. Only sites in the same group see that group’s requests.'}}
                     ]}
                 ]},
                 { type:'section', id:'pages', label:{fr:'Pages et boutons',en:'Pages and buttons'}, description:{fr:'Les pages historiques restent actives par défaut. request.pl conserve son bouton par ligne de réservation.',en:'Historical pages remain enabled by default. request.pl keeps its per-hold-row button.'}, fields:[
@@ -1329,7 +1402,7 @@
                     ]}
                 ]},
                 { type:'section', id:'routing', label:{fr:'Diffusion et destinataires',en:'Routing and recipients'}, fields:[
-                    {key:'routing.mode',type:'select',label:{fr:'Mode de diffusion',en:'Routing mode'},options:[{value:'broadcastSite',label:{fr:'Tout le site — comportement historique',en:'Whole site — historical behavior'}},{value:'broadcastChannel',label:{fr:'Canal partagé',en:'Shared channel'}},{value:'broadcastAll',label:{fr:'Tous les sites configurés',en:'All configured sites'}},{value:'targeted',label:{fr:'Destination choisie à l’envoi',en:'Destination chosen when sending'}}]},
+                    {key:'routing.mode',type:'select',label:{fr:'Mode de diffusion',en:'Routing mode'},options:[{value:'broadcastSite',label:{fr:'Tout le site — comportement historique',en:'Whole site — historical behavior'}},{value:'broadcastChannel',label:{fr:'Canal partagé',en:'Shared channel'}},{value:'broadcastAll',label:{fr:'Tous les sites configurés',en:'All configured sites'}},{value:'targeted',label:{fr:'Destination choisie à l’envoi',en:'Destination chosen when sending'}},{value:'group',label:{fr:'Groupes de sites',en:'Site groups'}}]},
                     {key:'routing.acceptLegacyUntargeted',type:'boolean',label:{fr:'Afficher les anciens partages sans cible',en:'Show legacy untargeted shares'}},{key:'routing.allowFreeRecipient',type:'boolean',label:{fr:'Afficher le champ destinataire libre',en:'Show free-text recipient field'}},{key:'routing.recipientRequired',type:'boolean',label:{fr:'Destinataire libre obligatoire',en:'Require free-text recipient'}},
                     {key:'routing.targets',type:'repeater',label:{fr:'Destinations proposées en mode ciblé',en:'Targets offered in targeted mode'},addLabel:{fr:'Ajouter une destination',en:'Add target'},newItem:newTarget,itemTitle:function(item){return clean(item && (item.labelFr || item.id)) || 'Destination';},fields:[{key:'enabled',type:'boolean',label:{fr:'Active',en:'Enabled'}},{key:'id',type:'text',label:{fr:'Identifiant',en:'ID'}},{key:'labelFr',type:'text',label:{fr:'Libellé FR',en:'FR label'}},{key:'labelEn',type:'text',label:{fr:'Libellé EN',en:'EN label'}},{key:'type',type:'select',label:{fr:'Type',en:'Type'},options:[{value:'site',label:{fr:'Site',en:'Site'}},{value:'channel',label:{fr:'Canal',en:'Channel'}},{value:'user',label:{fr:'Utilisateur Koha',en:'Koha user'}},{value:'all',label:{fr:'Tous',en:'All'}}]},{key:'value',type:'text',label:{fr:'Valeur cible',en:'Target value'}}]}
                 ]},

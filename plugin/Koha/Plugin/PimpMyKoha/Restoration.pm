@@ -1,5 +1,12 @@
 package Koha::Plugin::PimpMyKoha::Restoration;
 
+# Reproduces Koha::Plugin::UndeleteRecords (inLibro) without requiring it:
+# search deleted items or deleted bibliographic records over a period,
+# restore the selected rows, and queue reindexing. Item restoration also
+# brings back the parent record when that record is deleted and suffixes a
+# colliding barcode. Record restoration leaves deleted items untouched.
+# Bound parameters and an echoed confirmation replace the plugin's SQL.
+
 use Modern::Perl;
 use JSON ();
 use Digest::SHA qw(sha256_hex);
@@ -16,9 +23,10 @@ my $fingerprint_json = JSON->new->canonical->utf8;
 my %keys = (items=>'itemnumber',biblio=>'biblionumber',biblioitems=>'biblioitemnumber',biblio_metadata=>'biblionumber');
 
 sub _authorize {
-    my ($c) = @_;
+    my ($c, $permission) = @_;
+    $permission ||= {editcatalogue=>'edit_items'};
     my $p = $c->stash('koha.user');
-    die "forbidden\n" unless $p && haspermission($p->userid,{editcatalogue=>'edit_items'});
+    die "forbidden\n" unless $p && haspermission($p->userid,$permission);
     my $raw = C4::Context->dbh->selectrow_array('SELECT body FROM koha_plugin_pimpmykoha_documents WHERE document_key=?',undef,'internal-pages-tools');
     my $cfg = $raw ? $json->decode($raw)->{config} || {} : {};
     my $options = $cfg->{pageOptions}{'restore-deleted-items'} || {};
@@ -103,19 +111,23 @@ sub exchange {
         }
         die "request_header_required\n" unless ($c->req->headers->header('X-PMK-Request')//'') eq '1';
         my $in=$c->req->json;
-        die "invalid_confirmation\n" unless ref($in) eq 'HASH' && ($in->{fingerprint}//'') =~ /\A[a-f0-9]{64}\z/ && $in->{confirmed};
+        die "invalid_confirmation\n" unless ref($in) eq 'HASH' && ($in->{fingerprint}//'') =~ /\A[a-f0-9]{64}\z/ && $in->{confirmed} && exists $in->{barcode} && !ref($in->{barcode});
         $dbh->begin_work;$transaction=1;
         # A response lost after commit can be retried without a second restoration.
         my $previous=$dbh->selectrow_array('SELECT body FROM koha_plugin_pimpmykoha_data_history WHERE namespace=? AND path=? ORDER BY id DESC LIMIT 1',undef,'restoration',"items/$id");
         if (!_row('deleteditems',$id,1) && $previous) {
             my $receipt=$json->decode($previous);my $current=_row('items',$id,1);
             die "item_changed\n" unless $current && $receipt->{fingerprint} eq $in->{fingerprint} && $json->encode($current) eq $json->encode($receipt->{item});
+            my $named=$in->{barcode} // '';
+            my $original=ref($receipt->{source}) eq 'HASH' && ref($receipt->{source}{item}) eq 'HASH' ? ($receipt->{source}{item}{barcode} // '') : '';
+            die "invalid_confirmation\n" unless $named eq $original || $named eq ($current->{barcode} // '');
             die "branch_forbidden\n" unless $p->can_edit_items_from($current->{homebranch});
             $dbh->commit;$transaction=0;
             return $c->render(status=>200,openapi=>{restored=>JSON::true,replayed=>JSON::true,item_id=>0+$id,biblio_id=>0+$current->{biblionumber},barcode=>$current->{barcode}});
         }
         my $plan=_plan($id,$p,1);
         die "preview_changed\n" unless $plan->{fingerprint} eq $in->{fingerprint};
+        die "invalid_confirmation\n" unless ($in->{barcode}//'') eq ($plan->{barcode_before}//'');
         my $source=$plan->{source};my $bid=$plan->{biblio_id};
         _insert('biblio',$source->{biblio}) if $source->{restore_biblio};
         _insert('biblioitems',$source->{biblioitem}) if $source->{restore_biblioitem};
@@ -146,6 +158,194 @@ sub exchange {
         }
         return $c->render(status=>409,openapi=>{error=>'restore_conflict'}) if $error =~ /Duplicate entry|foreign key constraint|Deadlock|Lock wait timeout/;
         $c->unhandled_exception($error);
+    };
+}
+
+sub _failure {
+    my ($c, $dbh, $transaction, $error) = @_;
+    try { $dbh->rollback if $transaction; } catch {};
+    if ($error =~ /\A([a-z_]+)\n/) {
+        my $code = $1;
+        my $status = $code =~ /forbidden|permission|header/ ? 403
+            : $code =~ /\Adeleted_(?:item|biblio)_missing\z/ ? 404
+            : $code =~ /\Ainvalid_/ ? 400 : 409;
+        return $c->render(status=>$status, openapi=>{error=>$code});
+    }
+    return $c->render(status=>409, openapi=>{error=>'restore_conflict'}) if $error =~ /Duplicate entry|foreign key constraint|Deadlock|Lock wait timeout/;
+    return $c->unhandled_exception($error);
+}
+
+sub _dates {
+    my ($from, $to) = @_;
+    $from = undef if !defined($from) || $from eq '';
+    $to = undef if !defined($to) || $to eq '';
+    die "invalid_date\n" if defined($from) && $from !~ /\A\d{4}-\d{2}-\d{2}\z/;
+    die "invalid_date\n" if defined($to) && $to !~ /\A\d{4}-\d{2}-\d{2}\z/;
+    die "invalid_range\n" if $from && $to && $to lt $from;
+    return ($from, $to);
+}
+
+# Same window as UndeleteRecords: from the start date, through the end date
+# inclusive, or through now when the end date is empty.
+sub _window {
+    my ($from, $to, $column) = @_;
+    return ([], []) unless $from;
+    my @sql = ("$column >= ?");
+    my @bind = ($from);
+    if ($to) { push @sql, "$column < DATE_ADD(?, INTERVAL 1 DAY)"; push @bind, $to; }
+    else { push @sql, "$column <= NOW()"; }
+    return (\@sql, \@bind);
+}
+
+sub search {
+    my ($c, $kind) = @_;
+    $c = $c->openapi->valid_input or return;
+    $c->res->headers->cache_control('no-store');
+    my $dbh = C4::Context->dbh;
+    return try {
+        die "invalid_kind\n" unless $kind eq 'items' || $kind eq 'biblios';
+        _authorize($c, $kind eq 'biblios' ? {editcatalogue=>'edit_catalogue'} : undef);
+        my ($from, $to) = _dates($c->validation->param('from'), $c->validation->param('to'));
+        my $limit = 1000;
+        my $rows;
+        if ($kind eq 'items') {
+            my @codes = grep { defined && !ref && length($_) && length($_) <= 20 } $c->validation->every_param('barcode');
+            die "invalid_range\n" if @codes > 100 || !($from || @codes);
+            my ($window, $bind) = _window($from, $to, 'd.timestamp');
+            my @where = @$window;
+            my @args = @$bind;
+            if (@codes) {
+                push @where, 'd.barcode IN ('.join(',', ('?') x @codes).')';
+                push @args, @codes;
+            }
+            my $where = @where ? 'WHERE '.join(' AND ', @where) : '';
+            $rows = $dbh->selectall_arrayref(qq{
+                SELECT d.itemnumber, COALESCE(d.barcode,'') AS barcode,
+                    COALESCE(db.title, b.title, '') AS title,
+                    COALESCE(db.author, b.author, '') AS author,
+                    COALESCE((SELECT isbn FROM biblioitems WHERE biblioitemnumber=d.biblioitemnumber),
+                             (SELECT isbn FROM deletedbiblioitems WHERE biblioitemnumber=d.biblioitemnumber), '') AS isbn,
+                    COALESCE((SELECT issn FROM biblioitems WHERE biblioitemnumber=d.biblioitemnumber),
+                             (SELECT issn FROM deletedbiblioitems WHERE biblioitemnumber=d.biblioitemnumber), '') AS issn,
+                    d.biblionumber, d.timestamp,
+                    CASE WHEN d.barcode IS NULL OR d.barcode='' THEN 0
+                         WHEN EXISTS(SELECT 1 FROM items WHERE barcode=d.barcode) THEN 1 ELSE 0 END AS conflict
+                FROM deleteditems d
+                LEFT JOIN deletedbiblio db ON db.biblionumber=d.biblionumber
+                LEFT JOIN biblio b ON b.biblionumber=d.biblionumber
+                $where
+                ORDER BY d.timestamp DESC, d.itemnumber DESC
+                LIMIT ?
+            }, {Slice=>{}}, @args, $limit + 1);
+        } else {
+            die "invalid_range\n" unless $from;
+            my ($window, $bind) = _window($from, $to, 'db.timestamp');
+            my $where = @$window ? 'WHERE '.join(' AND ', @$window) : '';
+            $rows = $dbh->selectall_arrayref(qq{
+                SELECT db.biblionumber,
+                    COALESCE(db.author, b.author, '') AS author,
+                    COALESCE(db.title, b.title, '') AS title,
+                    COALESCE((SELECT isbn FROM deletedbiblioitems WHERE biblionumber=db.biblionumber ORDER BY biblioitemnumber LIMIT 1), '') AS isbn,
+                    COALESCE((SELECT issn FROM deletedbiblioitems WHERE biblionumber=db.biblionumber ORDER BY biblioitemnumber LIMIT 1), '') AS issn,
+                    db.timestamp, COALESCE(db.datecreated, '') AS datecreated
+                FROM deletedbiblio db
+                LEFT JOIN biblio b ON b.biblionumber=db.biblionumber
+                $where
+                ORDER BY db.timestamp DESC, db.biblionumber DESC
+                LIMIT ?
+            }, {Slice=>{}}, @$bind, $limit + 1);
+        }
+        my $truncated = @$rows > $limit ? JSON::true : JSON::false;
+        pop @$rows if @$rows > $limit;
+        for my $row (@$rows) {
+            $row->{biblionumber} = 0 + $row->{biblionumber};
+            $row->{itemnumber} = 0 + $row->{itemnumber} if exists $row->{itemnumber};
+            $row->{conflict} = $row->{conflict} ? JSON::true : JSON::false if exists $row->{conflict};
+            $row->{kind} = $kind eq 'biblios' ? 'biblio' : 'item';
+            for my $field (qw(timestamp datecreated barcode title author isbn issn)) {
+                $row->{$field} = '' . ($row->{$field} // '') if exists $row->{$field};
+            }
+        }
+        return $c->render(status=>200, openapi=>{kind=>$kind, rows=>$rows, truncated=>$truncated, limit=>$limit});
+    } catch {
+        return _failure($c, $dbh, 0, "$_");
+    };
+}
+
+sub _drop_deleted_on {
+    my %copy = %{$_[0]};
+    delete $copy{deleted_on};
+    return \%copy;
+}
+
+sub _plan_biblio {
+    my ($id, $lock) = @_;
+    my $dbh = C4::Context->dbh;
+    my $biblio = _row('deletedbiblio', $id, $lock);
+    die "deleted_biblio_missing\n" unless $biblio;
+    die "biblio_id_in_use\n" if _row('biblio', $id, $lock);
+    my $items = $dbh->selectall_arrayref('SELECT * FROM deletedbiblioitems WHERE biblionumber=? ORDER BY biblioitemnumber'.($lock?' FOR UPDATE':''), {Slice=>{}}, $id);
+    my $meta = $dbh->selectall_arrayref('SELECT * FROM deletedbiblio_metadata WHERE biblionumber=? ORDER BY id'.($lock?' FOR UPDATE':''), {Slice=>{}}, $id);
+    die "metadata_missing\n" unless @$meta;
+    my $source = {biblio=>$biblio, biblioitems=>$items, metadata=>$meta};
+    return {fingerprint=>sha256_hex($fingerprint_json->encode($source)), kind=>'biblio', biblio_id=>0+$id,
+            title=>$biblio->{title} // '', author=>$biblio->{author} // '', timestamp=>''.$biblio->{timestamp},
+            items_restored=>JSON::false, source=>$source};
+}
+
+sub exchange_biblio {
+    my $c = shift->openapi->valid_input or return;
+    $c->res->headers->cache_control('no-store');
+    my $dbh = C4::Context->dbh;
+    my $transaction = 0;
+    return try {
+        my $p = _authorize($c, {editcatalogue=>'edit_catalogue'});
+        my $id = $c->validation->param('biblio_id');
+        if ($c->req->method eq 'GET') {
+            my $plan = _plan_biblio($id, 0);
+            delete $plan->{source};
+            return $c->render(status=>200, openapi=>$plan);
+        }
+        die "request_header_required\n" unless ($c->req->headers->header('X-PMK-Request') // '') eq '1';
+        my $in = $c->req->json;
+        die "invalid_confirmation\n" unless ref($in) eq 'HASH' && ($in->{fingerprint} // '') =~ /\A[a-f0-9]{64}\z/ && $in->{confirmed} && ($in->{biblio_id} // -1) == $id;
+        $dbh->begin_work;
+        $transaction = 1;
+        my $previous = $dbh->selectrow_array('SELECT body FROM koha_plugin_pimpmykoha_data_history WHERE namespace=? AND path=? ORDER BY id DESC LIMIT 1', undef, 'restoration', "biblios/$id");
+        if (!_row('deletedbiblio', $id, 1) && $previous) {
+            my $receipt = $json->decode($previous);
+            my $current = _row('biblio', $id, 1);
+            die "item_changed\n" unless $current && $receipt->{fingerprint} eq $in->{fingerprint} && $json->encode($current) eq $json->encode($receipt->{biblio});
+            $dbh->commit;
+            $transaction = 0;
+            return $c->render(status=>200, openapi=>{restored=>JSON::true, replayed=>JSON::true, kind=>'biblio', biblio_id=>0+$id, items_restored=>JSON::false});
+        }
+        my $plan = _plan_biblio($id, 1);
+        die "preview_changed\n" unless $plan->{fingerprint} eq $in->{fingerprint};
+        my $source = $plan->{source};
+        _insert('biblio', _drop_deleted_on($source->{biblio}));
+        for my $bi (@{$source->{biblioitems}}) {
+            my $live = _row('biblioitems', $bi->{biblioitemnumber}, 1);
+            if ($live) { die "biblioitem_mismatch\n" unless $live->{biblionumber} == $id; }
+            else { _insert('biblioitems', _drop_deleted_on($bi)); }
+        }
+        my $live_meta = $dbh->selectrow_array('SELECT id FROM biblio_metadata WHERE biblionumber=? FOR UPDATE', undef, $id);
+        if (!$live_meta) { _insert('biblio_metadata', _drop_deleted_on($_)) for @{$source->{metadata}}; }
+        my $record = try { Koha::Biblios->find($id)->metadata->record } catch { die "metadata_invalid\n"; };
+        die "metadata_invalid\n" unless $record;
+        my $restored = _row('biblio', $id, 1);
+        die "verification_failed\n" unless $restored;
+        $dbh->do('DELETE FROM deletedbiblio_metadata WHERE biblionumber=?', undef, $id);
+        $dbh->do('DELETE FROM deletedbiblioitems WHERE biblionumber=?', undef, $id);
+        $dbh->do('DELETE FROM deletedbiblio WHERE biblionumber=?', undef, $id);
+        Koha::SearchEngine::Indexer->new({index=>$Koha::SearchEngine::BIBLIOS_INDEX})->index_records($id, 'specialUpdate', 'biblioserver');
+        logaction('CATALOGUING', 'ADD', $id, 'PMK RESTORE BIBLIO '.$plan->{fingerprint});
+        $dbh->do('INSERT INTO koha_plugin_pimpmykoha_data_history(namespace,path,body,revision,saved_by) VALUES (?,?,?,?,?)', undef, 'restoration', "biblios/$id", $json->encode({fingerprint=>$plan->{fingerprint}, biblio=>$restored, source=>$source}), 1, $p->borrowernumber);
+        $dbh->commit;
+        $transaction = 0;
+        return $c->render(status=>200, openapi=>{restored=>JSON::true, kind=>'biblio', biblio_id=>0+$id, title=>$restored->{title}, items_restored=>JSON::false, index_queued=>JSON::true});
+    } catch {
+        return _failure($c, $dbh, $transaction, "$_");
     };
 }
 1;

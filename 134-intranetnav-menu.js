@@ -276,7 +276,7 @@
             makeItem('link', {
                 id: 'item-search', parentId: 'tools-group',
                 labelFr: "Recherche d'exemplaires", labelEn: 'Item search',
-                icon: 'fa-search', url: '/cgi-bin/koha/reports/guided_reports.pl?id=4323&op=run', target: 'same'
+                icon: 'fa-search', url: '/cgi-bin/koha/catalogue/itemsearch.pl', target: 'same'
             }),
             makeItem('link', {
                 id: 'appointments', parentId: 'tools-group',
@@ -425,7 +425,7 @@
             makeItem('link', {
                 id: 'serials-delete', parentId: 'admin-group',
                 labelFr: 'Périodiques à supprimer', labelEn: 'Serials to delete', icon: 'fa-newspaper-o',
-                url: '/cgi-bin/koha/reports/guided_reports.pl?id=5056&param_name=Site%7Cbranches%3Aall&sql_params=%25&op=run', target: 'new'
+                url: '/cgi-bin/koha/mainpage.pl?pmk_page=serials', target: 'new'
             })
         ];
     }

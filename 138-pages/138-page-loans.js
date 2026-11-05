@@ -55,6 +55,48 @@
             "populateLibraries();pageTools?.recordAnalysis('loans',{outcome:state.stop?'partial':'success',count:state.rows.length,source:'API REST Koha'});setStatus(state.stop?`Chargement arrêté",
             'trace commune de l’analyse'
         );
+        source = replaceRequired(
+            source,
+            "prêts actifs chargés. L’analyse approfondie n’est lancée que sur demande.",
+            "prêts actifs chargés. Les seuils d’ancienneté sont ceux de cette page, pas une règle d’amende. Une liste vide ne prouve pas l’absence d’historique si Koha a purgé les anciens prêts. L’analyse approfondie n’est lancée que sur demande.",
+            'seuils et liste vide'
+        );
+        source = replaceRequired(
+            source,
+            "const u=new URL(`${CFG.API}/checkouts`,location.origin);u.searchParams.set('_page',page);",
+            "const u=new URL(`${CFG.API}/checkouts`,location.origin);const library=$('dql-library')?.value||'';if(library)u.searchParams.set('q',JSON.stringify({library_id:library}));u.searchParams.set('_page',page);",
+            'site transmis à Koha'
+        );
+        source = replaceRequired(
+            source,
+            "if(arr.length<CFG.API_PAGE)break;page++;if(page>10000)",
+            "if(!state.fullNetwork&&!$('dql-library')?.value){state.sample=true;break}if(arr.length<CFG.API_PAGE)break;page++;if(page>10000)",
+            'échantillon sans site'
+        );
+        source = replaceRequired(
+            source,
+            "Charger les prêts</button>",
+            "Charger le site</button><select id=\"dql-library\"><option value=\"\">Choisir un site</option></select><button id=\"dql-library-all\" class=\"btn btn-default\" type=\"button\">Tout le réseau</button>",
+            'choix du site'
+        );
+        source = replaceRequired(
+            source,
+            "$('dql-refresh')?.addEventListener('click',()=>loadRows(true));",
+            "fillLoanLibraries();$('dql-library-all')?.addEventListener('click',()=>{state.fullNetwork=true;loadRows(true)});$('dql-refresh')?.addEventListener('click',()=>{state.fullNetwork=false;loadRows(true)});",
+            'deux lectures'
+        );
+        source = replaceRequired(
+            source,
+            "async function loadRows",
+            "async function fillLoanLibraries(){const select=$('dql-library');if(!select||select.dataset.ready)return;select.dataset.ready='1';try{const response=await fetch(new URL('/api/v1/libraries?_per_page=200',location.origin),{credentials:'same-origin',headers:{Accept:'application/json'}});const rows=response.ok?await response.json():[];if(!Array.isArray(rows))return;for(const library of rows){const id=library.library_id||library.library_code;if(!id)continue;const option=document.createElement('option');option.value=id;option.textContent=(library.name||id)+' ('+id+')';select.appendChild(option)}}catch(e){}}\nasync function loadRows",
+            'sites lus avant le chargement'
+        );
+        source = replaceRequired(
+            source,
+            "prêts actifs chargés.",
+            "prêts actifs chargés.${state.sample?' Échantillon sans site : première page seulement. Un prêt purgé n’est pas dans cette liste.':''}",
+            'échantillon annoncé'
+        );
         return source;
     }
 

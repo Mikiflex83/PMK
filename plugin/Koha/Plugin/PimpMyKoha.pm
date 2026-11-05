@@ -94,11 +94,14 @@ sub static_routes {
     local $/;
     my $manifest = decode_json(<$file>);
     my @files = ('bootstrap.js', 'storage.js', 'native-data.js', 'migration.js', 'manifest.json', $manifest->{autoloadBundle}, map { 'assets/' . $_ } sort keys %{$manifest->{files}});
+    my %produce = (js => 'application/javascript', json => 'application/json', sql => 'text/plain', png => 'image/png', css => 'text/css', md => 'text/plain');
     my %routes;
     for my $index (0..$#files) {
+        my ($ext) = $files[$index] =~ /\.([^.]+)\z/;
         $routes{'/' . $files[$index]} = {get => {
             'x-mojo-to' => 'PimpMyKoha::Controller#asset',
             operationId => 'pmk_asset_' . $index, tags => ['pmk'],
+            produces => [$produce{lc($ext // '')} || 'application/octet-stream'],
             parameters => [map { {name => $_, in => 'query', required => JSON::false, type => 'string'} } ('v', 'rel')],
             responses => {200 => {description => 'Bundled PMK resource'}, 404 => {description => 'Not found'}},
             'x-koha-authorization' => {permissions => {catalogue => '1'}},

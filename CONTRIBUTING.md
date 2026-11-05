@@ -7,7 +7,10 @@ Merci de contribuer à PimpMyKoha. Le projet améliore l’interface professionn
 - Utilisez une Issue pour décrire un défaut, une proposition ou une incompatibilité Koha.
 - Ne publiez jamais d’export de production, de donnée lecteur, de configuration Firebase, de secret fournisseur ou d’adresse interne.
 - Pour une vulnérabilité, suivez plutôt [la procédure de sécurité](SECURITY.md).
-- Gardez les valeurs historiques utiles comme valeurs par défaut, mais rendez les nouvelles options configurables pour les autres installations.
+- Gardez les seuils, libellés et règles métier utiles comme valeurs de base, mais rendez les nouvelles options configurables pour les autres installations.
+- Une installation neuve laisse chaque module éteint tant qu’aucun document de configuration n’est enregistré. Une configuration déjà enregistrée conserve son interrupteur.
+- Ne remettez pas d’adresse vers un hôte `dracenie.com` ou `dracenie.fr` dans les valeurs livrées. Une bibliothèque qui a déjà enregistré la sienne la conserve.
+- Ne rétablissez pas le suivi de migration de l’écran de configuration.
 
 ## Proposer une modification
 
@@ -31,6 +34,7 @@ PMK_CHROMIUM_PATH=/chemin/vers/chromium npm test
 cd ..
 python3 tests/firebase-free.py
 python3 tests/publication-safety.py
+python3 tests/repo-policy.py
 ```
 
 Construire les deux distributions dans un dossier temporaire :

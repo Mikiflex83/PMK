@@ -41,25 +41,16 @@
     const TOGGLE_CLASS = "pmk-external-links-toggle";
     const GENERATED_HOST_CLASS = "pmk-external-links-generated-host";
 
-    const HISTORICAL_BUTTON_IMAGE =
-        "https://cdn-icons-png.flaticon.com/512/15955/15955603.png";
-
-    const HISTORICAL_LINK_IMAGES = {
-        electre: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/koha/electre.png",
-        babelio: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/koha/1200px-Logo_Babelio.png",
-        google: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/koha/img.icons8.png"
-    };
-
     const HISTORICAL_CUSTOM_LINKS = [
         { id: "electre", enabled: true, labelFr: "Electre", labelEn: "Electre",
           urlTemplate: "https://www.electre-ng.com/#/search?q%3D(identifiant%3A%22{ISBN_FORMATTED}%22)%26debut%3D0%26resultat-max%3D50%26perimetre%3D%5Bperimetre-hors-numerique%5DHors%20num%C3%A9rique__%26tri.champ%3D%22date-parution%22%26tri.sens%3D%22desc%22%26inclure-embargos%3D%22true%22%26type%3D%22rapide%22",
-          scope: "all", newWindow: true, showLabel: false, iconType: "image", iconClass: "fa fa-external-link", imageUrl: HISTORICAL_LINK_IMAGES.electre },
+          scope: "all", newWindow: true, showLabel: false, iconType: "fa", iconClass: "fa fa-external-link", imageUrl: "" },
         { id: "babelio", enabled: true, labelFr: "Babelio", labelEn: "Babelio",
           urlTemplate: "https://www.google.com/search?q=babelio+{AUTHOR}+{TITLE}%20",
-          scope: "all", newWindow: true, showLabel: false, iconType: "image", iconClass: "fa fa-external-link", imageUrl: HISTORICAL_LINK_IMAGES.babelio },
+          scope: "all", newWindow: true, showLabel: false, iconType: "fa", iconClass: "fa fa-external-link", imageUrl: "" },
         { id: "google", enabled: true, labelFr: "Google", labelEn: "Google",
           urlTemplate: "https://www.google.com/search?q={AUTHOR}%20{TITLE}%20",
-          scope: "all", newWindow: true, showLabel: false, iconType: "image", iconClass: "fa fa-external-link", imageUrl: HISTORICAL_LINK_IMAGES.google }
+          scope: "all", newWindow: true, showLabel: false, iconType: "fa", iconClass: "fa fa-external-link", imageUrl: "" }
     ];
 
     const HISTORICAL_SEARCH_ELSE_LINKS = [
@@ -114,9 +105,9 @@
         buttonLabelFr: "Partager",
         buttonLabelEn: "Share",
         buttonShowLabel: false,
-        buttonVisualType: "image",
+        buttonVisualType: "fa",
         buttonIconClass: "fa fa-share-alt",
-        buttonImageUrl: HISTORICAL_BUTTON_IMAGE,
+        buttonImageUrl: "",
         buttonShowCaret: false,
 
         includeExistingLinks: true,

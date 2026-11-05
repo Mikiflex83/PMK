@@ -15,26 +15,26 @@
     const OWNER_ATTR = 'data-pmk027-owner';
 
     const DEFAULT_RULES = [
-        { id: 'films-se-detendre', enabled: true, label: 'Films-Se détendre', searchText: 'Sujet - Indexation: Films-Se détendre', iconUrl: 'https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Detente-ptif.png' },
-        { id: 'film-drame', enabled: true, label: 'Film-Drame', searchText: 'Sujet - Indexation: Film-Drame', iconUrl: 'https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/drame.png' },
-        { id: 'films-aventure', enabled: true, label: 'Films-Aventure', searchText: 'Sujet - Indexation: Films-Aventure', iconUrl: 'https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Aventure.png' },
-        { id: 'film-vintage', enabled: true, label: 'Film-Vintage', searchText: 'Sujet - Indexation: Film-Vintage', iconUrl: 'https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Vintage-Enfant-ptif.png' },
-        { id: 'film-famille', enabled: true, label: 'Film Famille', searchText: 'Sujet - Indexation: Film Famille', iconUrl: 'https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/En-Famille-ptif.png' },
-        { id: 'films-historiques', enabled: true, label: 'Films historiques', searchText: 'Sujet - Indexation: Films historiques', iconUrl: 'https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Historique-ptif.png' },
-        { id: 'films-regards-de-femmes', enabled: true, label: 'Films-Regards de femmes', searchText: 'Sujet - Indexation: Films-Regards de femmes', iconUrl: 'https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Female-gaze-ptif.png' },
-        { id: 'films-muets', enabled: true, label: 'Films muets', searchText: 'Sujet - Indexation: Films muets', iconUrl: 'https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Films-Muets-ptif.png' },
-        { id: 'films-musicaux', enabled: true, label: 'Films musicaux', searchText: 'Sujet - Indexation: Films musicaux', iconUrl: 'https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Musicaux-ptif.png' },
-        { id: 'films-noirs', enabled: true, label: 'Films noirs', searchText: 'Sujet - Indexation: Films noirs', iconUrl: 'https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Films-Noirs-ptif.png' },
-        { id: 'films-grands-classiques', enabled: true, label: 'Films-Grands classiques', searchText: 'Sujet - Indexation: Films-Grands classiques', iconUrl: 'https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Grands-Classiques-ptif.png' },
-        { id: 'films-japanimation', enabled: true, label: 'Japanimation', searchText: 'Sujet - Indexation: Films-Japanimation', iconUrl: 'https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Japanimation-ptif.png' },
-        { id: 'films-science-fiction', enabled: true, label: 'Science-fiction', searchText: 'Sujet - Indexation: Films-Science-fiction', iconUrl: 'https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Science-fiction-ptif.png' },
-        { id: 'films-western', enabled: true, label: 'Western', searchText: 'Sujet - Indexation: Films-Western', iconUrl: 'https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Western-ptif.png' },
-        { id: 'series-courtes', enabled: true, label: 'Séries courtes', searchText: 'Sujet - Indexation: Séries courtes', iconUrl: 'https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/series-courtes.png' },
-        { id: 'films-vintage', enabled: true, label: 'Films-Vintage', searchText: 'Sujet - Indexation: Films-Vintage', iconUrl: 'https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Vintage-Enfant-ptif.png' },
-        { id: 'comics', enabled: true, label: 'Comics', searchText: 'Sujet - Indexation: Comics', iconUrl: 'https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Comics-ptif.png' },
-        { id: 'films-action', enabled: true, label: 'Films-Action', searchText: 'Sujet - Indexation: Films-Action', iconUrl: 'https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/action.png' },
-        { id: 'films-courts-metrages', enabled: true, label: 'Court metrage', searchText: 'Sujet - Indexation: Films-Courts métrages', iconUrl: 'https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Court-metrage-ptif.png' },
-        { id: 'films-horreur', enabled: true, label: 'Horreur', searchText: "Sujet - Indexation: Films d'horreur", iconUrl: 'https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Horreur-ptif.png' }
+        { id: 'films-se-detendre', enabled: true, label: 'Films-Se détendre', searchText: 'Sujet - Indexation: Films-Se détendre', iconUrl: '' },
+        { id: 'film-drame', enabled: true, label: 'Film-Drame', searchText: 'Sujet - Indexation: Film-Drame', iconUrl: '' },
+        { id: 'films-aventure', enabled: true, label: 'Films-Aventure', searchText: 'Sujet - Indexation: Films-Aventure', iconUrl: '' },
+        { id: 'film-vintage', enabled: true, label: 'Film-Vintage', searchText: 'Sujet - Indexation: Film-Vintage', iconUrl: '' },
+        { id: 'film-famille', enabled: true, label: 'Film Famille', searchText: 'Sujet - Indexation: Film Famille', iconUrl: '' },
+        { id: 'films-historiques', enabled: true, label: 'Films historiques', searchText: 'Sujet - Indexation: Films historiques', iconUrl: '' },
+        { id: 'films-regards-de-femmes', enabled: true, label: 'Films-Regards de femmes', searchText: 'Sujet - Indexation: Films-Regards de femmes', iconUrl: '' },
+        { id: 'films-muets', enabled: true, label: 'Films muets', searchText: 'Sujet - Indexation: Films muets', iconUrl: '' },
+        { id: 'films-musicaux', enabled: true, label: 'Films musicaux', searchText: 'Sujet - Indexation: Films musicaux', iconUrl: '' },
+        { id: 'films-noirs', enabled: true, label: 'Films noirs', searchText: 'Sujet - Indexation: Films noirs', iconUrl: '' },
+        { id: 'films-grands-classiques', enabled: true, label: 'Films-Grands classiques', searchText: 'Sujet - Indexation: Films-Grands classiques', iconUrl: '' },
+        { id: 'films-japanimation', enabled: true, label: 'Japanimation', searchText: 'Sujet - Indexation: Films-Japanimation', iconUrl: '' },
+        { id: 'films-science-fiction', enabled: true, label: 'Science-fiction', searchText: 'Sujet - Indexation: Films-Science-fiction', iconUrl: '' },
+        { id: 'films-western', enabled: true, label: 'Western', searchText: 'Sujet - Indexation: Films-Western', iconUrl: '' },
+        { id: 'series-courtes', enabled: true, label: 'Séries courtes', searchText: 'Sujet - Indexation: Séries courtes', iconUrl: '' },
+        { id: 'films-vintage', enabled: true, label: 'Films-Vintage', searchText: 'Sujet - Indexation: Films-Vintage', iconUrl: '' },
+        { id: 'comics', enabled: true, label: 'Comics', searchText: 'Sujet - Indexation: Comics', iconUrl: '' },
+        { id: 'films-action', enabled: true, label: 'Films-Action', searchText: 'Sujet - Indexation: Films-Action', iconUrl: '' },
+        { id: 'films-courts-metrages', enabled: true, label: 'Court metrage', searchText: 'Sujet - Indexation: Films-Courts métrages', iconUrl: '' },
+        { id: 'films-horreur', enabled: true, label: 'Horreur', searchText: "Sujet - Indexation: Films d'horreur", iconUrl: '' }
     ];
 
     const DEFAULTS = {

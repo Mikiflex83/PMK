@@ -48,4 +48,5 @@ sub call {Koha::Plugin::PimpMyKoha::Nedap::counts(PMKTest::Context->new({%$param
 }
 my $ua=Koha::Plugin::PimpMyKoha::Nedap::_user_agent();
 is($ua->max_redirects,0,'Redirects disabled in actual client');is($ua->insecure,0,'TLS certificate verification on');is($ua->request_timeout,15,'Provider request timeout bounded');is($ua->max_response_size,2_000_000,'Provider response size bounded');
+ok(!$ua->proxy->http && !$ua->proxy->https,'Provider request does not use an ambient proxy');
 done_testing;

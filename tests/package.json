@@ -24,7 +24,8 @@
     "plugin:native": "node koha-native-data.cjs",
     "plugin:engines": "node koha-native-engines.cjs",
     "firebase:free": "python3 firebase-free.py",
-    "plugin:installation": "node koha-installation.cjs"
+    "plugin:installation": "node koha-installation.cjs",
+    "ktd:staff": "node ktd-staff.cjs"
   },
   "devDependencies": {
     "playwright": "1.64.1",

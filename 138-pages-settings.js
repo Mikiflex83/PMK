@@ -106,7 +106,7 @@ const catalog={
         "participants": "participants",
         "recurrenceRules": "recurrenceRules"
       },
-      "adminPassword": "admin",
+      "adminPassword": "",
       "defaultView": "slots"
     },
     "settings": {},
@@ -198,7 +198,7 @@ const catalog={
       "Corriger les comptages",
       "Consulter les statistiques et exporter"
     ],
-    "prerequisites": "Koha et configuration commune du module Compteur de fréquentation.",
+    "prerequisites": "Source des lieux au choix : liste manuelle, sites Koha, ou les deux. Un lieu ajouté à la main reste dans la liste du compteur. Un lieu masqué sort de la saisie sans effacer ses comptages.",
     "runtime": {},
     "settings": {},
     "storageKey": "",
@@ -207,14 +207,14 @@ const catalog={
   },
   "restore-deleted-items": {
     "title": "Restauration d’exemplaires",
-    "objective": "Retrouver et restaurer les exemplaires supprimés, directement dans PimpMyKoha.",
-    "engine": "Rapports Koha, restauration transactionnelle PMK, indexation et API Koha natives.",
+    "objective": "Retrouver et restaurer les exemplaires ou les notices supprimés, sans plugin supplémentaire.",
+    "engine": "Même parcours qu’UndeleteRecords, inclus dans PimpMyKoha : recherche par période, restauration des exemplaires ou des notices, réindexation. Le plugin inLibro n’est pas requis.",
     "functions": [
       "Rechercher par code-barres ou dates",
       "Restaurer un exemplaire ou un lot",
       "Proposer le prêt ou le retour après restauration"
     ],
-    "prerequisites": "Rapports de recherche et droit edit_items ; droit edit_catalogue si la notice doit aussi être restaurée. Lecteur technique uniquement pour le cycle avancé prêt/retour. Aucun autre plugin requis.",
+    "prerequisites": "Aucun plugin UndeleteRecords. Droit edit_items pour les exemplaires, edit_catalogue pour les notices. Un rapport SQL reste facultatif. Lecteur technique uniquement pour le cycle avancé prêt/retour.",
     "runtime": {
       "allowedUsernames": [],
       "patronCardnumber": "",
@@ -1352,7 +1352,7 @@ const catalog={
     ]
   },
   "transfers": {
-    "title": "Transferts / navette",
+    "title": "Transferts entre sites",
     "objective": "Surveiller les demandes de transfert et les documents en transit entre sites.",
     "engine": "Rapport SQL paginé, API exemplaires, règles de délai et traitement natif.",
     "functions": [
@@ -2234,9 +2234,9 @@ const catalog={
       "Préparer et enregistrer un message",
       "Vérifier les écritures et reprendre les dossiers"
     ],
-    "prerequisites": "Rapport compatible avec le contrat de colonnes ; permissions Koha de rapports et circulation. Le SQL générique fourni ne reproduit pas les règles Dracénie du rapport 5261 ; ce dernier reste la source par défaut.",
+    "prerequisites": "Créer le rapport privé avec le SQL fourni, puis indiquer son numéro. 0 laisse la page sans classement.",
     "runtime": {
-      "reportId": 5261,
+      "reportId": 0,
       "defaultBranch": "",
       "pageSize": 500,
       "maxPages": 200,
@@ -2248,14 +2248,11 @@ const catalog={
       "branchParameter": "Site adhérent|branches:all",
       "locale": "fr-FR",
       "currency": "EUR",
-      "title": "Gestion des retards TP4",
+      "title": "Gestion des retards",
       "quickMessages": [
-        "Appelé pour TP4",
-        "Lettre TP4 à la signature",
-        "Lettre TP4 envoyée",
-        "Transmis au service finances",
-        "Documents recherchés pour TP4",
-        "Adhérent contacté pour TP4"
+        "Contact effectué",
+        "Message interne ajouté",
+        "Dossier à revoir"
       ],
       "columnMap": {},
       "stageRules": [
@@ -2300,16 +2297,13 @@ const catalog={
           "flags": "i"
         }
       ],
-      "dnrEnabled": true,
+      "dnrEnabled": false,
       "dnrCategory": "DNR",
       "dnrLabel": "Dossier DNR",
       "dnrPrepareLabel": "Préparer un dossier DNR",
       "dnrEditLabel": "Modifier le dossier DNR",
       "workflowGuide": [
-        "Recherche dans les sites propriétaire et actuel. Lettre à J+8 après appel ; contrôle à J+10 après envoi.",
-        "Avant transmission : restitution ou rachat, retours, remise empruntable, annulation auprès de la logistique et catégorie adaptée. Après transmission : retirer les prêts du litige, puis passer les exemplaires en perdu si nécessaire.",
-        "DNR : enregistrer les champs avant retour, puis passer les exemplaires en perdu. Sortie de DNR : effacer les champs prescrits et choisir Adulte / Jeune.",
-        "Les notifications indiquent un envoi. La logistique et les finances restent à contacter par l’agent. Après transmission au Trésor Public, appliquer la consigne du tutoriel avant toute restitution."
+        "Examiner les prêts en retard, puis enregistrer un message dans la fiche Koha si la bibliothèque le décide. Aucune lettre ni aucun barème n’est imposé."
       ],
       "dnrEntryGuide": "Passage en DNR : choisir la catégorie DNR et enregistrer la carte, puis rouvrir « Modifier » pour compléter date du dernier contact signée, année, documents dus, montant et note interne. Vérifier leur présence sur la carte avant de faire les retours.",
       "dnrExitGuide": "Sortie de DNR : effacer dernier contact, année, documents dus et montant, puis choisir Adulte / Jeune. La note interne datée peut rester selon la procédure DNR.",

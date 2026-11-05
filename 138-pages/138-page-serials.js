@@ -79,6 +79,54 @@
             "state.rows=rows;render();pageTools?.recordAnalysis('serials',{outcome:state.stop?'partial':'success',count:rows.length,source:'Rapport SQL Koha'});setStatus(`${fmt(rows.length)} abonnements chargés.`,'ok')",
             'trace commune de l’analyse'
         );
+        source = replaceRequired(
+            source,
+            "id:Number(g('Subscription_ID','subscriptionid')),biblio_id:Number(g('Biblio_ID','biblionumber')),title:g('Title','title')||'',library:g('Library','branchcode')||'',start:g('Start_Date','startdate'),end:g('End_Date','enddate')",
+            "id:Number(g('Subscription_ID','subscriptionid','subscription_id')),biblio_id:Number(g('Biblio_ID','biblionumber','biblio_id')),title:g('Title','title')||'',library:g('Library','branchcode','library_id')||'',start:g('Start_Date','startdate','start_date'),end:g('End_Date','enddate','end_date')",
+            'champs REST des abonnements'
+        );
+        source = replaceRequired(
+            source,
+            "async function loadAll(){if(state.loading)return;const id=Number(state.settings.reportId)||0;if(!id)return setStatus(\"Renseigne d'abord l'ID du rapport SQL dans Règles.\",'error');",
+            "async function loadSubscriptionsFromApi(){if(state.loading)return;state.loading=true;state.stop=false;state.reportReadAt=new Date().toISOString();state.reportSourceAt=null;const rows=[];let page=1;try{while(!state.stop&&page<=50){const u=new URL('/api/v1/subscriptions',location.origin);u.searchParams.set('_page',String(page));u.searchParams.set('_per_page','100');u.searchParams.set('_order_by','subscription_id');const r=await kfetch(u,{credentials:'same-origin',cache:'no-store',headers:{Accept:'application/json'}});if(!r.ok)throw new Error('API abonnements HTTP '+r.status+'. Indiquez le rapport SQL si cette route est indisponible.');const a=await r.json();if(!Array.isArray(a)||!a.length)break;rows.push(...a.map(norm).filter(x=>x.id));if(a.length<100)break;page++}state.rows=rows;render();const text=rows.length?(fmt(rows.length)+\" abonnements lus dans Koha. Les comptes de fascicules restent vides sans rapport SQL : un zéro ne prouve pas l'absence de fascicules.\"):\"Aucun abonnement dans ce Koha. La page n'a rien à suivre tant qu'un abonnement n'existe pas.\";pageTools?.recordAnalysis('serials',{outcome:'success',count:rows.length,source:'API Koha'});setStatus(text,'ok')}catch(e){setStatus(e.message,'error')}finally{state.loading=false}}\nasync function loadAll(){if(state.loading)return;const id=Number(state.settings.reportId)||0;if(!id)return loadSubscriptionsFromApi();",
+            'abonnements lus sans rapport'
+        );
+        source = replaceRequired(
+            source,
+            "parce que Koha ne fournit pas une liste REST globale équivalente pour les abonnements/fascicules.",
+            "Les comptes de fascicules viennent du rapport SQL. Sans identifiant, la page lit les abonnements dans Koha.",
+            'source des abonnements'
+        );
+        source = replaceRequired(
+            source,
+            "Charger le rapport</button>",
+            "Charger les abonnements</button>",
+            'action lisible'
+        );
+        source = replaceRequired(
+            source,
+            "function pmkBaseEvaluate(r){const hits=RULES.filter(x=>{if(state.settings.disabledRuleIds?.includes(x.id))return false;",
+            "const FASCICULE_RULES=new Set(['SER-003','SER-004','SER-005','SER-006','SER-007','SER-008','SER-009','SER-010','SER-014','SER-015']);function pmkBaseEvaluate(r){const hits=RULES.filter(x=>{if(!state.fasciculesKnown&&FASCICULE_RULES.has(x.id))return false;if(state.settings.disabledRuleIds?.includes(x.id))return false;",
+            'règles de fascicules suspendues sans rapport'
+        );
+        source = replaceRequired(
+            source,
+            "async function loadSubscriptionsFromApi(){if(state.loading)return;state.loading=true;state.stop=false;",
+            "async function loadSubscriptionsFromApi(){if(state.loading)return;state.loading=true;state.stop=false;state.fasciculesKnown=false;",
+            'compteurs inconnus'
+        );
+        source = replaceRequired(
+            source,
+            "if(!id)return loadSubscriptionsFromApi();state.loading=true;state.stop=false;",
+            "if(!id)return loadSubscriptionsFromApi();state.loading=true;state.stop=false;state.fasciculesKnown=true;",
+            'compteurs fournis par le rapport'
+        );
+        source = replaceRequired(
+            source,
+            "Les comptes de fascicules restent vides sans rapport SQL : un zéro ne prouve pas l'absence de fascicules.",
+            "Les comptes de fascicules restent vides sans rapport SQL : un zéro ne prouve pas l'absence de fascicules. Les règles qui comptent les fascicules sont suspendues.",
+            'règles annoncées'
+        );
         return source;
     }
 

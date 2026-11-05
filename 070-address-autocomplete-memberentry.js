@@ -914,6 +914,7 @@
             currentConfig = normalizeConfig(deepMerge(DEFAULT_CONFIG, cfg || {}));
         } catch (_) {
             currentConfig = normalizeConfig(DEFAULT_CONFIG);
+            currentConfig.enabled = false;
         }
 
         if (typeof window.PMKConfig.subscribe === 'function') {
@@ -932,9 +933,6 @@
     }
 
     function start() {
-        currentConfig = normalizeConfig(DEFAULT_CONFIG);
-        render();
-
         if (window.PMKConfig) initializePmk();
         else window.addEventListener('pmk:config-ready', initializePmk, { once: true });
     }

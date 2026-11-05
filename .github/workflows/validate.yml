@@ -58,6 +58,9 @@ jobs:
       - name: Contrôler les données publiables
         run: python3 tests/publication-safety.py
 
+      - name: Vérifier les règles durables du dépôt
+        run: python3 tests/repo-policy.py
+
       - name: Exécuter les 79 groupes de régression
         working-directory: tests
         run: npm test

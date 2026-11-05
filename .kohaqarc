@@ -1,0 +1,4 @@
+# Outils de qualité KTD pour ce plugin.
+# Le motif reprend les formes du billet KTD et les titres déjà utilisés dans ce dépôt.
+commit_subject_pattern: '^(?:\[#\d+\] |v?\d+\.\d+\.\d+|Automated commit|Merge pull request|(?:ci|docs|test|chore|fix|feat|refactor): |Bump ).+|^[A-ZÉÈÀÂÊÎÔÛÇ].{10,}$'
+commit_subject_error_message: "Le titre doit être une forme plugin ([#123], version, merge, commit conventionnel, Bump) ou une phrase commençant par une majuscule."

@@ -15,22 +15,13 @@
     const MODULE_ID = 'home-widget-useful-links';
     const VERSION = '1.1.2';
 
-    // Les valeurs locales historiques sont conservées pour l'installation d'origine,
-    // sans être diffusées comme configuration par défaut aux autres Koha.
-    const IS_LEGACY_SITE = /(^|\.)dracenie\.com$/i.test(window.location.hostname);
-    const LEGACY_LINKS = [
-            { id:'livres-hebdo', enabled:true, column:'left', label:'Livre Hebdo', url:'https://www.livreshebdo.fr/', note:'', newTab:true },
-            { id:'atlas', enabled:true, column:'left', label:'Atlas des bibliothèques', url:'https://shs.hal.science/halshs-04444109', note:'', newTab:true },
-            { id:'site', enabled:true, column:'right', label:'Site Internet', url:'https://mediatheques.dracenie.com/', note:'', newTab:true },
-            { id:'agenda', enabled:true, column:'right', label:'Agenda', url:'https://mediatheques.dracenie.com/accueil/agenda', note:'', newTab:true },
-            { id:'infos', enabled:true, column:'right', label:'Infos pratiques des médiathèques', url:'https://mediatheques.dracenie.com/accueil/infos_et_services-les_mediathques', note:'', newTab:true },
-            { id:'billetterie', enabled:true, column:'right', label:'Billetterie', url:'https://billetterieculture.dracenie.com/', note:'', newTab:true }
-    ];
+    // Une installation neuve ne préremplit aucun lien. Une configuration
+    // déjà enregistrée conserve sa propre liste.
     const DEFAULT_CONFIG = {
         enabled: true,
         titleFr: 'Liens pratiques',
         titleEn: 'Useful links',
-        links: IS_LEGACY_SITE ? LEGACY_LINKS : []
+        links: []
     };
 
     let config = clone(DEFAULT_CONFIG);
@@ -177,6 +168,26 @@
             .pmk137-liens-utiles a{overflow-wrap:anywhere;word-break:break-word}
             .pmk137-liens-utiles-note{margin-left:.25rem;color:#495057}
             @media(max-width:900px){.pmk137-liens-utiles-cols{grid-template-columns:1fr}.pmk137-liens-utiles-col+ .pmk137-liens-utiles-col{border-left:0;border-top:1px solid #ced4d9}}
+            .pmk137-links-dialog{width:min(920px,calc(100vw - 2rem));max-height:min(760px,calc(100vh - 2rem));padding:0;border:1px solid #ced4d9}
+            .pmk137-links-dialog form{display:flex;flex-direction:column;max-height:min(760px,calc(100vh - 2rem))}
+            .pmk137-links-head,.pmk137-links-foot{padding:.85rem 1rem}
+            .pmk137-links-head{border-bottom:1px solid #ced4d9}
+            .pmk137-links-head h3{margin:0 0 .25rem}
+            .pmk137-links-head p,.pmk137-links-empty{margin:0;color:#495057}
+            .pmk137-links-body{overflow:auto;padding:1rem;display:flex;flex-direction:column;gap:.75rem}
+            .pmk137-links-titles{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+            .pmk137-links-titles label,.pmk137-link-card label{display:flex;flex-direction:column;gap:.2rem;font-size:.85rem}
+            .pmk137-links-dialog input,.pmk137-links-dialog select{width:100%;box-sizing:border-box}
+            .pmk137-link-card{border:1px solid #ced4d9;margin:0;padding:.75rem}
+            .pmk137-link-card legend{padding:0 .25rem;font-weight:600}
+            .pmk137-link-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:.6rem}
+            .pmk137-link-grid .pmk137-span{grid-column:1 / -1}
+            .pmk137-link-flags{display:flex;flex-wrap:wrap;gap:.85rem;margin:.65rem 0}
+            .pmk137-link-flags label{flex-direction:row;align-items:center;gap:.35rem}
+            .pmk137-link-flags input{width:auto}
+            .pmk137-link-actions,.pmk137-links-foot{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center}
+            .pmk137-links-foot{border-top:1px solid #ced4d9;justify-content:flex-end}
+            @media(max-width:700px){.pmk137-links-titles,.pmk137-link-grid{grid-template-columns:1fr}}
         `;
         document.head.appendChild(style);
     }
@@ -235,7 +246,7 @@
             const button = document.createElement('button');
             button.type = 'button';
             button.className = 'btn btn-sm btn-outline-secondary';
-            button.textContent = '⚙';
+            button.textContent = 'Configurer';
             button.setAttribute('aria-label', lang() === 'en' ? 'Configure useful links' : 'Configurer les liens utiles');
             button.addEventListener('click', openSettings);
             cfgHost.appendChild(button);
@@ -247,20 +258,29 @@
         const draft = clone(config);
         const dialog = document.createElement('dialog');
         dialog.id = 'pmk137-links-settings';
-        dialog.style.cssText = 'width:min(900px,94vw);max-height:90vh;overflow:auto;border:1px solid #ced4d9;border-radius:.65rem;padding:1rem';
+        dialog.className = 'pmk137-links-dialog';
         const form = document.createElement('form');
-        const title = document.createElement('h3'); title.textContent = lang() === 'en' ? 'Useful links' : 'Liens utiles'; form.appendChild(title);
+        const head = document.createElement('div'); head.className = 'pmk137-links-head';
+        const title = document.createElement('h3'); title.id = 'pmk137-links-title'; title.textContent = lang() === 'en' ? 'Useful links' : 'Liens utiles';
+        dialog.setAttribute('aria-labelledby', title.id);
+        const intro = document.createElement('p');
+        intro.textContent = lang() === 'en'
+            ? 'The title and the two columns are saved together. A link accepts an http(s) address or a Koha path starting with /.'
+            : 'Le titre et les deux colonnes s’enregistrent ensemble. Un lien accepte une adresse http(s) ou un chemin Koha commençant par /.';
+        head.append(title, intro); form.appendChild(head);
+        const body = document.createElement('div'); body.className = 'pmk137-links-body'; form.appendChild(body);
         function input(parent, caption, value, change, type = 'text') {
-            const label = document.createElement('label'); label.style.cssText = 'display:block;margin:.5rem 0';
-            const text = document.createElement('span'); text.textContent = caption + ' '; label.appendChild(text);
+            const label = document.createElement('label');
+            const text = document.createElement('span'); text.textContent = caption; label.appendChild(text);
             const control = document.createElement('input'); control.type = type;
             if (type === 'checkbox') control.checked = value; else control.value = value;
             control.addEventListener('input', () => change(type === 'checkbox' ? control.checked : control.value));
             label.appendChild(control); parent.appendChild(label); return control;
         }
-        input(form, 'Titre FR', draft.titleFr, v => draft.titleFr = v);
-        input(form, 'Title EN', draft.titleEn, v => draft.titleEn = v);
-        const items = document.createElement('div'); form.appendChild(items);
+        const titles = document.createElement('div'); titles.className = 'pmk137-links-titles'; body.appendChild(titles);
+        input(titles, 'Titre FR', draft.titleFr, v => draft.titleFr = v);
+        input(titles, 'Title EN', draft.titleEn, v => draft.titleEn = v);
+        const items = document.createElement('div'); body.appendChild(items);
         const diagnostics = document.createElement('div'); diagnostics.setAttribute('role', 'status'); diagnostics.setAttribute('aria-live', 'polite');
         function renderDiagnostics() {
             const results = diagnoseLinks(draft.links);
@@ -276,49 +296,61 @@
         }
         function rows() {
             items.replaceChildren();
+            if (!draft.links.length) {
+                const empty = document.createElement('p'); empty.className = 'pmk137-links-empty';
+                empty.textContent = lang() === 'en' ? 'No link yet. Add the first one.' : 'Aucun lien pour l’instant. Ajoutez le premier.';
+                items.appendChild(empty);
+            }
             draft.links.forEach((link, index) => {
-                const row = document.createElement('fieldset'); row.style.cssText = 'border:1px solid #ced4d9;padding:.6rem;margin:.6rem 0';
-                const legend = document.createElement('legend'); legend.textContent = String(index + 1); row.appendChild(legend);
-                input(row, 'Actif / Enabled', link.enabled, v => link.enabled = v, 'checkbox');
-                input(row, 'Libellé / Label', link.label, v => { link.label = v; renderDiagnostics(); });
-                input(row, 'URL', link.url, v => { link.url = v; renderDiagnostics(); });
-                input(row, 'Note', link.note, v => link.note = v);
-                input(row, 'Nouvel onglet / New tab', link.newTab, v => link.newTab = v, 'checkbox');
+                const row = document.createElement('fieldset'); row.className = 'pmk137-link-card';
+                const legend = document.createElement('legend');
+                legend.textContent = (index + 1) + ' · ' + (clean(link.label) || (lang() === 'en' ? 'New link' : 'Nouveau lien'));
+                row.appendChild(legend);
+                const grid = document.createElement('div'); grid.className = 'pmk137-link-grid'; row.appendChild(grid);
+                input(grid, 'Libellé / Label', link.label, v => { link.label = v; renderDiagnostics(); legend.textContent = (index + 1) + ' · ' + (clean(v) || (lang() === 'en' ? 'New link' : 'Nouveau lien')); });
+                input(grid, 'URL', link.url, v => { link.url = v; renderDiagnostics(); });
+                const note = input(grid, 'Note', link.note, v => link.note = v); note.parentElement.classList.add('pmk137-span');
+                const flags = document.createElement('div'); flags.className = 'pmk137-link-flags'; row.appendChild(flags);
+                input(flags, 'Actif / Enabled', link.enabled, v => link.enabled = v, 'checkbox');
+                input(flags, 'Nouvel onglet / New tab', link.newTab, v => link.newTab = v, 'checkbox');
+                const column = document.createElement('label');
+                const columnText = document.createElement('span'); columnText.textContent = 'Colonne / Column'; column.appendChild(columnText);
+                const select = document.createElement('select');
+                [['left', 'Gauche / Left'], ['right', 'Droite / Right']].forEach(([value, text]) => select.add(new Option(text, value)));
+                select.value = link.column; select.addEventListener('change', () => link.column = select.value); column.appendChild(select); flags.appendChild(column);
                 const state = document.createElement('p'); state.className = 'pmk137-link-check-state';
                 state.textContent = link.lastCheckedAt ? 'Vérifié manuellement le ' + new Date(link.lastCheckedAt).toLocaleString('fr-FR') : 'Pas encore vérifié manuellement';
                 row.appendChild(state);
-                const test = document.createElement('button'); test.type = 'button'; test.textContent = 'Tester le lien';
+                const actions = document.createElement('div'); actions.className = 'pmk137-link-actions'; row.appendChild(actions);
+                const test = document.createElement('button'); test.type = 'button'; test.className = 'btn btn-default btn-sm'; test.textContent = 'Tester le lien';
                 test.addEventListener('click', () => {
                     const url = canonicalUrl(link.url);
                     if (!url || !/^https?:\/\//i.test(url)) { error.textContent = 'Adresse invalide : corrigez-la avant le test.'; return; }
                     const destination = /^https?:\/\//i.test(link.url) ? new URL(link.url) : new URL(link.url, location.origin);
                     window.open(destination.href, '_blank', 'noopener');
                     link.lastCheckedAt = new Date().toISOString(); link.lastCheckStatus = 'manual-open'; rows();
-                }); row.appendChild(test);
-                const label = document.createElement('label'); label.textContent = 'Colonne / Column ';
-                const select = document.createElement('select');
-                [['left', 'Gauche / Left'], ['right', 'Droite / Right']].forEach(([value, text]) => select.add(new Option(text, value)));
-                select.value = link.column; select.addEventListener('change', () => link.column = select.value); label.appendChild(select); row.appendChild(label);
-                [['↑', -1], ['↓', 1], ['Supprimer / Delete', 0]].forEach(([text, offset]) => {
-                    const button = document.createElement('button'); button.type = 'button'; button.textContent = text;
+                }); actions.appendChild(test);
+                [['Monter', -1], ['Descendre', 1], ['Supprimer / Delete', 0]].forEach(([text, offset]) => {
+                    const button = document.createElement('button'); button.type = 'button'; button.className = 'btn btn-default btn-sm'; button.textContent = text;
                     button.disabled = offset !== 0 && (index + offset < 0 || index + offset >= draft.links.length);
                     button.addEventListener('click', () => {
                         if (!offset) draft.links.splice(index, 1);
                         else [draft.links[index], draft.links[index + offset]] = [draft.links[index + offset], draft.links[index]];
                         rows();
-                    }); row.appendChild(button);
+                    }); actions.appendChild(button);
                 });
                 items.appendChild(row);
             });
             renderDiagnostics();
         }
+        body.appendChild(diagnostics);
         rows();
-        const add = document.createElement('button'); add.type = 'button'; add.textContent = 'Ajouter un lien / Add link';
-        add.addEventListener('click', () => { draft.links.push(newLink()); rows(); }); form.appendChild(add);
-        form.appendChild(diagnostics);
-        const error = document.createElement('p'); error.setAttribute('role', 'alert'); form.appendChild(error);
-        const save = document.createElement('button'); save.type = 'submit'; save.className = 'btn btn-primary'; save.textContent = 'Enregistrer / Save'; form.appendChild(save);
-        const cancel = document.createElement('button'); cancel.type = 'button'; cancel.textContent = 'Annuler / Cancel'; cancel.addEventListener('click', () => dialog.close()); form.appendChild(cancel);
+        const add = document.createElement('button'); add.type = 'button'; add.className = 'btn btn-default'; add.textContent = 'Ajouter un lien / Add link';
+        add.addEventListener('click', () => { draft.links.push(newLink()); rows(); }); body.appendChild(add);
+        const foot = document.createElement('div'); foot.className = 'pmk137-links-foot'; form.appendChild(foot);
+        const error = document.createElement('p'); error.setAttribute('role', 'alert'); error.style.marginRight = 'auto'; foot.appendChild(error);
+        const cancel = document.createElement('button'); cancel.type = 'button'; cancel.className = 'btn btn-default'; cancel.textContent = 'Annuler / Cancel'; cancel.addEventListener('click', () => dialog.close()); foot.appendChild(cancel);
+        const save = document.createElement('button'); save.type = 'submit'; save.className = 'btn btn-primary'; save.textContent = 'Enregistrer / Save'; foot.appendChild(save);
         form.addEventListener('submit', async event => {
             event.preventDefault();
             if (!window.PMKConfig?.isKohaSuperlibrarian?.()) return;

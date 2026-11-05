@@ -44,6 +44,42 @@
             "state.loadCoverage.complete=state.loadCoverage.complete&&!state.stop;pageTools?.recordAnalysis('reservations',{startedAt:state.loadCoverage.startedAt,finishedAt:state.loadCoverage.finishedAt,outcome:state.loadCoverage.complete?'success':'partial',count:rows.length,source:'API REST Koha'});state.loading=false;",
             'trace commune de l’analyse'
         );
+        source = replaceRequired(
+            source,
+            "const u=new URL(`${CFG.API}/holds`,location.origin);u.searchParams.set('_page',page);",
+            "const u=new URL(`${CFG.API}/holds`,location.origin);if(state.pickup)u.searchParams.set('pickup_library_id',state.pickup);if(state.status&&/^[WTFPS]$/.test(state.status))u.searchParams.set('status',state.status);u.searchParams.set('_page',page);",
+            'filtres avant le chargement'
+        );
+        source = replaceRequired(
+            source,
+            "seul un constat vérifié justifie une intervention directe.",
+            "seul un constat vérifié justifie une intervention directe. Le site de retrait et le statut, lorsqu'ils sont choisis, limitent la lecture. Une note préparée ici n'est pas une réservation Koha.",
+            'lecture limitée et note locale'
+        );
+        source = replaceRequired(
+            source,
+            "if(state.pickup)u.searchParams.set('pickup_library_id',state.pickup);if(state.status&&/^[WTFPS]$/.test(state.status))u.searchParams.set('status',state.status);",
+            "if(state.pickup)u.searchParams.set('pickup_library_id',state.pickup);if(state.status==='W'||state.status==='T'||state.status==='P')u.searchParams.set('status',state.status);if(state.status==='SUSP')u.searchParams.set('suspended','1');",
+            'statuts transmis tels qu’ils sont choisis'
+        );
+        source = replaceRequired(
+            source,
+            "state.pickup=e.target.value;state.page=1;renderCurrent()",
+            "state.pickup=e.target.value;state.page=1;renderCurrent();fillReservationLibraries()",
+            'liste des sites restaurée après affichage'
+        );
+        source = replaceRequired(
+            source,
+            "async function loadHolds",
+            "async function fillReservationLibraries(){const select=$('dqr-pickup');if(!select)return;if(!state.kohaLibraries){try{const response=await fetch(new URL('/api/v1/libraries?_per_page=200',location.origin),{credentials:'same-origin',headers:{Accept:'application/json'}});const rows=response.ok?await response.json():[];state.kohaLibraries=Array.isArray(rows)?rows:[]}catch(e){state.kohaLibraries=[]}}const current=state.pickup||'';select.replaceChildren();const empty=document.createElement('option');empty.value='';empty.textContent='Tous sites de retrait';select.appendChild(empty);for(const library of state.kohaLibraries){const id=library.library_id||library.library_code;if(!id)continue;const option=document.createElement('option');option.value=id;option.textContent=(library.name||id)+' ('+id+')';select.appendChild(option)}if(current)select.value=current}\nasync function loadHolds",
+            'sites Koha avant le chargement'
+        );
+        source = replaceRequired(
+            source,
+            "return}loadHolds(true)});",
+            "return}loadHolds(true)});fillReservationLibraries();",
+            'sites prêts avant le premier clic'
+        );
         return source;
     }
 

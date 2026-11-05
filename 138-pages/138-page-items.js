@@ -51,6 +51,60 @@
             "state.rows=rows;prepareDerived();populate();updateLoadProgress(rows.length,page,true);render();pageTools?.recordAnalysis('items',{outcome:state.stop?'partial':'success',count:rows.length,source:'API REST Koha'});if(!silent)setStatus(`${fmt(rows.length)} exemplaires chargés",
             'trace commune de l’analyse'
         );
+        source = replaceRequired(
+            source,
+            "async function loadAll(silent=false){if(state.loading)return;state.loading=true;state.stop=false;if(!silent)setStatus('Lecture des exemplaires via API Koha…','loading');const rows=[];let page=1;try{while(!state.stop){const u=new URL(CFG.ITEMS,location.origin);u.searchParams.set('_page',page);u.searchParams.set('_per_page',CFG.PER_PAGE);u.searchParams.set('_order_by','item_id');",
+            "async function loadAll(silent=false){if(state.loading)return;state.loading=true;state.stop=false;state.sample=false;const code=String(state.search||'').trim();const barcode=/^[A-Za-z0-9._-]{4,}$/.test(code);const scoped=!!(state.fullNetwork||state.home||state.holding||barcode);if(!silent)setStatus(scoped?'Lecture des exemplaires via API Koha…':'Échantillon : indiquez un code-barres ou un site pour élargir.','loading');const rows=[];let page=1;try{while(!state.stop){const u=new URL(CFG.ITEMS,location.origin);u.searchParams.set('_page',page);u.searchParams.set('_per_page',CFG.PER_PAGE);u.searchParams.set('_order_by','item_id');if(state.home)u.searchParams.set('home_library_id',state.home);if(state.holding)u.searchParams.set('holding_library_id',state.holding);if(!state.fullNetwork&&barcode)u.searchParams.set('external_id',code);",
+            'périmètre transmis à Koha'
+        );
+        source = replaceRequired(
+            source,
+            "if(!silent)setStatus(`Exemplaires reçus : ${fmt(rows.length)} · page ${page}…`,'loading');if(arr.length<CFG.PER_PAGE)break;page++",
+            "if(!silent)setStatus(`Exemplaires reçus : ${fmt(rows.length)} · page ${page}…`,'loading');if(!scoped){state.sample=true;break}if(arr.length<CFG.PER_PAGE)break;page++",
+            'échantillon sans périmètre'
+        );
+        source = replaceRequired(
+            source,
+            "exemplaires chargés${state.stop?' (arrêt demandé)':''}.`,'ok')",
+            "exemplaires chargés${state.sample?' · échantillon. Un code-barres ou un site élargit la lecture.':''}${state.stop?' (arrêt demandé)':''}. Aucune correction n'est appliquée en silence.`,'ok')",
+            'périmètre annoncé'
+        );
+        source = replaceRequired(
+            source,
+            "Charger les exemplaires</button><button id=\"dqi-stop\"",
+            "Lire le périmètre</button><button id=\"dqi-load-all\" class=\"btn btn-default\" type=\"button\">Tout le réseau</button><button id=\"dqi-stop\"",
+            'deux lectures'
+        );
+        source = replaceRequired(
+            source,
+            "$('dqi-load').onclick=()=>loadAll();",
+            "$('dqi-load').onclick=()=>{state.fullNetwork=false;loadAll()};const loadAllBtn=$('dqi-load-all');if(loadAllBtn)loadAllBtn.onclick=()=>{state.fullNetwork=true;loadAll()};",
+            'choix de la lecture'
+        );
+        source = replaceRequired(
+            source,
+            "const code=String(state.search||'').trim();",
+            "const typed=String($('dqi-scope-barcode')?.value||'').trim();if(typed)state.search=typed;const chosen=String($('dqi-scope-library')?.value||'');if(chosen)state.home=chosen;const code=String(state.search||'').trim();",
+            'périmètre saisi avant la lecture'
+        );
+        source = replaceRequired(
+            source,
+            "<button id=\"dqi-load\" class=\"btn btn-primary\">Lire le périmètre</button>",
+            "<input id=\"dqi-scope-barcode\" placeholder=\"Code-barres\" autocomplete=\"off\"><select id=\"dqi-scope-library\"><option value=\"\">Tous sites de l’échantillon</option></select><button id=\"dqi-load\" class=\"btn btn-primary\" type=\"button\">Lire le périmètre</button>",
+            'champs à côté du bouton'
+        );
+        source = replaceRequired(
+            source,
+            "$('dqi-load').onclick=()=>{state.fullNetwork=false;loadAll()};",
+            "fillItemLibraries();$('dqi-load').onclick=()=>{state.fullNetwork=false;loadAll()};",
+            'sites disponibles avant la lecture'
+        );
+        source = replaceRequired(
+            source,
+            "async function loadAll(silent=false){",
+            "async function fillItemLibraries(){const select=$('dqi-scope-library');if(!select||select.dataset.ready)return;select.dataset.ready='1';try{const response=await fetch(new URL('/api/v1/libraries?_per_page=200',location.origin),{credentials:'same-origin',headers:{Accept:'application/json'}});const rows=response.ok?await response.json():[];if(!Array.isArray(rows))return;for(const library of rows){const id=library.library_id||library.library_code;if(!id)continue;const option=document.createElement('option');option.value=id;option.textContent=(library.name||id)+' ('+id+')';select.appendChild(option)}}catch(e){}}\nasync function loadAll(silent=false){",
+            'liste des sites Koha'
+        );
         return source;
     }
 

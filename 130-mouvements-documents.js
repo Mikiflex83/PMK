@@ -3,7 +3,7 @@
  const MODULE_ID="document-movements";
  const DEFAULT_SQL="SELECT bt.branchtransfer_id AS Transfer_ID, bt.itemnumber AS Item_ID,\n bt.frombranch AS From_Site, bt.tobranch AS To_Site,\n bt.daterequested AS Demande_le, bt.datesent AS Envoye_le,\n bt.datearrived AS Arrive_le, bt.datecancelled AS Annule_le,\n bt.reason AS Raison, bt.cancellation_reason AS Raison_annulation,\n bt.comments AS Commentaire\nFROM branchtransfers bt JOIN items i ON i.itemnumber = bt.itemnumber\nWHERE i.biblionumber = <<Biblionumber>> AND bt.branchtransfer_id > <<Après ID>>\nORDER BY bt.branchtransfer_id LIMIT 500";
  const REPORT_CONTRACT=['Transfer_ID','Item_ID','From_Site','To_Site','Demande_le','Envoye_le','Arrive_le','Annule_le','Raison','Raison_annulation','Commentaire'];
- const defaults={enabled:true,reportId:5254,sqlTemplate:DEFAULT_SQL,maxTransferBatches:20,
+ const defaults={enabled:true,reportId:0,sqlTemplate:DEFAULT_SQL,maxTransferBatches:20,
   dataSources:"Transferts : rapport SQL Koha configuré. Exemplaires, bibliothèques et prêts : API REST de cette installation Koha.",
   reportContract:REPORT_CONTRACT.join(', ')};
  let currentConfig={...defaults};
@@ -1578,7 +1578,9 @@ function bindDataTableRedraw(table) {
         });
 }
 
-function init() {
+async function init() {
+    const cfg = await window.PMK130ConfigReady;
+    if (!cfg || cfg.enabled === false) return;
     const table = document.querySelector("#holdings_table");
     if (!table) {
         console.warn("[Mouvements detail.pl] Tableau #holdings_table introuvable.");
@@ -3103,7 +3105,9 @@ function scanVisibleResults() {
     document.querySelectorAll('tr[id^="row"]').forEach(injectResult);
 }
 
-function init() {
+async function init() {
+    const cfg = await window.PMK130ConfigReady;
+    if (!cfg || cfg.enabled === false) return;
     // IMPORTANT : seulement injection DOM, aucune donnée Koha chargée.
     scanVisibleResults();
 
