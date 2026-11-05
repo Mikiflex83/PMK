@@ -498,9 +498,11 @@
 
     function normalizeGlobalSettings(value) {
         const source = value && typeof value === "object" ? value : {};
+        const remembered = Array.isArray(source.massDisabledIds) ? source.massDisabledIds : [];
         return {
             enabled: source.enabled !== false,
-            contextButtonsEnabled: source.contextButtonsEnabled !== false
+            contextButtonsEnabled: source.contextButtonsEnabled !== false,
+            massDisabledIds: remembered.map(function (id) { return String(id || "").trim(); }).filter(Boolean)
         };
     }
 
@@ -4356,6 +4358,55 @@
         main.prepend(alert);
     }
 
+    async function applyBulkModuleChange(kind) {
+        const ids = Array.from(modules.keys());
+        const current = normalizeGlobalSettings(globalSettingsCache || DEFAULT_GLOBAL_SETTINGS);
+        const failures = [];
+
+        if (kind === "disable-active") {
+            const changed = [];
+            for (const id of ids) {
+                const config = await getConfig(id, { force: true, ignoreGlobal: true });
+                if (!config || config.enabled === false) continue;
+                try {
+                    await saveConfig(id, { enabled: false });
+                    changed.push(id);
+                } catch (error) {
+                    failures.push(id);
+                }
+            }
+            current.massDisabledIds = Array.from(new Set(current.massDisabledIds.concat(changed)));
+        } else if (kind === "restore") {
+            const pending = [];
+            for (const id of current.massDisabledIds) {
+                if (!modules.has(id)) continue;
+                try {
+                    await saveConfig(id, { enabled: true });
+                } catch (error) {
+                    pending.push(id);
+                    failures.push(id);
+                }
+            }
+            current.massDisabledIds = pending;
+        } else {
+            for (const id of ids) {
+                try {
+                    await saveConfig(id, { enabled: true });
+                } catch (error) {
+                    failures.push(id);
+                }
+            }
+            if (!failures.length) current.massDisabledIds = [];
+        }
+
+        current.enabled = true;
+        await saveGlobalSettings(current);
+        return failures.map(function (id) {
+            const def = modules.get(id);
+            return def ? text(def.name, detectLanguage()) : id;
+        });
+    }
+
     function renderGlobalMasterControl() {
         const overlay = document.getElementById("pmk-config-overlay");
         if (!overlay) return;
@@ -4467,6 +4518,93 @@
                 en: "PMK is suspended. Individually enabled modules remain saved and will return when re-enabled."
             }, lang);
         host.appendChild(help);
+
+        const bulkHelp = document.createElement("div");
+        bulkHelp.className = "pmk-global-master-help";
+        bulkHelp.textContent = text({
+            fr: "Désactiver mémorise uniquement les modules actifs. Rétablir ne rallume pas ceux qui étaient déjà éteints. Tout activer ignore l’état précédent.",
+            en: "Disable remembers only the modules that are on. Restore does not turn on modules that were already off. Enable all ignores the previous state."
+        }, lang);
+        host.appendChild(bulkHelp);
+
+        const actions = document.createElement("div");
+        actions.className = "pmk-global-bulk-actions";
+        actions.style.cssText = "display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.75rem";
+        const remembered = (globalSettingsCache && globalSettingsCache.massDisabledIds) || [];
+        const runBulk = async function (kind) {
+            if (globalMasterSaving) return;
+            if (adminIsDirty()) {
+                setAdminAlert("warning", text({
+                    fr: "Enregistre ou annule d’abord les modifications du module ouvert.",
+                    en: "Save or discard the open module changes first."
+                }, lang));
+                return;
+            }
+            const copy = {
+                "disable-active": {
+                    title: { fr: "Désactiver les modules actifs", en: "Disable the active modules" },
+                    message: { fr: "Les modules actuellement actifs seront éteints. Ceux qui étaient déjà éteints ne changeront pas. La page sera rechargée.", en: "Modules that are currently on will be turned off. Modules that were already off stay off. The page will reload." },
+                    confirm: { fr: "Désactiver", en: "Disable" },
+                    danger: true
+                },
+                restore: {
+                    title: { fr: "Rétablir les modules mémorisés", en: "Restore the remembered modules" },
+                    message: { fr: "Seuls les modules éteints par la désactivation groupée seront rallumés. Les modules déjà éteints avant restent éteints. La page sera rechargée.", en: "Only modules switched off by the grouped disable will be turned back on. Modules that were already off stay off. The page will reload." },
+                    confirm: { fr: "Rétablir", en: "Restore" },
+                    danger: false
+                },
+                "enable-all": {
+                    title: { fr: "Activer tous les modules", en: "Enable every module" },
+                    message: { fr: "Tous les modules seront activés, y compris ceux qui étaient éteints. La page sera rechargée.", en: "Every module will be enabled, including those that were off. The page will reload." },
+                    confirm: { fr: "Tout activer", en: "Enable all" },
+                    danger: false
+                }
+            }[kind];
+            const confirmed = await confirmAction({
+                title: text(copy.title, lang),
+                message: text(copy.message, lang),
+                confirmLabel: text(copy.confirm, lang),
+                cancelLabel: text({ fr: "Annuler", en: "Cancel" }, lang),
+                danger: copy.danger
+            });
+            if (!confirmed) return;
+            globalMasterSaving = true;
+            renderGlobalMasterControl();
+            try {
+                const failures = await applyBulkModuleChange(kind);
+                if (failures.length) {
+                    globalMasterSaving = false;
+                    renderGlobalMasterControl();
+                    setAdminAlert("warning", text({
+                        fr: "Certains modules n’ont pas pu être enregistrés : ",
+                        en: "Some modules could not be saved: "
+                    }, lang) + failures.join(", "));
+                    return;
+                }
+                window.location.reload();
+            } catch (error) {
+                globalMasterSaving = false;
+                renderGlobalMasterControl();
+                setAdminAlert("danger", text({
+                    fr: "L’action groupée n’a pas abouti. Rechargez la page avant de recommencer.",
+                    en: "The grouped action did not finish. Reload the page before trying again."
+                }, lang));
+            }
+        };
+        [
+            ["disable-active", { fr: "Désactiver les modules actifs", en: "Disable the active modules" }, true],
+            remembered.length ? ["restore", { fr: "Rétablir ces modules (" + remembered.length + ")", en: "Restore those modules (" + remembered.length + ")" }, false] : null,
+            ["enable-all", { fr: "Activer tous les modules", en: "Enable every module" }, false]
+        ].filter(Boolean).forEach(function (item) {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "btn btn-sm " + (item[2] ? "btn-outline-danger" : "btn-outline-primary");
+            button.textContent = text(item[1], lang);
+            button.disabled = globalMasterSaving;
+            button.addEventListener("click", function () { runBulk(item[0]); });
+            actions.appendChild(button);
+        });
+        host.appendChild(actions);
 
         const contextRow = document.createElement("div");
         contextRow.className = "pmk-global-context-row";

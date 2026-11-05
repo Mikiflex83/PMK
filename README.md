@@ -1,8 +1,14 @@
 # PimpMyKoha
 
-PimpMyKoha (PMK) est un ensemble de modules qui améliore l’interface professionnelle de [Koha](https://koha-community.org/) sans remplacer ses fonctions métier. Il ajoute des réglages d’ergonomie, des outils de circulation et de catalogage, des menus, des pages internes et des aides configurables.
+PimpMyKoha (PMK) ajoute des modules à l’interface professionnelle de [Koha](https://koha-community.org/) : ergonomie, circulation, catalogage, menus, pages internes et aides. Koha reste le logiciel métier. Chaque bibliothèque enregistre ses pages, ses sélecteurs, ses statuts, ses rapports, ses catégories, ses sites et ses libellés. Une configuration déjà enregistrée est conservée lors d’une mise à jour. Une installation neuve laisse chaque module éteint.
 
-Le projet conserve la philosophie de l’installation historique de la Dracénie tout en permettant à chaque bibliothèque d’adapter les pages, les sélecteurs, les statuts, les rapports SQL, les catégories, les sites et les libellés à son propre Koha. Les valeurs historiques restent les valeurs par défaut et les configurations personnalisées sont conservées lors des mises à jour.
+Ce dépôt est la source publiée du plugin. Il sert à la revue du plugin et aux contributions. Le paquet à examiner est celui construit depuis `main`, ou l’archive figée de la version 0.4.0 dans `releases/0.4.0`. Les valeurs d’une installation historique ne sont pas des réglages universels.
+
+## Revue du plugin
+
+Le manifeste déclare la licence GPL-3.0-or-later et une version minimale de Koha. Il ne fixe pas de version maximale, afin de ne pas bloquer une Koha plus récente encore compatible. Les tests Perl sont dans `t/`. Le journal est `CHANGELOG.md`. `README.md` et `CONTRIBUTING.md` sont recopiés dans le paquet KPZ.
+
+La version 0.4.0 reste expérimentale. Les contrôles automatiques ne remplacent pas une recette sur une copie de l’installation : parcours métier, droits Koha, et absence d’effet quand un module est éteint.
 
 ## État actuel du projet
 

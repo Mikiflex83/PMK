@@ -1,6 +1,8 @@
 # Contribuer à PimpMyKoha
 
-Merci de contribuer à PimpMyKoha. Le projet améliore l’interface professionnelle de Koha tout en conservant les comportements natifs, les réglages existants et la possibilité de revenir en arrière.
+PimpMyKoha améliore l’interface professionnelle de Koha tout en conservant les comportements natifs, les réglages déjà enregistrés et la possibilité d’éteindre un module.
+
+Les contributions sont attendues, qu’elles viennent d’une revue du plugin ou d’une bibliothèque qui adapte un parcours. Une modification doit rester utilisable hors de l’installation qui l’a demandée : seuils, libellés, sites, rapports et catégories sont des réglages.
 
 ## Avant de commencer
 
@@ -53,7 +55,7 @@ python3 tests/publication-safety.py \
   /tmp/PimpMyKoha-plugin.kpz
 ```
 
-Les scénarios nécessitant une vraie installation Koha, un matériel ou un compte fournisseur restent distincts. Décrivez clairement ce qui a été testé sur une installation réelle et ce qui a été simulé.
+Les scénarios qui demandent une Koha réelle, un matériel ou un compte fournisseur restent distincts. Décrivez ce qui a été testé et ce qui a été simulé. Le compte professionnel d’une Koha locale se passe par `PMK_KOHA_USER` et `PMK_KOHA_PASSWORD`. Il ne s’écrit pas dans le dépôt.
 
 ## Principes de compatibilité
 
