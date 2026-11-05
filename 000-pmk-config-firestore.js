@@ -25,9 +25,16 @@
     if (window.PMKConfig) return;
 
     const CORE_VERSION = "0.8.0";
+    function productVersion() {
+        const plugin = window.PMKPlugin && window.PMKPlugin.version;
+        return plugin ? String(plugin) : CORE_VERSION;
+    }
     const STORAGE_LABEL = window.PMKConfigNativeStorage ? "Koha" : "Firestore";
-    const DEFAULT_PMK_BRAND_LOGO_URL = "https://mediatheques.dracenie.com/userfiles/media/Pimp-my-koha.png";
-    if (!window.PMK_BRAND_LOGO_URL) window.PMK_BRAND_LOGO_URL = DEFAULT_PMK_BRAND_LOGO_URL;
+    // Le plugin fixe déjà le logo livré avec lui. Le mode non-plugin
+    // utilise la copie placée à côté de ce script. Aucune adresse distante.
+    if (!window.PMK_BRAND_LOGO_URL && document.currentScript && document.currentScript.src) {
+        window.PMK_BRAND_LOGO_URL = new URL("pimp-my-koha.png", document.currentScript.src).href;
+    }
 
     const FIRESTORE_COLLECTION = "pimpmykoha_preplugin_modules";
     /*
@@ -118,148 +125,6 @@
     const cache = new Map();
     const status = new Map();
     const listeners = new Map();
-
-    // Suivi de migration : métadonnées indépendantes de config et de enabled.
-    // Un seul document déjà autorisé évite toute nouvelle collection Firestore.
-    const WORKFLOW_FIELD = "pmkWorkflowStatuses";
-    const WORKFLOW_STEPS = Object.freeze([
-        { id: "control", fr: "À contrôler", en: "Review" },
-        { id: "universalize", fr: "À universaliser", en: "Universalize" },
-        { id: "experiment", fr: "À expérimenter", en: "Experiment" },
-        { id: "convert", fr: "À transformer en plugin", en: "Convert to plugin" },
-        { id: "plugin-test", fr: "À tester en plugin", en: "Test plugin" },
-        { id: "validated", fr: "Validé", en: "Validated" }
-    ]);
-    const workflowStatuses = new Map();
-    let workflowLoaded = false;
-    let workflowLoadPromise = null;
-    let workflowWritePending = new Set();
-    let workflowLoadError = null;
-    // Secours local explicite lorsque le quota Firestore est épuisé.
-    // Ces valeurs ne sont jamais présentées comme synchronisées ni envoyées
-    // automatiquement : une resynchronisation doit être demandée.
-    const WORKFLOW_LOCAL_KEY = "pmk:workflow:pending:" + storageInstallation;
-    const workflowLocalPending = new Map();
-    function isWorkflowQuotaError(error) {
-        const message = String(error && (error.message || error.code) || "").toLowerCase();
-        return /resource-exhausted|quota exceeded|quota_exceeded|quota has been exceeded/.test(message);
-    }
-    function loadLocalWorkflowPending() {
-        try {
-            const raw = JSON.parse(localStorage.getItem(WORKFLOW_LOCAL_KEY) || "{}");
-            if (!isPlainObject(raw)) return;
-            Object.keys(raw).forEach(function (id) {
-                if (WORKFLOW_STEPS.some(function (step) { return step.id === raw[id]; })) {
-                    workflowLocalPending.set(id, raw[id]);
-                    workflowStatuses.set(id, raw[id]);
-                }
-            });
-        } catch (error) { console.warn("PMK workflow: stockage local inaccessible", error); }
-    }
-    function persistLocalWorkflowPending() {
-        const values = {};
-        workflowLocalPending.forEach(function (step, id) { values[id] = step; });
-        localStorage.setItem(WORKFLOW_LOCAL_KEY, JSON.stringify(values));
-    }
-    loadLocalWorkflowPending();
-
-    function workflowStep(moduleId) {
-        return workflowStatuses.get(moduleId) || "control";
-    }
-
-    async function loadWorkflowStatuses(force) {
-        if (workflowLoadPromise) return workflowLoadPromise;
-        if (workflowLoaded && !force) return workflowStatuses;
-        workflowLoadPromise = (async function () {
-            const firebaseApi = await ensureNativeStorage();
-            const snap = await firebaseApi.db.collection(FIRESTORE_COLLECTION)
-                .doc(GLOBAL_SETTINGS_CARRIER_MODULE_ID).get();
-            const stored = snap.exists && snap.data() ? snap.data()[WORKFLOW_FIELD] : null;
-            const incoming = isPlainObject(stored) ? stored : {};
-            // Ne pas écraser un statut modifié pendant le chargement.
-            Object.keys(incoming).forEach(function (id) {
-                if (workflowWritePending.has(id) || workflowLocalPending.has(id)) return;
-                if (WORKFLOW_STEPS.some(function (step) { return step.id === incoming[id]; })) {
-                    workflowStatuses.set(id, incoming[id]);
-                }
-            });
-            workflowLoaded = true;
-            workflowLoadError = null;
-            if (adminState) renderModuleNav();
-            return workflowStatuses;
-        })().catch(function (error) {
-            workflowLoadError = error;
-            if (isWorkflowQuotaError(error)) {
-                workflowLoaded = true;
-                if (adminState) renderModuleNav();
-                return workflowStatuses;
-            }
-            throw error;
-        }).finally(function () { workflowLoadPromise = null; });
-        return workflowLoadPromise;
-    }
-
-    async function saveWorkflowStatus(moduleId, stepId) {
-        if (!modules.has(moduleId)) throw new Error("unknown_module");
-        if (!canOpenAdmin()) throw new Error("admin_permission_required");
-        if (!WORKFLOW_STEPS.some(function (step) { return step.id === stepId; })) {
-            throw new Error("invalid_workflow_status");
-        }
-        // Jamais d'avancement implicite vers les deux dernières étapes.
-        const old = workflowStep(moduleId);
-        workflowWritePending.add(moduleId);
-        try {
-            const api = await ensureNativeStorage();
-            const doc = api.db.collection(FIRESTORE_COLLECTION).doc(GLOBAL_SETTINGS_CARRIER_MODULE_ID);
-            await api.db.runTransaction(async function (transaction) {
-                const snap = await transaction.get(doc);
-                const values = snap.exists && isPlainObject(snap.data()[WORKFLOW_FIELD])
-                    ? Object.assign({}, snap.data()[WORKFLOW_FIELD]) : {};
-                values[moduleId] = stepId;
-                transaction.set(doc, { [WORKFLOW_FIELD]: values }, { merge: true });
-            });
-            workflowLocalPending.delete(moduleId);
-            try { persistLocalWorkflowPending(); } catch (_) {}
-            workflowStatuses.set(moduleId, stepId);
-            workflowLoaded = true;
-            window.dispatchEvent(new CustomEvent("pmk:workflow-status-changed", {
-                detail: { moduleId: moduleId, previous: old, status: stepId }
-            }));
-            if (adminState) renderModuleNav();
-            return stepId;
-        } catch (error) {
-            if (!isWorkflowQuotaError(error)) throw error;
-            // Ne pas annoncer une sauvegarde Firestore. Conserver la modification
-            // seulement si le navigateur peut réellement la persister.
-            workflowLocalPending.set(moduleId, stepId);
-            try { persistLocalWorkflowPending(); }
-            catch (storageError) {
-                workflowLocalPending.delete(moduleId);
-                throw storageError;
-            }
-            workflowStatuses.set(moduleId, stepId);
-            workflowLoadError = error;
-            workflowLoaded = true;
-            if (adminState) renderModuleNav();
-            return stepId;
-        } finally {
-            workflowWritePending.delete(moduleId);
-        }
-    }
-    async function synchronizeWorkflowPending() {
-        const pending = Array.from(workflowLocalPending.entries());
-        const results = [];
-        for (const [id, step] of pending) {
-            try {
-                await saveWorkflowStatus(id, step);
-                results.push({ moduleId: id, synced: !workflowLocalPending.has(id) });
-            } catch (error) {
-                results.push({ moduleId: id, synced: false, error: error.message });
-            }
-        }
-        return results;
-    }
-
 
     // Interrupteur général PMK : état séparé des configurations individuelles.
     // Couper PMK ne réécrit jamais config.enabled des modules.
@@ -871,6 +736,15 @@
             const source = moduleId === "relative-dates" ? await importDateSettings(stored) : stored;
             let merged = normalizeModuleConfig(def, source ? deepMerge(defaults, source) : defaults);
             if(moduleId==='home-widgets')merged=await unifyHomeWidgetActivation(merged);
+            // Installation neuve : sans document enregistré, le module reste éteint.
+            // Une configuration déjà sauvegardée conserve son propre interrupteur.
+            // Dates relatives peut n'exister que par un document historique déjà
+            // enregistré (âge, réservations en attente, durée de prêt).
+            const savedDateSource = moduleId === 'relative-dates' && merged.migrations && (
+                (merged.migrations.ageDatesSources && merged.migrations.ageDatesSources.patronAge) ||
+                DATE_LEGACY_IDS.some(function (id) { return merged.migrations.dateRuleSources && merged.migrations.dateRuleSources[id]; })
+            );
+            if (!stored && !savedDateSource) merged.enabled = false;
             cache.set(moduleId, merged);
             fireStatus(moduleId, {
                 storage: stored ? "koha" : "defaults",
@@ -880,6 +754,8 @@
             return opts.ignoreGlobal ? deepClone(merged) : applyGlobalGate(merged);
         } catch (error) {
             const normalizedDefaults = normalizeModuleConfig(def, defaults);
+            // Lecture impossible : même règle qu'une installation neuve, le module reste éteint.
+            normalizedDefaults.enabled = false;
             cache.set(moduleId, normalizedDefaults);
             fireStatus(moduleId, {
                 storage: "defaults",
@@ -2437,20 +2313,6 @@
                 font-size: .78rem;
                 line-height: 1.2;
             }
-            .pmk-workflow-select {
-                display: block;
-                max-width: 100%;
-                width: 100%;
-                margin-top: .32rem;
-                padding: .2rem .3rem;
-                border: 1px solid #c5cbd3;
-                border-radius: .35rem;
-                background: #fff;
-                color: #364152;
-                font-size: .77rem;
-                cursor: pointer;
-            }
-            .pmk-workflow-select:disabled { opacity: .6; cursor: not-allowed; }
             .pmk-nav-empty {
                 color: #6c757d;
                 padding: .8rem .55rem;
@@ -3058,14 +2920,18 @@
         overlay.setAttribute("role", "dialog");
         overlay.setAttribute("aria-modal", "true");
         overlay.setAttribute("aria-labelledby", "pmk-config-title");
+        const brandLogoUrl = window.PMK_BRAND_LOGO_URL || "";
+        const brandLogo = brandLogoUrl
+            ? `<img class="pmk-config-brand-logo" src="${brandLogoUrl}" alt="PimpMyKoha">`
+            : `<span class="pmk-config-brand-mark" aria-hidden="true">PMK</span>`;
 
         overlay.innerHTML = `
             <div class="pmk-config-dialog">
                 <div class="pmk-config-header">
                     <div class="pmk-config-brand">
-                        <span class="pmk-config-brand-icon"><img class="pmk-config-brand-logo" src="${window.PMK_BRAND_LOGO_URL || DEFAULT_PMK_BRAND_LOGO_URL}" alt="PimpMyKoha"></span>
+                        <span class="pmk-config-brand-icon">${brandLogo}</span>
                         <div class="pmk-config-title-wrap">
-                            <div class="pmk-config-kicker">PimpMyKoha</div>
+                            <div class="pmk-config-kicker">PimpMyKoha ${productVersion()}</div>
                             <h2 id="pmk-config-title" class="pmk-config-title"></h2>
                         </div>
                     </div>
@@ -5014,42 +4880,6 @@
             meta.textContent += " · " + text(def.category, lang);
             copy.appendChild(meta);
 
-            const workflowSelect = document.createElement("select");
-            workflowSelect.className = "pmk-workflow-select";
-            workflowSelect.setAttribute("aria-label", "Étape de migration : " + text(def.name, lang));
-            workflowSelect.title = text({ fr: "Étape de préparation au plugin", en: "Plugin preparation stage" }, lang);
-            WORKFLOW_STEPS.forEach(function (step) {
-                const option = document.createElement("option");
-                option.value = step.id;
-                option.textContent = lang === "en" ? step.en : step.fr;
-                workflowSelect.appendChild(option);
-            });
-            workflowSelect.value = workflowStep(def.id);
-            workflowSelect.disabled = workflowWritePending.has(def.id);
-            if (workflowLocalPending.has(def.id)) {
-                workflowSelect.title = "Statut conservé uniquement dans ce navigateur — non synchronisé avec Firestore";
-                workflowSelect.setAttribute("data-pmk-unsynced", "true");
-            }
-            workflowSelect.addEventListener("click", function (event) { event.stopPropagation(); });
-            workflowSelect.addEventListener("keydown", function (event) { event.stopPropagation(); });
-            workflowSelect.addEventListener("change", async function (event) {
-                event.stopPropagation();
-                const next = workflowSelect.value;
-                const previous = workflowStep(def.id);
-                workflowSelect.disabled = true;
-                try {
-                    await saveWorkflowStatus(def.id, next);
-                    if (workflowLocalPending.has(def.id)) {
-                        window.alert("Quota Firestore dépassé : statut sauvegardé dans ce navigateur uniquement. Il n'est pas synchronisé. Vous pourrez le synchroniser lorsque le quota sera rétabli via PMKConfig.workflow.syncPending().");
-                    }
-                } catch (error) {
-                    workflowSelect.value = previous;
-                    workflowSelect.disabled = false;
-                    window.alert(text({ fr: "Statut non enregistré dans Firestore. Aucun réglage métier n'a été modifié.", en: "Status was not saved to Firestore. Module settings were not modified." }, lang) + "\n" + (error && error.message || ""));
-                }
-            });
-            copy.appendChild(workflowSelect);
-
             const description = document.createElement("span");
             description.className = "pmk-module-nav-description";
             description.textContent = text(def.description, lang);
@@ -5677,9 +5507,6 @@
         refreshAdminChrome();
 
         await getGlobalSettings();
-        // L'administration s'ouvre même si Firestore refuse la lecture des statuts.
-        // Dans ce cas, les menus restent désactivés pour éviter toute fausse sauvegarde.
-        try { await loadWorkflowStatuses(); } catch (error) { console.warn("PMK workflow: lecture indisponible", error); }
         if (!adminState) return false;
 
         const warning = overlay.querySelector(".pmk-config-footer-warning-text");
@@ -7180,22 +7007,6 @@
             get: getSharedService,
             list: sharedServiceList
         },
-        workflow: {
-            steps: WORKFLOW_STEPS.map(function (step) { return Object.assign({}, step); }),
-            get: workflowStep,
-            load: loadWorkflowStatuses,
-            save: saveWorkflowStatus,
-            syncPending: synchronizeWorkflowPending,
-            pendingLocal: function () { return Array.from(workflowLocalPending.entries()).map(function (entry) { return { moduleId: entry[0], status: entry[1] }; }); },
-            getLoadError: function () { return workflowLoadError && workflowLoadError.message || null; },
-            listInNavigationOrder: function () {
-                const lang = detectLanguage();
-                return Array.from(modules.values()).filter(function (def) { return !def.navigationHidden; }).sort(function (a, b) {
-                    const cmp = moduleCategoryGroup(a.category, lang).localeCompare(moduleCategoryGroup(b.category, lang));
-                    return cmp || text(a.name, lang).localeCompare(text(b.name, lang));
-                }).map(function (def) { return { id: def.id, name: text(def.name, lang), status: workflowStep(def.id) }; });
-            }
-        },
         getConfig: getConfig,
         getConfigAudit: configAudit,
         getDefinition: function(moduleId) { const def=modules.get(moduleId);return def ? {id:def.id,defaults:deepClone(def.defaults),schemaVersion:def.schemaVersion} : null; },
@@ -8220,25 +8031,16 @@
        ============================================================ */
     (function registerExternalLinksModule() {
         const MODULE_ID = "external-links";
-    const HISTORICAL_BUTTON_IMAGE =
-        "https://cdn-icons-png.flaticon.com/512/15955/15955603.png";
-
-    const HISTORICAL_LINK_IMAGES = {
-        electre: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/koha/electre.png",
-        babelio: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/koha/1200px-Logo_Babelio.png",
-        google: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/koha/img.icons8.png"
-    };
-
     const HISTORICAL_CUSTOM_LINKS = [
         { id: "electre", enabled: true, labelFr: "Electre", labelEn: "Electre",
           urlTemplate: "https://www.electre-ng.com/#/search?q%3D(identifiant%3A%22{ISBN_FORMATTED}%22)%26debut%3D0%26resultat-max%3D50%26perimetre%3D%5Bperimetre-hors-numerique%5DHors%20num%C3%A9rique__%26tri.champ%3D%22date-parution%22%26tri.sens%3D%22desc%22%26inclure-embargos%3D%22true%22%26type%3D%22rapide%22",
-          scope: "all", newWindow: true, showLabel: false, iconType: "image", iconClass: "fa fa-external-link", imageUrl: HISTORICAL_LINK_IMAGES.electre },
+          scope: "all", newWindow: true, showLabel: false, iconType: "fa", iconClass: "fa fa-external-link", imageUrl: "" },
         { id: "babelio", enabled: true, labelFr: "Babelio", labelEn: "Babelio",
           urlTemplate: "https://www.google.com/search?q=babelio+{AUTHOR}+{TITLE}%20",
-          scope: "all", newWindow: true, showLabel: false, iconType: "image", iconClass: "fa fa-external-link", imageUrl: HISTORICAL_LINK_IMAGES.babelio },
+          scope: "all", newWindow: true, showLabel: false, iconType: "fa", iconClass: "fa fa-external-link", imageUrl: "" },
         { id: "google", enabled: true, labelFr: "Google", labelEn: "Google",
           urlTemplate: "https://www.google.com/search?q={AUTHOR}%20{TITLE}%20",
-          scope: "all", newWindow: true, showLabel: false, iconType: "image", iconClass: "fa fa-external-link", imageUrl: HISTORICAL_LINK_IMAGES.google }
+          scope: "all", newWindow: true, showLabel: false, iconType: "fa", iconClass: "fa fa-external-link", imageUrl: "" }
     ];
 
     const HISTORICAL_SEARCH_ELSE_LINKS = [
@@ -8293,9 +8095,9 @@
         buttonLabelFr: "Partager",
         buttonLabelEn: "Share",
         buttonShowLabel: false,
-        buttonVisualType: "image",
+        buttonVisualType: "fa",
         buttonIconClass: "fa fa-share-alt",
-        buttonImageUrl: HISTORICAL_BUTTON_IMAGE,
+        buttonImageUrl: "",
         buttonShowCaret: false,
 
         includeExistingLinks: true,
@@ -11447,26 +11249,26 @@
         const moduleId = "bibliographic-markers";
 
         const defaultRules = [
-            { id: "films-se-detendre", enabled: true, label: "Films-Se détendre", searchText: "Sujet - Indexation: Films-Se détendre", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Detente-ptif.png" },
-            { id: "film-drame", enabled: true, label: "Film-Drame", searchText: "Sujet - Indexation: Film-Drame", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/drame.png" },
-            { id: "films-aventure", enabled: true, label: "Films-Aventure", searchText: "Sujet - Indexation: Films-Aventure", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Aventure.png" },
-            { id: "film-vintage", enabled: true, label: "Film-Vintage", searchText: "Sujet - Indexation: Film-Vintage", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Vintage-Enfant-ptif.png" },
-            { id: "film-famille", enabled: true, label: "Film Famille", searchText: "Sujet - Indexation: Film Famille", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/En-Famille-ptif.png" },
-            { id: "films-historiques", enabled: true, label: "Films historiques", searchText: "Sujet - Indexation: Films historiques", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Historique-ptif.png" },
-            { id: "films-regards-de-femmes", enabled: true, label: "Films-Regards de femmes", searchText: "Sujet - Indexation: Films-Regards de femmes", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Female-gaze-ptif.png" },
-            { id: "films-muets", enabled: true, label: "Films muets", searchText: "Sujet - Indexation: Films muets", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Films-Muets-ptif.png" },
-            { id: "films-musicaux", enabled: true, label: "Films musicaux", searchText: "Sujet - Indexation: Films musicaux", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Musicaux-ptif.png" },
-            { id: "films-noirs", enabled: true, label: "Films noirs", searchText: "Sujet - Indexation: Films noirs", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Films-Noirs-ptif.png" },
-            { id: "films-grands-classiques", enabled: true, label: "Films-Grands classiques", searchText: "Sujet - Indexation: Films-Grands classiques", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Grands-Classiques-ptif.png" },
-            { id: "films-japanimation", enabled: true, label: "Japanimation", searchText: "Sujet - Indexation: Films-Japanimation", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Japanimation-ptif.png" },
-            { id: "films-science-fiction", enabled: true, label: "Science-fiction", searchText: "Sujet - Indexation: Films-Science-fiction", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Science-fiction-ptif.png" },
-            { id: "films-western", enabled: true, label: "Western", searchText: "Sujet - Indexation: Films-Western", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Western-ptif.png" },
-            { id: "series-courtes", enabled: true, label: "Séries courtes", searchText: "Sujet - Indexation: Séries courtes", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/series-courtes.png" },
-            { id: "films-vintage", enabled: true, label: "Films-Vintage", searchText: "Sujet - Indexation: Films-Vintage", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Vintage-Enfant-ptif.png" },
-            { id: "comics", enabled: true, label: "Comics", searchText: "Sujet - Indexation: Comics", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Comics-ptif.png" },
-            { id: "films-action", enabled: true, label: "Films-Action", searchText: "Sujet - Indexation: Films-Action", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/action.png" },
-            { id: "films-courts-metrages", enabled: true, label: "Court metrage", searchText: "Sujet - Indexation: Films-Courts métrages", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Court-metrage-ptif.png" },
-            { id: "films-horreur", enabled: true, label: "Horreur", searchText: "Sujet - Indexation: Films d'horreur", iconUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/genres_cine/Horreur-ptif.png" }
+            { id: "films-se-detendre", enabled: true, label: "Films-Se détendre", searchText: "Sujet - Indexation: Films-Se détendre", iconUrl: "" },
+            { id: "film-drame", enabled: true, label: "Film-Drame", searchText: "Sujet - Indexation: Film-Drame", iconUrl: "" },
+            { id: "films-aventure", enabled: true, label: "Films-Aventure", searchText: "Sujet - Indexation: Films-Aventure", iconUrl: "" },
+            { id: "film-vintage", enabled: true, label: "Film-Vintage", searchText: "Sujet - Indexation: Film-Vintage", iconUrl: "" },
+            { id: "film-famille", enabled: true, label: "Film Famille", searchText: "Sujet - Indexation: Film Famille", iconUrl: "" },
+            { id: "films-historiques", enabled: true, label: "Films historiques", searchText: "Sujet - Indexation: Films historiques", iconUrl: "" },
+            { id: "films-regards-de-femmes", enabled: true, label: "Films-Regards de femmes", searchText: "Sujet - Indexation: Films-Regards de femmes", iconUrl: "" },
+            { id: "films-muets", enabled: true, label: "Films muets", searchText: "Sujet - Indexation: Films muets", iconUrl: "" },
+            { id: "films-musicaux", enabled: true, label: "Films musicaux", searchText: "Sujet - Indexation: Films musicaux", iconUrl: "" },
+            { id: "films-noirs", enabled: true, label: "Films noirs", searchText: "Sujet - Indexation: Films noirs", iconUrl: "" },
+            { id: "films-grands-classiques", enabled: true, label: "Films-Grands classiques", searchText: "Sujet - Indexation: Films-Grands classiques", iconUrl: "" },
+            { id: "films-japanimation", enabled: true, label: "Japanimation", searchText: "Sujet - Indexation: Films-Japanimation", iconUrl: "" },
+            { id: "films-science-fiction", enabled: true, label: "Science-fiction", searchText: "Sujet - Indexation: Films-Science-fiction", iconUrl: "" },
+            { id: "films-western", enabled: true, label: "Western", searchText: "Sujet - Indexation: Films-Western", iconUrl: "" },
+            { id: "series-courtes", enabled: true, label: "Séries courtes", searchText: "Sujet - Indexation: Séries courtes", iconUrl: "" },
+            { id: "films-vintage", enabled: true, label: "Films-Vintage", searchText: "Sujet - Indexation: Films-Vintage", iconUrl: "" },
+            { id: "comics", enabled: true, label: "Comics", searchText: "Sujet - Indexation: Comics", iconUrl: "" },
+            { id: "films-action", enabled: true, label: "Films-Action", searchText: "Sujet - Indexation: Films-Action", iconUrl: "" },
+            { id: "films-courts-metrages", enabled: true, label: "Court metrage", searchText: "Sujet - Indexation: Films-Courts métrages", iconUrl: "" },
+            { id: "films-horreur", enabled: true, label: "Horreur", searchText: "Sujet - Indexation: Films d'horreur", iconUrl: "" }
         ];
 
         const defaults = {
@@ -17053,7 +16855,7 @@
        - aucune fusion avec un autre module ;
        - toutes les fonctions historiques restent actives par défaut ;
        - chaque fonction peut être désactivée indépendamment ;
-       - le comportement spécifique du rapport 5191 reste dans le 062.
+       - le préréglage de colonnes ne vise aucun rapport tant que son numéro n’est pas indiqué.
        ============================================================ */
     (function registerGuidedReportsToolsModule() {
         const moduleId = "guided-reports-tools";
@@ -17062,7 +16864,7 @@
 
         const defaults = {
             enabled: true,
-            presetReportId: 5191,
+            presetReportId: 0,
             page: {
                 enabled: true,
                 pageId: pageId,
@@ -17122,7 +16924,7 @@
                 );
             }
 
-            if (!Number.isSafeInteger(Number(config.presetReportId == null ? 5191 : config.presetReportId)) || Number(config.presetReportId == null ? 5191 : config.presetReportId)<0) {
+            if (!Number.isSafeInteger(Number(config.presetReportId == null ? 0 : config.presetReportId)) || Number(config.presetReportId == null ? 0 : config.presetReportId)<0) {
                 return fail("L’identifiant du rapport doit être un entier positif, ou 0 pour aucun rapport.","Report ID must be a positive integer, or 0 for no report.");
             }
             return { ok: true };
@@ -17262,13 +17064,13 @@
                                 en: "Apply the column preset to the chosen report"
                             },
                             help: {
-                                fr: "Conserve le jeu de colonnes visibles historiquement prévu pour le rapport 5191.",
-                                en: "Keeps the historical visible-column preset used for report 5191."
+                                fr: "Masque les colonnes techniques du seul rapport dont le numéro est indiqué. 0 n’en vise aucun.",
+                                en: "Hides the technical columns of the single report whose number is entered. 0 targets none."
                             }
                         }
                     ]
                 },
-                {key:"presetReportId",type:"number",min:0,label:{fr:"ID du rapport utilisant le préréglage de colonnes",en:"Report ID using the column preset"},help:{fr:"5191 conserve le réglage Dracénie. Indiquez l’ID équivalent sur ce Koha, ou 0 pour aucun rapport. Le tri, la recherche et les statistiques concernent uniquement les lignes chargées.",en:"5191 preserves the Dracénie default. Enter this Koha’s report ID, or 0 for no report. Sorting, search and statistics cover loaded rows only."}},
+                {key:"presetReportId",type:"number",min:0,label:{fr:"ID du rapport utilisant le préréglage de colonnes",en:"Report ID using the column preset"},help:{fr:"Indiquez le numéro du rapport de ce Koha qui doit masquer ses colonnes techniques. 0 n’applique le préréglage à aucun rapport. Le tri, la recherche et les statistiques concernent uniquement les lignes chargées.",en:"Enter this Koha’s report number that should hide its technical columns. 0 applies the preset to no report. Sorting, search and statistics cover loaded rows only."}},
                 {
                     type: "section",
                     id: "pages",
@@ -23104,14 +22906,14 @@ function PMK147_isManagementLink(section,url,anchor){
             {"type":"link","id":"/cgi-bin/koha/circ/transfers_to_send.pl","url":"/cgi-bin/koha/circ/transfers_to_send.pl","label":"Transferts à envoyer (natif)","category":"Circulation","origin":"koha","pmkMenu":{"id":"/cgi-bin/koha/circ/transfers_to_send.pl","kind":"link","parentId":"native-group:/cgi-bin/koha/circ/circulation-home.pl:Circulation","labelFr":"Transferts à envoyer (natif)","labelEn":"Transferts à envoyer (natif)","enabled":true,"target":"same","iconCustom":"fa-solid fa-truck-ramp-box"}},
             {"type":"link","id":"/cgi-bin/koha/circ/transferstoreceive.pl","url":"/cgi-bin/koha/circ/transferstoreceive.pl","label":"Transferts à recevoir (natif)","category":"Circulation","origin":"koha","pmkMenu":{"id":"/cgi-bin/koha/circ/transferstoreceive.pl","kind":"link","parentId":"native-group:/cgi-bin/koha/circ/circulation-home.pl:Circulation","labelFr":"Transferts à recevoir (natif)","labelEn":"Transferts à recevoir (natif)","enabled":true,"target":"same","iconCustom":"fa-solid fa-truck"}},
             {"type":"category","id":"native-group:/cgi-bin/koha/circ/circulation-home.pl:Réservations","label":"Réservations","pmkMenu":{"id":"native-group:/cgi-bin/koha/circ/circulation-home.pl:Réservations","kind":"group","parentId":"","labelFr":"Réservations","labelEn":"Réservations","enabled":true}},
-            {"type":"link","id":"/cgi-bin/koha/reports/guided_reports.pl?id=4904&op=run","url":"/cgi-bin/koha/reports/guided_reports.pl?id=4904&op=run","label":"File de réservations","category":"Réservations","origin":"koha","pmkMenu":{"id":"/cgi-bin/koha/reports/guided_reports.pl?id=4904&op=run","kind":"link","parentId":"native-group:/cgi-bin/koha/circ/circulation-home.pl:Réservations","labelFr":"File de réservations","labelEn":"File de réservations","enabled":true,"target":"same","iconCustom":"fa fa-tasks"}},
+            {"type":"link","id":"/cgi-bin/koha/circ/view_holdsqueue.pl","url":"/cgi-bin/koha/circ/view_holdsqueue.pl","label":"File de réservations","category":"Réservations","origin":"koha","pmkMenu":{"id":"/cgi-bin/koha/circ/view_holdsqueue.pl","kind":"link","parentId":"native-group:/cgi-bin/koha/circ/circulation-home.pl:Réservations","labelFr":"File de réservations","labelEn":"File de réservations","enabled":false,"target":"same","iconCustom":"fa fa-tasks"}},
             {"type":"link","id":"/cgi-bin/koha/circ/pendingreserves.pl","url":"/cgi-bin/koha/circ/pendingreserves.pl","label":"Réservations à traiter","category":"Réservations","origin":"koha","pmkMenu":{"id":"/cgi-bin/koha/circ/pendingreserves.pl","kind":"link","parentId":"native-group:/cgi-bin/koha/circ/circulation-home.pl:Réservations","labelFr":"Réservations à traiter","labelEn":"Réservations à traiter","enabled":true,"target":"same","iconCustom":"fa-solid fa-hand-back-fist"}},
             {"type":"link","id":"/cgi-bin/koha/circ/waitingreserves.pl","url":"/cgi-bin/koha/circ/waitingreserves.pl","label":"Réservations mises de coté","category":"Réservations","origin":"koha","pmkMenu":{"id":"/cgi-bin/koha/circ/waitingreserves.pl","kind":"link","parentId":"native-group:/cgi-bin/koha/circ/circulation-home.pl:Réservations","labelFr":"Réservations mises de coté","labelEn":"Réservations mises de coté","enabled":true,"target":"same","iconCustom":"fa-solid fa-calendar-days"}},
             {"type":"link","id":"/cgi-bin/koha/circ/reserveratios.pl","url":"/cgi-bin/koha/circ/reserveratios.pl","label":"Ratios de réservation","category":"Réservations","origin":"koha","pmkMenu":{"id":"/cgi-bin/koha/circ/reserveratios.pl","kind":"link","parentId":"native-group:/cgi-bin/koha/circ/circulation-home.pl:Réservations","labelFr":"Ratios de réservation","labelEn":"Ratios de réservation","enabled":true,"target":"same","iconCustom":"fa-solid fa-chart-line"}},
             {"type":"category","id":"native-group:/cgi-bin/koha/circ/circulation-home.pl:Transferts","label":"Transferts","pmkMenu":{"id":"native-group:/cgi-bin/koha/circ/circulation-home.pl:Transferts","kind":"group","parentId":"","labelFr":"Transferts","labelEn":"Transferts","enabled":true}},
             {"type":"link","id":"/cgi-bin/koha/circ/branchtransfers.pl","url":"/cgi-bin/koha/circ/branchtransfers.pl","label":"Transférer","category":"Transferts","origin":"koha","pmkMenu":{"id":"/cgi-bin/koha/circ/branchtransfers.pl","kind":"link","parentId":"native-group:/cgi-bin/koha/circ/circulation-home.pl:Transferts","labelFr":"Transférer","labelEn":"Transférer","enabled":true,"target":"same","iconCustom":"fa-solid fa-right-left"}},
-            {"type":"link","id":"/cgi-bin/koha/reports/guided_reports.pl?id=4344&op=run","url":"/cgi-bin/koha/reports/guided_reports.pl?id=4344&op=run","label":"Transferts à envoyer","category":"Transferts","origin":"koha","pmkMenu":{"id":"/cgi-bin/koha/reports/guided_reports.pl?id=4344&op=run","kind":"link","parentId":"native-group:/cgi-bin/koha/circ/circulation-home.pl:Transferts","labelFr":"Transferts à envoyer","labelEn":"Transferts à envoyer","enabled":true,"target":"same","iconCustom":"fa-solid fa-right-from-bracket"}},
-            {"type":"link","id":"/cgi-bin/koha/reports/guided_reports.pl?id=4639&op=run","url":"/cgi-bin/koha/reports/guided_reports.pl?id=4639&op=run","label":"Transferts à recevoir","category":"Transferts","origin":"koha","pmkMenu":{"id":"/cgi-bin/koha/reports/guided_reports.pl?id=4639&op=run","kind":"link","parentId":"native-group:/cgi-bin/koha/circ/circulation-home.pl:Transferts","labelFr":"Transferts à recevoir","labelEn":"Transferts à recevoir","enabled":true,"target":"same","iconCustom":"fa-solid fa-right-to-bracket"}},
+            {"type":"link","id":"/cgi-bin/koha/circ/transfers_to_send.pl","url":"/cgi-bin/koha/circ/transfers_to_send.pl","label":"Transferts à envoyer","category":"Transferts","origin":"koha","pmkMenu":{"id":"/cgi-bin/koha/circ/transfers_to_send.pl","kind":"link","parentId":"native-group:/cgi-bin/koha/circ/circulation-home.pl:Transferts","labelFr":"Transferts à envoyer","labelEn":"Transferts à envoyer","enabled":false,"target":"same","iconCustom":"fa-solid fa-right-from-bracket"}},
+            {"type":"link","id":"/cgi-bin/koha/circ/transferstoreceive.pl","url":"/cgi-bin/koha/circ/transferstoreceive.pl","label":"Transferts à recevoir","category":"Transferts","origin":"koha","pmkMenu":{"id":"/cgi-bin/koha/circ/transferstoreceive.pl","kind":"link","parentId":"native-group:/cgi-bin/koha/circ/circulation-home.pl:Transferts","labelFr":"Transferts à recevoir","labelEn":"Transferts à recevoir","enabled":false,"target":"same","iconCustom":"fa-solid fa-right-to-bracket"}},
             {"type":"category","id":"native-group:/cgi-bin/koha/circ/circulation-home.pl:Retards","label":"Retards","pmkMenu":{"id":"native-group:/cgi-bin/koha/circ/circulation-home.pl:Retards","kind":"group","parentId":"","labelFr":"Retards","labelEn":"Retards","enabled":true}},
             {"type":"link","id":"/cgi-bin/koha/circ/overdue.pl","url":"/cgi-bin/koha/circ/overdue.pl","label":"Retards","category":"Retards","origin":"koha","pmkMenu":{"id":"/cgi-bin/koha/circ/overdue.pl","kind":"link","parentId":"native-group:/cgi-bin/koha/circ/circulation-home.pl:Retards","labelFr":"Retards","labelEn":"Retards","enabled":true,"target":"same","iconCustom":"fa-solid fa-clock"}},
             {"type":"link","id":"/cgi-bin/koha/circ/branchoverdues.pl","url":"/cgi-bin/koha/circ/branchoverdues.pl","label":"Retards avec amendes","category":"Retards","origin":"koha","pmkMenu":{"id":"/cgi-bin/koha/circ/branchoverdues.pl","kind":"link","parentId":"native-group:/cgi-bin/koha/circ/circulation-home.pl:Retards","labelFr":"Retards avec amendes","labelEn":"Retards avec amendes","enabled":true,"target":"same","iconCustom":"fa-solid fa-clock"}},

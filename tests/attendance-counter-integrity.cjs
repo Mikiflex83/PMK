@@ -72,6 +72,17 @@ const OUT = path.join(ROOT, 'tests/validation/attendance-counter-integrity.json'
   assert.equal(transaction.stored.correctionLog.length, 1);
   const evidence = { passed: true, newDay: await page.locator('#freq-inputDateMini').inputValue(), concurrentCount: transaction.stored.adults, correction: transaction.stored.lastCorrection, refusedWithoutReason: transaction.refused };
   fs.writeFileSync(OUT, JSON.stringify(evidence, null, 2) + '\n');
+  await page.route('**/api/v1/libraries**', route => route.fulfill({contentType:'application/json', body:JSON.stringify([{library_id:'CPL',name:'Centre'},{library_id:'MED',name:'Médiathèque'}]), headers:{'x-total-count':'2'}}));
+  const places = await page.evaluate(async () => {
+    const deps = {db:{}, collection(_db, name){return {name}}, getDocs(){return {forEach(cb){cb({id:'hall', data:()=>({name:'Hall'})})}}}};
+    const manual = await PMKAttendance.collectLocations(Object.assign({configuration:{locationSource:'manual', hiddenLocationIds:'', locationsCollection:'locations', defaultCountedWeeks:8}}, deps));
+    const mix = await PMKAttendance.collectLocations(Object.assign({configuration:{locationSource:'mix', hiddenLocationIds:'koha:CPL', locationsCollection:'locations', defaultCountedWeeks:8}}, deps));
+    const koha = await PMKAttendance.collectLocations(Object.assign({configuration:{locationSource:'koha', hiddenLocationIds:'', locationsCollection:'locations', defaultCountedWeeks:8}}, deps));
+    return {manual:manual.locations.map(row=>row.id), mix:mix.locations.map(row=>row.id), koha:koha.locations.map(row=>row.id)};
+  });
+  assert.deepEqual(places.manual, ['hall']);
+  assert.deepEqual(places.mix, ['hall', 'koha:MED']);
+  assert.deepEqual(places.koha, ['koha:CPL', 'koha:MED']);
   console.log('PASS attendance counter transactions, justified corrections and day rollover');
   await browser.close();
 })().catch(error => {

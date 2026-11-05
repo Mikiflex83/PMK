@@ -52,7 +52,7 @@
 
     var FEATURES = Object.assign({}, DEFAULT_FEATURES);
     var CONFIG = { debounce: 250 };
-    var SPECIAL_REPORT_IDS = ['5191'];
+    var SPECIAL_REPORT_IDS = [];
 
     function refreshRuntimeConfig() {
       /*
@@ -79,7 +79,7 @@
       if (!isFinite(debounceValue) || debounceValue < 0) debounceValue = 250;
       CONFIG.debounce = debounceValue;
 
-      var presetId = pmkConfig && pmkConfig.presetReportId != null ? pmkConfig.presetReportId : (externalConfig.presetReportId != null ? externalConfig.presetReportId : 5191);
+      var presetId = pmkConfig && pmkConfig.presetReportId != null ? pmkConfig.presetReportId : (externalConfig.presetReportId != null ? externalConfig.presetReportId : 0);
       SPECIAL_REPORT_IDS = /^\d+$/.test(String(presetId)) && Number(presetId)>0 ? [String(Number(presetId))] : [];
     }
 

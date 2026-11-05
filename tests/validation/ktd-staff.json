@@ -1,0 +1,1198 @@
+{
+  "passed": true,
+  "failures": [],
+  "writes": [],
+  "moduleActivity": [],
+  "kohaInlineErrors": [
+    {
+      "screen": "saved-reports",
+      "message": "Cannot read properties of undefined (reading 'DataTable')"
+    },
+    {
+      "screen": "reading-record",
+      "message": "Cannot read properties of undefined (reading 'DataTable')"
+    }
+  ],
+  "dialogs": [],
+  "firebase": [],
+  "blocked": [],
+  "skipped": [
+    {
+      "id": "subscription",
+      "reason": "Aucun abonnement dans la base de démonstration"
+    },
+    {
+      "id": "serial-claims",
+      "reason": "Aucun fournisseur dans la base de démonstration"
+    },
+    {
+      "id": "shelf",
+      "reason": "Aucune liste dans la base de démonstration"
+    },
+    {
+      "id": "external-providers",
+      "reason": "France Publications, Electre, EmailJS et NEDAP restent des services facultatifs non contactés"
+    }
+  ],
+  "legacyAliases": [
+    "waiting-holds-age",
+    "patron-age-display",
+    "loan-duration-detail"
+  ],
+  "screens": 28,
+  "modules": 85,
+  "rows": [
+    {
+      "title": "Koha staff interface",
+      "ready": true,
+      "loaded": 111,
+      "errors": [],
+      "id": "home",
+      "route": "mainpage.pl",
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "title": "Circulation › Koha",
+      "ready": true,
+      "loaded": 111,
+      "errors": [],
+      "id": "circulation",
+      "route": "circ/circulation-home.pl",
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "title": "Patrons › Koha",
+      "ready": true,
+      "loaded": 111,
+      "errors": [],
+      "id": "patrons",
+      "route": "members/members-home.pl",
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "title": "Reports › Koha",
+      "ready": true,
+      "loaded": 111,
+      "errors": [],
+      "id": "reports",
+      "route": "reports/reports-home.pl",
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "title": "Tools › Koha",
+      "ready": true,
+      "loaded": 111,
+      "errors": [],
+      "id": "tools",
+      "route": "tools/tools-home.pl",
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "title": "Administration › Koha",
+      "ready": true,
+      "loaded": 111,
+      "errors": [],
+      "id": "administration",
+      "route": "admin/admin-home.pl",
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "title": "Details for La Recherche › Catalog › Koha",
+      "ready": true,
+      "loaded": 111,
+      "errors": [],
+      "id": "detail",
+      "route": "catalogue/detail.pl?biblionumber=1",
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "title": "Item details for La Recherche › Catalog › Koha",
+      "ready": true,
+      "loaded": 111,
+      "errors": [],
+      "id": "items-detail",
+      "route": "catalogue/moredetail.pl?biblionumber=1&itemnumber=1",
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "title": "Results of search for kw,wrdl: a › Catalog › Koha",
+      "ready": true,
+      "loaded": 111,
+      "errors": [],
+      "id": "search",
+      "route": "catalogue/search.pl?q=a",
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "title": "Patron details for Koha Admin (1) › Patrons › Koha",
+      "ready": true,
+      "loaded": 111,
+      "errors": [],
+      "id": "patron-detail",
+      "route": "members/moremember.pl?borrowernumber=1",
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "title": "Checking out to Admin, Koha (1) › Circulation › Koha",
+      "ready": true,
+      "loaded": 111,
+      "errors": [],
+      "id": "checkout",
+      "route": "circ/circulation.pl?borrowernumber=1",
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "title": "Check in › Circulation › Koha",
+      "ready": true,
+      "loaded": 111,
+      "errors": [],
+      "id": "returns",
+      "route": "circ/returns.pl",
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "title": "Renew › Circulation › Koha",
+      "ready": true,
+      "loaded": 111,
+      "errors": [],
+      "id": "renew",
+      "route": "circ/renew.pl",
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "title": "Transfers › Circulation › Koha",
+      "ready": true,
+      "loaded": 111,
+      "errors": [],
+      "id": "branchtransfers",
+      "route": "circ/branchtransfers.pl",
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "title": "Holds awaiting pickup › Circulation › Koha",
+      "ready": true,
+      "loaded": 111,
+      "errors": [],
+      "id": "waiting-holds",
+      "route": "circ/waitingreserves.pl",
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "title": "Place hold on La Recherche › Holds › Circulation › Koha",
+      "ready": true,
+      "loaded": 111,
+      "errors": [],
+      "id": "holds",
+      "route": "reserve/request.pl?biblionumber=1",
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "title": "Add patron (Staff) › Patrons › Koha",
+      "ready": true,
+      "loaded": 111,
+      "errors": [],
+      "id": "patron-entry",
+      "route": "members/memberentry.pl?op=add_form&categorycode=S",
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "title": "Editing La Recherche (Record number 1) › Cataloging › Koha",
+      "ready": true,
+      "loaded": 111,
+      "errors": [],
+      "id": "cataloguing",
+      "route": "cataloguing/addbiblio.pl?biblionumber=1",
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "title": "Items › La Recherche (Record #1) › Cataloging › Koha",
+      "ready": true,
+      "loaded": 111,
+      "errors": [],
+      "id": "item-entry",
+      "route": "cataloguing/additem.pl?biblionumber=1",
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "title": "Batch item modification › Cataloging › Koha",
+      "ready": true,
+      "loaded": 111,
+      "errors": [],
+      "id": "batchmod",
+      "route": "tools/batchMod.pl",
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "title": "Saved reports › Guided reports wizard › Reports › Koha",
+      "ready": true,
+      "loaded": 111,
+      "errors": [],
+      "id": "saved-reports",
+      "route": "reports/guided_reports.pl?op=list",
+      "pageErrors": [
+        {
+          "message": "Cannot read properties of undefined (reading 'DataTable')",
+          "stack": [
+            "TypeError: Cannot read properties of undefined (reading 'DataTable')",
+            "    at HTMLDocument.<anonymous> (http://127.0.0.1:18081/cgi-bin/koha/reports/guided_reports.pl?op=list:2252:39)",
+            "    at e (http://127.0.0.1:18081/intranet-tmpl/lib/jquery/jquery-3.6.0.min_25.1110000.js:2:30038)",
+            "    at t (http://127.0.0.1:18081/intranet-tmpl/lib/jquery/jquery-3.6.0.min_25.1110000.js:2:30340)"
+          ]
+        }
+      ],
+      "httpErrors": []
+    },
+    {
+      "title": "Create from SQL › Guided reports wizard › Reports › Koha",
+      "ready": true,
+      "loaded": 111,
+      "errors": [],
+      "id": "sql-editor",
+      "route": "reports/guided_reports.pl?op=add_form_sql",
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "title": "Circulation history for Koha Admin (1) Patrons › Koha",
+      "ready": true,
+      "loaded": 111,
+      "errors": [],
+      "id": "reading-record",
+      "route": "members/readingrec.pl?borrowernumber=1",
+      "pageErrors": [
+        {
+          "message": "Cannot read properties of undefined (reading 'DataTable')",
+          "stack": [
+            "TypeError: Cannot read properties of undefined (reading 'DataTable')",
+            "    at HTMLDocument.<anonymous> (http://127.0.0.1:18081/cgi-bin/koha/members/readingrec.pl?borrowernumber=1:2284:34)",
+            "    at e (http://127.0.0.1:18081/intranet-tmpl/lib/jquery/jquery-3.6.0.min_25.1110000.js:2:30038)",
+            "    at t (http://127.0.0.1:18081/intranet-tmpl/lib/jquery/jquery-3.6.0.min_25.1110000.js:2:30340)"
+          ]
+        }
+      ],
+      "httpErrors": []
+    },
+    {
+      "title": "Checkout history for La Recherche › Catalog › Koha",
+      "ready": true,
+      "loaded": 111,
+      "errors": [],
+      "id": "loan-history",
+      "route": "catalogue/issuehistory.pl?biblionumber=1",
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "title": "Results › Log viewer › Tools › Koha",
+      "ready": true,
+      "loaded": 111,
+      "errors": [],
+      "id": "journal",
+      "route": "tools/viewlog.pl?do_it=1&modules=CATALOGUING&object=1",
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "title": "Add suggestion › Suggestions › Acquisitions › Koha",
+      "ready": true,
+      "loaded": 111,
+      "errors": [],
+      "id": "suggestions",
+      "route": "suggestion/suggestion.pl?op=add_form",
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "title": "Authorities › Koha",
+      "ready": true,
+      "loaded": 111,
+      "errors": [],
+      "id": "authorities-home",
+      "route": "authorities/authorities-home.pl",
+      "pageErrors": [],
+      "httpErrors": []
+    },
+    {
+      "title": "Koha staff interface",
+      "ready": true,
+      "loaded": 111,
+      "errors": [],
+      "id": "hub",
+      "route": "mainpage.pl?pmk_page=hub",
+      "pageErrors": [],
+      "httpErrors": []
+    }
+  ],
+  "moduleRows": [
+    {
+      "id": "table-labels",
+      "opened": true,
+      "heading": "Settings — Labels and interface elements",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "detail-fourth-cover",
+      "opened": true,
+      "heading": "Settings — Enriched summary / back cover",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "external-links",
+      "opened": true,
+      "heading": "Settings — External links",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "moredetail-layout",
+      "opened": true,
+      "heading": "Settings — Item details layout",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "waiting-holds-age",
+      "opened": true,
+      "heading": "Settings — Ages and relative dates",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "patron-message-templates",
+      "opened": true,
+      "heading": "Settings — Predefined values for automatic field filling",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "element-formatting",
+      "opened": true,
+      "heading": "Settings — Element formatting",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "contextual-search-links",
+      "opened": true,
+      "heading": "Settings — Dynamic links",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "bibliographic-markers",
+      "opened": true,
+      "heading": "Settings — Bibliographic icons and badges",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "transfer-button-holdings",
+      "opened": true,
+      "heading": "Settings — Quick item transfer",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "serials-tracking",
+      "opened": true,
+      "heading": "Settings — Serials management",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "batchmod-empty-field-warning",
+      "opened": true,
+      "heading": "Settings — Field clearing warning",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "holdings-table-presentation",
+      "opened": true,
+      "heading": "Settings — Holdings table presentation",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "z3950-workspace",
+      "opened": true,
+      "heading": "Settings — Z39.50 / SRU search workspace",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "catalogue-search-behavior",
+      "opened": true,
+      "heading": "Settings — Catalogue search bar",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "contextual-tooltips",
+      "opened": true,
+      "heading": "Settings — Contextual tooltips",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "phone-number-formatting",
+      "opened": true,
+      "heading": "Settings — Phone number formatting",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "patron-astrological-sign",
+      "opened": true,
+      "heading": "Settings — Patron astrological sign",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "multiline-list-counter",
+      "opened": true,
+      "heading": "Settings — List counter",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "lost-found-checkin-status",
+      "opened": true,
+      "heading": "Settings — Lost item check-in status control",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "search-facets",
+      "opened": true,
+      "heading": "Settings — Search facets",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "guided-reports-tools",
+      "opened": true,
+      "heading": "Settings — Guided report tools",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "detail-bibliographic-groups",
+      "opened": true,
+      "heading": "Settings — Record information layout",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "callnumber-progressive-search",
+      "opened": true,
+      "heading": "Settings — Progressive call-number search",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "serials-claims-filtering",
+      "opened": true,
+      "heading": "Settings — Serial claims filters",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "070",
+      "opened": true,
+      "heading": "Settings — Address autocomplete",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "patron-age-display",
+      "opened": true,
+      "heading": "Settings — Ages and relative dates",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "relative-dates",
+      "opened": true,
+      "heading": "Settings — Ages and relative dates",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "efficiency-indicators",
+      "opened": true,
+      "heading": "Settings — Efficiency indicators",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "scroll-buttons",
+      "opened": true,
+      "heading": "Settings — Quick navigation — top / bottom",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "guided-report-print",
+      "opened": true,
+      "heading": "Settings — Report results printing",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "patron-overdues-print",
+      "opened": true,
+      "heading": "Settings — Overdues printing / guarantor",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "cataloguing-tree-assistant",
+      "opened": true,
+      "heading": "Settings — Cataloguing hierarchy assistant",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "147-home-submenus",
+      "opened": true,
+      "heading": "Settings — Home menus",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "authority-installation-options",
+      "opened": true,
+      "heading": "Settings — Authorities — installation settings",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "legacy-interface-options",
+      "opened": true,
+      "heading": "Settings — Interface — historic enhancements",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "patron-renewal-verification",
+      "opened": true,
+      "heading": "Settings — Patron renewal verification",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "responsive-tables",
+      "opened": true,
+      "heading": "Settings — Item tables on mobile",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "copy-actions",
+      "opened": true,
+      "heading": "Settings — Copy actions",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "history-row-highlights",
+      "opened": true,
+      "heading": "Settings — Loan history highlights",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "loan-history-timeline",
+      "opened": true,
+      "heading": "Settings — Loan and return history",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "element-placement",
+      "opened": true,
+      "heading": "Settings — Element placement",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "date-display-formatting",
+      "opened": true,
+      "heading": "Settings — Displayed date formatting",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "input-rules",
+      "opened": true,
+      "heading": "Settings — Input rules",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "custom-navigation",
+      "opened": true,
+      "heading": "Settings — Custom navigation",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "patron-page-utils",
+      "opened": true,
+      "heading": "Settings — Patron entry automations",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "mascot-frogs",
+      "opened": true,
+      "heading": "Settings — Mascot — Frogs",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "mascot-agents",
+      "opened": true,
+      "heading": "Settings — Mascot — Staff",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "personal-lists-manager",
+      "opened": true,
+      "heading": "Settings — Personal lists manager",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "barcode-highlights",
+      "opened": true,
+      "heading": "Settings — Barcode highlighting",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "recent-history",
+      "opened": true,
+      "heading": "Settings — Recent history",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "advanced-search-sidebar",
+      "opened": true,
+      "heading": "Settings — Advanced search",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "new-release-indicators",
+      "opened": true,
+      "heading": "Settings — New acquisition indicators",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "cataloging-6xx-suggestions",
+      "opened": true,
+      "heading": "Settings — 6XX indexing helpers",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "musicbrainz-coverart",
+      "opened": true,
+      "heading": "Settings — Music cover art — MusicBrainz",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "log-viewer",
+      "opened": true,
+      "heading": "Settings — Koha change log",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "item-template-buttons",
+      "opened": true,
+      "heading": "Settings — Item template buttons",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "detail-reservations-summary-style",
+      "opened": true,
+      "heading": "Settings — Conditional formatting — Holds and lists",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "item-entry-assistant",
+      "opened": true,
+      "heading": "Settings — Item entry assistant",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "internal-share",
+      "opened": true,
+      "heading": "Settings — Internal share",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "search-autocomplete-performance",
+      "opened": true,
+      "heading": "Settings — Catalogue search autocomplete",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "renewal-enhancements",
+      "opened": true,
+      "heading": "Settings — Renewal availability and reasons",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "patron-message-chronology",
+      "opened": true,
+      "heading": "Settings — Patron message chronology",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "menu-icons",
+      "opened": true,
+      "heading": "Settings — Menu icons",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "patron-required-contact",
+      "opened": true,
+      "heading": "Settings — Required contact details",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "multi-transfer",
+      "opened": true,
+      "heading": "Settings — Batch transfer",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "hold-pickup-expiration",
+      "opened": true,
+      "heading": "Settings — Hold pickup expiration date",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "search-filter-badges",
+      "opened": true,
+      "heading": "Settings — Search filter badges",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "patron-category-defaults",
+      "opened": true,
+      "heading": "Settings — Defaults by patron category",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "hold-submit-guard",
+      "opened": true,
+      "heading": "Settings — Hold double-submit protection",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "search-results-master",
+      "opened": true,
+      "heading": "Settings — Catalog results — layout and items",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "document-movements",
+      "opened": true,
+      "heading": "Settings — Document movements",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "suggestion-required-suggester",
+      "opened": true,
+      "heading": "Settings — Suggestions — patron required",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "intranet-nav-menu",
+      "opened": true,
+      "heading": "Settings — IntranetNav menu",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "guides-training",
+      "opened": true,
+      "heading": "Settings — Guides & training",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "xslt-assistant",
+      "opened": true,
+      "heading": "Settings — XSLT editor",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "home-widgets",
+      "opened": true,
+      "heading": "Settings — Home widgets & blocks",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "attendance-mediabus-mini",
+      "opened": true,
+      "heading": "Settings — Attendance counter",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "bibliography-builder",
+      "opened": true,
+      "heading": "Settings — Bibliographies & publications",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "144",
+      "opened": true,
+      "heading": "Settings — Patron duplicate check",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "item-quick-edit",
+      "opened": true,
+      "heading": "Settings — Quick item editing",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "checkout-status-correction",
+      "opened": true,
+      "heading": "Settings — Checkout status correction",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "france-publications-subscriptions",
+      "opened": true,
+      "heading": "Settings — Périodiques — enrichissement natif Koha / FP",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "page-qr-code",
+      "opened": true,
+      "heading": "Settings — Page mobile QR",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "last-borrower",
+      "opened": true,
+      "heading": "Settings — Last borrower retained after anonymization",
+      "danger": "",
+      "enabled": false,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    }
+  ]
+}

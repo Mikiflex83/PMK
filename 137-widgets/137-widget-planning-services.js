@@ -1335,9 +1335,9 @@ async function mount(container) {
               maxUpcoming: 5,
               showLocation: false,
               showStopTimes: false,
-              gifEnabled: true,
+              gifEnabled: false,
               gifSegmentWidth: 65,
-              gifUrl: "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/icons8-camion.gif",
+              gifUrl: "",
               slots: navetteSlots,
               exceptions: navetteExceptions
             },

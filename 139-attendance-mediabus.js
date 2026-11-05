@@ -26,6 +26,7 @@
     // Keep the historical document ID and count fields; both views use this configuration.
     const DEFAULTS = { enabled:true, autoOpen:true, miniEnabled:true, pageEnabled:true,
         branchNames:'', branchSelector:'.logged-in-branch-name', defaultLocationId:'',
+        locationSource:'manual', hiddenLocationIds:'',
         title:'Compteur de fréquentation', adminPin:'admin', defaultCountedWeeks:8, adultsLabel:'Adultes', kidsLabel:'Enfants',
         step:1, miniWidth:340, countsCollection:'counts', locationsCollection:'locations' };
     let resolveReady;
@@ -33,6 +34,7 @@
 
     let config = { ...DEFAULTS };
     let started = false;
+    let reloadLocations = null;
     let starting = null;
     let registered = false;
     let unsubscribe = null;
@@ -1353,6 +1355,8 @@
 
     function normalizeConfiguration(next) {
         const cfg=Object.assign({},DEFAULTS,next || {});
+        cfg.locationSource=['manual','koha','mix'].includes(cfg.locationSource)?cfg.locationSource:'manual';
+        cfg.hiddenLocationIds=String(cfg.hiddenLocationIds||'');
         cfg.step=Math.max(1,Math.min(100,Math.round(Number(cfg.step) || 1)));
         cfg.miniWidth=Math.max(300,Math.min(520,Number(cfg.miniWidth) || 340));
         cfg.defaultCountedWeeks=Math.max(1,Math.min(53,Math.round(Number(cfg.defaultCountedWeeks) || 8)));
@@ -2071,28 +2075,16 @@
     async function loadLocations() {
         try {
             updateStatus('Chargement lieux...');
-            state.locations = [];
-            const locationsSnapshot = await getDocs(collection(db, attendanceConfig.locationsCollection));
-
-            locationsSnapshot.forEach((docSnap) => {
-                const data = docSnap.data();
-                state.locations.push({
-                    id: docSnap.id,
-                    name: data.name
-                });
-            });
-
-            state.locations.sort((a, b) => a.name.localeCompare(b.name));
+            const collected = await collectLocations({db, getDocs, collection, configuration: config});
+            state.locations = collected.locations;
             renderLocations();
-
-            if (state.locations.length > 0) {
-                await loadCountsForSelectedDate();
-            }
-
+            if (state.locations.length > 0) await loadCountsForSelectedDate();
+            updateStatus(collected.warning || (state.locations.length ? state.locations.length + ' lieux' : 'Aucun lieu visible'));
         } catch (error) {
-            updateStatus('Erreur lieux');
+            updateStatus(error && error.message ? error.message : 'Erreur lieux');
         }
     }
+    reloadLocations = loadLocations;
 
     function renderLocations() {
         const selectLocation = el('freq-selectLocationMini');
@@ -2387,6 +2379,59 @@
         if (config.enabled === false) { hideInternally('disabled'); dispatchState('disabled'); return; }
         if (config.autoOpen !== false && !new URLSearchParams(location.search).has('pmk_page')) open();
         else dispatchState('configured');
+        if (reloadLocations) reloadLocations();
+    }
+
+    function hiddenLocationSet(value) {
+        return new Set(String(value || '').split(/[\n,;]+/).map(item => item.trim()).filter(Boolean));
+    }
+
+    function resolveLocations(stored, libraries, cfg) {
+        const source = cfg.locationSource || 'manual';
+        const hidden = hiddenLocationSet(cfg.hiddenLocationIds);
+        const manual = (stored || []).filter(row => row && row.id && !String(row.id).startsWith('koha:') && !hidden.has(String(row.id))).map(row => Object.assign({source:'manual'}, row));
+        const koha = (libraries || []).filter(row => row && row.id && !hidden.has(String(row.id)));
+        const chosen = source === 'koha' ? koha : source === 'mix' ? koha.concat(manual) : manual;
+        const seen = new Set();
+        return chosen.filter(row => seen.has(row.id) ? false : seen.add(row.id)).sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'fr'));
+    }
+
+    async function readKohaLibraries(weeks) {
+        const rows = [];
+        for (let page = 1; page <= 5; page += 1) {
+            const response = await fetch('/api/v1/libraries?_page=' + page + '&_per_page=200', {credentials:'same-origin', headers:{Accept:'application/json'}});
+            if (!response.ok) throw new Error('Sites Koha indisponibles (HTTP ' + response.status + ').');
+            const body = await response.json();
+            const list = Array.isArray(body) ? body : [];
+            list.forEach(row => {
+                const code = String(row.library_id || row.branchcode || '').trim();
+                if (!code) return;
+                rows.push({id:'koha:' + code, name:String(row.name || code), source:'koha', extrapolate:false, defaultWeeks:weeks});
+            });
+            const total = Number(response.headers.get('x-total-count') || rows.length);
+            if (rows.length >= total || list.length < 200) break;
+        }
+        return rows;
+    }
+
+    async function collectLocations(deps) {
+        const cfg = normalizeConfiguration(deps && deps.configuration || config);
+        const stored = [];
+        const snapshot = await deps.getDocs(deps.collection(deps.db, cfg.locationsCollection));
+        snapshot.forEach(docSnap => {
+            const data = docSnap.data() || {};
+            stored.push({id:docSnap.id, name:data.name || docSnap.id, extrapolate:!!data.extrapolate, defaultWeeks:data.defaultWeeks || cfg.defaultCountedWeeks, source:'manual'});
+        });
+        let libraries = [];
+        let warning = '';
+        if (cfg.locationSource === 'koha' || cfg.locationSource === 'mix') {
+            try { libraries = await readKohaLibraries(cfg.defaultCountedWeeks); }
+            catch (error) {
+                warning = error.message || 'Sites Koha indisponibles.';
+                if (cfg.locationSource === 'koha') throw error;
+            }
+        }
+        return {locations:resolveLocations(stored, libraries, cfg), warning, source:cfg.locationSource};
     }
 
     function registerWithPMK() {
@@ -2410,7 +2455,13 @@
                 {key:'miniEnabled',type:'boolean',label:'Proposer le compteur flottant'},
                 {key:'pageEnabled',type:'boolean',label:'Activer la page de saisie et de rapports'},
                 {key:'autoOpen',type:'boolean',label:'Ouvrir automatiquement le compteur flottant'},
-                {key:'branchNames',type:'textarea',label:'Sites autorisés (vide = tous)',help:'Codes ou noms des sites de connexion, séparés par des virgules ou des lignes. Les lieux de comptage se gèrent dans la page du compteur.'},
+                {key:'branchNames',type:'textarea',label:'Sites autorisés (vide = tous)',help:'Codes ou noms des sites de connexion, séparés par des virgules ou des lignes. Cela limite où le compteur flottant apparaît. Les lieux de comptage se choisissent plus bas.'},
+                {key:'locationSource',type:'select',label:{fr:'Source des lieux de comptage',en:'Counting location source'},options:[
+                    {value:'manual',label:{fr:'Liste manuelle',en:'Manual list'}},
+                    {value:'koha',label:{fr:'Sites Koha',en:'Koha libraries'}},
+                    {value:'mix',label:{fr:'Sites Koha et liste manuelle',en:'Koha libraries and manual list'}}
+                ],help:{fr:'Liste manuelle : lieux ajoutés dans la page. Sites Koha : bibliothèques de ce Koha. Mélange : les deux. Un lieu masqué sort de la saisie sans effacer ses comptages.',en:'Manual list: places added on the page. Koha libraries: this Koha’s libraries. Mix: both. Hiding a place removes it from counting without deleting its counts.'}},
+                {key:'hiddenLocationIds',type:'textarea',label:{fr:'Lieux masqués',en:'Hidden locations'},help:{fr:'Un identifiant par ligne. Un site Koha s’écrit koha: suivi de son code, par exemple koha:CPL. Un lieu manuel utilise l’identifiant affiché dans la page. Effacer une ligne le réaffiche.',en:'One identifier per line. A Koha library is written koha: followed by its code, for example koha:CPL. A manual place uses the identifier shown on the page. Clearing a line shows it again.'}},
                 {key:'branchSelector',type:'elementPicker',allowManual:true,manualAlways:true,label:'Élément portant le site de connexion',pick:ctx=>{
                     const picker=window.PMKConfig.elementPicker;
                     picker?.register(MODULE_ID,{});
@@ -2439,6 +2490,7 @@
         moduleId: MODULE_ID,
         ready,
         getConfig:()=>JSON.parse(JSON.stringify(config)),
+        collectLocations,
         mutate:mutateSharedCounter,
         decorate,
         inScope:isMediabus,

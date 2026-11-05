@@ -105,7 +105,7 @@
         },
 
         reports: {
-            statisticsReportId: 4537,
+            statisticsReportId: 0,
             statisticsReportFormat: 'legacy-dracenie',
             statisticsParameterName: 'Numéro exemplaire',
             statisticsReportSql: STATISTICS_REPORT_SQL
@@ -367,13 +367,7 @@ body.kx-search-results-page .kxri-item.is-unavailable { border-left-color:${a.un
     }
 
     function validatePmkConfig(config) {
-        const c = normalizePmkConfig(config);
-        if (c.items.actions.statistics && c.reports.statisticsReportId <= 0) {
-            return {
-                ok: false,
-                message: "Le bouton Statistiques est actif mais aucun identifiant de rapport n'est renseigné."
-            };
-        }
+        normalizePmkConfig(config);
         return { ok: true };
     }
 
@@ -471,7 +465,7 @@ body.kx-search-results-page .kxri-item.is-unavailable { border-left-color:${a.un
                                 min: 0,
                                 step: 1,
                                 label: { fr: "Numéro du rapport de statistiques de prêt", en: "Checkout statistics report ID" },
-                                help: { fr: "Dracénie : 4537, conservé par défaut. Sur un autre Koha, créez le rapport SQL ci-dessous puis indiquez son numéro et choisissez le format « Rapport standard fourni ci-dessous ».", en: "Dracénie defaults to 4537. On another Koha, create the SQL report below, enter its ID and choose the supplied standard-report format." }
+                                help: { fr: "0 n’affiche pas le bouton. Créez le rapport SQL ci-dessous, indiquez son numéro, puis choisissez le format « Rapport standard fourni ci-dessous ». Un rapport déjà créé sur ce Koha peut garder le format historique.", en: "0 hides the button. Create the SQL report below, enter its number, then choose the supplied standard-report format. A report already created on this Koha can keep the historical format." }
                             },
                             {key:'reports.statisticsReportFormat',type:'select',label:{fr:'Rapport utilisé',en:'Report format'},options:[{value:'legacy-dracenie',label:{fr:'Rapport existant Dracénie (filtres historiques)',en:'Existing Dracénie report (historical filters)'}},{value:'standard',label:{fr:'Rapport standard fourni ci-dessous',en:'Supplied standard report'}}]},
                             {key:'reports.statisticsParameterName',type:'text',advanced:true,label:{fr:'Nom du paramètre exemplaire',en:'Item parameter name'},help:{fr:'Conserver « Numéro exemplaire » pour le SQL fourni.',en:'Keep “Numéro exemplaire” for the supplied SQL.'}},
@@ -6190,6 +6184,7 @@ body.kx-search-results-page
         itemId
     ) {
 
+        if (!(Number(CONFIG.reportId) > 0)) return '';
         const params =
             new URLSearchParams();
 

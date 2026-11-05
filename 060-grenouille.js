@@ -44,7 +44,6 @@
     window[SCRIPT_GUARD] = true;
 
     const VERSION = "4.1.0-pmk-split-responsive";
-    const BASE_URL = "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/grenouilles/";
 
     const FROG_MODULE_ID = "mascot-frogs";
     const AGENT_MODULE_ID = "mascot-agents";
@@ -52,10 +51,8 @@
     const ATTR_GENERATED = "data-pmk-060-mascot";
     const ATTR_MODULE = "data-pmk-060-module";
 
-    const AGENT_NAMES = Array.from({length:25},(_,i)=>"Mascotte "+(i+1));
-
     const FROG_DEFAULTS = {
-        enabled: true,
+        enabled: false,
         pages: "*",
         locationSelector: "#logo",
         locationName: "Logo Koha",
@@ -70,28 +67,12 @@
         responsiveMinScale: 0.65,
         soundEnabled: true,
         respectReducedMotion: true,
-        images: Array.from({ length: 8 }, function (_, i) {
-            const n = i + 2;
-            return {
-                id: "grenouille-" + n,
-                enabled: true,
-                name: "Grenouille " + n,
-                url: BASE_URL + "grenouille" + n + ".png"
-            };
-        }),
-        sounds: Array.from({ length: 6 }, function (_, i) {
-            const n = i + 1;
-            return {
-                id: "frog-sound-" + n,
-                enabled: true,
-                name: "Son grenouille " + n,
-                url: BASE_URL + "SFB-frogs" + n + ".mp3"
-            };
-        })
+        images: [],
+        sounds: []
     };
 
     const AGENT_DEFAULTS = {
-        enabled: true,
+        enabled: false,
         pages: "*",
         locationSelector: "#header_search",
         locationName: "Barre de recherche Koha",
@@ -105,15 +86,7 @@
         responsiveFullSizeAtPx: 1100,
         responsiveMinScale: 0.65,
         showNameOnHover: true,
-        images: AGENT_NAMES.map(function (name, i) {
-            const n = i + 1;
-            return {
-                id: "agent-" + n,
-                enabled: true,
-                name: name,
-                url: BASE_URL + "grenouilles" + n + ".png"
-            };
-        })
+        images: []
     };
 
     const states = {

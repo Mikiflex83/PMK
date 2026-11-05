@@ -74,7 +74,11 @@ sub _day {
 sub _user_agent {
     my $ua=Mojo::UserAgent->new;
     $ua->max_redirects(0)->connect_timeout(5)->request_timeout(15)->max_response_size(2_000_000);
-    $ua->insecure(0);$ua->proxy->detect;
+    # No ambient proxy: the provider credential travels in the query string
+    # because Libnet documents no custom header, and a proxy would see that URL.
+    $ua->insecure(0);
+    $ua->proxy->http(undef);
+    $ua->proxy->https(undef);
     return $ua;
 }
 
@@ -110,6 +114,23 @@ sub _counts {
     return [{CCINFO=>[{DATA=>[{VALUES=>\@values}]}]}];
 }
 
+sub _frequency_enabled {
+    my $raw = C4::Context->dbh->selectrow_array(
+        'SELECT body FROM koha_plugin_pimpmykoha_documents WHERE document_key=?',
+        undef, 'home-widgets');
+    return 0 unless $raw;
+    my $doc = eval { $json->decode($raw) };
+    return 0 unless ref($doc) eq 'HASH';
+    my $cfg = ref($doc->{config}) eq 'HASH' ? $doc->{config} : $doc;
+    return 0 if exists $cfg->{enabled} && !$cfg->{enabled};
+    my $widgets = $cfg->{announcementsWidgets};
+    return 0 unless ref($widgets) eq 'ARRAY';
+    for my $widget (@$widgets) {
+        return 1 if ref($widget) eq 'HASH' && ($widget->{id} // '') eq 'frequency-nedap' && $widget->{enabled};
+    }
+    return 0;
+}
+
 sub counts {
     my $c=shift->openapi->valid_input or return;
     $c->res->headers->cache_control('no-store');
@@ -123,6 +144,7 @@ sub counts {
         my $saved=_read(0);
         die "relay_not_configured\n" unless length($saved->{apiKey}//'');
         die "rcr_not_configured\n" unless $saved->{rcr} eq $rcr;
+        die "relay_disabled\n" unless _frequency_enabled();
         my $cache=Koha::Caches->get_instance;
         my $cache_key='pmk:nedap:'.sha256_hex(join('|',$saved->{revision},$saved->{apiKey},$rcr,$from,$to,$period,$display));
         my $result=$cache->get_from_cache($cache_key);
@@ -142,9 +164,9 @@ sub counts {
         return $c->render(status=>200,openapi=>$result);
     } catch {
         my $error=$_;
-        my ($code)=$error =~ /\A(invalid_request|invalid_interval|relay_not_configured|rcr_not_configured|provider_unavailable|provider_authentication_failed|provider_invalid_response)\n/;
+        my ($code)=$error =~ /\A(invalid_request|invalid_interval|relay_not_configured|rcr_not_configured|relay_disabled|provider_unavailable|provider_authentication_failed|provider_invalid_response)\n/;
         $code //='provider_unavailable';
-        my $status=$code =~ /^invalid_/ ? 400 : $code =~ /^(?:relay_not|rcr_not)/ ? 409 : 502;
+        my $status=$code eq 'relay_disabled' ? 403 : $code =~ /^invalid_/ ? 400 : $code =~ /^(?:relay_not|rcr_not)/ ? 409 : 502;
         return $c->render(status=>$status,openapi=>{error=>$code});
     };
 }

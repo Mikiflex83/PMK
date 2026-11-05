@@ -8,6 +8,7 @@ use C4::Context;
 use Koha::Plugin::PimpMyKoha;
 use Koha::Plugin::PimpMyKoha::NativeData;
 use Koha::Plugin::PimpMyKoha::Restoration;
+use Koha::Plugin::PimpMyKoha::Transfers;
 use Koha::Reports;
 use Koha::Plugin::PimpMyKoha::Nedap;
 my $document_json = JSON->new->canonical;
@@ -27,6 +28,10 @@ sub report_diagnostic {
     return $c->render(status=>200,openapi=>{report_id=>0+$report->id,name=>$report->report_name // '',parameters=>\@parameters,executed=>JSON::false});
 }
 sub restoration { return Koha::Plugin::PimpMyKoha::Restoration::exchange(shift); }
+sub restoration_items_search { return Koha::Plugin::PimpMyKoha::Restoration::search(shift, 'items'); }
+sub restoration_biblios_search { return Koha::Plugin::PimpMyKoha::Restoration::search(shift, 'biblios'); }
+sub restoration_biblio { return Koha::Plugin::PimpMyKoha::Restoration::exchange_biblio(shift); }
+sub open_transfers { return Koha::Plugin::PimpMyKoha::Transfers::search(shift); }
 sub data { return Koha::Plugin::PimpMyKoha::NativeData::exchange(shift); }
 sub get_native_session {
     my $c = shift->openapi->valid_input or return;
@@ -140,10 +145,32 @@ sub _identity {
     return [$patron, $key];
 }
 
+sub _superlibrarian {
+    my ($patron) = @_;
+    return $patron && (($patron->flags // 0) & 1);
+}
+
+# Mots de passe d’interface et clés copiés dans un document. Le superbibliothécaire
+# les voit pour les régler. Les autres lectures professionnelles ne les reçoivent pas.
+sub _redact_secrets {
+    my ($value) = @_;
+    if (ref($value) eq 'HASH') {
+        my %copy;
+        for my $key (keys %$value) {
+            next if $key =~ /\A(?:adminPassword|nedapApiKey|apiKey|privateKey|clientSecret)\z/;
+            $copy{$key} = _redact_secrets($value->{$key});
+        }
+        return \%copy;
+    }
+    return [map { _redact_secrets($_) } @$value] if ref($value) eq 'ARRAY';
+    return $value;
+}
+
 sub get_configuration {
     my $c = shift->openapi->valid_input or return;
+    my $patron = $c->stash('koha.user');
     return $c->render(status => 403, openapi => {error => 'staff_required'})
-        unless $c->stash('koha.user');
+        unless $patron;
     return try {
         # Same read permissions as get_document. Personal favorites are never
         # included: their identity must continue to come from the session.
@@ -151,9 +178,11 @@ sub get_configuration {
             q{SELECT document_key, body, revision FROM koha_plugin_pimpmykoha_documents
               WHERE document_key NOT LIKE '147-favorites-%'}, {Slice => {}});
         my %documents;
+        my $redact = !_superlibrarian($patron);
         for my $row (@$rows) {
+            my $data = $document_json->decode($row->{body});
             $documents{$row->{document_key}} = {
-                exists => JSON::true, data => $document_json->decode($row->{body}),
+                exists => JSON::true, data => $redact ? _redact_secrets($data) : $data,
                 revision => 0 + $row->{revision},
             };
         }
@@ -171,9 +200,11 @@ sub get_document {
         my $row = C4::Context->dbh->selectrow_hashref(
             'SELECT body, revision FROM koha_plugin_pimpmykoha_documents WHERE document_key = ?', undef, $key);
         $c->res->headers->cache_control('no-store');
+        my $data = $row ? $document_json->decode($row->{body}) : undef;
+        $data = _redact_secrets($data) if defined $data && !_superlibrarian($patron);
         return $c->render(status => 200, openapi => {
             exists => $row ? JSON::true : JSON::false,
-            data => $row ? $document_json->decode($row->{body}) : undef,
+            data => $data,
             revision => $row ? 0 + $row->{revision} : 0,
         });
     } catch { $c->unhandled_exception($_); };

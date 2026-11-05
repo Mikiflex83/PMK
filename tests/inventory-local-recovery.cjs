@@ -18,7 +18,7 @@ const OUT=path.join(ROOT,'tests/validation/inventory-local-recovery.json');
     indexedDbFailureVisible:source.includes("Stockage local indisponible : ' + e.message"),
     resumeVisible:source.includes("Inventaire « ' + value(inv.name || inv.uuid) + ' » repris depuis ce navigateur."),
     resumeAction:source.includes('await openInventory(inv.uuid)')&&source.includes('>Ouvrir</button>'),
-    unknownBarcodeSaved:source.includes("code: 'not_found', text: 'Code-barres introuvable dans Koha.'")&&source.includes("await storePut('scans', rec)"),
+    unknownBarcodeSaved:source.includes("code: 'not_found', text: 'Code-barres introuvable dans Koha. Cela ne prouve pas qu’il n’a jamais existé.'")&&source.includes("await storePut('scans', rec)"),
     repeatedBarcodeExplained:source.includes("code:'already_seen', text:'Déjà scanné dans cette zone"),
     otherZoneProtected:source.includes('Ce code-barres a déjà été scanné dans une autre zone. Aucun changement Koha n’a été appliqué avant résolution du conflit.'),
     batchResumeState:source.includes('processed_count')&&source.includes('before_scans')&&source.includes('Import de codes-barres interrompu'),

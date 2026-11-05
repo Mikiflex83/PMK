@@ -2,6 +2,7 @@ SELECT
 -- PMK Restauration — rapport privé Koha 25.11+, lecture seule.
 -- Paramètres, dans cet ordre : Du|date puis Au|date.
 -- Le filtre utilise la date de suppression deleted_on, pas la dernière modification.
+-- Lecture seule et facultative. Sans ce rapport, la page lit elle-même les exemplaires supprimés. La restauration reste celle de PimpMyKoha, après confirmation.
 -- Conserver les noms et l'ordre des colonnes. Renseigner l'ID obtenu dans PMK.
     d.itemnumber,
     d.barcode,

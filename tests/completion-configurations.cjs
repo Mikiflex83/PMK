@@ -3,7 +3,7 @@ async function fixture(route,body,configs={}){const p=await browser.newPage({loc
 async function load(p,file){await p.addScriptTag({content:fs.readFileSync(path.join(ROOT,file),'utf8')});}
 async function check(name,fn){try{await fn();rows.push({name,passed:true});console.log('PASS '+name);}catch(e){rows.push({name,passed:false,error:e.stack});throw e;}}
 
-(async()=>{browser=await chromium.launch({executablePath:'/usr/bin/chromium',args:['--no-sandbox']});try{
+(async()=>{browser=await chromium.launch({executablePath:process.env.PMK_CHROMIUM_PATH||'/usr/bin/chromium',args:['--no-sandbox']});try{
  await check('Patron category simulation uses the live rules without writes, preserves manual input and explains unavailable or competing values',async()=>{
   const rule=(id,category,value,onlyIfEmpty=true)=>({id,label:id,enabled:true,patronCategory:category,targetField:'sort1',manualValue:value,onlyIfEmpty});
   const config={enabled:true,custom:{keep:42},rules:[rule('Enfant par défaut','C','12'),rule('Adulte proposé','A','13'),rule('Autre proposition','A','14',false),rule('Valeur inconnue','A','99',false)]};

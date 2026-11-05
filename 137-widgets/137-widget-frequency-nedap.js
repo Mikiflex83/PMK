@@ -819,6 +819,7 @@ async function mount(container) {
         key_required: "Renseignez une clé pour activer le relais Koha.",
         relay_not_configured: "La clé serveur du relais Koha n’est pas configurée.",
         rcr_not_configured: "Le RCR choisi ne correspond pas à celui enregistré pour le relais Koha.",
+        relay_disabled: "Le widget de fréquentation est éteint. Le relais ne contacte pas Libnet.",
         invalid_interval: "Période trop longue ou invalide pour cette granularité API.",
         provider_authentication_failed: "Libnet refuse la clé ou l’accès au RCR.",
         provider_invalid_response: "Libnet a renvoyé des données de comptage illisibles.",
@@ -855,14 +856,9 @@ async function mount(container) {
       function keyStorageKey(config) {
         return "nfNedapApiKey:" + NEDAP_ENDPOINT;
       }
-      function loadNedapApiKey(config) {
-        if (config.connectionMode === "koha") return "";
-        if (typeof config.nedapApiKey === "string" && config.nedapApiKey.trim()) {
-          return config.nedapApiKey.trim();
-        }
-        // Reprendre l’ancienne clé locale pour la partager au prochain enregistrement.
-        try { return localStorage.getItem(keyStorageKey(config)) || ""; }
-        catch { return ""; }
+      function loadNedapApiKey() {
+        // La clé ne revient jamais dans le navigateur. Seul le relais Koha la détient.
+        return "";
       }
       let currentConfig = structuredClone(DEFAULT_CONFIG);
       let db = null;
@@ -961,10 +957,7 @@ async function mount(container) {
         const day = formatDay(targetDate);
         const nextDay = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate() + 1);
         if (currentConfig.connectionMode === "koha") return relayURL(day, formatDay(nextDay), currentConfig.period, currentConfig.nedapDisplay);
-        const url = new URL(`${NEDAP_ENDPOINT}/${rcr}/${day}/${formatDay(nextDay)}/${period}`);
-        url.searchParams.set("key", nedapApiKey);
-        url.searchParams.set("display", currentConfig.nedapDisplay === "YES" ? "YES" : "NO");
-        return url.href;
+        throw new Error("La clé API ne part plus du navigateur. Choisissez le relais Koha : elle reste sur le serveur.");
       }
 
       function calculateTotals(data) {
@@ -1332,10 +1325,7 @@ async function mount(container) {
         const next = formatWeekDay(new Date(last[0], last[1] - 1, last[2] + 1));
         if (currentConfig.connectionMode === "koha") return relayURL(days[0].date, next, "DAY");
         if (currentConfig.connectionMode === "direct") {
-          const url = new URL(`${NEDAP_ENDPOINT}/${rcr}/${days[0].date}/${next}/DAY`);
-          url.searchParams.set("key", nedapApiKey);
-          url.searchParams.set("display", "NO");
-          return url.href;
+          throw new Error("La clé API ne part plus du navigateur. Choisissez le relais Koha : elle reste sur le serveur.");
         }
         const root = String(currentConfig.workerUrl || "").replace(/\/+$/, "");
         const start = days[0].date.replace(/-/g, "") + "000000";
@@ -1610,11 +1600,10 @@ async function mount(container) {
           if (parsed.origin !== location.origin || parsed.pathname !== RELAY_ROOT + "/counts") throw new Error("Destination du relais invalide.");
           return relayRequest("/counts" + parsed.search);
         }
-        const direct = currentConfig.connectionMode === "direct";
-        if (direct) {
-          validateConfig(currentConfig);
-          if (!nedapApiKey) throw new Error("Renseigner la clé API Nedap dans les paramètres.");
+        if (currentConfig.connectionMode === "direct") {
+          throw new Error("La clé API ne part plus du navigateur. Choisissez le relais Koha : elle reste sur le serveur.");
         }
+        const direct = false;
         const controller = new AbortController(), timer = setTimeout(() => controller.abort(), 20000);
         try {
           const response = await fetch(url, { method: "GET", cache: "no-store", signal: controller.signal,
@@ -2012,9 +2001,10 @@ async function mount(container) {
           validateConfig(candidate);
 
           const candidateKey = candidate.nedapApiKey;
-          if (candidate.connectionMode === "direct" && !candidateKey) {
-            throw new Error("La clé API Nedap est obligatoire en mode direct.");
+          if (candidate.connectionMode === "direct") {
+            throw new Error("Le mode direct envoie la clé depuis le navigateur. Choisissez le relais Koha.");
           }
+          candidate.nedapApiKey = "";
           setAdminMessage("Enregistrement…");
 
           if (candidate.connectionMode === "koha") {
@@ -2024,7 +2014,7 @@ async function mount(container) {
             candidate.nedapApiKey = "";
           }
           await saveConfigToStorage(candidate);
-          nedapApiKey = candidate.connectionMode === "koha" ? "" : candidateKey;
+          nedapApiKey = "";
           if (candidate.connectionMode === "koha") document.getElementById("nf-cfg-api-key").value = "";
           // Nettoyer l’ancienne copie locale uniquement après succès du stockage Koha.
           try { localStorage.removeItem(keyStorageKey(candidate)); } catch {}

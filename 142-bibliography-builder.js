@@ -86,7 +86,7 @@
         { key: 'biblio.editor', label: 'Éditeur (API)', scope: 'biblio' },
         { key: 'biblio.publisher', label: 'Éditeur (210$c / 214$c)', scope: 'biblio' },
         { key: 'biblio.publication_year', label: 'Année / date d’édition (210$d / 214$d)', scope: 'biblio' },
-        { key: 'biblio.summary', label: 'Résumé (330$a)', scope: 'biblio' },
+        { key: 'biblio.summary', label: 'Résumé (330$a ou 520$a)', scope: 'biblio' },
         { key: 'biblio.collection', label: 'Collection (225$a)', scope: 'biblio' },
         { key: 'biblio.isbn', label: 'ISBN (010$a)', scope: 'biblio' },
         { key: 'biblio.public_audience', label: 'Public (999$q)', scope: 'biblio' },
@@ -157,7 +157,7 @@
                 block('field', 'biblio.isbn', 'ISBN', {
                     size: 9, prefix: 'ISBN : ', muted: true, wrapMode: 'full', blockWidth: 100
                 }),
-                block('field', 'biblio.summary', 'Résumé (330$a)', {
+                block('field', 'biblio.summary', 'Résumé (330$a ou 520$a)', {
                     size: 9.5, align: 'justify', wrapMode: 'full', blockWidth: 100, wrapGap: 2
                 }),
                 block('field', 'biblio.biblionumber', 'N° notice', {
@@ -202,7 +202,7 @@
                 block('field', 'biblio.publication_year', 'Année', {
                     size: 9, prefix: 'Année : ', wrapMode: 'normal', blockWidth: 100
                 }),
-                block('field', 'biblio.summary', 'Résumé (330$a)', {
+                block('field', 'biblio.summary', 'Résumé (330$a ou 520$a)', {
                     size: 8.5, align: 'justify', wrapMode: 'normal', blockWidth: 100
                 }),
                 block('items', 'items', 'Exemplaires', {
@@ -262,7 +262,7 @@
                 block('field', 'biblio.publication_year', 'Année', {
                     size: 9, prefix: 'Année : ', wrapMode: 'normal', blockWidth: 100
                 }),
-                block('field', 'biblio.summary', 'Résumé (330$a)', {
+                block('field', 'biblio.summary', 'Résumé (330$a ou 520$a)', {
                     size: 9.5, align: 'justify', wrapMode: 'normal', blockWidth: 100
                 }),
                 block('qrcode', 'biblio.link', 'QR catalogue', {
@@ -363,7 +363,7 @@
                     size: 9, prefix: 'Année : ', align: 'center',
                     wrapMode: 'full', blockWidth: 100
                 }),
-                block('field', 'biblio.summary', 'Résumé (330$a)', {
+                block('field', 'biblio.summary', 'Résumé (330$a ou 520$a)', {
                     size: 9.5, align: 'justify',
                     wrapMode: 'full', blockWidth: 100
                 }),
@@ -532,7 +532,7 @@
                 block('field', 'biblio.collection', 'Collection', {
                     size: 8.5, prefix: 'Collection : ', wrapMode: 'normal', blockWidth: 100
                 }),
-                block('field', 'biblio.summary', 'Résumé (330$a)', {
+                block('field', 'biblio.summary', 'Résumé (330$a ou 520$a)', {
                     size: 9, align: 'justify', wrapMode: 'normal', blockWidth: 100
                 }),
                 block('qrcode', 'biblio.link', 'QR catalogue', {
@@ -1780,7 +1780,7 @@
         if(options.operation && (jsonResult.status==='rejected' || marcResult.status==='rejected'))options.operation.errors++;
         if (marcResult.status === 'fulfilled') marc = marcResult.value || {};
 
-        const summary330 = firstMarcValue(marc, [['330', 'a']]);
+        const summary330 = firstMarcValue(marc, [['330', 'a'], ['520', 'a']]);
         const publisher = firstMarcValue(marc, [['214', 'c'], ['210', 'c']]);
         const publicationYear = firstMarcValue(marc, [['214', 'd'], ['210', 'd']]);
         const collection = firstMarcValue(marc, [['225', 'a']]);
@@ -2813,7 +2813,7 @@
         { value: 'field:biblio.publication_year', group: 'Bibliographie', label: 'Année / date d’édition (210$d / 214$d)' },
         { value: 'field:biblio.collection', group: 'Bibliographie', label: 'Collection (225$a)' },
         { value: 'field:biblio.isbn', group: 'Bibliographie', label: 'ISBN (010$a)' },
-        { value: 'field:biblio.summary', group: 'Bibliographie', label: 'Résumé (330$a)' },
+        { value: 'field:biblio.summary', group: 'Bibliographie', label: 'Résumé (330$a ou 520$a)' },
         { value: 'field:biblio.public_audience', group: 'Bibliographie', label: 'Public (999$q)' },
         { value: 'field:biblio.sublocation_local', group: 'Bibliographie', label: 'Sous-localisation (999$y)' },
         { value: 'field:biblio.series_title', group: 'Bibliographie', label: 'Série (API)' },
@@ -3044,7 +3044,7 @@
                 <div class="pmk142-source-summary">
                     <strong>${esc(sourceKindLabel)}</strong>
                     <div>${esc(current.list?.name || current.source?.name || '')}</div>
-                    <div class="pmk142-muted">${current.entries.length} entrée(s) chargée(s)</div>
+                    <div class="pmk142-muted">Une liste Koha ou un panier Koha suffit.</div><div class="pmk142-muted">${current.entries.length} entrée(s) chargée(s)</div>
                 </div>
             `
             : `
@@ -3052,7 +3052,10 @@
                 <select data-control="source-list">
                     ${sourceListOptionsHtml(lists)}
                 </select>
-                <div class="pmk142-muted">${current.entries.length} entrée(s) chargée(s)</div>
+                <label>Numéro d’une liste Koha</label>
+                <input data-control="koha-list-id" inputmode="numeric" placeholder="Liste">
+                <button type="button" data-action="load-koha-list">Charger cette liste</button>
+                <div class="pmk142-muted">Une liste Koha ou un panier Koha suffit.</div><div class="pmk142-muted">${current.entries.length} entrée(s) chargée(s)</div>
             `;
 
         zone.innerHTML = `
@@ -4404,6 +4407,27 @@
                 renderPreview();renderContentManager();
             }catch(error){operation.errors++;if(revision===recordsRevision)setStatus(error.message);}
             finally{operation.done=1;operation.dataDone=true;updateLoading(operation);actionEl.disabled=false;if(revision===recordsRevision)renderContentManager();}
+            return;
+        }
+        if(action==='load-koha-list') {
+            const input=document.querySelector('#'+ROOT_ID+' [data-control="koha-list-id"]');
+            const id=clean(input&&input.value);
+            if(!/^\d+$/.test(id)){setStatus('Indiquez le numéro de la liste Koha.');return;}
+            setStatus('Lecture de la liste Koha '+id+'…', true);
+            try{
+                const response=await boundedFetch('/api/v1/lists/'+encodeURIComponent(id),{credentials:'same-origin',headers:{Accept:'application/json','x-koha-embed':'biblios'}});
+                if(!response.ok)throw new Error('Liste Koha HTTP '+response.status);
+                const list=await response.json();
+                const biblios=Array.isArray(list.biblios)?list.biblios:(Array.isArray(list.contents)?list.contents:[]);
+                if(!biblios.length)throw new Error('Cette liste ne contient aucune notice, ou Koha ne les a pas jointes à la réponse.');
+                current.source={kind:'koha-native',name:list.name||('Liste '+id)};
+                current.list={id:'koha-list-'+id,name:list.name||('Liste '+id),type:'notice'};
+                current.entries=biblios.map(normalizeStoredNotice);
+                current.title=current.list.name;
+                await rebuildRecords();
+                await refreshLeftPanel();
+                setStatus(current.entries.length+' notice(s) lues dans la liste Koha '+id+'.');
+            }catch(error){setStatus(error.message);}
             return;
         }
         if(action==='reload-data') {

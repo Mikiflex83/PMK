@@ -73,6 +73,42 @@
             "state.rows=rows;prepareDerived();render();pageTools?.recordAnalysis('patrons',{outcome:state.stop?'partial':'success',count:rows.length,source:'API REST Koha'});if(state.stop)setStatus",
             'trace commune de l’analyse'
         );
+        source = replaceRequired(
+            source,
+            "state.loading=true;state.stop=false;state.abortController=new AbortController();",
+            "state.loading=true;state.stop=false;state.sample=false;state.abortController=new AbortController();",
+            'échantillon remis à zéro'
+        );
+        source = replaceRequired(
+            source,
+            "u.searchParams.set('_order_by','patron_id');const r=await kfetch(u,{credentials:'same-origin',cache:'no-store',signal,headers:{Accept:'application/json'}});",
+            "if(String(state.search||'').trim())u.searchParams.set('q',JSON.stringify({'-or':[{surname:{'-like':'%'+state.search.trim()+'%'}},{cardnumber:state.search.trim()}]}));u.searchParams.set('_order_by','patron_id');const r=await kfetch(u,{credentials:'same-origin',cache:'no-store',signal,headers:{Accept:'application/json'}});",
+            'recherche transmise à Koha'
+        );
+        source = replaceRequired(
+            source,
+            "rows.push(...a.map(norm));if(!silent)setStatus(`Lecteurs reçus : ${fmt(rows.length)} · page ${page} (${perPage}/page)…`,'loading');",
+            "rows.push(...a.map(norm));if(!silent)setStatus(`Lecteurs reçus : ${fmt(rows.length)} · page ${page} (${perPage}/page)…`,'loading');if(!String(state.search||'').trim()){state.sample=true;break}",
+            'première page sans recherche'
+        );
+        source = replaceRequired(
+            source,
+            "else if(!silent)setStatus(`${fmt(rows.length)} lecteurs chargés.`,'ok')",
+            "else if(!silent)setStatus(state.sample?`${fmt(rows.length)} lecteur(s) en échantillon. Affinez la recherche pour continuer. Un échantillon ne prouve pas l'absence d'un compte. La fusion et la suppression restent dans l'écran natif du lecteur.`:`${fmt(rows.length)} lecteurs chargés. Les seuils sont ceux de cette page. La fusion et la suppression restent dans l'écran natif du lecteur.`,'ok')",
+            'échantillon annoncé'
+        );
+        source = replaceRequired(
+            source,
+            "let page=1,perPage=CFG.PER_PAGE;",
+            "const typed=String($('dqp-query')?.value||'').trim();state.search=typed;let page=1,perPage=String(state.search||'').trim()?CFG.PER_PAGE:50;",
+            'cinquante comptes sans recherche'
+        );
+        source = replaceRequired(
+            source,
+            "<button id=\"load\" class=\"btn btn-primary\">Charger les lecteurs</button>",
+            "<input id=\"dqp-query\" placeholder=\"Nom ou carte\" autocomplete=\"off\"><button id=\"load\" class=\"btn btn-primary\">Charger les lecteurs</button>",
+            'recherche à côté du bouton'
+        );
         return source;
     }
 

@@ -1,0 +1,95 @@
+{
+  "passed": true,
+  "failures": [],
+  "writes": [],
+  "moduleActivity": [
+    "POST /api/v1/contrib/pmk/data/attendance"
+  ],
+  "kohaInlineErrors": [
+    {
+      "screen": "saved-reports",
+      "message": "Cannot read properties of undefined (reading 'DataTable')"
+    },
+    {
+      "screen": "reading-record",
+      "message": "Cannot read properties of undefined (reading 'DataTable')"
+    }
+  ],
+  "dialogs": [],
+  "firebase": [],
+  "blocked": [
+    "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/grenouilles/grenouille2.png",
+    "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/grenouilles/grenouilles21.png",
+    "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/grenouilles/grenouille9.png",
+    "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/grenouilles/grenouilles19.png",
+    "https://mediatheques.dracenie.com/userfiles/image/zPortailElems/grenouilles/grenouilles3.png"
+  ],
+  "skipped": [
+    {
+      "id": "subscription",
+      "reason": "Aucun abonnement dans la base de démonstration"
+    },
+    {
+      "id": "serial-claims",
+      "reason": "Aucun fournisseur dans la base de démonstration"
+    },
+    {
+      "id": "shelf",
+      "reason": "Aucune liste dans la base de démonstration"
+    },
+    {
+      "id": "external-providers",
+      "reason": "France Publications, Electre, EmailJS et NEDAP restent des services facultatifs non contactés"
+    }
+  ],
+  "legacyAliases": [
+    "waiting-holds-age",
+    "patron-age-display",
+    "loan-duration-detail"
+  ],
+  "screens": 2,
+  "modules": 0,
+  "rows": [
+    {
+      "title": "Saved reports › Guided reports wizard › Reports › Koha",
+      "ready": true,
+      "loaded": 111,
+      "errors": [],
+      "id": "saved-reports",
+      "route": "reports/guided_reports.pl?op=list",
+      "pageErrors": [
+        {
+          "message": "Cannot read properties of undefined (reading 'DataTable')",
+          "stack": [
+            "TypeError: Cannot read properties of undefined (reading 'DataTable')",
+            "    at HTMLDocument.<anonymous> (http://127.0.0.1:18081/cgi-bin/koha/reports/guided_reports.pl?op=list:2252:39)",
+            "    at e (http://127.0.0.1:18081/intranet-tmpl/lib/jquery/jquery-3.6.0.min_25.1110000.js:2:30038)",
+            "    at t (http://127.0.0.1:18081/intranet-tmpl/lib/jquery/jquery-3.6.0.min_25.1110000.js:2:30340)"
+          ]
+        }
+      ],
+      "httpErrors": []
+    },
+    {
+      "title": "Circulation history for Koha Admin (1) Patrons › Koha",
+      "ready": true,
+      "loaded": 111,
+      "errors": [],
+      "id": "reading-record",
+      "route": "members/readingrec.pl?borrowernumber=1",
+      "pageErrors": [
+        {
+          "message": "Cannot read properties of undefined (reading 'DataTable')",
+          "stack": [
+            "TypeError: Cannot read properties of undefined (reading 'DataTable')",
+            "    at HTMLDocument.<anonymous> (http://127.0.0.1:18081/cgi-bin/koha/members/readingrec.pl?borrowernumber=1:2284:34)",
+            "    at e (http://127.0.0.1:18081/intranet-tmpl/lib/jquery/jquery-3.6.0.min_25.1110000.js:2:30038)",
+            "    at t (http://127.0.0.1:18081/intranet-tmpl/lib/jquery/jquery-3.6.0.min_25.1110000.js:2:30340)"
+          ]
+        }
+      ],
+      "httpErrors": []
+    }
+  ],
+  "moduleRows": []
+}

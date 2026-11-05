@@ -1,7 +1,7 @@
 SELECT
 -- PMK Restauration — rapport privé Koha 25.11+, lecture seule.
 -- Paramètre unique : barcode|list. Coller des codes séparés par des retours ligne.
--- Le plugin UndeleteRecords effectue la restauration ; ce SQL ne restaure rien.
+-- Lecture seule et facultative. Sans ce rapport, la page cherche les codes-barres directement. Ce SQL ne restaure rien.
 -- Conserver les noms et l'ordre des colonnes. Renseigner l'ID obtenu dans PMK.
     d.itemnumber,
     d.barcode,

@@ -676,6 +676,9 @@
                 "enum": [
                   true
                 ]
+              },
+              "barcode": {
+                "type": "string"
               }
             }
           }
@@ -736,6 +739,103 @@
       "consumes": [
         "application/json"
       ]
+    }
+  },
+  "/restoration/deleted-items": {
+    "get": {
+      "x-mojo-to": "PimpMyKoha::Controller#restoration_items_search",
+      "operationId": "pmk_restoration_deleted_items",
+      "tags": ["pmk"],
+      "parameters": [
+        {"name": "from", "in": "query", "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
+        {"name": "to", "in": "query", "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
+        {"name": "barcode", "in": "query", "type": "array", "items": {"type": "string", "maxLength": 20}, "collectionFormat": "multi", "maxItems": 100}
+      ],
+      "responses": {
+        "200": {"description": "Deleted items matching the UndeleteRecords item search", "schema": {"type": "object"}},
+        "400": {"description": "Invalid request", "schema": {"type": "object"}},
+        "403": {"description": "Access forbidden", "schema": {"type": "object"}}
+      },
+      "x-koha-authorization": {"permissions": {"editcatalogue": "edit_items"}},
+      "produces": ["application/json"]
+    }
+  },
+  "/restoration/deleted-biblios": {
+    "get": {
+      "x-mojo-to": "PimpMyKoha::Controller#restoration_biblios_search",
+      "operationId": "pmk_restoration_deleted_biblios",
+      "tags": ["pmk"],
+      "parameters": [
+        {"name": "from", "in": "query", "required": true, "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
+        {"name": "to", "in": "query", "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$"}
+      ],
+      "responses": {
+        "200": {"description": "Deleted bibliographic records matching the UndeleteRecords record search", "schema": {"type": "object"}},
+        "400": {"description": "Invalid request", "schema": {"type": "object"}},
+        "403": {"description": "Access forbidden", "schema": {"type": "object"}}
+      },
+      "x-koha-authorization": {"permissions": {"editcatalogue": "edit_catalogue"}},
+      "produces": ["application/json"]
+    }
+  },
+  "/restoration/biblios/{biblio_id}": {
+    "get": {
+      "x-mojo-to": "PimpMyKoha::Controller#restoration_biblio",
+      "operationId": "pmk_restoration_biblio_get",
+      "tags": ["pmk"],
+      "parameters": [{"name": "biblio_id", "in": "path", "type": "integer", "minimum": 1, "required": true}],
+      "responses": {
+        "200": {"description": "Bibliographic restoration preview", "schema": {"type": "object"}},
+        "403": {"description": "Access forbidden", "schema": {"type": "object"}},
+        "404": {"description": "Deleted bibliographic record missing", "schema": {"type": "object"}},
+        "409": {"description": "Conflict", "schema": {"type": "object"}}
+      },
+      "x-koha-authorization": {"permissions": {"editcatalogue": "edit_catalogue"}},
+      "produces": ["application/json"]
+    },
+    "post": {
+      "x-mojo-to": "PimpMyKoha::Controller#restoration_biblio",
+      "operationId": "pmk_restoration_biblio_post",
+      "tags": ["pmk"],
+      "parameters": [
+        {"name": "biblio_id", "in": "path", "type": "integer", "minimum": 1, "required": true},
+        {"name": "body", "in": "body", "required": true, "schema": {
+          "type": "object", "additionalProperties": false,
+          "required": ["fingerprint", "confirmed", "biblio_id"],
+          "properties": {
+            "fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+            "confirmed": {"type": "boolean", "enum": [true]},
+            "biblio_id": {"type": "integer", "minimum": 1}
+          }
+        }}
+      ],
+      "responses": {
+        "200": {"description": "Bibliographic restoration", "schema": {"type": "object"}},
+        "400": {"description": "Invalid request", "schema": {"type": "object"}},
+        "403": {"description": "Access forbidden", "schema": {"type": "object"}},
+        "404": {"description": "Deleted bibliographic record missing", "schema": {"type": "object"}},
+        "409": {"description": "Conflict or changed preview", "schema": {"type": "object"}}
+      },
+      "x-koha-authorization": {"permissions": {"editcatalogue": "edit_catalogue"}},
+      "produces": ["application/json"],
+      "consumes": ["application/json"]
+    }
+  },
+  "/transfers": {
+    "get": {
+      "x-mojo-to": "PimpMyKoha::Controller#open_transfers",
+      "operationId": "pmk_open_transfers",
+      "tags": ["pmk"],
+      "parameters": [
+        {"name": "library", "in": "query", "type": "string", "pattern": "^[A-Za-z0-9_-]{1,10}$"}
+      ],
+      "responses": {
+        "200": {"description": "Transfers that have not arrived", "schema": {"type": "object"}},
+        "400": {"description": "Invalid library code", "schema": {"type": "object"}},
+        "403": {"description": "Access forbidden", "schema": {"type": "object"}}
+      },
+      "x-koha-authorization": {"permissions": {"circulate": "circulate_remaining_permissions"}},
+      "produces": ["application/json"]
     }
   },
   "/reports/{report_id}/diagnostic": {

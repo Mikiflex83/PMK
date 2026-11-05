@@ -2364,7 +2364,7 @@
 
     function renderPublishStep(body) {
         const section = document.createElement("div"); section.className = "pmk135-section";
-        section.innerHTML = '<h4>Vérifier et récupérer le résultat</h4><p>Vérifiez le document, puis téléchargez le fichier XSLT ou copiez son code complet. Le fichier conserve les modèles, les conditions et les références aux fichiers complémentaires.</p>';
+        section.innerHTML = '<h4>Vérifier et récupérer le résultat</h4><p>Vérifiez le document, puis téléchargez le fichier XSLT ou copiez son code complet. Exportez d’abord cette copie nommée. Le fichier conserve les modèles, les conditions et les références aux fichiers complémentaires. Le remplacement d’une feuille Koha se fait ensuite, à partir de cette copie.</p>';
         const tools = document.createElement("div"); tools.className = "pmk135-toolbar";
         tools.appendChild(createButton('Télécharger le fichier XSLT','btn btn-primary',downloadXslt,'fa fa-download'));
         tools.appendChild(createButton('Sauvegarder le projet','btn btn-outline-secondary',downloadProject,'fa fa-save'));
@@ -3755,7 +3755,16 @@
     function filenameBase() {return (currentProject?.name || 'mon-xslt').replace(/\.(xslt?|xml|json)$/i,'').replace(/[\\/:*?"<>|]/g,'-');}
     function downloadXslt() {
         if(!workingDoc)return;
-        downloadFile(filenameBase()+'.xsl','application/xml;charset=utf-8',serializeDoc(workingDoc,true));
+        const root=workingDoc.documentElement;
+        const note=document.querySelector('.pmk135-section p');
+        if(!root || root.namespaceURI!==XSL_NS || !['stylesheet','transform'].includes(root.localName)){
+            if(note)note.textContent='Export refusé : le document n’est pas une feuille XSLT.';
+            return;
+        }
+        const name=filenameBase()+'.xsl';
+        downloadFile(name,'application/xml;charset=utf-8',serializeDoc(workingDoc,true));
+        if(currentProject){currentProject.exportedAt=new Date().toISOString();currentProject.exportedName=name;saveProject(currentProject);}
+        if(note)note.textContent='Copie nommée exportée : '+name+'. Le remplacement dans Koha se fait à partir de ce fichier.';
     }
     function downloadProject() {
         if(!currentProject)return;

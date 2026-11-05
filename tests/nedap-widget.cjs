@@ -1,6 +1,6 @@
 const {chromium}=require('playwright'),fs=require('node:fs'),assert=require('node:assert/strict'),path=require('node:path');
 const ROOT=path.resolve(__dirname,'..'),rows=[];
-(async()=>{const browser=await chromium.launch({executablePath:'/usr/bin/chromium',args:['--no-sandbox']});try{
+(async()=>{const browser=await chromium.launch({executablePath:process.env.PMK_CHROMIUM_PATH||'/usr/bin/chromium',args:['--no-sandbox']});try{
  const p=await browser.newPage({locale:'fr-FR'}),requests=[],errors=[];let revision=0,storedKey='',storedRcr='',failSave=false,failCounts=false;
  p.on('pageerror',e=>errors.push(e.message));
  await p.route('**/*',r=>{const req=r.request(),u=new URL(req.url());requests.push({url:u.href,method:req.method(),body:req.postData()});

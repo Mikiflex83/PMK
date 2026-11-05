@@ -1,0 +1,24 @@
+services:
+  koha:
+    image: pmk/koha-initialized:25.11
+    command: ["/bin/bash", "/pmk-runtime.sh"]
+    restart: unless-stopped
+    ports: !override
+      - "127.0.0.1:18080:8080"
+      - "127.0.0.1:18081:8081"
+    depends_on: !override
+      db:
+        condition: service_healthy
+      memcached:
+        condition: service_started
+    volumes:
+      - /mnt/c/Users/la_lo/Desktop/PMK/dev/koha/runtime.sh:/pmk-runtime.sh:ro
+  db:
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 3s
+      timeout: 5s
+      retries: 40
+      start_period: 15s
+  memcached:
+    restart: unless-stopped

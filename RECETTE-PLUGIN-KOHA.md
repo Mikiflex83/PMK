@@ -18,7 +18,7 @@ Aucune donnée Dracénie ni aucun service de production n’a été modifié.
 | Circulation | Prêt natif, renouvellement réel, retour, transfert prérempli sans soumission automatique | koha-circulation.json |
 | Statut au prêt | Vrai prêt forcé Koha, prêt persisté puis statut configuré remis à 0 et relu ; préférence de test restaurée | koha-checkout-status.json |
 | Retour perdu | Koha traite LOST ; PMK attend le choix de l’agent ; conservation du statut puis remise en circulation vérifiées | koha-lost-checkin.json |
-| Restauration | Suppression d’un exemplaire fictif, recherche SQL, vraie restauration inLibro et confirmation de son identité par l’API | koha-restoration.json |
+| Restauration | Suppression d’un exemplaire fictif PMKTEST, recherche, restauration native PMK et relecture de son identité par l’API | koha-restoration.json |
 | Analyses | Réservations, prêts, transfert, périodiques, 60 lecteurs, 6 210 exemplaires et 4 857 notices lus et analysés | koha-maintenance.json |
 | Stockages natifs | Neuf espaces ; Unicode ; dates ; conflits ; transactions et lots atomiques ; réservation concurrente ; collections de plus de 1 000 documents ; import métier et configurations ; permissions réelles | koha-native-data.json |
 | Moteurs métier | Listes et modèles de bibliographies ; demande puis validation d’un rendez-vous ; trois widgets natifs ; partage interne | koha-native-engines.json |

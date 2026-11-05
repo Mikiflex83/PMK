@@ -22,7 +22,6 @@
     if (window.PMKHomeWidgets && window.PMKHomeWidgets.version) return;
 
     const MODULE_ID = 'home-widgets';
-    const IS_LEGACY_INSTALLATION = /(^|\.)dracenie\.com$/i.test(window.location.hostname);
     const VERSION = '1.2.1-preplugin';
     const currentScript = document.currentScript;
     const selfUrl = currentScript && currentScript.src
@@ -41,16 +40,16 @@
     const DEFAULT_CONFIG = {
         enabled: true,
         // Rapports SQL Koha existants ; jamais créer ces rapports automatiquement.
-        circulationReportId: IS_LEGACY_INSTALLATION ? 4918 : 0,
-        subscriptionReportId: IS_LEGACY_INSTALLATION ? 4878 : 0,
+        circulationReportId: 0,
+        subscriptionReportId: 0,
         announcementsWidgets: [
-            { id: 'frequency-nedap', labelFr: 'Fréquentation NEDAP', labelEn: 'NEDAP attendance', enabled: IS_LEGACY_INSTALLATION },
-            { id: 'doodle-koha', labelFr: 'Rendez-vous', labelEn: 'Appointments', enabled: IS_LEGACY_INSTALLATION },
-            { id: 'circulation-abonnements', labelFr: 'Circulation & abonnements', labelEn: 'Circulation & subscriptions', enabled: IS_LEGACY_INSTALLATION },
-            { id: 'liens-utiles', labelFr: 'Liens utiles', labelEn: 'Useful links', enabled: true }
+            { id: 'frequency-nedap', labelFr: 'Fréquentation NEDAP', labelEn: 'NEDAP attendance', enabled: false },
+            { id: 'doodle-koha', labelFr: 'Rendez-vous', labelEn: 'Appointments', enabled: false },
+            { id: 'circulation-abonnements', labelFr: 'Circulation & abonnements', labelEn: 'Circulation & subscriptions', enabled: false },
+            { id: 'liens-utiles', labelFr: 'Liens utiles', labelEn: 'Useful links', enabled: false }
         ],
         mainBlockWidgets: [
-            { id: 'planning-services', deferUntilVisible:true, labelFr: 'Planning des services', labelEn: 'Services schedule', enabled: IS_LEGACY_INSTALLATION }
+            { id: 'planning-services', deferUntilVisible:true, labelFr: 'Planning des services', labelEn: 'Services schedule', enabled: false }
         ]
     };
 
