@@ -22,5 +22,9 @@ Le maintien d’un signalement privé permet d’analyser le problème et de pr�
 
 ## Périmètre
 
-Les défauts des services tiers, de Koha ou de l’hébergement doivent être signalés à leur mainteneur lorsqu’ils ne proviennent pas du code PMK. Ils peuvent néanmoins être signalés à PMK lorsqu’une intégration aggrave leur impact ou divulgue une information.
+Les défauts des services tiers, de Koha ou de l’hébergement se signalent à leur mainteneur lorsqu’ils ne viennent pas du code PMK. Ils se signalent aussi ici lorsqu’une intégration de PMK en aggrave l’effet ou divulgue une information.
+
+## Secrets
+
+Le dépôt ne contient pas de mot de passe, de clé d’API ni de jeton. Les scripts d’une Koha locale lisent le compte professionnel dans `PMK_KOHA_USER` et `PMK_KOHA_PASSWORD`. Si une valeur a déjà été publiée, elle est retirée du fichier courant. L’historique Git n’est réécrit que sur décision explicite des mainteneurs, parce que cela casse le travail des autres contributeurs.
 

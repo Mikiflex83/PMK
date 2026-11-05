@@ -59,17 +59,25 @@ fi
 note "Administration > Plugins"
 tmp=$(mktemp -d)
 curl -sS -c "${tmp}/cj" -b "${tmp}/cj" -o "${tmp}/login.html" http://127.0.0.1:18081/cgi-bin/koha/mainpage.pl
-python3 - "${tmp}" <<'PY'
-import pathlib, re, sys
+if ! python3 - "${tmp}" <<'PY'
+import os, pathlib, re, sys
 tmp = pathlib.Path(sys.argv[1])
+user = os.environ.get("PMK_KOHA_USER", "")
+secret = os.environ.get("PMK_KOHA_PASSWORD", "")
+if not user or not secret:
+    raise SystemExit(2)
 html = (tmp / "login.html").read_text(errors="replace")
 match = re.search(r'name="csrf_token"[^>]*value="([^"]+)"', html) or re.search(r'value="([^"]+)"[^>]*name="csrf_token"', html)
 token = match.group(1) if match else ""
-fields = ["login_userid=koha", "login_password=koha", "login_op=cud-login", "koha_login_context=intranet", "branch=CPL"]
+fields = ["login_userid=" + user, "login_password=" + secret, "login_op=cud-login", "koha_login_context=intranet", "branch=CPL"]
 if token:
     fields.append("csrf_token=" + token)
 (tmp / "post.txt").write_text("&".join(fields))
 PY
+then
+  mark FAIL "compte professionnel absent : exportez PMK_KOHA_USER et PMK_KOHA_PASSWORD"
+  fail=1
+else
 curl -sS -o "${tmp}/after.html" -c "${tmp}/cj" -b "${tmp}/cj" -d @"${tmp}/post.txt" http://127.0.0.1:18081/cgi-bin/koha/mainpage.pl
 curl -sS -o "${tmp}/plugins.html" -c "${tmp}/cj" -b "${tmp}/cj" http://127.0.0.1:18081/cgi-bin/koha/plugins/plugins-home.pl
 if python3 - "${tmp}/plugins.html" <<'PY'
@@ -82,6 +90,7 @@ then
 else
   mark FAIL "page des plugins"
   fail=1
+fi
 fi
 rm -rf "${tmp}"
 

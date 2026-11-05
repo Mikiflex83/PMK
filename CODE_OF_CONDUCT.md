@@ -1,29 +1,24 @@
 # Code de conduite
 
-## Notre engagement
+Ce code s’applique aux Issues, aux Pull Requests, aux discussions du dépôt et aux échanges publics faits au nom du projet.
 
-Nous souhaitons que la participation au projet reste accueillante, respectueuse et accessible, quels que soient l’expérience, le métier, l’origine, l’identité, le handicap ou le niveau de familiarité avec Koha et le développement.
+## Attendu
 
-## Comportements attendus
+- Discuter du code, d’un parcours Koha ou d’une décision de maintenance.
+- Le français et l’anglais sont acceptés. Une remarque de langue ne tient pas lieu de réponse sur le fond.
+- Décrire un défaut avec le contexte utile : version de PMK, version de Koha, module, droits, et ce qui était éteint.
+- Utiliser des données synthétiques. Une installation, un lecteur, un agent ou un secret ne se publie pas.
+- Traiter un désaccord de pratique comme un besoin configurable, pas comme le défaut d’un établissement.
 
-- Échanger avec respect et patience.
-- Critiquer les idées et le code sans attaquer les personnes.
-- Donner le contexte nécessaire et accepter les questions de clarification.
-- Respecter la confidentialité des installations, des agents et des lecteurs.
-- Reconnaître les erreurs, corriger les informations inexactes et rechercher une solution praticable.
-
-## Comportements inacceptables
+## Inacceptable
 
 - Harcèlement, menace, discrimination ou attaque personnelle.
 - Publication d’informations privées ou de données de production sans autorisation.
-- Contenu sexuel, violent ou délibérément perturbateur sans rapport avec le projet.
-- Pression répétée après une décision de modération clairement expliquée.
+- Contenu sexuel, violent ou hors sujet, introduit pour perturber l’échange.
+- Insistance répétée après une décision de modération expliquée.
 
 ## Application
 
-Les mainteneurs peuvent modifier ou retirer un contenu, fermer une discussion ou limiter une participation afin de protéger la communauté et le projet. Les décisions doivent rester proportionnées, documentées et centrées sur les comportements observés.
+Les mainteneurs peuvent modifier ou retirer un message, fermer une discussion ou limiter une participation. La décision reste proportionnée au comportement constaté et s’appuie sur ce qui a été publié.
 
-Pour signaler confidentiellement un incident, utilisez le canal privé indiqué dans [SECURITY.md](SECURITY.md) et précisez qu’il s’agit d’une question de conduite. Ne publiez pas les informations personnelles concernées dans une Issue publique.
-
-Ce code s’applique aux espaces du projet ainsi qu’aux échanges publics représentant directement le projet.
-
+Un incident de conduite se signale par le canal privé indiqué dans [SECURITY.md](SECURITY.md), en précisant qu’il s’agit de conduite. Les informations personnelles concernées ne vont pas dans une Issue publique.

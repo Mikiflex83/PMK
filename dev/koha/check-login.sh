@@ -9,8 +9,12 @@ docker exec pmk-koha-1 koha-plack --status kohadev || true
 tmp=$(mktemp -d)
 curl -sS -c "$tmp/cj" -b "$tmp/cj" -o "$tmp/login.html" http://127.0.0.1:18081/cgi-bin/koha/mainpage.pl
 python3 - "$tmp" <<'PY'
-import pathlib, re, subprocess, sys
+import os, pathlib, re, sys
 tmp = pathlib.Path(sys.argv[1])
+user = os.environ.get("PMK_KOHA_USER", "")
+secret = os.environ.get("PMK_KOHA_PASSWORD", "")
+if not user or not secret:
+    raise SystemExit("Définissez PMK_KOHA_USER et PMK_KOHA_PASSWORD pour le compte professionnel de la Koha locale.")
 html = (tmp / "login.html").read_text(errors="replace")
 token = ""
 match = re.search(r'name="csrf_token"[^>]*value="([^"]+)"', html) or re.search(r'value="([^"]+)"[^>]*name="csrf_token"', html)
@@ -18,8 +22,8 @@ if match:
     token = match.group(1)
 print("csrf", "yes" if token else "no", "login_form", "Koha" in html)
 data = [
-    "login_userid=koha",
-    "login_password=koha",
+    "login_userid=" + user,
+    "login_password=" + secret,
     "login_op=cud-login",
     "koha_login_context=intranet",
     "branch=CPL",

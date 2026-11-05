@@ -82,8 +82,11 @@ const selected = value => !filter.size || [...filter].some(item => value.include
   }
 
   await page.goto(BASE + '/cgi-bin/koha/mainpage.pl', {waitUntil: 'domcontentloaded', timeout: 90000});
-  await page.locator('input[name="login_userid"]').fill(process.env.PMK_KOHA_USER || 'koha');
-  await page.locator('input[name="login_password"]').fill(process.env.PMK_KOHA_PASSWORD || 'koha');
+  const staffUser = process.env.PMK_KOHA_USER;
+  const staffSecret = process.env.PMK_KOHA_PASSWORD;
+  if (!staffUser || !staffSecret) throw new Error('Définissez PMK_KOHA_USER et PMK_KOHA_PASSWORD pour le compte professionnel de la Koha locale.');
+  await page.locator('input[name="login_userid"]').fill(staffUser);
+  await page.locator('input[name="login_password"]').fill(staffSecret);
   const branch = page.locator('select[name="branch"]');
   if (await branch.count()) await branch.selectOption('CPL');
   await page.locator('#loginform, form').first().evaluate(form => form.requestSubmit());
