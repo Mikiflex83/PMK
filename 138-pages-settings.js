@@ -8,10 +8,11 @@ if(window.PMKPagesSettings)return;
 const MODULE_ID='internal-pages-tools';
 const catalog={
   "action-journal": {
-    "title": "Journal des actions",
-    "objective": "Partager les interventions et décisions de l’équipe dans un journal consultable.",
+    "title": "Journaux de suivis",
+    "objective": "Tenir plusieurs journaux de suivi pour l’équipe. Chaque journal reste distinct du journal d’actions de Koha.",
     "engine": "stockage Koha : entrées, versions, écoute en temps réel et export PDF.",
     "functions": [
+      "Créer et choisir un journal de suivi",
       "Ajouter et modifier une action",
       "Retirer et restaurer une entrée",
       "Consulter les versions",
@@ -23,6 +24,7 @@ const catalog={
       "locale": "fr-FR",
       "entriesCollection": "entries",
       "logsCollection": "logs",
+      "journalsCollection": "journals",
       "actionTypes": [
         "Création notice",
         "Modification notice",
@@ -63,6 +65,12 @@ const catalog={
         "advanced": true
       },
       {
+        "path": "runtime.journalsCollection",
+        "label": "Collection stockage Koha des journaux",
+        "type": "text",
+        "advanced": true
+      },
+      {
         "path": "runtime.actionTypes",
         "label": "Types d’action (un par ligne)",
         "type": "list",
@@ -82,8 +90,48 @@ const catalog={
       }
     ]
   },
+  "patron-map": {
+    "title": "Cartographie des adhérents",
+    "objective": "Voir d’où viennent les adhérents et comment les documents circulent entre les sites.",
+    "engine": "Rapport SQL de ce Koha, géocodage IGN et carte OpenStreetMap. Les points détaillés restent dans le navigateur.",
+    "functions": [
+      "Lire le rapport Koha",
+      "Géocoder les adresses",
+      "Afficher les flux et les communes",
+      "Exporter une carte agrégée",
+      "Masquer des sites et choisir leurs couleurs"
+    ],
+    "prerequisites": "Le SQL du rapport est affiché ci-dessous, prêt à copier dans un rapport Koha. Indiquez ensuite son numéro. 0 ne lance aucune lecture. Le géocodage envoie les adresses au service IGN.",
+    "runtime": {
+      "reportId": 0,
+      "precision": 4,
+      "minCount": 3
+    },
+    "settings": {},
+    "storageKey": "",
+    "sqlFile": "sql/138-cartographie-adherents.sql",
+    "fields": [
+      {
+        "path": "runtime.reportId",
+        "label": "Numéro du rapport Koha",
+        "type": "number"
+      },
+      {
+        "path": "runtime.precision",
+        "label": "Décimales de regroupement des adresses (4 ou 5)",
+        "type": "number",
+        "advanced": true
+      },
+      {
+        "path": "runtime.minCount",
+        "label": "Effectif minimal d’une cellule exportée",
+        "type": "number",
+        "advanced": true
+      }
+    ]
+  },
   "appointments": {
-    "title": "Rendez-vous réseau",
+    "title": "Rendez-vous et sondages",
     "objective": "Organiser les rendez-vous, créneaux et sondages de votre établissement.",
     "engine": "stockage Koha, agenda interne, récurrences, sondages et EmailJS facultatif.",
     "functions": [
@@ -932,7 +980,7 @@ const catalog={
     ]
   },
   "reservations": {
-    "title": "Maintenance des réservations",
+    "title": "Nettoyage des réservations",
     "objective": "Repérer les réservations qui nécessitent un examen et préparer leur traitement.",
     "engine": "API réservations, notices et exemplaires, règles explicites, simulation et recontrôle natif.",
     "functions": [
@@ -1352,7 +1400,7 @@ const catalog={
     ]
   },
   "transfers": {
-    "title": "Transferts entre sites",
+    "title": "Nettoyage des transferts",
     "objective": "Surveiller les demandes de transfert et les documents en transit entre sites.",
     "engine": "Rapport SQL paginé, API exemplaires, règles de délai et traitement natif.",
     "functions": [
@@ -1576,7 +1624,7 @@ const catalog={
     ]
   },
   "items": {
-    "title": "Maintenance des exemplaires",
+    "title": "Qualité des exemplaires",
     "objective": "Repérer les statuts figés et incohérences des exemplaires.",
     "engine": "API Koha, règles de statuts/ancienneté, contrôle des relations et préparation de lots.",
     "functions": [
@@ -1722,7 +1770,7 @@ const catalog={
     ]
   },
   "biblios": {
-    "title": "Qualité du catalogue bibliographique",
+    "title": "Qualité des notices",
     "objective": "Examiner la qualité des notices et préparer les corrections de catalogue.",
     "engine": "API bibliographique et MARC, signatures de doublons, fusion native et enrichissement BnF.",
     "functions": [
@@ -2633,7 +2681,51 @@ async function saveSettings(id,storageKey,value){
         return clone(value);
     });saveQueue=job;return job;
 }
-function openSettings(id){selectedPage=id;window.PMKConfig?.openAdmin?.(MODULE_ID);}
+function openSettings(id){
+    selectedPage=id;
+    const host=document.getElementById('pmk138-page-host');
+    if(!host)return;
+    const existing=host.querySelector(':scope > .pmk138-inline-settings');
+    if(existing && existing.dataset.pageId===id){existing.hidden=!existing.hidden;if(!existing.hidden)existing.scrollIntoView({block:'nearest'});return;}
+    existing?.remove();
+    const panel=create('section');panel.className='pmk138-inline-settings';panel.dataset.pageId=id;
+    panel.style.cssText='margin:0 0 14px;padding:14px 16px;border:1px solid #cedbbd;border-left:5px solid #6f8f32;border-radius:8px;background:#fff';
+    const heading=create('h2','Réglages de cette page');heading.style.cssText='margin:0 0 8px;font-size:18px;color:#526d22';panel.appendChild(heading);
+    const bar=host.querySelector('.pmk138-toolbar');
+    if(bar)bar.after(panel);else host.prepend(panel);
+    fillInline(id,panel);
+}
+async function fillInline(id,host){
+    if(id==='authorities'){
+        if(!window.PMKAuthorityInstallation?.renderPanel){host.appendChild(create('p','Les réglages des autorités ne sont pas chargés.'));return;}
+        window.PMKAuthorityInstallation.renderPanel(host);return;
+    }
+    if(id==='hub'){await fillHub(host);return;}
+    if(!catalog[id]){host.appendChild(create('p','Cette page n’a pas de réglages propres.'));return;}
+    if(!window.PMKConfig?.getConfig){host.appendChild(create('p','La configuration PMK n’est pas disponible.'));return;}
+    let draft;try{draft=clone(await window.PMKConfig.getConfig(MODULE_ID));}catch(error){host.appendChild(create('p','Lecture impossible : '+error.message));return;}
+    if(!object(draft))draft={enabled:true,hubAccess:'superlibrarian',pageOptions:{}};
+    const ctx={rootObject:draft,markDirty(){}};
+    host.appendChild(create('p','Ces réglages restent sur cette page. Rechargez-la après l’enregistrement pour les appliquer.'));
+    host.appendChild(renderEditor(ctx,{pageId:id}));
+    const save=create('button','Enregistrer','btn btn-primary btn-sm');save.type='button';
+    const result=create('p');result.setAttribute('role','status');
+    save.addEventListener('click',async()=>{save.disabled=true;try{const valid=validate(draft);if(!valid.ok)throw new Error(valid.message);await window.PMKConfig.saveConfig(MODULE_ID,draft);updateConfiguration(draft);result.textContent='Enregistré. Rechargez la page pour appliquer ces réglages.';}catch(error){result.textContent=error.message;}finally{save.disabled=false;}});
+    host.append(save,result);
+}
+async function fillHub(host){
+    if(!window.PMKConfig?.getConfig){host.appendChild(create('p','La configuration PMK n’est pas disponible.'));return;}
+    let draft;try{draft=clone(await window.PMKConfig.getConfig(MODULE_ID));}catch(error){host.appendChild(create('p','Lecture impossible : '+error.message));return;}
+    if(!object(draft))draft={enabled:true,hubAccess:'superlibrarian',pageOptions:{}};
+    const label=create('label','Qui peut ouvrir cette liste : '),policy=create('select');policy.className='form-control';policy.setAttribute('aria-label','Accès à la liste des pages');
+    for(const [value,text] of [['superlibrarian','Superlibrarian Koha'],['staff','Personnel Koha — uniquement les pages ouvertes au personnel']]){const option=create('option',text);option.value=value;policy.appendChild(option);}
+    policy.value=draft.hubAccess==='staff'?'staff':'superlibrarian';label.appendChild(policy);
+    const note=create('p','Un compte du personnel ne voit que les pages dont l’accès est « Personnel Koha ». Les autres restent réservées au superlibrarian.');
+    const save=create('button','Enregistrer','btn btn-primary btn-sm');save.type='button';
+    const result=create('p');result.setAttribute('role','status');
+    save.addEventListener('click',async()=>{save.disabled=true;try{draft.hubAccess=policy.value;const valid=validate(draft);if(!valid.ok)throw new Error(valid.message);await window.PMKConfig.saveConfig(MODULE_ID,draft);updateConfiguration(draft);result.textContent='Enregistré.';}catch(error){result.textContent=error.message;}finally{save.disabled=false;}});
+    host.append(label,note,save,result);
+}
 function assertType(field,value){
     if(value===undefined||inherited(value))return true;
     if(field.type==='number')return Number.isFinite(value)&&Number.isInteger(value);
@@ -2652,7 +2744,9 @@ function validate(cfg){
         const pairs=id==='reservations'?[['oldDays','veryOldDays'],['waitingDays','waitingCriticalDays'],['transitWatchDays','transitDays'],['transitDays','transitCriticalDays']]:id==='transfers'?[['requestedWarnDays','requestedReviewDays'],['requestedReviewDays','requestedCriticalDays'],['transitWatchDays','transitReviewDays'],['transitReviewDays','transitCriticalDays']]:id==='loans'?[['oldDays','veryOldDays'],['overdueDays','criticalOverdueDays'],['claimDays','claimCriticalDays']]:id==='serials'?[['endPastReviewDays','endPastCriticalDays'],['inactivityAtypicalDays','inactivityReviewDays']]:[];
         if(pairs.some(([a,b])=>state[a]>state[b]))return {ok:false,message:definition.title+' : les seuils prioritaires doivent être supérieurs ou égaux aux premiers seuils.'};
         const effective=merge(definition.runtime,stored.runtime);
-        if(id==='action-journal'&&effective.entriesCollection===effective.logsCollection)return {ok:false,message:'Journal : les entrées et leur historique doivent utiliser des collections différentes.'};
+        if(id==='action-journal'&&new Set([effective.entriesCollection,effective.logsCollection,effective.journalsCollection]).size<3)return {ok:false,message:'Journal : les journaux, les entrées et leur historique doivent utiliser des collections différentes.'};
+        if(id==='patron-map'&&![4,5].includes(Number(effective.precision)))return {ok:false,message:'Cartographie : la précision doit être 4 ou 5.'};
+        if(id==='patron-map'&&Number(effective.minCount)<2)return {ok:false,message:'Cartographie : le seuil d’export doit être au moins 2.'};
         if(id==='action-journal'&&Object.values(effective.permissions||{}).some(value=>!['staff','superlibrarian'].includes(value)))return {ok:false,message:'Journal : droit par opération invalide.'};
         for(const field of definition.fields.filter(x=>x.type==='number')){const value=at({runtime:effective,settings:state},field.path);if(value<0&&!/notForLoanExcluded|lostPilon|lostReview/.test(field.path))return {ok:false,message:definition.title+' : '+field.label+' doit être positif ou nul.'};}
         if(effective.timeoutMs && (effective.timeoutMs<1000||effective.timeoutMs>180000))return {ok:false,message:definition.title+' : délai de lecture compris entre 1 000 et 180 000 ms.'};
@@ -2677,7 +2771,7 @@ function create(tag,text,className){const el=document.createElement(tag);if(text
 function hint(field){
     const key=field.path.split('.').at(-1);
     if(/Collection$|^collections\./.test(field.path)||/Collection$/.test(key))return 'Nom exact de la collection de ce projet Koha. Les données existantes ne sont pas déplacées.';
-    if(/excluded|Statuses|Category|av_/.test(key))return 'Utilisez les codes réels de votre Koha. Les valeurs Dracénie restent proposées par défaut.';
+    if(/excluded|Statuses|Category|av_/.test(key))return 'Utilisez les codes réels de votre Koha.';
     if(/reportId|signatureReportId/.test(key))return 'Créez le rapport dans ce Koha, puis indiquez son numéro. 0 laisse la source non configurée.';
     if(key==='allowedUsernames')return 'Identifiants de connexion Koha, un par ligne. Vide : aucun filtre nominatif supplémentaire ; le niveau d’accès de la page reste requis.';
     if(field.type==='list')return 'Une valeur par ligne. Une liste vide n’impose aucune valeur.';
@@ -2697,12 +2791,14 @@ async function copySql(id,button,file=catalog[id]?.sqlFile){
 function sqlButton(id,file=catalog[id]?.sqlFile,label='Copier le SQL à créer dans Koha'){if(!file)return null;const button=create('button',label,'btn btn-default');button.type='button';button.addEventListener('click',()=>copySql(id,button,file));return button;}
 function sqlButtons(id){const files=catalog[id]?.sqlFiles;if(files)return files.map(x=>sqlButton(id,x.file,x.label));const button=sqlButton(id);return button?[button]:[];}
 function download(name,value){const url=URL.createObjectURL(new Blob([JSON.stringify(value,null,2)],{type:'application/json'})),a=create('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
-function renderEditor(ctx){
+function renderEditor(ctx,options={}){
+    const locked=options.pageId||null;
     const wrap=create('div'),intro=create('p','Choisissez une page. Les valeurs existantes du navigateur sont reprises comme base ; seuls vos changements enregistrés dans PMK deviennent communs. Les réglages d’installation prennent effet à la prochaine ouverture.');wrap.appendChild(intro);
     const select=create('select');select.className='form-control';select.setAttribute('aria-label','Page à configurer');
     const manifest=window.PMKPages?.manifest || [];
     for(const page of manifest){const option=create('option',page.title);option.value=page.id;select.appendChild(option);}
-    select.value=selectedPage&&manifest.some(x=>x.id===selectedPage)?selectedPage:manifest[0]?.id;
+    if(locked){intro.hidden=true;select.hidden=true;if(!manifest.some(x=>x.id===locked)){wrap.appendChild(create('p','Cette page n’a pas de réglages dans la liste commune.'));return wrap;}select.value=locked;}
+    else select.value=selectedPage&&manifest.some(x=>x.id===selectedPage)?selectedPage:manifest[0]?.id;
     const panel=create('div');panel.dataset.pmkPageEditor='1';wrap.append(select,panel);
     let revision=0;
     async function show(){
@@ -2712,7 +2808,7 @@ function renderEditor(ctx){
         panel.appendChild(create('h5',definition.objective));const info=create('details');info.appendChild(create('summary','Fonctions, moteur et prérequis'));info.appendChild(create('p',definition.engine));const list=create('ul');definition.functions.forEach(text=>list.appendChild(create('li',text)));info.append(list,create('p',definition.prerequisites));panel.appendChild(info);
         const source=create('p','Lecture des réglages existants…');panel.appendChild(source);
         const local=id==='inventory'?await readInventorySettings():readLocal(id);if(version!==revision)return;
-        source.textContent=Object.keys(local).length?'Réglages de ce navigateur disponibles et conservés. Les surcharges PMK ont priorité.':'Valeurs Dracénie proposées ; aucune configuration existante n’est effacée.';
+        source.textContent=Object.keys(local).length?'Réglages de ce navigateur disponibles et conservés. Les surcharges PMK ont priorité.':'Valeurs proposées par défaut ; aucune configuration existante n’est effacée.';
         const effective=()=>merge({runtime:definition.runtime,settings:merge(definition.settings,local)},ctx.rootObject.pageOptions?.[id]);
         function store(path,value){ctx.rootObject.pageOptions ||= {};ctx.rootObject.pageOptions[id] ||= {};put(ctx.rootObject.pageOptions[id],path,value);ctx.markDirty?.();}
         const access=create('label','Accès à cette page : '),policy=create('select');policy.setAttribute('aria-label','Accès à '+definition.title);for(const [value,label]of [['default','Conserver l’accès actuel'],['superlibrarian','Superlibrarian Koha'],['staff','Personnel Koha']]){const option=create('option',label);option.value=value;policy.appendChild(option);}policy.value=ctx.rootObject.pageOptions?.[id]?.access||'default';policy.onchange=()=>store('access',policy.value);access.appendChild(policy);panel.appendChild(access);
@@ -2731,6 +2827,10 @@ function renderEditor(ctx){
         }
         if(advanced.childElementCount>1)panel.appendChild(advanced);
         for(const button of sqlButtons(id))panel.appendChild(button);
+        if(id==='patron-map' && definition.sqlFile){
+            const sqlBox=create('textarea');sqlBox.readOnly=true;sqlBox.rows=18;sqlBox.className='form-control';sqlBox.setAttribute('aria-label','SQL du rapport de cartographie à coller dans Koha');sqlBox.value='Chargement du SQL…';panel.appendChild(sqlBox);
+            try{const base=window.PMKPages?.assetUrl?.(definition.sqlFile)||definition.sqlFile;const response=await request(id,base,{},null);sqlBox.value=response.ok?await response.text():'SQL indisponible (HTTP '+response.status+')';}catch(error){sqlBox.value=error.message;}
+        }
         const exportButton=create('button','Exporter les réglages de cette page','btn btn-default');exportButton.type='button';exportButton.onclick=()=>download('pmk-page-'+id+'.json',{format:'pmk-page-settings',version:1,page:id,options:ctx.rootObject.pageOptions?.[id]||{},effective:effective(),local});
         const importLabel=create('label','Importer des réglages de cette page : '),file=create('input');file.type='file';file.accept='.json,application/json';const result=create('p');result.setAttribute('role','status');
         file.onchange=async()=>{try{const value=await importedJson(file.files[0]);if(value.format!=='pmk-page-settings'||value.page!==id||!object(value.options))throw new Error('Fichier de réglages incompatible avec cette page.');const imported=merge(value.effective||{},value.options);const candidate=clone(ctx.rootObject);candidate.pageOptions ||= {};candidate.pageOptions[id]=merge(candidate.pageOptions[id]||{},imported);const validation=validate(candidate);if(!validation.ok)throw new Error(validation.message);ctx.rootObject.pageOptions ||= {};ctx.rootObject.pageOptionsArchives ||= {};ctx.rootObject.pageOptionsArchives[id] ||= [];ctx.rootObject.pageOptionsArchives[id].push(clone(ctx.rootObject.pageOptions[id]||{}));ctx.rootObject.pageOptions[id]=candidate.pageOptions[id];ctx.markDirty?.();await show();const status=panel.querySelector('[role="status"]');if(status)status.textContent='Importé dans le brouillon. Cliquez sur Enregistrer pour appliquer.';}catch(error){result.textContent=error.message;}};

@@ -68,14 +68,65 @@
         return "patron-default-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 7);
     }
 
+    const PATRON_FIELDS = [
+        ["sort1", "Catégorie statistique 1 (sort1)"],
+        ["sort2", "Catégorie statistique 2 (sort2)"],
+        ["branchcode", "Site d’inscription"],
+        ["categorycode", "Catégorie d’adhérent"],
+        ["cardnumber", "Numéro de carte"],
+        ["surname", "Nom"],
+        ["firstname", "Prénom"],
+        ["title", "Civilité"],
+        ["othernames", "Autres noms"],
+        ["initials", "Initiales"],
+        ["sex", "Genre"],
+        ["dateofbirth", "Date de naissance"],
+        ["address", "Adresse"],
+        ["address2", "Complément d’adresse"],
+        ["city", "Ville"],
+        ["state", "État ou région"],
+        ["zipcode", "Code postal"],
+        ["country", "Pays"],
+        ["email", "Courriel"],
+        ["emailpro", "Courriel professionnel"],
+        ["phone", "Téléphone"],
+        ["phonepro", "Téléphone professionnel"],
+        ["mobile", "Mobile"],
+        ["fax", "Fax"],
+        ["opacnote", "Note OPAC"],
+        ["borrowernotes", "Note interne"],
+        ["dateenrolled", "Date d’inscription"],
+        ["dateexpiry", "Date de fin d’inscription"],
+        ["privacy", "Confidentialité"],
+        ["lang", "Langue"],
+        ["smsalertnumber", "Numéro SMS"],
+        ["contactname", "Nom du garant ou du contact"],
+        ["contactfirstname", "Prénom du garant ou du contact"],
+        ["relationship", "Lien avec le contact"],
+        ["userid", "Identifiant de connexion"],
+        ["custom", "Autre champ de la fiche"]
+    ];
+
     function normalizeRule(raw, index) {
         const source = raw && typeof raw === "object" ? raw : {};
+        const known = new Set(PATRON_FIELDS.map(function (field) { return field[0]; }));
+        let targetField = clean(source.targetField) || "sort1";
+        let targetFieldCustom = clean(source.targetFieldCustom);
+        if (!known.has(targetField)) {
+            targetFieldCustom = targetFieldCustom || targetField;
+            targetField = "custom";
+        }
+        const valueSource = source.valueSource === "authorised" || source.valueSource === "free"
+            ? source.valueSource
+            : (clean(source.authorisedValueCategory) ? "authorised" : "free");
         return {
             id: clean(source.id) || ("patron-default-" + (index + 1)),
             enabled: source.enabled !== false,
             label: clean(source.label) || ("Règle " + (index + 1)),
             patronCategory: clean(source.patronCategory),
-            targetField: source.targetField === "sort2" ? "sort2" : "sort1",
+            targetField: targetField,
+            targetFieldCustom: targetFieldCustom,
+            valueSource: valueSource,
             authorisedValueCategory: clean(source.authorisedValueCategory),
             authorisedValue: clean(source.authorisedValue),
             manualValue: clean(source.manualValue),
@@ -182,8 +233,19 @@
         return optionWithCurrent(values, rule && rule.authorisedValue, { fr: "— Choisir une valeur —", en: "— Choose a value —" });
     }
 
+    function fieldId(rule) {
+        return rule && rule.targetField === "custom" ? clean(rule.targetFieldCustom) : clean(rule && rule.targetField);
+    }
+
+    function findField(form, id) {
+        if (!form || !id) return null;
+        const byId = form.querySelector("#" + CSS.escape(id));
+        if (byId) return byId;
+        return form.querySelector('[name="' + CSS.escape(id) + '"]');
+    }
+
     function chosenValue(rule) {
-        if (clean(rule.authorisedValueCategory)) return clean(rule.authorisedValue);
+        if (rule.valueSource === "authorised") return clean(rule.authorisedValue);
         return clean(rule.manualValue);
     }
 
@@ -217,15 +279,16 @@
         const simulated = new Map(), rows = [];
         cfg.rules.forEach(rule => {
             if (!rule.enabled || rule.patronCategory !== selected) return;
-            const target = form?.querySelector("#" + CSS.escape(rule.targetField));
-            const current = simulated.has(rule.targetField) ? simulated.get(rule.targetField) : String(target?.value || "");
+            const id = fieldId(rule);
+            const target = findField(form, id);
+            const current = simulated.has(id) ? simulated.get(id) : String(target?.value || "");
             const decision = ruleDecision(rule, target, current);
             const origin = target && automaticValues.get(target);
-            rows.push({rule:rule.label, field:rule.targetField, current, proposed:decision.value,
+            rows.push({rule:rule.label, field:id, current, proposed:decision.value,
                 state:cfg.enabled ? decision.state : "disabled",
                 origin:origin && origin.value === String(target.value) ? "automatic" : isEmptyValue(target?.value) ? "empty" : "existing",
                 previousRule:origin?.label || "", conflicts:[]});
-            if (cfg.enabled && decision.state === "apply") simulated.set(rule.targetField, decision.value);
+            if (cfg.enabled && decision.state === "apply") simulated.set(id, decision.value);
         });
         rows.forEach(row => { row.conflicts = rows.filter(other => other !== row && other.field === row.field && other.proposed && row.proposed && other.proposed !== row.proposed).map(other => other.rule); });
         return {category:selected, onForm:!!form, rows};
@@ -266,7 +329,7 @@
         const category = clean(categorySelect.value);
         currentConfig.rules.forEach(rule => {
             if (!rule || !rule.enabled || rule.patronCategory !== category) return;
-            const target = form.querySelector("#" + CSS.escape(rule.targetField));
+            const target = findField(form, fieldId(rule));
             const decision = ruleDecision(rule,target,target?.value);
             if(decision.state !== "apply")return;
             target.value=decision.value;
@@ -298,6 +361,8 @@
             label: "Nouvelle règle",
             patronCategory: "",
             targetField: "sort1",
+            targetFieldCustom: "",
+            valueSource: "free",
             authorisedValueCategory: "",
             authorisedValue: "",
             manualValue: "",
@@ -312,6 +377,8 @@
             if (ids.has(rule.id)) return { ok: false, message: "Chaque règle doit avoir un identifiant unique." };
             ids.add(rule.id);
             if (rule.enabled && !rule.patronCategory) return { ok: false, message: "Une règle active doit préciser une catégorie d’adhérent." };
+            if (rule.enabled && !fieldId(rule)) return { ok: false, message: "Une règle active doit préciser le champ à préremplir." };
+            if (rule.enabled && rule.valueSource === "authorised" && !rule.authorisedValueCategory) return { ok: false, message: "Choisissez la catégorie de valeurs autorisées, ou passez en saisie libre." };
             if (rule.enabled && !chosenValue(rule)) return { ok: false, message: "Une règle active doit préciser une valeur à appliquer." };
         }
         return { ok: true };
@@ -320,11 +387,11 @@
     function definition() {
         return {
             id: MODULE_ID,
-            schemaVersion: 2,
+            schemaVersion: 3,
             name: { fr: "Valeurs par défaut selon la catégorie d’adhérent", en: "Defaults by patron category" },
             description: {
-                fr: "Renseigne automatiquement une catégorie statistique lors de la création ou de la modification d’un adhérent, selon sa catégorie d’inscription. Choisissez la catégorie concernée, le champ à remplir et la valeur proposée. Par défaut, une valeur déjà saisie est conservée.",
-                en: "Automatically fills a statistical category when creating or editing a patron, based on the membership category. Choose the category, target field and proposed value. Existing values are kept by default."
+                fr: "Renseigne automatiquement un champ de la fiche lors de la création ou de la modification d’un adhérent, selon sa catégorie d’inscription. Le champ se choisit dans la liste, ou par son identifiant. La valeur vient soit d’une catégorie de valeurs autorisées, soit d’une saisie libre. Par défaut, une valeur déjà présente est conservée.",
+                en: "Fills a patron form field automatically from the membership category. Pick any field, or enter its identifier. The value comes from an authorised-value category or from free text. An existing value is kept by default."
             },
             category: { fr: "Lecteurs / saisie", en: "Patrons / entry" },
             supportedPages: [PAGE_ID],
@@ -365,32 +432,53 @@
                                 {
                                     key: "targetField",
                                     type: "select",
+                                    refreshOnChange: true,
                                     label: { fr: "Champ à préremplir", en: "Field to prefill" },
+                                    options: function (root, path) {
+                                        const rule = ruleFromPath(root, path);
+                                        return optionWithCurrent(PATRON_FIELDS.map(function (field) {
+                                            return { value: field[0], label: { fr: field[1], en: field[0] } };
+                                        }), rule && rule.targetField, { fr: "— Choisir un champ —", en: "— Choose a field —" });
+                                    }
+                                },
+                                {
+                                    key: "targetFieldCustom",
+                                    type: "text",
+                                    label: { fr: "Identifiant du champ", en: "Field identifier" },
+                                    help: { fr: "Identifiant du champ dans la fiche Koha, par exemple un attribut lecteur patron_attr_CODE.", en: "Identifier of the field on the Koha form, for example a patron attribute patron_attr_CODE." },
+                                    when: function (root, path) { const rule = ruleFromPath(root, path); return !rule || rule.targetField === "custom"; }
+                                },
+                                {
+                                    key: "valueSource",
+                                    type: "select",
+                                    refreshOnChange: true,
+                                    label: { fr: "Origine de la valeur", en: "Value source" },
                                     options: [
-                                        { value: "sort1", label: { fr: "sort1 — catégorie statistique 1", en: "sort1 — statistical category 1" } },
-                                        { value: "sort2", label: { fr: "sort2 — catégorie statistique 2", en: "sort2 — statistical category 2" } }
+                                        { value: "authorised", label: { fr: "Catégorie de valeurs autorisées", en: "Authorised-value category" } },
+                                        { value: "free", label: { fr: "Saisie libre", en: "Free text" } }
                                     ]
                                 },
                                 {
                                     key: "authorisedValueCategory",
                                     type: "select",
                                     refreshOnChange: true,
-                                    label: { fr: "Catégorie de valeurs autorisées Koha", en: "Koha authorised-value category" },
+                                    label: { fr: "Catégorie de valeurs autorisées", en: "Authorised-value category" },
                                     options: authorisedCategoryOptions,
-                                    help: { fr: "Facultatif. Si aucune catégorie n’est choisie, utilisez la valeur manuelle.", en: "Optional. If no category is selected, use the manual value." }
+                                    when: function (root, path) { const rule = ruleFromPath(root, path); return !rule || rule.valueSource === "authorised"; }
                                 },
                                 {
                                     key: "authorisedValue",
                                     type: "select",
                                     label: { fr: "Valeur autorisée", en: "Authorised value" },
                                     options: authorisedValueOptions,
-                                    help: { fr: "Liste dépendante de la catégorie choisie ci-dessus.", en: "List depends on the category selected above." }
+                                    when: function (root, path) { const rule = ruleFromPath(root, path); return !rule || rule.valueSource === "authorised"; }
                                 },
                                 {
                                     key: "manualValue",
                                     type: "text",
-                                    label: { fr: "Valeur manuelle de repli", en: "Manual fallback value" },
-                                    help: { fr: "Utilisée lorsqu’aucune catégorie de valeurs autorisées n’est sélectionnée. Valeur historique : 12.", en: "Used when no authorised-value category is selected. Historical value: 12." }
+                                    label: { fr: "Valeur libre", en: "Free value" },
+                                    help: { fr: "Texte ou code écrit tel quel dans le champ. La règle d’origine écrit 12 dans sort1.", en: "Text or code written as-is. The original rule writes 12 into sort1." },
+                                    when: function (root, path) { const rule = ruleFromPath(root, path); return !rule || rule.valueSource !== "authorised"; }
                                 },
                                 { key: "onlyIfEmpty", type: "boolean", label: { fr: "Ne remplir que si le champ est vide", en: "Only fill when the field is empty" } }
                             ]

@@ -26,7 +26,7 @@
     // Keep the historical document ID and count fields; both views use this configuration.
     const DEFAULTS = { enabled:true, autoOpen:true, miniEnabled:true, pageEnabled:true,
         branchNames:'', branchSelector:'.logged-in-branch-name', defaultLocationId:'',
-        locationSource:'manual', hiddenLocationIds:'',
+        locationSource:'manual', hiddenLocationIds:'', configuredLocations:[],
         title:'Compteur de fréquentation', adminPin:'admin', defaultCountedWeeks:8, adultsLabel:'Adultes', kidsLabel:'Enfants',
         step:1, miniWidth:340, countsCollection:'counts', locationsCollection:'locations' };
     let resolveReady;
@@ -1348,7 +1348,8 @@
         if (!names.length) return true;
         try {
             const branch=document.querySelector(config.branchSelector || DEFAULTS.branchSelector);
-            const values=[branch?.textContent,branch?.getAttribute('data-branchcode')].filter(Boolean).map(value=>String(value).trim().toLocaleLowerCase());
+            const code=document.querySelector('.logged-in-branch-code');
+            const values=[branch,code].flatMap(node=>node?[node.textContent,node.getAttribute('data-branchcode'),node.getAttribute('data-branch')]:[]).filter(Boolean).map(value=>String(value).trim().toLocaleLowerCase());
             return values.some(value=>names.includes(value));
         } catch (_) {return false}
     }
@@ -1357,6 +1358,18 @@
         const cfg=Object.assign({},DEFAULTS,next || {});
         cfg.locationSource=['manual','koha','mix'].includes(cfg.locationSource)?cfg.locationSource:'manual';
         cfg.hiddenLocationIds=String(cfg.hiddenLocationIds||'');
+        const usedPlaceIds=new Set();
+        cfg.configuredLocations=(Array.isArray(cfg.configuredLocations)?cfg.configuredLocations:[]).map(row=>{
+            const name=String(row&&row.name||'').trim();
+            if(!name)return null;
+            let id=String(row&&row.id||'').trim();
+            if(!id||usedPlaceIds.has(id)){
+                const base='cfg:'+(name.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40)||'lieu');
+                id=base; let n=2; while(usedPlaceIds.has(id)){id=base+'-'+n; n+=1;}
+            }
+            usedPlaceIds.add(id);
+            return {id,name};
+        }).filter(Boolean);
         cfg.step=Math.max(1,Math.min(100,Math.round(Number(cfg.step) || 1)));
         cfg.miniWidth=Math.max(300,Math.min(520,Number(cfg.miniWidth) || 340));
         cfg.defaultCountedWeeks=Math.max(1,Math.min(53,Math.round(Number(cfg.defaultCountedWeeks) || 8)));
@@ -2389,7 +2402,8 @@
     function resolveLocations(stored, libraries, cfg) {
         const source = cfg.locationSource || 'manual';
         const hidden = hiddenLocationSet(cfg.hiddenLocationIds);
-        const manual = (stored || []).filter(row => row && row.id && !String(row.id).startsWith('koha:') && !hidden.has(String(row.id))).map(row => Object.assign({source:'manual'}, row));
+        const configured = source === 'koha' ? [] : (cfg.configuredLocations || []).filter(row => row && row.id && row.name && !hidden.has(String(row.id))).map(row => ({id:row.id, name:row.name, source:'manual', extrapolate:false, defaultWeeks:cfg.defaultCountedWeeks}));
+        const manual = configured.concat((stored || []).filter(row => row && row.id && !String(row.id).startsWith('koha:') && !hidden.has(String(row.id))).map(row => Object.assign({source:'manual'}, row)));
         const koha = (libraries || []).filter(row => row && row.id && !hidden.has(String(row.id)));
         const chosen = source === 'koha' ? koha : source === 'mix' ? koha.concat(manual) : manual;
         const seen = new Set();
@@ -2434,12 +2448,110 @@
         return {locations:resolveLocations(stored, libraries, cfg), warning, source:cfg.locationSource};
     }
 
+    let libraryCache = null;
+    function loadLibraries() {
+        if (!libraryCache) libraryCache = readKohaLibraries(DEFAULTS.defaultCountedWeeks).catch(error => { libraryCache = null; throw error; });
+        return libraryCache;
+    }
+    function branchChecklist(ctx) {
+        const root = ctx.rootObject || {};
+        const box = document.createElement('div');
+        const select = document.createElement('select');
+        select.multiple = true;
+        select.size = 8;
+        select.className = 'form-control';
+        const hint = document.createElement('small');
+        hint.className = 'pmk-field-help';
+        hint.textContent = 'Chargement des sites Koha…';
+        box.append(select, hint);
+        const write = function () {
+            const selected = new Set(Array.from(select.selectedOptions).map(option => option.value));
+            const known = new Set();
+            Array.from(select.options).forEach(option => {
+                known.add(option.value.toLocaleLowerCase());
+                const name = option.textContent.replace(/\s*\([^)]*\)\s*$/, '').trim().toLocaleLowerCase();
+                if (name) known.add(name);
+            });
+            const unknown = String(root.branchNames || '').split(/[\n,;]+/).map(value => value.trim()).filter(value => value && !known.has(value.toLocaleLowerCase()));
+            const lines = [];
+            Array.from(select.options).forEach(option => {
+                if (!selected.has(option.value)) return;
+                lines.push(option.value);
+                const name = option.textContent.replace(/\s*\([^)]*\)\s*$/, '').trim();
+                if (name) lines.push(name);
+            });
+            root.branchNames = lines.concat(unknown).join('\n');
+            if (typeof ctx.markDirty === 'function') ctx.markDirty();
+            hint.textContent = selected.size ? selected.size + ' site(s) autorisé(s).' : 'Aucune sélection : le compteur est proposé sur tous les sites.';
+        };
+        loadLibraries().then(rows => {
+            const tokens = new Set(String(root.branchNames || '').split(/[\n,;]+/).map(value => value.trim().toLocaleLowerCase()).filter(Boolean));
+            rows.forEach(row => {
+                const code = String(row.id || '').replace(/^koha:/, '');
+                const option = document.createElement('option');
+                option.value = code;
+                option.textContent = (row.name || code) + ' (' + code + ')';
+                option.selected = tokens.has(code.toLocaleLowerCase()) || tokens.has(String(row.name || '').trim().toLocaleLowerCase());
+                select.append(option);
+            });
+            hint.textContent = select.selectedOptions.length ? select.selectedOptions.length + ' site(s) autorisé(s).' : 'Aucune sélection : le compteur est proposé sur tous les sites.';
+        }).catch(() => {
+            select.remove();
+            hint.textContent = 'Les sites Koha ne sont pas disponibles. Saisissez les codes ou les noms, un par ligne. Une liste vide autorise tous les sites.';
+            const area = document.createElement('textarea');
+            area.className = 'form-control';
+            area.rows = 4;
+            area.value = root.branchNames || '';
+            area.addEventListener('input', function () { root.branchNames = area.value; if (typeof ctx.markDirty === 'function') ctx.markDirty(); });
+            box.append(area);
+        });
+        select.addEventListener('change', write);
+        return box;
+    }
+    function hiddenChecklist(ctx) {
+        const root = ctx.rootObject || {};
+        const box = document.createElement('div');
+        const select = document.createElement('select');
+        select.multiple = true;
+        select.size = 8;
+        select.className = 'form-control';
+        const hint = document.createElement('small');
+        hint.className = 'pmk-field-help';
+        hint.textContent = 'Chargement des lieux…';
+        box.append(select, hint);
+        const fill = function (rows) {
+            const hidden = new Set(String(root.hiddenLocationIds || '').split(/[\n,;]+/).map(value => value.trim()).filter(Boolean));
+            const seen = new Set();
+            select.replaceChildren();
+            const add = function (id, label) {
+                if (!id || seen.has(id)) return;
+                seen.add(id);
+                const option = document.createElement('option');
+                option.value = id;
+                option.textContent = label;
+                option.selected = hidden.has(id);
+                select.append(option);
+            };
+            (rows || []).forEach(row => add(row.id, (row.name || row.id) + ' (' + String(row.id).replace(/^koha:/, '') + ')'));
+            (root.configuredLocations || []).forEach(row => { if (row && row.id && row.name) add(row.id, row.name); });
+            hidden.forEach(id => add(id, id));
+            hint.textContent = select.selectedOptions.length ? select.selectedOptions.length + ' lieu(x) masqué(s).' : 'Aucun lieu masqué.';
+        };
+        loadLibraries().then(fill).catch(() => fill([]));
+        select.addEventListener('change', function () {
+            root.hiddenLocationIds = Array.from(select.selectedOptions).map(option => option.value).join('\n');
+            if (typeof ctx.markDirty === 'function') ctx.markDirty();
+            hint.textContent = select.selectedOptions.length ? select.selectedOptions.length + ' lieu(x) masqué(s).' : 'Aucun lieu masqué.';
+        });
+        return box;
+    }
+
     function registerWithPMK() {
         if (!window.PMKConfig || registered) return false;
         registered = true;
         window.PMKConfig.registerModule({
             id: MODULE_ID,
-            schemaVersion: 1,
+            schemaVersion: 2,
             name: {fr:'Compteur de fréquentation',en:'Attendance counter'},
             description: {fr:'Un compteur commun aux vues flottante et pleine page : mêmes lieux, compteurs, réglages et historique. Les statistiques et exports restent disponibles dans la page dédiée.',en:'One counter shared by floating and full-page views, with the same locations, settings and history.'},
             category:{fr:'Circulation et accueil',en:'Circulation and front desk'},
@@ -2455,13 +2567,17 @@
                 {key:'miniEnabled',type:'boolean',label:'Proposer le compteur flottant'},
                 {key:'pageEnabled',type:'boolean',label:'Activer la page de saisie et de rapports'},
                 {key:'autoOpen',type:'boolean',label:'Ouvrir automatiquement le compteur flottant'},
-                {key:'branchNames',type:'textarea',label:'Sites autorisés (vide = tous)',help:'Codes ou noms des sites de connexion, séparés par des virgules ou des lignes. Cela limite où le compteur flottant apparaît. Les lieux de comptage se choisissent plus bas.'},
+                {type:'custom',label:{fr:'Afficher le compteur flottant sur ces sites',en:'Show the floating counter on these libraries'},help:{fr:'Cochez les bibliothèques de connexion où le compteur flottant doit apparaître. Aucune case cochée : il apparaît sur tous les sites. Les lieux de comptage, eux, se règlent plus bas.',en:'Tick the signed-in libraries where the floating counter should appear. No tick: it appears on every library. Counting places are set further down.'},render:branchChecklist},
                 {key:'locationSource',type:'select',label:{fr:'Source des lieux de comptage',en:'Counting location source'},options:[
                     {value:'manual',label:{fr:'Liste manuelle',en:'Manual list'}},
                     {value:'koha',label:{fr:'Sites Koha',en:'Koha libraries'}},
                     {value:'mix',label:{fr:'Sites Koha et liste manuelle',en:'Koha libraries and manual list'}}
-                ],help:{fr:'Liste manuelle : lieux ajoutés dans la page. Sites Koha : bibliothèques de ce Koha. Mélange : les deux. Un lieu masqué sort de la saisie sans effacer ses comptages.',en:'Manual list: places added on the page. Koha libraries: this Koha’s libraries. Mix: both. Hiding a place removes it from counting without deleting its counts.'}},
-                {key:'hiddenLocationIds',type:'textarea',label:{fr:'Lieux masqués',en:'Hidden locations'},help:{fr:'Un identifiant par ligne. Un site Koha s’écrit koha: suivi de son code, par exemple koha:CPL. Un lieu manuel utilise l’identifiant affiché dans la page. Effacer une ligne le réaffiche.',en:'One identifier per line. A Koha library is written koha: followed by its code, for example koha:CPL. A manual place uses the identifier shown on the page. Clearing a line shows it again.'}},
+                ],help:{fr:'Liste manuelle : lieux saisis ci-dessous et lieux déjà enregistrés dans la page. Sites Koha : bibliothèques de ce Koha. Mélange : les deux. Un lieu masqué sort de la saisie sans effacer ses comptages.',en:'Manual list: places entered below and places already saved on the page. Koha libraries: this Koha’s libraries. Mix: both. Hiding a place removes it from counting without deleting its counts.'}},
+                {key:'configuredLocations',type:'repeater',label:{fr:'Lieux saisis dans la configuration',en:'Places entered in the configuration'},addLabel:{fr:'Ajouter un lieu',en:'Add a place'},emptyLabel:{fr:'Aucun lieu saisi ici.',en:'No place entered here.'},itemTitleKey:'name',newItem:()=>({id:'',name:''}),help:{fr:'Ces lieux sont proposés quand la source est la liste manuelle ou le mélange. L’identifiant est créé à partir du nom s’il est laissé vide.',en:'These places are offered when the source is the manual list or the mix. The identifier is created from the name when left empty.'},fields:[
+                    {key:'name',type:'text',label:{fr:'Nom du lieu',en:'Place name'}},
+                    {key:'id',type:'text',advanced:true,label:{fr:'Identifiant',en:'Identifier'}}
+                ]},
+                {type:'custom',label:{fr:'Lieux masqués',en:'Hidden places'},help:{fr:'Cochez les sites Koha ou les lieux saisis ci-dessus à retirer de la saisie. Leurs comptages restent conservés.',en:'Select the Koha libraries or configured places to remove from counting. Their counts stay stored.'},render:hiddenChecklist},
                 {key:'branchSelector',type:'elementPicker',allowManual:true,manualAlways:true,label:'Élément portant le site de connexion',pick:ctx=>{
                     const picker=window.PMKConfig.elementPicker;
                     picker?.register(MODULE_ID,{});

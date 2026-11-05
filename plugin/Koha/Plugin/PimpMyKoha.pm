@@ -5,11 +5,11 @@ use base qw(Koha::Plugins::Base);
 use JSON qw(decode_json);
 use C4::Context;
 
-our $VERSION = '0.4.0';
+our $VERSION = '0.4.1';
 our $metadata = {
     name => 'PimpMyKoha', author => 'PimpMyKoha',
     description => 'Modules et pages PMK, avec ressources embarquées et configuration native dans Koha.',
-    date_authored => '2026-10-18', date_updated => '2026-10-28',
+    date_authored => '2026-10-18', date_updated => '2026-11-05',
     minimum_version => '25.11.00.000', version => $VERSION,
     license => 'GPL-3.0-or-later',
 };

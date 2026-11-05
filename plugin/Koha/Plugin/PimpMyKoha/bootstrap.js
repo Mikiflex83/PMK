@@ -3,7 +3,7 @@
     if (window.PMKPlugin) return;
     const script = document.currentScript;
     const base = new URL('./',script.src);
-    const state = window.PMKPlugin = {version:'0.4.0',loaded:[],errors:[],ready:false,
+    const state = window.PMKPlugin = {version:'0.4.1',loaded:[],errors:[],ready:false,
         assetUrl:file => new URL('assets/'+file,base).href};
     if (!window.PMK_BRAND_LOGO_URL) window.PMK_BRAND_LOGO_URL=state.assetUrl('pimp-my-koha.png');
     function load(file,version) {
@@ -26,8 +26,14 @@
         await load('native-data.js',state.version);
         await window.PMKConfigNativeStorage.preload();
         await load('migration.js',state.version);
-        const response = await fetch(new URL('manifest.json',base),{credentials:'same-origin'});
-        if (!response.ok) throw new Error('Manifeste PMK inaccessible');
+        const manifestUrl = new URL('manifest.json',base);
+        let response = null;
+        for (let attempt = 0; attempt < 4; attempt++) {
+            response = await fetch(manifestUrl,{credentials:'same-origin',cache:'no-store'});
+            if (response.ok) break;
+            await new Promise(resolve => setTimeout(resolve, 400 * (attempt + 1)));
+        }
+        if (!response || !response.ok) throw new Error('Manifeste PMK inaccessible');
         const manifest = await response.json();
         state.manifest=manifest;
         state.build=manifest.build;

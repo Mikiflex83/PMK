@@ -44,7 +44,7 @@ scripts = [p.name for p in sorted(ROOT.glob('*.js')) if p.name not in excluded]
 assert scripts[0] == '000-pmk-config-firestore.js'
 declarations=json.loads((ROOT/'tests/validation/declarations.json').read_text())
 registry_ids=sorted({row['id'] for row in declarations['records']})
-manifest = {'moduleIds':registry_ids,'license':'GPL-3.0-or-later','version':'0.4.0','coreVersion':'0.8.0','scripts':scripts,'autoloadBundle':'assets/pmk-autoload.js','excludedFromAutoload':excluded,
+manifest = {'moduleIds':registry_ids,'license':'GPL-3.0-or-later','version':'0.4.1','coreVersion':'0.8.0','scripts':scripts,'autoloadBundle':'assets/pmk-autoload.js','excludedFromAutoload':excluded,
             'files':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in files}}
 # Each source already encloses its declarations in an IIFE. Keep script context
 # and the assets base URL, while avoiding 104 separate authenticated API reads.
