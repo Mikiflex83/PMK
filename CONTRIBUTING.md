@@ -2,6 +2,8 @@
 
 PimpMyKoha améliore l’interface professionnelle de Koha tout en conservant les comportements natifs, les réglages déjà enregistrés et la possibilité d’éteindre un module.
 
+PimpMyKoha est développé entièrement à l’aide de l’intelligence artificielle, par une personne qui n’est pas développeur. Il est partagé avec la communauté Koha pour que le plus grand nombre puisse en profiter, et pour qu’il soit relu, corrigé, amélioré et rendu plus fiable. Le développement est toujours en cours. L’utilisation reste sous la responsabilité de chaque établissement.
+
 Les contributions sont attendues, qu’elles viennent d’une revue du plugin ou d’une bibliothèque qui adapte un parcours. Une modification doit rester utilisable hors de l’installation qui l’a demandée : seuils, libellés, sites, rapports et catégories sont des réglages.
 
 ## Avant de commencer

@@ -2167,6 +2167,10 @@
                 font-size: 1.08rem;
                 line-height: 1.58;
             }
+            .pmk-home-hero p + p {
+                margin-top: .75rem;
+                font-size: .95rem;
+            }
             .pmk-home-version {
                 margin-top: .7rem;
                 color: #6c757d;
@@ -4828,6 +4832,12 @@
             en: "PimpMyKoha adapts the Koha staff interface to your workflows through independent modules. Each module can be enabled and configured separately without changing the settings of other modules."
         }, lang);
         heroCopy.appendChild(intro);
+        const origin = document.createElement("p");
+        origin.textContent = text({
+            fr: "PimpMyKoha est développé entièrement à l’aide de l’intelligence artificielle, par une personne qui n’est pas développeur. Il est partagé avec la communauté Koha pour être utilisé, relu, corrigé et amélioré. Le développement est en cours : son utilisation reste sous la responsabilité de l’établissement.",
+            en: "PimpMyKoha is developed entirely with the help of artificial intelligence, by someone who is not a developer. It is shared with the Koha community so it can be used, reviewed, corrected and improved. Development is still under way: use remains the responsibility of each library."
+        }, lang);
+        heroCopy.appendChild(origin);
         hero.appendChild(heroCopy);
         home.appendChild(hero);
         ensurePmkHomeHeroLogo(home);
@@ -4899,8 +4909,8 @@
         const warning = overlay.querySelector(".pmk-config-footer-warning-text");
         if (warning) {
             warning.textContent = text({
-                fr: "PimpMyKoha est un ensemble de modules personnalisés développés à l’aide de l’intelligence artificielle. Ils ne font pas partie de Koha et ne sont pas pris en charge par votre hébergeur ou prestataire. En cas d’anomalie, désactivez le ou les modules concernés — ou PimpMyKoha dans son ensemble — avant toute autre intervention. Activez les modules progressivement, un par un, et vérifiez le bon fonctionnement de Koha après chaque activation.",
-                en: "PimpMyKoha is a collection of custom modules developed with the help of artificial intelligence. They are not part of Koha and are not supported by your hosting provider or service provider. If something behaves unexpectedly, disable the affected module(s) — or PimpMyKoha as a whole — before any other intervention. Enable modules gradually, one at a time, and verify Koha after each activation."
+                fr: "PimpMyKoha est développé entièrement à l’aide de l’intelligence artificielle, par une personne qui n’est pas développeur. Il est partagé avec la communauté Koha pour en faire profiter le plus grand nombre, et pour être relu, corrigé et amélioré. Le développement est en cours : ces modules ne font pas partie de Koha et ne sont pas pris en charge par votre hébergeur. Leur utilisation reste sous la responsabilité de l’établissement. En cas d’anomalie, désactivez le module concerné — ou PimpMyKoha dans son ensemble — avant toute autre intervention. Activez les modules progressivement, un par un, et vérifiez le bon fonctionnement de Koha après chaque activation.",
+                en: "PimpMyKoha is developed entirely with the help of artificial intelligence, by someone who is not a developer. It is shared with the Koha community so that as many libraries as possible can use it, and so that it can be reviewed, corrected and improved. Development is still under way: these modules are not part of Koha and are not supported by your hosting provider. Use remains the responsibility of each library. If something behaves unexpectedly, disable the affected module — or PimpMyKoha as a whole — before any other intervention. Enable modules gradually, one at a time, and verify Koha after each activation."
             }, lang);
         }
 
@@ -5651,8 +5661,8 @@
         if (warning) {
             const lang = detectLanguage();
             warning.textContent = text({
-                fr: "PimpMyKoha est un ensemble de modules personnalisés développés à l’aide de l’intelligence artificielle. Ils ne font pas partie de Koha et ne sont pas pris en charge par votre hébergeur ou prestataire. En cas d’anomalie, désactivez le ou les modules concernés — ou PimpMyKoha dans son ensemble — avant toute autre intervention. Activez les modules progressivement, un par un, et vérifiez le bon fonctionnement de Koha après chaque activation.",
-                en: "PimpMyKoha is a collection of custom modules developed with the help of artificial intelligence. They are not part of Koha and are not supported by your hosting provider or service provider. If something behaves unexpectedly, disable the affected module(s) — or PimpMyKoha as a whole — before any other intervention. Enable modules gradually, one at a time, and verify Koha after each activation."
+                fr: "PimpMyKoha est développé entièrement à l’aide de l’intelligence artificielle, par une personne qui n’est pas développeur. Il est partagé avec la communauté Koha pour en faire profiter le plus grand nombre, et pour être relu, corrigé et amélioré. Le développement est en cours : ces modules ne font pas partie de Koha et ne sont pas pris en charge par votre hébergeur. Leur utilisation reste sous la responsabilité de l’établissement. En cas d’anomalie, désactivez le module concerné — ou PimpMyKoha dans son ensemble — avant toute autre intervention. Activez les modules progressivement, un par un, et vérifiez le bon fonctionnement de Koha après chaque activation.",
+                en: "PimpMyKoha is developed entirely with the help of artificial intelligence, by someone who is not a developer. It is shared with the Koha community so that as many libraries as possible can use it, and so that it can be reviewed, corrected and improved. Development is still under way: these modules are not part of Koha and are not supported by your hosting provider. Use remains the responsibility of each library. If something behaves unexpectedly, disable the affected module — or PimpMyKoha as a whole — before any other intervention. Enable modules gradually, one at a time, and verify Koha after each activation."
             }, lang);
         }
 

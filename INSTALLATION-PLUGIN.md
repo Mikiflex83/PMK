@@ -3,6 +3,9 @@
 > [!WARNING]
 > Le mode plugin est expérimental et en cours de test. Il a fait l’objet d’essais techniques sur une instance Koha dédiée, mais le mode non-plugin est le seul mode PMK éprouvé à ce jour en situation réelle. Installez ce KPZ sur une instance de recette ou une copie de la production, jamais directement sur la production.
 
+> [!IMPORTANT]
+> PimpMyKoha est développé entièrement à l’aide de l’intelligence artificielle, par une personne qui n’est pas développeur. Il est partagé avec la communauté Koha pour être utilisé, relu, corrigé et amélioré. Le développement est toujours en cours. Son utilisation reste sous la responsabilité de chaque établissement.
+
 Le paquet de test est **`plugin/PimpMyKoha-plugin-0.4.0.kpz`** dans le ZIP complet. Il a passé les contrôles techniques prévus pour Koha 25.11 professionnel / UNIMARC et MariaDB 10.11, sans constituer une validation en production. Les preuves et limites figurent dans [la recette](RECETTE-PLUGIN-KOHA.md).
 
 1. Sauvegarder Koha, les fichiers personnalisés et le contenu exact d’IntranetUserJS/IntranetUserCSS. Commencer sur une copie de la production.

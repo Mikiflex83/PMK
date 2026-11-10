@@ -2,6 +2,9 @@
 
 PimpMyKoha (PMK) ajoute des modules à l’interface professionnelle de [Koha](https://koha-community.org/) : ergonomie, circulation, catalogage, menus, pages internes et aides. Koha reste le logiciel métier. Chaque bibliothèque enregistre ses pages, ses sélecteurs, ses statuts, ses rapports, ses catégories, ses sites et ses libellés. Une configuration déjà enregistrée est conservée lors d’une mise à jour. Une installation neuve laisse chaque module éteint.
 
+> [!IMPORTANT]
+> PimpMyKoha est développé entièrement à l’aide de l’intelligence artificielle, par une personne qui n’est pas développeur. Il est partagé avec la communauté Koha pour que le plus grand nombre puisse en profiter, et pour qu’il soit relu, corrigé, amélioré et rendu plus fiable. Le développement est toujours en cours. Son utilisation reste sous la responsabilité de chaque établissement.
+
 Ce dépôt est la source publiée du plugin. Il sert à la revue du plugin et aux contributions. Le paquet à examiner est celui construit depuis `main`, ou l’archive figée de la version 0.4.0 dans `releases/0.4.0`. Les valeurs d’une installation historique ne sont pas des réglages universels.
 
 ## Revue du plugin

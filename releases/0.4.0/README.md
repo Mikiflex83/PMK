@@ -8,6 +8,8 @@ Les archives datées du 29 octobre et `transition.3` sont conservées uniquement
 
 > **État de maturité :** le mode non-plugin est le seul mode éprouvé en situation réelle. Le plugin 0.4.0 est expérimental, en cours de test, et doit être installé uniquement sur une instance de recette ou une copie de la production avant toute décision de bascule.
 
+> **Origine et responsabilité :** PimpMyKoha est développé entièrement à l’aide de l’intelligence artificielle, par une personne qui n’est pas développeur. Il est partagé avec la communauté Koha pour être utilisé, relu, corrigé et amélioré. Le développement est toujours en cours. Son utilisation reste sous la responsabilité de chaque établissement.
+
 > **Dépendance Firebase :** le mode non-plugin se connecte uniquement aux projets Firebase créés et administrés par chaque établissement. Aucun projet Firebase Dracénie ni base partagée n’est fourni. Le plugin n’utilise aucun service Firebase après la migration.
 
 La distribution publique ne contient aucune configuration Firebase privée, aucun nom ou courriel personnel, aucun compte Koha privé, aucune carte lecteur technique et aucune URL Worker personnelle. Chaque établissement crée localement `pmk-firebase-config.js` depuis le modèle générique ; ce fichier reste exclu de Git et des archives publiques.
