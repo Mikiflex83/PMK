@@ -1,6 +1,6 @@
-# Installer PimpMyKoha 0.5.0
+# Installer PimpMyKoha 0.5.1
 
-Installez le KPZ de l’étiquette `v0.5.0`. C’est le canal stable : il ne contient pas les pages encore marquées en développement. L’étiquette `v0.5.0-preview` est une préversion qui les ajoute, avec leur avertissement.
+Installez le KPZ de l’étiquette `v0.5.1`. C’est le canal stable : il ne contient pas les pages encore marquées en développement. L’étiquette `v0.5.1-preview` est une préversion qui les ajoute, avec leur avertissement.
 
 > [!IMPORTANT]
 > PimpMyKoha est développé entièrement à l’aide de l’intelligence artificielle, par une personne qui n’est pas développeur. Il est partagé avec la communauté Koha pour être utilisé, relu, corrigé et amélioré. Le développement est toujours en cours. Son utilisation reste sous la responsabilité de chaque établissement.

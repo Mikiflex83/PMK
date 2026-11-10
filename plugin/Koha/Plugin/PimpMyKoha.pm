@@ -5,7 +5,7 @@ use base qw(Koha::Plugins::Base);
 use JSON qw(decode_json);
 use C4::Context;
 
-our $VERSION = '0.5.0';
+our $VERSION = '0.5.1';
 our $metadata = {
     name => 'PimpMyKoha', author => 'PimpMyKoha',
     description => 'Modules et pages pour l’interface professionnelle de Koha, avec configuration native. Développé entièrement avec l’IA par une personne qui n’est pas développeur, et partagé pour être relu et amélioré. Développement en cours : l’usage reste sous la responsabilité de l’établissement.',

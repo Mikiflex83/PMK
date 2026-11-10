@@ -1,6 +1,6 @@
 {
   "passed": true,
-  "pluginVersion": "0.5.0",
+  "pluginVersion": "0.5.1",
   "scriptsScanned": 152,
   "serviceCalls": 0,
   "externalSdkImports": 0,

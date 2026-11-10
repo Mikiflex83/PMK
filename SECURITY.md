@@ -2,7 +2,7 @@
 
 ## Versions suivies
 
-La dernière version publiée du plugin, série `0.5.x`, reçoit les corrections de sécurité. Le canal `v0.5.0` est la version stable. Le canal `v0.5.0-preview` est une préversion. Les archives non-plugin ne sont plus publiées et ne reçoivent pas de maintenance.
+La dernière version publiée du plugin, série `0.5.x`, reçoit les corrections de sécurité. Le canal `v0.5.1` est la version stable. Le canal `v0.5.1-preview` est une préversion. Les archives non-plugin ne sont plus publiées et ne reçoivent pas de maintenance.
 
 ## Signaler une vulnérabilité
 
