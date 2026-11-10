@@ -98,7 +98,7 @@ const STYLE_TEXT = `  #nf-app {
 
   #nf-app .nf-body {
     padding: 6px 16px 16px;
-    background: linear-gradient(180deg, #fff 0%, var(--nf-bg) 100%);
+    background: #fff;
   }
 
   #nf-app .nf-stats {

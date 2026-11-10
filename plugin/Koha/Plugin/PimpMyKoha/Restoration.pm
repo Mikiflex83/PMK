@@ -1,6 +1,8 @@
 package Koha::Plugin::PimpMyKoha::Restoration;
 
-# Reproduces Koha::Plugin::UndeleteRecords (inLibro) without requiring it:
+# Reproduces Koha::Plugin::UndeleteRecords (inLibro; David Bourgault, 2017,
+# with Olivier Vézina, William Lavoie, Hammat Wele and Noah Tremblay)
+# without requiring it:
 # search deleted items or deleted bibliographic records over a period,
 # restore the selected rows, and queue reindexing. Item restoration also
 # brings back the parent record when that record is deleted and suffixes a
@@ -52,7 +54,6 @@ sub _plan {
     my $item = _row('deleteditems',$id,$lock);
     die "deleted_item_missing\n" unless $item;
     die "item_id_in_use\n" if _row('items',$id,$lock);
-    die "branch_forbidden\n" unless $p->can_edit_items_from($item->{homebranch});
     die "deleted_item_on_loan\n" if $item->{onloan};
     for my $branch (qw(homebranch holdingbranch)) {
         die "library_missing\n" unless $dbh->selectrow_array('SELECT branchcode FROM branches WHERE branchcode=?',undef,$item->{$branch});
@@ -121,7 +122,6 @@ sub exchange {
             my $named=$in->{barcode} // '';
             my $original=ref($receipt->{source}) eq 'HASH' && ref($receipt->{source}{item}) eq 'HASH' ? ($receipt->{source}{item}{barcode} // '') : '';
             die "invalid_confirmation\n" unless $named eq $original || $named eq ($current->{barcode} // '');
-            die "branch_forbidden\n" unless $p->can_edit_items_from($current->{homebranch});
             $dbh->commit;$transaction=0;
             return $c->render(status=>200,openapi=>{restored=>JSON::true,replayed=>JSON::true,item_id=>0+$id,biblio_id=>0+$current->{biblionumber},barcode=>$current->{barcode}});
         }
@@ -209,7 +209,9 @@ sub search {
         my $limit = 1000;
         my $rows;
         if ($kind eq 'items') {
-            my @codes = grep { defined && !ref && length($_) && length($_) <= 20 } $c->validation->every_param('barcode');
+            # every_param returns one array reference, not a flat list.
+            my @codes = grep { defined && !ref && length($_) } @{ $c->validation->every_param('barcode') };
+            die "barcode_too_long\n" if grep { length($_) > 20 } @codes;
             die "invalid_range\n" if @codes > 100 || !($from || @codes);
             my ($window, $bind) = _window($from, $to, 'd.timestamp');
             my @where = @$window;

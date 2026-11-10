@@ -398,7 +398,7 @@
                 align-items: center;
                 gap: 10px;
                 padding: 14px 14px 12px;
-                background: linear-gradient(135deg, var(--kx-history-green), var(--kx-history-green-dark));
+                background: var(--kx-history-green);
                 color: #fff;
                 flex: 0 0 auto;
             }

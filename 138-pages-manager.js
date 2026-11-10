@@ -105,33 +105,6 @@
         "caution": true
     },
     {
-        "id": "reservations",
-        "title": "Nettoyage des réservations",
-        "out": "138-page-reservations",
-        "icon": "fa-hand-paper-o",
-        "group": "Qualité Koha",
-        "desc": "Analyse et maintenance des réservations.",
-        "caution": true
-    },
-    {
-        "id": "loans",
-        "title": "Prêts & litiges",
-        "out": "138-page-loans",
-        "icon": "fa-retweet",
-        "group": "Qualité Koha",
-        "desc": "Analyse des prêts anciens, litiges et réclamations.",
-        "caution": true
-    },
-    {
-        "id": "transfers",
-        "title": "Nettoyage des transferts",
-        "out": "138-page-transfers",
-        "icon": "fa-exchange",
-        "group": "Qualité Koha",
-        "desc": "Analyse des transferts et navette.",
-        "caution": true
-    },
-    {
         "id": "items",
         "title": "Qualité des exemplaires",
         "out": "138-page-items",
@@ -147,15 +120,6 @@
         "icon": "fa-book",
         "group": "Qualité Koha",
         "desc": "Audit bibliographique, doublons et enrichissement assisté.",
-        "caution": true
-    },
-    {
-        "id": "serials",
-        "title": "Maintenance des périodiques",
-        "out": "138-page-serials",
-        "icon": "fa-newspaper-o",
-        "group": "Qualité Koha",
-        "desc": "Abonnements, fascicules attendus et réclamations.",
         "caution": true
     },
     {
@@ -193,12 +157,11 @@
         "external": true
     },
     {
-        "id": "overdue-management",
-        "title": "Gestion des retards",
-        "icon": "fa-clock-o",
+        "id": "bulk-permissions",
+        "title": "Modification par lot de permissions",
+        "icon": "fa-key",
         "group": "Outils généraux",
-        "desc": "Suivi des dossiers TP4, consultation des prêts en retard et ajout ou modification de messages dans la fiche Koha sans quitter la page.",
-        "caution": true,
+        "desc": "Préparer et appliquer des droits sur les comptes d’une catégorie de personnel, sans jamais modifier un superadministrateur.",
         "external": true
     }
 ];
@@ -207,9 +170,20 @@
         'bulk-framework-change': {file:'141-modif-grille-par-lot.js',access:'staff'},
         'xslt-assistant': {file:'136-xslt-assistant.js',access:'superlibrarian'},
         'bibliography-builder': {file:'142-bibliography-builder.js',access:'staff'},
-        'overdue-management': {file:'143-gestion-retards.js',access:'staff'}
+        'bulk-permissions': {file:'151-gestion-permissions.js',access:'superlibrarian'}
     };
     manifest.forEach(item=>Object.assign(item,externalSources[item.id] || {access:'superlibrarian'}));
+    const releaseInfo = window.PMKPlugin && window.PMKPlugin.manifest || {};
+    const excludedIds = new Set(releaseInfo.excludedPageIds || []);
+    const stableRelease = releaseInfo.channel === 'stable';
+    const withheld = new Map();
+    for (let index = manifest.length - 1; index >= 0; index -= 1) {
+        const item = manifest[index];
+        if (excludedIds.has(item.id) || (stableRelease && item.caution)) {
+            withheld.set(item.id, item);
+            manifest.splice(index, 1);
+        }
+    }
     let config = {enabled:true};
     let configConnected=false;
     let routeGeneration=0;
@@ -343,13 +317,16 @@
 #pmk138-page-host *{box-sizing:border-box}
 #pmk138-page-host [hidden]{display:none!important}
 #pmk138-page-host .pmk138-app-container > #pmk142-root{position:relative;inset:auto;z-index:auto;min-height:80vh}
-.pmk138-toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 14px;padding:8px 10px;border:1px solid #d9dee3;border-radius:7px;background:#f7f8f9}
-.pmk138-toolbar .pmk138-title{font-weight:700;color:#39444d;margin-right:auto}
+.pmk138-toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 14px;padding:8px 10px;border:1px solid #d8dee3;border-radius:8px;background:#fff}
+.pmk138-toolbar .btn{border-color:#d8dee3;color:#39444d;background:#fff}
+.pmk138-toolbar .btn:hover{border-color:#6f8f32;color:#526d22;background:#f2f7e9}
+.pmk138-toolbar .pmk138-title{font-weight:600;font-size:13px;color:#697680;margin-right:auto}
 .pmk138-inline-settings .form-control{max-width:640px;margin-top:4px}
 .pmk138-inline-settings label{display:block;margin:10px 0}
 .pmk138-inline-settings h5{margin:8px 0}
-.pmk138-hub{max-width:1500px;margin:0 auto}
-.pmk138-hub-head{padding:18px 20px;margin-bottom:14px;border:1px solid #cedbbd;border-left:5px solid #6f8f32;border-radius:8px;background:linear-gradient(135deg,#fff,#f5f9ef)}
+.pmk138-hub{max-width:1600px;margin:0 auto}
+.pmk138-hub > input[type=search]{max-width:420px;margin:0 0 8px;border:1px solid #d8dee3;border-radius:6px}
+.pmk138-hub-head{padding:18px 20px;margin-bottom:14px;border:1px solid #cedbbd;border-left:5px solid #6f8f32;border-radius:8px;background:#fff}
 .pmk138-hub-head h1{font-size:26px;margin:0 0 4px;color:#526d22}
 .pmk138-hub-head p{margin:0;color:#697680}
 .pmk138-group{margin:18px 0}
@@ -362,6 +339,21 @@
 .pmk138-caution{margin:0 0 12px;padding:10px 12px;border:1px solid #e4cf96;border-radius:6px;background:#fff8e8;color:#725c22;font-size:13px;line-height:1.4}
 .pmk138-card .pmk138-caution{margin:0 0 10px}
 .pmk138-denied{max-width:760px;margin:35px auto;padding:20px;border:1px solid #e1b5b5;border-radius:8px;background:#fff1f1;color:#822929}
+#pmk138-page-host{--pmk-g:#6f8f32;--pmk-gd:#526d22;--pmk-gl:#f2f7e9;--pmk-line:#d8dee3;--pmk-line-g:#cedbbd;--pmk-ink:#28343d;--pmk-muted:#697680}
+#pmk138-page-host .pmk138-app-container{color:var(--pmk-ink);font-family:inherit}
+#pmk138-page-host .pmk138-app-container > :is(#dqb-app,#dqi-app,#dqs-app,#dqp-app,#dql-app,#dqtr-app,#dq-center-app,#dqr-app,#dam-app,#kwd-app,#journal-app,#uds-root,#koha-carto-container,#inv-local-app,#inv-app,#doodle-koha-app,#freqApp,#kpm7,#pmk142-root,#pmk143,#pmk-bfc-app){max-width:1600px;margin-left:auto;margin-right:auto;color:var(--pmk-ink);font-family:inherit}
+#pmk138-page-host :is(.dqb-hero,.dqi-hero,.dqs-hero,.dqp-hero,.dql-hero,.dqr-hero,.dqc-hero,.dam-hero,#dqtr-app .q-hero,#journal-app > h1,#uds-root > h1,#kwd-app > h1,#kpm7 .kpm-head,#pmk143 .tp4-head,#pmk-bfc-app .pmk-bfc-header,#inv-local-app .inv-masthead,#inv-app .inv-masthead){border:1px solid var(--pmk-line-g);border-left:5px solid var(--pmk-g);border-radius:8px;background:#fff;padding:16px 20px}
+#pmk138-page-host :is(.dqb-hero h2,.dqi-hero h2,.dqs-hero h2,.dqp-hero h2,.dql-hero h2,.dqr-hero h2,.dqc-hero h2,.dam-hero h2,#dqtr-app h2,#journal-app > h1,#uds-root > h1,#kwd-app > h1,#kpm7 h1,#pmk143 h1,#pmk-bfc-app h1,#inv-local-app .inv-masthead h1,#inv-app .inv-masthead h1){color:var(--pmk-gd)}
+#pmk138-page-host #journal-app > h1,#pmk138-page-host #uds-root > h1,#pmk138-page-host #kwd-app > h1{display:block;margin:0 0 14px;font-size:25px;font-weight:700}
+#pmk138-page-host #pmk143 .tp4-head a[href*="mainpage.pl"]{display:none}
+#pmk138-page-host #pmk142-root{background:#f6f7f8;color:var(--pmk-ink)}
+#pmk138-page-host #pmk142-root .pmk142-topbar{background:#fff;color:var(--pmk-ink);border:1px solid var(--pmk-line-g);border-left:5px solid var(--pmk-g);border-radius:8px;box-shadow:none;margin:12px 12px 0}
+#pmk138-page-host #pmk142-root .pmk142-title strong{color:var(--pmk-gd);font-size:22px}
+#pmk138-page-host #pmk142-root .pmk142-topbar button{background:#fff;color:#39444d;border:1px solid var(--pmk-line)}
+#pmk138-page-host #pmk142-root .pmk142-topbar button:hover{background:var(--pmk-gl);border-color:var(--pmk-g);color:var(--pmk-gd)}
+#pmk138-page-host #pmk142-root .pmk142-topbar button[data-action="print"]{background:var(--pmk-g);border-color:var(--pmk-g);color:#fff}
+#pmk138-page-host .pmk138-app-container :focus-visible{outline:2px solid var(--pmk-g);outline-offset:2px}
+#pmk138-page-host .pmk138-page-information{margin:0 0 12px;padding:10px 14px;border:1px solid var(--pmk-line-g);border-left:5px solid var(--pmk-g);border-radius:8px;background:#fff}
 @media(max-width:1050px){.pmk138-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:680px){#pmk138-page-host{padding:10px}.pmk138-grid{grid-template-columns:1fr}}
 `;
@@ -482,8 +474,9 @@
         if(id==='authorities')return;
         const service=window.PMKPagesSettings, definition=service?.catalog[id];
         if(!definition)return;
-        const details=document.createElement('details');details.className='pmk138-page-information';
-        details.style.cssText='margin:8px 0;padding:8px 12px;border:1px solid #ddd;border-radius:6px;background:#fff;max-height:45vh;overflow:auto;flex-shrink:0';
+        const details=document.createElement('details');
+        details.className='pmk138-page-information';
+        details.style.cssText='max-height:45vh;overflow:auto;flex-shrink:0';
         const summary=document.createElement('summary');summary.textContent='À propos de cette page et vérifications';details.appendChild(summary);
         const add=(label,text)=>{const p=document.createElement('p');const strong=document.createElement('strong');strong.textContent=label+' : ';p.append(strong,document.createTextNode(text||'Non renseigné'));details.appendChild(p);};
         add('Objectif',definition.objective);add('Fonctions',definition.functions?.join(' · '));add('Moteur',definition.engine);add('Prérequis',definition.prerequisites);
@@ -549,26 +542,46 @@
 
     function renderDenied(host) { host.innerHTML='<div class="pmk138-denied"><strong>Accès réservé.</strong><br>Cette page exige le rôle superlibrarian Koha.<p><a href="/cgi-bin/koha/mainpage.pl">Retour à l’accueil Koha</a></p></div>'; }
 
-    function renderPmkLauncher() {
+    function renderPmkLauncher(ctx) {
         const wrap=document.createElement('div');
-        const description=document.createElement('p');description.textContent='Les pages s’ouvrent depuis la liste commune. Les réglages de chaque page sont sur la page, avec le bouton « Réglages de cette page ».';
+        const root=ctx && ctx.rootObject || {};
+        const description=document.createElement('p');description.textContent='Cochez les pages à proposer. Elles apparaissent dans le menu Outils pour les comptes autorisés. Les autres réglages restent sur chaque page.';
+        const list=document.createElement('div');
+        list.style.cssText='max-height:320px;overflow:auto;border:1px solid #d5dde5;border-radius:8px;padding:8px;margin:8px 0';
+        manifest.forEach(item=>{
+            const row=document.createElement('label');
+            row.style.cssText='display:flex;gap:8px;align-items:center;padding:4px 0';
+            const box=document.createElement('input');
+            box.type='checkbox';
+            box.checked=root.pageOptions?.[item.id]?.enabled !== false;
+            box.addEventListener('change',()=>{
+                root.pageOptions ||= {};
+                root.pageOptions[item.id] ||= {};
+                root.pageOptions[item.id].enabled=box.checked;
+                if (ctx && typeof ctx.markDirty==='function') ctx.markDirty();
+            });
+            const name=document.createElement('span');
+            name.textContent=item.title+' — '+item.group;
+            row.append(box,name);
+            list.appendChild(row);
+        });
         const link=document.createElement('a');link.className='btn btn-primary';link.href=urlFor(HUB_ID);link.target='_blank';link.rel='noopener';link.textContent='Ouvrir les pages & outils internes';
         const table=document.createElement('table');table.className='table table-striped';
         const head=table.createTHead().insertRow();['Page','Accès à la page','Prérequis particuliers'].forEach(label=>{const cell=document.createElement('th');cell.textContent=label;head.appendChild(cell);});
         const details={
             'attendance-counter':'Authentification et droits du compteur Koha',
-            'action-journal':'Accès au journal stockage Koha',appointments:'Accès stockage Koha ; contrôle administrateur propre aux rendez-vous','patron-map':'Rapport SQL de ce Koha. Le géocodage envoie les adresses au service IGN.',
+            'action-journal':'Accès au journal stockage Koha',appointments:'Accès stockage Koha ; contrôle administrateur propre aux rendez-vous','patron-map':'Rapport SQL de ce Koha. La carte distingue le quartier (rue) et la commune. Le géocodage IGN n’envoie la rue que pour les usagers encore reliés à leur fiche.',
             'restore-deleted-items':'Filtre nominatif supplémentaire dans la page ; droits Koha de restauration',inventory:'Stockage local IndexedDB et droits API Koha',
-            'quality-center':'Navigation et état des prérequis',transfers:'Droits Koha et rapport SQL configuré',serials:'Droits Koha et rapport SQL configuré',
+            'quality-center':'Navigation et état des prérequis',
             weeding:'Droits Koha ; référentiel Koha facultatif',
             'xslt-assistant':'Module Éditeur XSLT actif ; projets stockés dans le navigateur',
             'bibliography-builder':'Droits Koha ; listes et modèles personnels selon la source',
             'bulk-framework-change':'Droits Koha de catalogage pour les modifications',
-            'overdue-management':'Rapport SQL et droits Koha pour les opérations'
+            'bulk-permissions':'Session superlibrarian. Catégories de personnel (type S) uniquement, jamais une catégorie de lecteurs.'
         };
         const body=table.createTBody();
         manifest.forEach(item=>{const row=body.insertRow();const a=document.createElement('a');a.href=urlFor(item.id);a.target='_blank';a.rel='noopener';a.textContent=item.title;row.insertCell().appendChild(a);row.insertCell().textContent=(item.id!=='authorities'&&config.pageOptions?.[item.id]?.access && config.pageOptions[item.id].access!=='default'?config.pageOptions[item.id].access:item.access)==='staff'?'Personnel Koha':'Superlibrarian Koha';row.insertCell().textContent=details[item.id] || 'Droits API Koha et paramètres de la page';});
-        const detail=document.createElement('details'),summary=document.createElement('summary');summary.textContent='Voir les pages, leurs accès et leurs prérequis';detail.append(summary,table);wrap.append(description,link,detail);return wrap;
+        const detail=document.createElement('details'),summary=document.createElement('summary');summary.textContent='Voir les pages, leurs accès et leurs prérequis';detail.append(summary,table);wrap.append(description,list,link,detail);return wrap;
     }
     function registerPmk() {
         if (!window.PMKConfig || typeof window.PMKConfig.registerModule!=='function') return false;
@@ -576,7 +589,7 @@
             window.PMKConfig.registerModule({
                 id:MODULE_ID,schemaVersion:4,compactActivation:true,hidePageCount:true,
                 name:{fr:'Pages & outils internes',en:'Internal pages & tools'},
-                description:{fr:'La liste s’ouvre par le bouton Outils, en haut de l’écran. Les réglages de chaque page, y compris qui peut l’ouvrir, sont sur la page elle-même.',en:'The list opens from the Tools button at the top of the screen. Each page carries its own settings, including who may open it.'},
+                description:{fr:'Le menu Outils, en haut de l’écran, affiche les pages cochées ici et les outils dont le module est actif. L’accès de chaque page se règle sur la page.',en:'The Tools menu at the top lists the pages checked here and the tools whose module is active. Each page’s access is set on the page.'},
                 category:{fr:'Navigation et interface',en:'Navigation and interface'},
                 supportedPages:['*'],prerequisites:[],dependencies:[],defaults:{enabled:true,hubAccess:'superlibrarian',pageOptions:{}},
                 validate:cfg=>window.PMKPagesSettings?.validate(cfg)||{ok:true},
@@ -593,9 +606,14 @@
     window.PMKPages={version:VERSION,moduleId:MODULE_ID,manifest:manifest.map(x=>Object.assign({},x)),register,urlFor,open,isSuperlibrarian,mountLegacyHtml,canOpen,assetUrl:file=>new URL(file,baseUrl).href,refresh:renderRoute,getStatus:id=>Object.assign({},pageStatus.get(id)||{state:'not-opened'}),get:id=>registry.get(id)||null};
     try { document.dispatchEvent(new CustomEvent('pmk:pages-ready')); } catch (_) {}
 
+    function pageActive(id) {
+        if (id===HUB_ID) return true;
+        return config.pageOptions?.[id]?.enabled !== false;
+    }
     function canOpen(id) {
         if (id!==HUB_ID && !byId.has(id))return false;
         if (config.enabled === false) return false;
+        if (!pageActive(id)) return false;
         const meta=byId.get(id);
         if(id==='authorities')return isSuperlibrarian();
         const access=id===HUB_ID?(config.hubAccess||'superlibrarian'):(config.pageOptions?.[id]?.access && config.pageOptions[id].access!=='default'?config.pageOptions[id].access:meta?.access);
@@ -624,7 +642,17 @@
         const generation=routeGeneration;
         routeController=new AbortController();
         const host=pageHost();
+        if (id !== HUB_ID && withheld.has(id)) {
+            const item=withheld.get(id);
+            host.appendChild(toolbar(item.title));
+            host.appendChild(cautionNote());
+            const note=document.createElement('p');
+            note.textContent='Cette page n’est pas incluse dans la version stable de PimpMyKoha. Elle reste disponible dans la version aperçu.';
+            host.appendChild(note);
+            return;
+        }
         if (id !== HUB_ID && !byId.has(id)) {host.appendChild(toolbar('Page inconnue'));host.append('Cette page interne n’existe pas.');return;}
+        if (id !== HUB_ID && !pageActive(id)) {host.appendChild(toolbar(byId.get(id).title));host.append('Cette page est désactivée dans la configuration PMK.');return;}
         if (!canOpen(id)) {pageStatus.set(id,{state:'denied'});renderDenied(host);return;}
         if (id===HUB_ID) renderHub(host); else await renderPage(id,host,generation);
     }
@@ -637,7 +665,9 @@
             const changed=config.enabled !== (next?.enabled !== false);
             config=Object.assign({enabled:true},next || {});
             if (changed) renderRoute();
+            window.PMKOwnTools?.refresh();
         });
+        window.PMKOwnTools?.refresh();
     }
     async function start() {
         injectStyles();

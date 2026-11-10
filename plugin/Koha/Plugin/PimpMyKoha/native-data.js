@@ -2,7 +2,7 @@
 (function () {
     'use strict';
     if (window.PMKNativeData) return;
-    const namespaces = ['attendance','appointments','journal','lists','taxonomy','planning','frequency','internal-share','authorities'];
+    const namespaces = ['attendance','appointments','journal','lists','taxonomy','planning','frequency','internal-share','authorities','assistance','inventory'];
     const subscriptions = new Set();
     const clone = value => value == null ? value : revive(JSON.parse(JSON.stringify(value)));
     class Timestamp {
@@ -102,7 +102,7 @@
         return batch;
     }
     async function runTransaction(db,callback) {
-        for(let attempt=0;attempt<5;attempt++) {
+        for(let attempt=0;attempt<8;attempt++) {
             const reads=new Map(),writes=[];
             function validate(ref){if(ref.db.namespace!==db.namespace)throw new Error('cross_namespace_transaction');}
             const tx={async get(ref){validate(ref);if(writes.length)throw new Error('read_before_write_required');const s=await getDoc(ref);reads.set(ref.path,s.revision);return s;},
@@ -111,7 +111,7 @@
                 delete(ref){validate(ref);writes.push({path:ref.path,op:'delete'});return tx;}};
             const result=await callback(tx);
             try {await commit(db,[...reads].map(([path,revision])=>({path,revision})),writes);return result;}
-            catch(e){if(e.status!==409||attempt===4)throw e;await new Promise(r=>setTimeout(r,20*(attempt+1)));}
+            catch(e){if(e.status!==409||attempt===7)throw e;await new Promise(r=>setTimeout(r,25*(attempt+1)+Math.floor(Math.random()*50)));}
         }
     }
     function onSnapshot(ref,callback,onError=console.error) {
@@ -239,7 +239,7 @@
         panel.innerHTML='<h2 id="pmk-native-data-title">Données des modules</h2><p>Les données sont conservées dans la base Koha. Exportez une sauvegarde ou préparez la reprise d’un ancien export JSON. Pour les données métier, les documents déjà présents sont conservés. Pour les réglages, l’import applique votre configuration et archive la version précédente ; rechargez ensuite la page.</p><label for="pmk-native-namespace">Module</label> <select id="pmk-native-namespace" class="form-control"></select><p style="margin-top:16px"><button class="btn btn-default" id="pmk-native-export">Exporter les données</button></p><label for="pmk-native-file">Fichier JSON à reprendre</label><input id="pmk-native-file" type="file" accept=".json,application/json"><p style="margin-top:16px"><button class="btn btn-default" id="pmk-native-preview">Analyser le fichier</button> <button class="btn btn-primary" id="pmk-native-import" disabled>Importer les documents absents</button></p><p id="pmk-native-status" role="status" aria-live="polite"></p><p><small>Les dates, les identifiants et les champs inconnus sont conservés. Aucune connexion à l’ancien service n’est effectuée. Un export binaire Firestore doit d’abord être converti en JSON.</small></p><button class="btn btn-default" id="pmk-native-close">Fermer</button>';
         overlay.appendChild(panel);document.body.appendChild(overlay);
         const el=id=>panel.querySelector('#'+id),select=el('pmk-native-namespace'),status=el('pmk-native-status');
-        const labels={attendance:'Compteur de fréquentation',appointments:'Rendez-vous et sondages',journal:'Journaux de suivis',lists:'Listes et modèles de bibliographies',taxonomy:'Arborescence et mémorisations de catalogage',planning:'Planning des services',frequency:'Statistiques de fréquentation', 'internal-share':'Partage interne',authorities:'Autorités'};
+        const labels={attendance:'Compteur de fréquentation',appointments:'Rendez-vous et sondages',journal:'Journaux de suivis',lists:'Listes et modèles de bibliographies',taxonomy:'Arborescence et mémorisations de catalogage',planning:'Planning des services',frequency:'Statistiques de fréquentation', 'internal-share':'Partage interne',authorities:'Autorités',assistance:'Assistance réseau',inventory:'Inventaire'};
         ['configuration',...namespaces].forEach(ns=>{const option=document.createElement('option');option.value=ns;option.textContent=labels[ns]||'Configurations PMK';select.appendChild(option);});
         let preview=null;
         const reset=()=>{preview=null;el('pmk-native-import').disabled=true;el('pmk-native-import').textContent=select.value==='configuration'?'Appliquer les réglages importés et archiver les précédents':'Importer les documents absents';status.textContent='';};select.onchange=reset;el('pmk-native-file').onchange=reset;reset();

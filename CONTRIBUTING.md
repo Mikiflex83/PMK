@@ -2,6 +2,8 @@
 
 PimpMyKoha améliore l’interface professionnelle de Koha tout en conservant les comportements natifs, les réglages déjà enregistrés et la possibilité d’éteindre un module.
 
+PimpMyKoha est développé entièrement à l’aide de l’intelligence artificielle, par une personne qui n’est pas développeur. Il est partagé avec la communauté Koha pour que le plus grand nombre puisse en profiter, et pour qu’il soit relu, corrigé, amélioré et rendu plus fiable. Le développement est toujours en cours. L’utilisation reste sous la responsabilité de chaque établissement.
+
 Les contributions sont attendues, qu’elles viennent d’une revue du plugin ou d’une bibliothèque qui adapte un parcours. Une modification doit rester utilisable hors de l’installation qui l’a demandée : seuils, libellés, sites, rapports et catégories sont des réglages.
 
 ## Avant de commencer
@@ -39,20 +41,24 @@ python3 tests/publication-safety.py
 python3 tests/repo-policy.py
 ```
 
-Construire les deux distributions dans un dossier temporaire :
+Construire les deux canaux du plugin dans un dossier temporaire :
 
 ```bash
-python3 legacy/build.py \
-  --stage /tmp/pmk-non-plugin \
-  --output /tmp/PimpMyKoha-non-plugin.zip
-
 python3 plugin/build.py \
-  --stage /tmp/pmk-plugin \
-  --output /tmp/PimpMyKoha-plugin.kpz
+  --channel stable \
+  --stage /tmp/pmk-stable \
+  --output /tmp/PimpMyKoha-0.5.0.kpz
+python3 plugin/build.py \
+  --channel preview \
+  --stage /tmp/pmk-preview \
+  --output /tmp/PimpMyKoha-0.5.0-preview.kpz
 
+python3 tests/release-channels.py \
+  /tmp/PimpMyKoha-0.5.0.kpz \
+  /tmp/PimpMyKoha-0.5.0-preview.kpz
 python3 tests/publication-safety.py \
-  /tmp/PimpMyKoha-non-plugin.zip \
-  /tmp/PimpMyKoha-plugin.kpz
+  /tmp/PimpMyKoha-0.5.0.kpz \
+  /tmp/PimpMyKoha-0.5.0-preview.kpz
 ```
 
 Les scénarios qui demandent une Koha réelle, un matériel ou un compte fournisseur restent distincts. Décrivez ce qui a été testé et ce qui a été simulé. Le compte professionnel d’une Koha locale se passe par `PMK_KOHA_USER` et `PMK_KOHA_PASSWORD`. Il ne s’écrit pas dans le dépôt.

@@ -18,10 +18,14 @@ for p in [root/'tests/package.json',root/'dev/koha/local-services.package.json']
 assert not violations,json.dumps(violations,ensure_ascii=False)
 assert 'DracQualityMemory' not in (root/'138-pages/138-page-authorities.js').read_text()
 for name in ['items','loans','patrons','serials']:
- source=(root/f'138-pages/138-page-{name}.js').read_text()
+ path=root/f'138-pages/138-page-{name}.js'
+ if not path.exists():
+  continue
+ source=path.read_text()
  assert 'Partage facultatif' not in source,name
  assert 'Firebase reçoit' not in source,name
 assert not any((root/'dev/koha'/name).exists() for name in ['firebase.json','firestore-test.rules','start-auth-emulator.cjs'])
-report={'passed':True,'pluginVersion':'0.4.1','scriptsScanned':len(files),'serviceCalls':0,'externalSdkImports':0,'authoritiesLearningRemoved':True,'retiredSharingControlsRemoved':True,'firebaseEmulatorRequired':False}
+version=re.search(r"our \$VERSION = '([^']+)'",(root/'plugin/Koha/Plugin/PimpMyKoha.pm').read_text(encoding='utf-8')).group(1)
+report={'passed':True,'pluginVersion':version,'scriptsScanned':len(files),'serviceCalls':0,'externalSdkImports':0,'authoritiesLearningRemoved':True,'retiredSharingControlsRemoved':True,'firebaseEmulatorRequired':False}
 (root/'tests/validation/firebase-free.json').write_text(json.dumps(report,indent=2)+'\n')
 print(json.dumps(report))

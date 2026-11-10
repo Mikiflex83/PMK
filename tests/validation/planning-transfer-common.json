@@ -5,15 +5,11 @@
     "weeklyAndDateOccurrences": true,
     "exceptionsApplied": true,
     "aliasesAndRouteOrder": true,
-    "widgetUsesCommonEngine": true,
-    "transfersReadSamePlanning": true,
-    "realEventSeparated": true,
-    "universalMappingConfig": true,
-    "planningFailureDoesNotHideTransfers": true
+    "widgetUsesCommonEngine": true
   },
   "example": {
     "estimatedDate": "2026-11-05",
     "service": "Navette intersites"
   },
-  "scope": "Moteur commun : occurrences, exceptions, alias de sites et distinction entre estimation et événement Koha."
+  "scope": "Moteur commun : occurrences, exceptions et alias de sites."
 }

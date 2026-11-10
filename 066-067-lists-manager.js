@@ -1411,7 +1411,7 @@
                 align-items: center;
                 gap: 10px;
                 padding: 14px 14px 12px;
-                background: linear-gradient(135deg, var(--kx-list-green), var(--kx-list-green-dark));
+                background: var(--kx-list-green);
                 color: #fff;
             }
 

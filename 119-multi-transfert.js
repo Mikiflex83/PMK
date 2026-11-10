@@ -271,7 +271,7 @@
             " *{box-sizing:border-box;}" +
             "#" +
             PANEL_ID +
-            " .btp-header{background:linear-gradient(135deg,var(--btp-accent),var(--btp-accent-2));" +
+            " .btp-header{background:var(--btp-accent);" +
             "color:#fff;padding:12px 14px;display:flex;justify-content:space-between;" +
             "align-items:center;gap:8px;}" +
             "#" +
@@ -289,7 +289,7 @@
             "#" +
             PANEL_ID +
             " .btp-body{padding:12px 14px 14px;overflow:auto;display:flex;flex-direction:column;gap:8px;" +
-            "background:linear-gradient(180deg,#fff 0%,var(--btp-bg) 100%);min-height:0;}" +
+            "background:#fff;min-height:0;}" +
             "#" +
             PANEL_ID +
             " label{display:block;font-size:12px;font-weight:600;color:var(--btp-muted);margin-bottom:4px;}" +

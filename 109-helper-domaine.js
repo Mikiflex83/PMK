@@ -237,7 +237,7 @@
   cursor:move;
   font-weight:700;
   font-size:13px;
-  background:linear-gradient(135deg,#3f8340 0%,#438d43 100%);
+  background:#3f8340;
   color:#fff;
   letter-spacing:.2px;
   border-bottom:1px solid rgba(0,0,0,.08);

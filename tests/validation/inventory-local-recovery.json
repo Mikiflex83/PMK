@@ -1,17 +1,4 @@
 {
-  "passed": true,
-  "checks": {
-    "indexedDbStateVisible": true,
-    "indexedDbWriteConfirmed": true,
-    "indexedDbFailureVisible": true,
-    "resumeVisible": true,
-    "resumeAction": true,
-    "unknownBarcodeSaved": true,
-    "repeatedBarcodeExplained": true,
-    "otherZoneProtected": true,
-    "batchResumeState": true,
-    "tombstoneSelfTests": true,
-    "duplicateAnomalySelfTest": true
-  },
-  "scope": "Contrat de la page : état IndexedDB visible, reprise locale et traitement explicite des codes inconnus ou répétés."
+  "passed": false,
+  "error": "AssertionError [ERR_ASSERTION]: indexedDbFailureVisible\n\nfalse !== true\n\n    at C:\\Users\\la_lo\\Desktop\\PMK\\tests\\inventory-local-recovery.cjs:28:60"
 }

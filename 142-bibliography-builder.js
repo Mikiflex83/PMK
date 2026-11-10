@@ -32,7 +32,7 @@
  - bibliothèque étendue de blocs bibliographiques et exemplaires ;
  - bloc détails exemplaires + tableau détaillé ;
  - bloc code-barres exemplaire scannable sur papier via le service natif Koha ;
- - résumé métier lu directement en UNIMARC 330$a ;
+ - résumé lu en UNIMARC 330$a ou en MARC21 520$a ;
  - enrichissement MARCXML avec accès générique biblio.marc.TAG.souszone ;
  - habillage de blocs type Word : flux, flottant gauche/droite, pleine largeur, en ligne ;
  - alignement justifié disponible sur les blocs texte ;
@@ -84,13 +84,13 @@
         { key: 'biblio.subtitle', label: 'Sous-titre', scope: 'biblio' },
         { key: 'biblio.author', label: 'Auteur / responsabilité principale', scope: 'biblio' },
         { key: 'biblio.editor', label: 'Éditeur (API)', scope: 'biblio' },
-        { key: 'biblio.publisher', label: 'Éditeur (210$c / 214$c)', scope: 'biblio' },
-        { key: 'biblio.publication_year', label: 'Année / date d’édition (210$d / 214$d)', scope: 'biblio' },
-        { key: 'biblio.summary', label: 'Résumé (330$a ou 520$a)', scope: 'biblio' },
-        { key: 'biblio.collection', label: 'Collection (225$a)', scope: 'biblio' },
-        { key: 'biblio.isbn', label: 'ISBN (010$a)', scope: 'biblio' },
-        { key: 'biblio.public_audience', label: 'Public (999$q)', scope: 'biblio' },
-        { key: 'biblio.sublocation_local', label: 'Sous-localisation locale (999$y)', scope: 'biblio' },
+        { key: 'biblio.publisher', label: 'Éditeur (UNIMARC 210$c/214$c ou MARC21 260$b/264$b)', scope: 'biblio' },
+        { key: 'biblio.publication_year', label: 'Année / date d’édition (UNIMARC 210$d/214$d ou MARC21 260$c/264$c)', scope: 'biblio' },
+        { key: 'biblio.summary', label: 'Résumé (UNIMARC 330$a ou MARC21 520$a)', scope: 'biblio' },
+        { key: 'biblio.collection', label: 'Collection (UNIMARC 225$a ou MARC21 490$a)', scope: 'biblio' },
+        { key: 'biblio.isbn', label: 'ISBN (UNIMARC 010$a ou MARC21 020$a)', scope: 'biblio' },
+        { key: 'biblio.public_audience', label: 'Public local (999$q, vide si cette zone n’existe pas)', scope: 'biblio' },
+        { key: 'biblio.sublocation_local', label: 'Sous-localisation locale (999$y, vide si cette zone n’existe pas)', scope: 'biblio' },
         { key: 'biblio.medium', label: 'Support / medium', scope: 'biblio' },
         { key: 'biblio.part_number', label: 'Numéro de partie', scope: 'biblio' },
         { key: 'biblio.part_name', label: 'Nom de partie', scope: 'biblio' },
@@ -130,7 +130,7 @@
             id: 'builtin-classic',
             builtin: true,
             name: 'Bibliographie classique',
-            description: 'Présentation sobre et complète, une colonne, avec résumé UNIMARC.',
+            description: 'Présentation sobre et complète, une colonne, avec le résumé de la notice.',
             mode: 'notice',
             showBiblionumber: false,
             page: { size: 'A4', orientation: 'portrait', columns: 1, gap: 8, margin: 14 },
@@ -506,7 +506,7 @@
             id: 'builtin-thematic',
             builtin: true,
             name: 'Bibliographie thématique',
-            description: 'Rendu éditorial avec couverture habillée, résumé UNIMARC, collection et QR.',
+            description: 'Rendu éditorial avec couverture habillée, résumé, collection et QR.',
             mode: 'notice-items',
             showBiblionumber: false,
             page: { size: 'A4', orientation: 'portrait', columns: 2, gap: 9, margin: 13 },
@@ -748,6 +748,10 @@
 
     function isKohaNativeListPage() {
         return /\/virtualshelves\/shelves\.pl$/.test(window.location.pathname);
+    }
+
+    function isKohaListContentsPage() {
+        return isKohaNativeListPage() && !!document.getElementById('searchresults');
     }
 
     function isCatalogueDetailPage() {
@@ -1002,16 +1006,60 @@
         };
     }
 
-    function normalizeApiItem(raw, bib) {
+    let itemLabelMapsPromise = null;
+    function itemLabelMaps() {
+        if (!itemLabelMapsPromise) {
+            itemLabelMapsPromise = (async () => {
+                const maps = { libraries: {}, itemTypes: {} };
+                try {
+                    const libs = await fetchJson('/api/v1/libraries?_per_page=200');
+                    (Array.isArray(libs) ? libs : []).forEach(lib => {
+                        const id = clean(lib?.library_id);
+                        const name = clean(lib?.name);
+                        if (id && name) maps.libraries[id] = name;
+                    });
+                } catch (_) {}
+                try {
+                    const types = await fetchJson('/api/v1/item_types?_per_page=200');
+                    (Array.isArray(types) ? types : []).forEach(type => {
+                        const id = clean(type?.item_type_id);
+                        const name = clean(type?.description);
+                        if (id && name) maps.itemTypes[id] = name;
+                    });
+                } catch (_) {}
+                return maps;
+            })();
+            itemLabelMapsPromise.catch(() => { itemLabelMapsPromise = null; });
+        }
+        return itemLabelMapsPromise;
+    }
+
+    function labelFrom(maps, kind, value) {
+        const text = clean(value);
+        if (!text || !maps) return text;
+        const dict = kind === 'library' ? maps.libraries : maps.itemTypes;
+        return dict[text] || text;
+    }
+
+    function loanStatusText(value) {
+        if (value == null || value === '') return '';
+        if (Number(value) === 0) return '';
+        return clean(value);
+    }
+
+    function normalizeApiItem(raw, bib, maps) {
+        const home = clean(raw?.home_library_id || raw?.homebranch);
+        const holding = clean(raw?.holding_library_id || raw?.holdingbranch);
+        const type = clean(raw?.item_type_id || raw?.itype);
         return {
             item_id: clean(raw?.item_id || raw?.itemnumber),
             // Koha REST récent expose le code-barres sous external_id.
             // On garde aussi barcode pour compatibilité avec les versions / réponses plus anciennes.
             barcode: clean(raw?.barcode || raw?.external_id),
-            home_library_id: clean(raw?.home_library_id || raw?.homebranch),
-            holding_library_id: clean(raw?.holding_library_id || raw?.holdingbranch),
+            home_library_id: labelFrom(maps, 'library', home),
+            holding_library_id: labelFrom(maps, 'library', holding),
             callnumber: clean(raw?.callnumber || raw?.itemcallnumber),
-            item_type_id: clean(raw?.item_type_id || raw?.itype),
+            item_type_id: labelFrom(maps, 'type', type),
             location: clean(raw?.location),
             permanent_location: clean(raw?.permanent_location),
             not_for_loan_status: raw?.not_for_loan_status ?? raw?.notforloan ?? '',
@@ -1092,7 +1140,8 @@
     function electreIsbn10Candidates(biblio, marc) {
         const values = [
             ...isbnValues(biblio?.isbn),
-            ...isbnValues(marcValue(marc || {}, '010', 'a'))
+            ...isbnValues(marcValue(marc || {}, '010', 'a')),
+            ...isbnValues(marcValue(marc || {}, '020', 'a'))
         ];
 
         const out = [];
@@ -1191,32 +1240,32 @@
         const urls = [];
 
         /*
-         * Tout ce qui suit provient du HTML produit par Koha :
-         * - couvertures locales ;
-         * - Amazon/Syndetics/CustomCoverImages si Koha les a activés ;
-         * - éventuels fournisseurs/plugins ayant déjà injecté une URL statique ;
-         * - fallback 856 rendu par les XSLT Dracénie (.imgcouv/.imgcouvlist).
+         * Couvertures déjà rendues par le Koha ouvert :
+         * locales, Amazon, Syndetics, CustomCoverImages, ou un plugin
+         * qui a injecté une image. Les classes .imgcouv et .imgcouvlist
+         * ne servent que si cette page en contient déjà, et seulement
+         * lorsqu'aucune couverture Koha n'a été trouvée.
          */
-        [
+        const kohaCoverSelectors = [
             '#biblio-cover-slider .cover-image img',
             '.bookcoverimg .cover-image img',
             '#biblio-cover-slider img',
             '.bookcoverimg img',
             '#custom-img',
-            '.imgcouv',
-            '.imgcouvlist',
             '.thumbimg'
-        ].forEach(selector => {
-            doc.querySelectorAll(selector).forEach(img => {
-                urls.push(...imgCandidateUrls(img));
-
-                // Pour les couvertures locales Koha, ajoute aussi l'image pleine taille.
-                const link = img.closest('a[href]')?.getAttribute('href');
-                if (link && /\/catalogue\/image\.pl\?/i.test(link)) {
-                    urls.push(link);
-                }
+        ];
+        const localSheetCoverSelectors = ['.imgcouv', '.imgcouvlist'];
+        const collectCovers = selectors => {
+            selectors.forEach(selector => {
+                doc.querySelectorAll(selector).forEach(img => {
+                    urls.push(...imgCandidateUrls(img));
+                    const link = img.closest('a[href]')?.getAttribute('href');
+                    if (link && /\/catalogue\/image\.pl\?/i.test(link)) urls.push(link);
+                });
             });
-        });
+        };
+        collectCovers(kohaCoverSelectors);
+        if (!uniqueCoverCandidates(urls).length) collectCovers(localSheetCoverSelectors);
 
         return uniqueCoverCandidates(urls);
     }
@@ -1234,10 +1283,15 @@
         const urls = [];
 
         document.querySelectorAll(
-            '#biblio-cover-slider img, .bookcoverimg img, .imgcouv, .imgcouvlist, .thumbimg'
+            '#biblio-cover-slider img, .bookcoverimg img, .thumbimg'
         ).forEach(img => {
             urls.push(...imgCandidateUrls(img));
         });
+        if (!uniqueCoverCandidates(urls).length) {
+            document.querySelectorAll('.imgcouv, .imgcouvlist').forEach(img => {
+                urls.push(...imgCandidateUrls(img));
+            });
+        }
 
         return uniqueCoverCandidates(urls);
     }
@@ -1313,7 +1367,7 @@
 
         const bibId = clean(biblio?.biblionumber);
         const isbn = normalizeIsbn(
-            biblio?.isbn || firstMarcValue(marc || {}, [['010', 'a']])
+            biblio?.isbn || firstMarcValue(marc || {}, [['010', 'a'], ['020', 'a']])
         );
         const cacheKey = bibId || ('isbn:' + isbn);
 
@@ -1527,11 +1581,12 @@
             '/api/v1/public/biblios/' + id + '/items?_per_page=200'
         ];
 
+        const maps = await itemLabelMaps();
         for (const url of candidates) {
             try {
                 const data = await fetchJson(url);
                 const rows = Array.isArray(data) ? data : (data?.items || []);
-                return rows.map(item => normalizeApiItem(item, biblionumber));
+                return rows.map(item => normalizeApiItem(item, biblionumber, maps));
             } catch (error) {
                 console.warn('[PMK142] Essai API exemplaires échoué', url, error);
             }
@@ -1546,7 +1601,7 @@
 
         try {
             const raw = await fetchJson('/api/v1/items/' + encodeURIComponent(id));
-            return normalizeApiItem(raw, fallbackBiblionumber);
+            return normalizeApiItem(raw, fallbackBiblionumber, await itemLabelMaps());
         } catch (error) {
             console.warn('[PMK142] API exemplaire indisponible pour', id, error);
             return null;
@@ -1781,10 +1836,10 @@
         if (marcResult.status === 'fulfilled') marc = marcResult.value || {};
 
         const summary330 = firstMarcValue(marc, [['330', 'a'], ['520', 'a']]);
-        const publisher = firstMarcValue(marc, [['214', 'c'], ['210', 'c']]);
-        const publicationYear = firstMarcValue(marc, [['214', 'd'], ['210', 'd']]);
-        const collection = firstMarcValue(marc, [['225', 'a']]);
-        const isbn = firstMarcValue(marc, [['010', 'a']]);
+        const publisher = firstMarcValue(marc, [['214', 'c'], ['210', 'c'], ['264', 'b'], ['260', 'b']]);
+        const publicationYear = firstMarcValue(marc, [['214', 'd'], ['210', 'd'], ['264', 'c'], ['260', 'c']]);
+        const collection = firstMarcValue(marc, [['225', 'a'], ['490', 'a']]);
+        const isbn = firstMarcValue(marc, [['010', 'a'], ['020', 'a']]);
         const publicAudience = firstMarcValue(marc, [['999', 'q']]);
         const sublocationLocal = firstMarcValue(marc, [['999', 'y']]);
 
@@ -1976,42 +2031,82 @@
         return rows.flat();
     }
 
-    function collectNativeKohaListEntries() {
+    function collectNativeKohaListEntries(root) {
+        const scope = root || document;
+        const table = scope.querySelector && scope.querySelector('#searchresults');
+        const base = table || scope;
         const seen = new Set();
         const notices = [];
 
-        document.querySelectorAll(
+        base.querySelectorAll(
             'input[name="biblionumber"], input.selection[name="biblionumber"], a[href*="detail.pl?biblionumber="]'
         ).forEach(node => {
             let id = '';
-            if (node.matches('input')) id = clean(node.value);
+            if (node.matches && node.matches('input')) id = clean(node.value);
             else {
-                try { id = new URL(node.href, window.location.origin).searchParams.get('biblionumber') || ''; }
-                catch (_) {}
+                try {
+                    const href = node.getAttribute ? (node.getAttribute('href') || node.href) : '';
+                    id = new URL(href, window.location.origin).searchParams.get('biblionumber') || '';
+                } catch (_) {}
             }
             if (!/^\d+$/.test(id) || seen.has(id)) return;
             seen.add(id);
 
             const row = node.closest('tr') || node.closest('.bibliocol') || node.parentElement;
-            const titleLink = row?.querySelector('a[href*="detail.pl?biblionumber="]') || (node.matches('a') ? node : null);
+            const titleLink = row?.querySelector('a[href*="detail.pl?biblionumber="]') || (node.matches && node.matches('a') ? node : null);
             const coverImg =
                 row?.querySelector('.cover-image img[src]') ||
                 row?.querySelector('.bookcoverimg img[src]') ||
                 row?.querySelector('img[src*="cover"]') ||
                 row?.querySelector('img[src*="image.pl"]');
+            const linkHref = titleLink && (titleLink.getAttribute('href') || titleLink.href);
 
             notices.push({
                 biblionumber: id,
                 title: clean(titleLink?.textContent) || 'Notice #' + id,
-                link: titleLink?.href || '/cgi-bin/koha/catalogue/detail.pl?biblionumber=' + id,
-                imgSrc: coverImg?.src || coverImg?.getAttribute('src') || ''
+                link: linkHref || '/cgi-bin/koha/catalogue/detail.pl?biblionumber=' + id,
+                imgSrc: coverImg?.getAttribute?.('src') || coverImg?.src || ''
             });
         });
         return notices;
     }
 
+    async function readKohaList(id) {
+        try {
+            const response = await boundedFetch('/api/v1/lists/' + encodeURIComponent(id), {
+                credentials: 'same-origin',
+                headers: { Accept: 'application/json', 'x-koha-embed': 'biblios' }
+            });
+            if (response.ok) {
+                const list = await response.json();
+                const biblios = Array.isArray(list.biblios) ? list.biblios : (Array.isArray(list.contents) ? list.contents : []);
+                if (biblios.length) {
+                    return {
+                        name: list.name || ('Liste ' + id),
+                        entries: biblios.map(normalizeStoredNotice)
+                    };
+                }
+            }
+        } catch (error) {
+            console.warn('[PMK142] API listes Koha indisponible', error);
+        }
+
+        const page = await boundedFetch(
+            '/cgi-bin/koha/virtualshelves/shelves.pl?op=view&shelfnumber=' + encodeURIComponent(id),
+            { credentials: 'same-origin', headers: { Accept: 'text/html' } }
+        );
+        if (!page.ok) throw new Error('Liste Koha introuvable (HTTP ' + page.status + ').');
+        const doc = new DOMParser().parseFromString(await page.text(), 'text/html');
+        const entries = collectNativeKohaListEntries(doc);
+        if (!entries.length) throw new Error('Cette liste ne contient aucune notice, ou Koha ne les a pas affichées.');
+        return {
+            name: clean(doc.querySelector('h1')?.textContent) || ('Liste ' + id),
+            entries
+        };
+    }
+
     function injectKohaNativeListButton() {
-        if (!config.enabled || !config.injectKohaListsButton || !isKohaNativeListPage()) return;
+        if (!config.enabled || !config.injectKohaListsButton || !isKohaListContentsPage()) return;
         if (document.getElementById('pmk142-koha-list-button')) return;
 
         const anchor =
@@ -2365,12 +2460,12 @@
                 z-index: 11000;
                 display: flex;
                 flex-direction: column;
-                background: #e8efe9;
-                color: #26352d;
+                background: #f6f7f8;
+                color: #28343d;
                 font-family: inherit;
             }
             #${ROOT_ID} * { box-sizing: border-box; }
-            #${ROOT_ID} .pmk142-status.is-loading::before{content:'';display:inline-block;width:14px;height:14px;margin-right:8px;vertical-align:middle;border:2px solid #b7c9bb;border-top-color:#315f46;border-radius:50%;animation:pmk142-loading .8s linear infinite}
+            #${ROOT_ID} .pmk142-status.is-loading::before{content:'';display:inline-block;width:14px;height:14px;margin-right:8px;vertical-align:middle;border:2px solid #cedbbd;border-top-color:#526d22;border-radius:50%;animation:pmk142-loading .8s linear infinite}
             @keyframes pmk142-loading{to{transform:rotate(360deg)}}
             @media(prefers-reduced-motion:reduce){#${ROOT_ID} .pmk142-status.is-loading::before{animation:none}}
             #${ROOT_ID} button,
@@ -2382,22 +2477,31 @@
                 align-items: center;
                 gap: 10px;
                 min-height: 58px;
-                padding: 9px 14px;
-                background: linear-gradient(135deg, #315f46 0%, #487a57 100%);
-                color: #fff;
-                border-bottom: 1px solid #234c37;
-                box-shadow: 0 2px 10px rgba(35,76,55,.28);
+                padding: 12px 16px;
+                margin: 12px 12px 0;
+                background: #fff;
+                color: #28343d;
+                border: 1px solid #cedbbd;
+                border-left: 5px solid #6f8f32;
+                border-radius: 8px;
+                box-shadow: none;
             }
             #${ROOT_ID} .pmk142-title { flex: 1; min-width: 0; }
-            #${ROOT_ID} .pmk142-title strong { display:block; font-size:16px; }
-            #${ROOT_ID} .pmk142-title small { color:#d8e2ea; }
+            #${ROOT_ID} .pmk142-title strong { display:block; font-size:22px; color:#526d22; }
+            #${ROOT_ID} .pmk142-title small { color:#697680; }
             #${ROOT_ID} .pmk142-topbar button {
-                border: 1px solid rgba(255,255,255,.34);
-                border-radius: 7px;
-                background: rgba(255,255,255,.12);
-                color: #fff;
+                border: 1px solid #d8dee3;
+                border-radius: 6px;
+                background: #fff;
+                color: #39444d;
                 padding: 7px 10px;
                 cursor: pointer;
+                font-weight: 600;
+            }
+            #${ROOT_ID} .pmk142-topbar button[data-action="print"] {
+                background: #6f8f32;
+                border-color: #6f8f32;
+                color: #fff;
             }
             #${ROOT_ID} .pmk142-layout {
                 flex: 1;
@@ -2409,26 +2513,26 @@
             #${ROOT_ID} .pmk142-panel {
                 min-height: 0;
                 overflow: auto;
-                background: #f2f6f3;
-                border-right: 1px solid #afc2b4;
+                background: #f7f8f9;
+                border-right: 1px solid #d8dee3;
                 padding: 12px;
             }
             #${ROOT_ID} .pmk142-panel-right {
                 border-right: 0;
-                border-left: 1px solid #afc2b4;
+                border-left: 1px solid #d8dee3;
             }
             #${ROOT_ID} .pmk142-preview-wrap {
                 min-width: 0;
                 min-height: 0;
                 overflow: auto;
                 padding: 22px;
-                background: #dde7df;
+                background: #f2f7e9;
             }
             #${ROOT_ID} .pmk142-section {
                 margin-bottom: 12px;
                 padding: 12px;
-                border: 1px solid #b8c9bd;
-                border-left: 4px solid #5f8f6a;
+                border: 1px solid #d8dee3;
+                border-left: 4px solid #6f8f32;
                 border-radius: 9px;
                 background: #ffffff;
                 box-shadow: 0 1px 3px rgba(47,83,59,.08);
@@ -2439,13 +2543,13 @@
             #${ROOT_ID} .pmk142-section h3 {
                 margin: -12px -12px 11px -12px;
                 padding: 8px 10px;
-                border-bottom: 1px solid #bfd0c3;
+                border-bottom: 1px solid #cedbbd;
                 border-radius: 8px 8px 0 0;
-                background: #dfece2;
+                background: #eef3e7;
                 font-size: 12px;
                 text-transform: uppercase;
                 letter-spacing: .045em;
-                color: #315f46;
+                color: #526d22;
                 font-weight: 800;
             }
             #${ROOT_ID} label {
@@ -2453,7 +2557,7 @@
                 margin:8px 0 4px;
                 font-size:11px;
                 font-weight:750;
-                color:#405d49;
+                color:#526d22;
             }
             #${ROOT_ID} input[type="text"],
             #${ROOT_ID} input[type="number"],
@@ -2461,42 +2565,48 @@
             #${ROOT_ID} textarea {
                 width:100%;
                 padding:7px 8px;
-                border:1px solid #aabfaf;
+                border:1px solid #d8dee3;
                 border-radius:6px;
                 background:#fff;
-                color:#26352d;
+                color:#28343d;
                 box-shadow: inset 0 1px 1px rgba(42,74,51,.04);
             }
             #${ROOT_ID} input[type="text"]:focus,
             #${ROOT_ID} input[type="number"]:focus,
             #${ROOT_ID} select:focus,
             #${ROOT_ID} textarea:focus {
-                border-color:#4f7f59;
+                border-color:#526d22;
                 outline:2px solid rgba(79,127,89,.16);
                 outline-offset:0;
             }
             #${ROOT_ID} .pmk142-topbar button:hover {
-                background:rgba(255,255,255,.22);
-                border-color:rgba(255,255,255,.5);
+                background:#f2f7e9;
+                border-color:#6f8f32;
+                color:#526d22;
+            }
+            #${ROOT_ID} .pmk142-topbar button[data-action="print"]:hover {
+                background:#526d22;
+                border-color:#526d22;
+                color:#fff;
             }
             #${ROOT_ID} .pmk142-panel .pmk142-section + .pmk142-section {
                 margin-top:14px;
             }
             #${ROOT_ID} .pmk142-panel-right .pmk142-section {
-                border-left-color:#467653;
+                border-left-color:#6f8f32;
             }
             #${ROOT_ID} .pmk142-panel-right .pmk142-section h3 {
-                background:#d8e8dc;
-                color:#2f5f43;
+                background:#e5edda;
+                color:#526d22;
             }
 
             #${ROOT_ID} .pmk142-row { display:flex; gap:6px; align-items:center; }
             #${ROOT_ID} .pmk142-row > * { min-width:0; }
             #${ROOT_ID} .pmk142-btn {
-                border:1px solid #9fb5a4;
+                border:1px solid #cedbbd;
                 border-radius:6px;
                 background:#f7faf8;
-                color:#315f46;
+                color:#526d22;
                 padding:6px 8px;
                 cursor:pointer;
             }
@@ -2505,7 +2615,7 @@
                 border-color:#789b80;
             }
             #${ROOT_ID} .pmk142-btn-primary {
-                background:#4f7f59;
+                background:#526d22;
                 color:#fff;
                 border-color:#416c4b;
             }
@@ -2521,7 +2631,7 @@
             }
             #${ROOT_ID} .pmk142-source-summary {
                 padding:8px 9px;
-                border:1px solid #afc2b4;
+                border:1px solid #d8dee3;
                 border-radius:7px;
                 background:#edf5ef;
                 line-height:1.35;
@@ -2553,7 +2663,7 @@
                 background:#edf5ef;
             }
             #${ROOT_ID} .pmk142-block.is-selected {
-                border-color:#4f7f59;
+                border-color:#526d22;
                 background:#dcebdd;
                 box-shadow:0 0 0 2px rgba(79,127,89,.14);
             }
@@ -2579,7 +2689,7 @@
                 font-size:24px;
                 font-weight:850;
                 line-height:1.1;
-                color:#26352d;
+                color:#28343d;
             }
             #${ROOT_ID} .pmk142-grid { display:grid; align-items:start; }
             #${ROOT_ID} .pmk142-card {
@@ -2660,7 +2770,7 @@
                 inset:auto 14px 14px auto;
                 max-width:min(520px,calc(100% - 28px));
                 padding:12px 16px;
-                border:1px solid #afc2b4;
+                border:1px solid #d8dee3;
                 border-radius:7px;
                 box-shadow:0 3px 12px rgba(0,0,0,.12);
                 pointer-events:none;
@@ -2669,7 +2779,7 @@
                 align-items:center;
                 justify-content:center;
                 background:rgba(232,239,233,.92);
-                color:#315f46;
+                color:#526d22;
                 font-size:14px;
                 font-weight:750;
             }
@@ -2727,7 +2837,7 @@
             }
             #${ROOT_ID} .pmk142-content-biblio {
                 margin-bottom:8px;
-                border:1px solid #b7c9bb;
+                border:1px solid #cedbbd;
                 border-radius:8px;
                 overflow:hidden;
             }
@@ -2738,7 +2848,7 @@
                 margin:0;
                 padding:9px 10px;
                 background:#e4efe7;
-                color:#315f46;
+                color:#526d22;
                 cursor:pointer;
             }
             #${ROOT_ID} .pmk142-content-biblio-label > span {
@@ -2809,13 +2919,13 @@
         { value: 'field:biblio.title', group: 'Bibliographie', label: 'Titre' },
         { value: 'field:biblio.subtitle', group: 'Bibliographie', label: 'Sous-titre' },
         { value: 'field:biblio.author', group: 'Bibliographie', label: 'Auteur / responsabilité' },
-        { value: 'field:biblio.publisher', group: 'Bibliographie', label: 'Éditeur (210$c / 214$c)' },
-        { value: 'field:biblio.publication_year', group: 'Bibliographie', label: 'Année / date d’édition (210$d / 214$d)' },
-        { value: 'field:biblio.collection', group: 'Bibliographie', label: 'Collection (225$a)' },
-        { value: 'field:biblio.isbn', group: 'Bibliographie', label: 'ISBN (010$a)' },
-        { value: 'field:biblio.summary', group: 'Bibliographie', label: 'Résumé (330$a ou 520$a)' },
-        { value: 'field:biblio.public_audience', group: 'Bibliographie', label: 'Public (999$q)' },
-        { value: 'field:biblio.sublocation_local', group: 'Bibliographie', label: 'Sous-localisation (999$y)' },
+        { value: 'field:biblio.publisher', group: 'Bibliographie', label: 'Éditeur (UNIMARC 210$c/214$c ou MARC21 260$b/264$b)' },
+        { value: 'field:biblio.publication_year', group: 'Bibliographie', label: 'Année / date d’édition (UNIMARC 210$d/214$d ou MARC21 260$c/264$c)' },
+        { value: 'field:biblio.collection', group: 'Bibliographie', label: 'Collection (UNIMARC 225$a ou MARC21 490$a)' },
+        { value: 'field:biblio.isbn', group: 'Bibliographie', label: 'ISBN (UNIMARC 010$a ou MARC21 020$a)' },
+        { value: 'field:biblio.summary', group: 'Bibliographie', label: 'Résumé (UNIMARC 330$a ou MARC21 520$a)' },
+        { value: 'field:biblio.public_audience', group: 'Bibliographie', label: 'Public local (999$q, vide si absent)' },
+        { value: 'field:biblio.sublocation_local', group: 'Bibliographie', label: 'Sous-localisation locale (999$y, vide si absente)' },
         { value: 'field:biblio.series_title', group: 'Bibliographie', label: 'Série (API)' },
         { value: 'field:biblio.notes', group: 'Bibliographie', label: 'Notes' },
         { value: 'field:biblio.medium', group: 'Bibliographie', label: 'Support / medium' },
@@ -3822,12 +3932,9 @@
                         bits.push('Type : ' + item.item_type_id);
                     }
 
-                    if (
-                        st.showStatus !== false &&
-                        item.not_for_loan_status !== '' &&
-                        item.not_for_loan_status != null
-                    ) {
-                        bits.push('Statut : ' + item.not_for_loan_status);
+                    const loanStatus = loanStatusText(item.not_for_loan_status);
+                    if (st.showStatus !== false && loanStatus) {
+                        bits.push('Statut : ' + loanStatus);
                     }
 
                     return '<div class="pmk142-itemline">' + esc(bits.join(' • ')) + '</div>';
@@ -3861,7 +3968,7 @@
                         <tbody>
                             ${items.map(item => `
                                 <tr>
-                                    ${columns.map(([, key]) => `<td>${esc(asText(item[key]))}</td>`).join('')}
+                                    ${columns.map(([, key]) => `<td>${esc(key === 'not_for_loan_status' ? loanStatusText(item[key]) : asText(item[key]))}</td>`).join('')}
                                 </tr>
                             `).join('')}
                         </tbody>
@@ -4415,19 +4522,18 @@
             if(!/^\d+$/.test(id)){setStatus('Indiquez le numéro de la liste Koha.');return;}
             setStatus('Lecture de la liste Koha '+id+'…', true);
             try{
-                const response=await boundedFetch('/api/v1/lists/'+encodeURIComponent(id),{credentials:'same-origin',headers:{Accept:'application/json','x-koha-embed':'biblios'}});
-                if(!response.ok)throw new Error('Liste Koha HTTP '+response.status);
-                const list=await response.json();
-                const biblios=Array.isArray(list.biblios)?list.biblios:(Array.isArray(list.contents)?list.contents:[]);
-                if(!biblios.length)throw new Error('Cette liste ne contient aucune notice, ou Koha ne les a pas jointes à la réponse.');
-                current.source={kind:'koha-native',name:list.name||('Liste '+id)};
-                current.list={id:'koha-list-'+id,name:list.name||('Liste '+id),type:'notice'};
-                current.entries=biblios.map(normalizeStoredNotice);
+                const loaded=await readKohaList(id);
+                resetContentVisibility();
+                current.source={kind:'koha-native',name:loaded.name};
+                current.list={id:'koha-list-'+id,name:loaded.name,type:'notice'};
+                current.entries=loaded.entries;
+                current.bundleHostItem=null;
+                current.includeBundleHost=false;
                 current.title=current.list.name;
                 await rebuildRecords();
                 await refreshLeftPanel();
                 setStatus(current.entries.length+' notice(s) lues dans la liste Koha '+id+'.');
-            }catch(error){setStatus(error.message);}
+            }catch(error){setStatus(error.message || String(error));}
             return;
         }
         if(action==='reload-data') {

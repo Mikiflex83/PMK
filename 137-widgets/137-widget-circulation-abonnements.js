@@ -349,7 +349,7 @@ const STYLE_TEXT = `    :root {
         position: relative;
         display: none;
         min-height: 180px;
-        background: linear-gradient(180deg, #ffffff 0%, var(--sub-report-bg) 100%);
+        background: #ffffff;
     }
 
     .sub-report-tab-panel.is-active {

@@ -499,7 +499,7 @@ async function mount(container) {
         display:grid;
         gap:7px;
         padding:4px 12px 11px;
-        background:linear-gradient(180deg,#fff 0%,var(--dk-koha-soft) 100%);
+        background:#fff;
       }
 
       .dkhw-slot {
@@ -779,7 +779,7 @@ async function mount(container) {
       .dkhw-polls {
         border-top:1px solid var(--dk-koha-line);
         padding:9px 12px 11px;
-        background:linear-gradient(180deg,var(--dk-koha-soft-2) 0%,var(--dk-koha-soft) 100%);
+        background:var(--dk-koha-soft-2);
       }
 
       .dkhw-polls-head {

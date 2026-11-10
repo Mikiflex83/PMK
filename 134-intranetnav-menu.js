@@ -363,29 +363,9 @@
                 url: '/cgi-bin/koha/mainpage.pl?pmk_page=authorities', target: 'new'
             }),
             makeItem('link', {
-                id: 'quality-holds', parentId: 'quality-center',
-                labelFr: 'Réservations', labelEn: 'Holds', icon: 'fa-hand-paper-o',
-                url: '/cgi-bin/koha/mainpage.pl?pmk_page=reservations', target: 'new'
-            }),
-            makeItem('link', {
-                id: 'quality-transfers', parentId: 'quality-center',
-                labelFr: 'Transferts', labelEn: 'Transfers', icon: 'fa-exchange',
-                url: '/cgi-bin/koha/mainpage.pl?pmk_page=transfers', target: 'new'
-            }),
-            makeItem('link', {
-                id: 'quality-loans', parentId: 'quality-center',
-                labelFr: 'Prêts & litiges', labelEn: 'Loans & disputes', icon: 'fa-retweet',
-                url: '/cgi-bin/koha/mainpage.pl?pmk_page=loans', target: 'new'
-            }),
-            makeItem('link', {
                 id: 'quality-patrons', parentId: 'quality-center',
                 labelFr: 'Comptes lecteurs', labelEn: 'Patron accounts', icon: 'fa-users',
                 url: '/cgi-bin/koha/mainpage.pl?pmk_page=patrons', target: 'new'
-            }),
-            makeItem('link', {
-                id: 'quality-serials', parentId: 'quality-center',
-                labelFr: 'Périodiques', labelEn: 'Serials', icon: 'fa-newspaper-o',
-                url: '/cgi-bin/koha/mainpage.pl?pmk_page=serials', target: 'new'
             }),
             makeItem('link', {
                 id: 'inventory', parentId: 'admin-group',
@@ -406,11 +386,6 @@
                 id: 'patron-map', parentId: 'admin-group',
                 labelFr: 'Cartographie des adhérents', labelEn: 'Patron map', icon: 'fa-map-marker',
                 url: '/cgi-bin/koha/mainpage.pl?pmk_page=patron-map', target: 'new'
-            }),
-            makeItem('link', {
-                id: 'serials-delete', parentId: 'admin-group',
-                labelFr: 'Périodiques à supprimer', labelEn: 'Serials to delete', icon: 'fa-newspaper-o',
-                url: '/cgi-bin/koha/mainpage.pl?pmk_page=serials', target: 'new'
             })
         ];
     }
@@ -430,7 +405,7 @@
 
     const DEFAULTS = {
         enabled: true,
-        migrationVersion: 8,
+        migrationVersion: 9,
         removeLegacyHardcodedMenu: true,
         hideLegacyListsButton: true,
         hideLegacyHistoryButton: true,
@@ -1494,9 +1469,6 @@
             'quality-notices':'/cgi-bin/koha/mainpage.pl?pmk_page=biblios',
             'quality-items':'/cgi-bin/koha/mainpage.pl?pmk_page=items',
             'quality-authorities':'/cgi-bin/koha/mainpage.pl?pmk_page=authorities',
-            'quality-holds':'/cgi-bin/koha/mainpage.pl?pmk_page=reservations',
-            'quality-transfers':'/cgi-bin/koha/mainpage.pl?pmk_page=transfers',
-            'quality-loans':'/cgi-bin/koha/mainpage.pl?pmk_page=loans',
             'quality-patrons':'/cgi-bin/koha/mainpage.pl?pmk_page=patrons',
             'quality-rules':'/cgi-bin/koha/mainpage.pl?pmk_page=quality-center',
             'inventory':'/cgi-bin/koha/mainpage.pl?pmk_page=inventory',
@@ -1525,20 +1497,11 @@
                 }));
                 changed = true;
             }
-            const quality = items.find(function(item){ return item && item.id === 'quality-center'; });
             if (admin && !items.some(function(item){ return item && item.id === 'patron-map'; })) {
                 items.push(makeItem('link', {
                     id:'patron-map', parentId:'admin-group',
                     labelFr:'Cartographie des adhérents', labelEn:'Patron map', icon:'fa-map-marker',
                     url:'/cgi-bin/koha/mainpage.pl?pmk_page=patron-map', target:'new', audience:'inherit'
-                }));
-                changed = true;
-            }
-            if (quality && !items.some(function(item){ return item && item.id === 'quality-serials'; })) {
-                items.push(makeItem('link', {
-                    id:'quality-serials', parentId:'quality-center',
-                    labelFr:'Périodiques', labelEn:'Serials', icon:'fa-newspaper-o',
-                    url:'/cgi-bin/koha/mainpage.pl?pmk_page=serials', target:'new', audience:'inherit'
                 }));
                 changed = true;
             }
@@ -1580,6 +1543,32 @@
                 }
                 return true;
             });
+        });
+        return changed;
+    }
+
+    function removeRetiredInternalPages(config) {
+        const retiredIds = {
+            'quality-holds': true,
+            'quality-transfers': true,
+            'quality-loans': true,
+            'quality-serials': true,
+            'serials-delete': true
+        };
+        const retiredPages = ['reservations', 'loans', 'transfers', 'serials', 'overdue-management'];
+        let changed = false;
+        (config.menus || []).forEach(function (menu) {
+            if (!Array.isArray(menu.items)) return;
+            const before = menu.items.length;
+            menu.items = menu.items.filter(function (item) {
+                if (!item) return false;
+                if (retiredIds[item.id]) return false;
+                const url = String(item.url || '');
+                return !retiredPages.some(function (page) {
+                    return url.indexOf('pmk_page=' + page) !== -1;
+                });
+            });
+            if (menu.items.length !== before) changed = true;
         });
         return changed;
     }
@@ -1631,6 +1620,10 @@
         if (version < 8) {
             changed = removeInstallationPageLinks(cfg) || changed;
             version = 8;
+        }
+        if (version < 9) {
+            changed = removeRetiredInternalPages(cfg) || changed;
+            version = 9;
         }
 
         if (cfg.migrationVersion !== version) {

@@ -6,13 +6,14 @@ Consultez d’abord :
 
 - [le README](README.md) ;
 - [l’installation du plugin](INSTALLATION-PLUGIN.md) ;
-- [l’installation non-plugin](INSTALLATION-NON-PLUGIN-TRANSITION.md) ;
-- [la transition vers le plugin](TRANSITION-NON-PLUGIN-VERS-PLUGIN.md) ;
+- [la transition d’une ancienne installation](TRANSITION-NON-PLUGIN-VERS-PLUGIN.md) ;
 - [la matrice de compatibilité](COMPATIBILITE-PLUGIN-0.4.0.md).
 
 Utilisez une Issue pour un défaut reproductible, une incompatibilité ou une demande d’amélioration. Donnez la version de PMK, la version de Koha, le format MARC, le navigateur, la page concernée et les étapes de reproduction avec des données fictives.
 
 ## Limites du support
+
+PimpMyKoha est développé entièrement à l’aide de l’intelligence artificielle, par une personne qui n’est pas développeur. Il est partagé pour être utilisé, relu et amélioré. Le développement est toujours en cours, et l’utilisation reste sous la responsabilité de chaque établissement.
 
 Le projet communautaire ne peut pas accéder à votre production ni garantir une configuration locale, un rapport SQL, un matériel ou un fournisseur externe. Une recette sur une copie de l’installation reste nécessaire avant une migration.
 

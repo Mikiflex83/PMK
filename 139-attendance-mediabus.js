@@ -210,7 +210,7 @@
         height: 32px;
         font-size: 14px;
         font-weight: bold;
-        background: linear-gradient(180deg, #10b981, #059669);
+        background: #10b981;
         border: 1px solid #047857;
         border-radius: 8px;
         display: flex;
@@ -222,7 +222,7 @@
     }
 
     #freqAppMini .freq-counter-btn:hover {
-        background: linear-gradient(180deg, #34d399, #10b981);
+        background: #34d399;
         transform: translateY(-1px);
     }
 
@@ -231,7 +231,7 @@
     }
 
     #freqAppMini .freq-counter-btn:disabled {
-        background: linear-gradient(180deg, #6b7280, #4b5563);
+        background: #6b7280;
         border-color: #374151;
         cursor: not-allowed;
         transform: none;
@@ -272,7 +272,7 @@
     }
 
     #freqAppMini .freq-action-btn {
-        background: linear-gradient(180deg, #3b82f6, #1d4ed8);
+        background: #3b82f6;
         border: 1px solid #1e40af;
         border-radius: 6px;
         padding: 5px 10px;
@@ -286,12 +286,12 @@
     }
 
     #freqAppMini .freq-action-btn:hover {
-        background: linear-gradient(180deg, #60a5fa, #3b82f6);
+        background: #60a5fa;
         transform: translateY(-1px);
     }
 
     #freqAppMini .freq-action-btn:disabled {
-        background: linear-gradient(180deg, #6b7280, #4b5563);
+        background: #6b7280;
         border-color: #374151;
         cursor: not-allowed;
         transform: none;
@@ -299,16 +299,16 @@
     }
 
     #freqAppMini .freq-reset-btn {
-        background: linear-gradient(180deg, #6b7280, #4b5563);
+        background: #6b7280;
         border: 1px solid #374151;
     }
 
     #freqAppMini .freq-reset-btn:hover {
-        background: linear-gradient(180deg, #9ca3af, #6b7280);
+        background: #9ca3af;
     }
 
     #freqAppMini .freq-report-btn {
-        background: linear-gradient(180deg, #8b5cf6, #7c3aed);
+        background: #8b5cf6;
         border: 1px solid #6d28d9;
         border-radius: 6px;
         padding: 5px 10px;
@@ -324,14 +324,14 @@
     }
 
     #freqAppMini .freq-report-btn:hover {
-        background: linear-gradient(180deg, #a78bfa, #8b5cf6);
+        background: #a78bfa;
         transform: translateY(-1px);
         text-decoration: none;
         color: white;
     }
 
     #freqAppMini .freq-correction-btn {
-        background: linear-gradient(180deg, #f59e0b, #d97706);
+        background: #f59e0b;
         border: 1px solid #b45309;
         border-radius: 6px;
         padding: 5px 10px;
@@ -344,7 +344,7 @@
     }
 
     #freqAppMini .freq-correction-btn:hover {
-        background: linear-gradient(180deg, #fbbf24, #f59e0b);
+        background: #fbbf24;
         transform: translateY(-1px);
     }
 
@@ -423,7 +423,7 @@
     }
 
     .freq-correction-counter-btn {
-        background: linear-gradient(180deg, #10b981, #059669);
+        background: #10b981;
         border: 1px solid #047857;
         border-radius: 8px;
         padding: 10px 15px;
@@ -436,7 +436,7 @@
     }
 
     .freq-correction-counter-btn:hover {
-        background: linear-gradient(180deg, #34d399, #10b981);
+        background: #34d399;
         transform: translateY(-1px);
     }
 
@@ -468,17 +468,17 @@
     }
 
     .freq-modal-validate {
-        background: linear-gradient(180deg, #10b981, #059669);
+        background: #10b981;
         border-color: #047857;
         color: white;
     }
 
     .freq-modal-validate:hover {
-        background: linear-gradient(180deg, #34d399, #10b981);
+        background: #34d399;
     }
 
     .freq-modal-validate:disabled {
-        background: linear-gradient(180deg, #6b7280, #4b5563);
+        background: #6b7280;
         border-color: #374151;
         cursor: not-allowed;
         opacity: 0.6;
@@ -626,7 +626,7 @@
         padding: 8px 10px;
         border: 0;
         border-bottom: 1px solid var(--freq-border);
-        background: linear-gradient(180deg, #fbfdfc 0%, #f4f8f6 100%);
+        background: #fbfdfc;
         cursor: move;
     }
 
@@ -1116,6 +1116,8 @@
             right: 8px !important;
             top: auto !important;
             bottom: 8px !important;
+            max-height: calc(100vh - 16px);
+            overflow: auto;
             resize: none;
             border-radius: 12px;
         }
@@ -1241,7 +1243,7 @@
                        rel="noopener"
                        id="freq-statsLinkMini"
                        class="freq-action-btn freq-stat-btn"
-                       title="Ouvrir les statistiques Attendance Counter">
+                       title="Ouvrir les statistiques">
                         <span aria-hidden="true">▥</span> Statistiques
                     </a>
                 </div>
@@ -1251,7 +1253,7 @@
                                 id="freq-btnResetMini"
                                 title="Remettre les compteurs locaux à zéro"
                                 disabled>
-                            Reset
+                            Remettre à zéro
                         </button>
 
                         <button class="freq-action-btn freq-correction-btn"
@@ -1265,8 +1267,8 @@
                            target="_blank"
                            rel="noopener"
                            class="freq-action-btn freq-report-btn"
-                           title="Ouvrir le rapport SQL configuré">
-                            Rapport SQL
+                           title="Ouvrir le rapport complet">
+                            Rapport complet
                         </a>
                 </div>
             </div>
@@ -1390,65 +1392,220 @@
         });
         const title=root.querySelector('.freq-title, header h1');if(title)title.textContent=config.title;
         if(root.id==='freqAppMini')root.style.width=config.miniWidth+'px';
-        root.querySelectorAll('[id^="freq-inc"], [id^="freq-dec"]').forEach(button=>{
+        root.querySelectorAll('[id^="freq-incAdults"], [id^="freq-incKids"], [id^="freq-dec"]').forEach(button=>{
             const label=button.id.includes('Adults')?config.adultsLabel:config.kidsLabel;
             button.title=(button.id.includes('-inc')?'Ajouter ':'Retirer ')+config.step+' — '+label;
             button.setAttribute('aria-label',button.title);
         });
     }
 
+    // One queue per browser so rapid clicks are applied in order. Other browsers
+    // still share the document through revision checks and retries.
+    let counterWriteQueue = Promise.resolve();
+    function enqueueCounterWrite(task) {
+        const run = counterWriteQueue.then(task, task);
+        counterWriteQueue = run.then(() => undefined, () => undefined);
+        return run;
+    }
+
+    function sanitizeCounterId(value) {
+        return String(value || '').replace(/[^A-Za-z0-9_.-]/g, '_');
+    }
+
+    function localDateKey(value) {
+        const parsed = new Date(value);
+        if (Number.isNaN(parsed.getTime())) return '';
+        const month = String(parsed.getMonth() + 1).padStart(2, '0');
+        const day = String(parsed.getDate()).padStart(2, '0');
+        return parsed.getFullYear() + '-' + month + '-' + day;
+    }
+
+    function timestampRank(value) {
+        const time = Date.parse(value);
+        return Number.isFinite(time) ? time : Number.NEGATIVE_INFINITY;
+    }
+
+    function removeLatestTimestamps(times, amount) {
+        let remaining = amount;
+        while (remaining > 0 && times.length) {
+            let latest = 0;
+            for (let index = 1; index < times.length; index += 1) {
+                if (timestampRank(times[index]) >= timestampRank(times[latest])) latest = index;
+            }
+            times.splice(latest, 1);
+            remaining -= 1;
+        }
+    }
+
+    function counterConflict(error) {
+        return !!(error && (error.status === 409 || error.code === 'data_changed'));
+    }
+
+    async function commitCounterChange(runTransaction, db, work) {
+        let lastError;
+        for (let attempt = 0; attempt < 4; attempt += 1) {
+            try { return await runTransaction(db, work); }
+            catch (error) {
+                lastError = error;
+                if (!counterConflict(error) || attempt === 3) throw error;
+                await new Promise(resolve => setTimeout(resolve, 40 * (attempt + 1) + Math.floor(Math.random() * 80)));
+            }
+        }
+        throw lastError;
+    }
+
+    function notifyCountChanged(locationId, date, source) {
+        document.dispatchEvent(new CustomEvent('pmk:attendance-count-changed', {detail:{locationId, date, source: source || ''}}));
+    }
+
     // Single transaction engine shared by the floating and full-page views.
     async function mutateSharedCounter(deps, request) {
-        if(config.enabled===false || !isMediabus())throw new Error('Compteur désactivé pour ce site');
-        const {db,doc,runTransaction,serverTimestamp}=deps;
-        const storage=deps.configuration || config;
-        if(storage.countsCollection!==config.countsCollection)throw new Error('Rechargez la page après un changement du stockage.');
-        const {type,locationId,date,userId,existingId,notes,additions}=request;
-        if(!['adults','kids','notes','correction'].includes(type) || !locationId || !/^\d{4}-\d{2}-\d{2}$/.test(date))throw new Error('Saisie de fréquentation invalide');
-        const delta=Math.sign(Number(request.delta) || 0)*config.step;
-        const id=existingId || (locationId+'__'+date).replace(/[^A-Za-z0-9_.-]/g,'_');
-        const ref=doc(db,storage.countsCollection,id);
-        const result=await runTransaction(db,async transaction=>{
-            const snap=await transaction.get(ref);
-            const data=snap.exists()?snap.data():{};
-            const count=value=>Math.max(0,Math.floor(Number(value) || 0));
-            const payload={locationId,date,adults:count(data.adults),kids:count(data.kids),
-                adultTimestamps:Array.isArray(data.adultTimestamps)?data.adultTimestamps.slice():[],
-                kidTimestamps:Array.isArray(data.kidTimestamps)?data.kidTimestamps.slice():[],
-                userId:userId || 'anonymous',updatedAt:serverTimestamp()};
-            function adjust(category,change,timestamp) {
-                const before=payload[category];payload[category]=Math.max(0,before+change);
-                const times=category==='adults'?payload.adultTimestamps:payload.kidTimestamps;
-                const actual=payload[category]-before;
-                if(actual>0)for(let i=0;i<actual;i++)times.push(timestamp || new Date().toISOString());
-                else times.splice(Math.max(0,times.length+actual),-actual);
-            }
-            if(type==='adults' || type==='kids')adjust(type,delta);
-            if(type==='correction') {
-                if(!additions || !Number.isFinite(Date.parse(additions.timestamp)))throw new Error('Heure de correction invalide');
-                const reason=String(request.reason || '').trim();
-                if(reason.length<3 || reason.length>300)throw new Error('Indiquez une justification de 3 à 300 caractères.');
-                for(const category of ['adults','kids']) {
-                    const amount=Number(additions[category] || 0);
-                    if(!Number.isInteger(amount) || amount<0 || amount>10000)throw new Error('Nombre de personnes invalide');
-                    adjust(category,amount,additions.timestamp);
+        return enqueueCounterWrite(async () => {
+            if(config.enabled===false || !isMediabus())throw new Error('Compteur désactivé pour ce site');
+            const {db,doc,runTransaction,serverTimestamp}=deps;
+            const storage=deps.configuration || config;
+            if(storage.countsCollection!==config.countsCollection)throw new Error('Rechargez la page après un changement du stockage.');
+            const {type,locationId,date,userId,existingId,notes,additions}=request;
+            if(!['adults','kids','notes','correction'].includes(type) || !locationId || !/^\d{4}-\d{2}-\d{2}$/.test(date))throw new Error('Saisie de fréquentation invalide');
+            const delta=Math.sign(Number(request.delta) || 0)*config.step;
+            const canonicalId=sanitizeCounterId(locationId+'__'+date);
+            const suiteId=sanitizeCounterId(locationId+'__'+date+'__suite');
+            const preferredId=existingId || canonicalId;
+            const result=await commitCounterChange(runTransaction, db, async transaction=>{
+                const preferredRef=doc(db,storage.countsCollection,preferredId);
+                const preferredSnap=await transaction.get(preferredRef);
+                function foreign(snap) {
+                    if(!snap || !snap.exists()) return false;
+                    const stored=snap.data() || {};
+                    return !!(stored.locationId && stored.locationId!==locationId);
                 }
-                const log=Array.isArray(data.correctionLog)?data.correctionLog.slice(-49):[];
-                log.push({reason,userId:userId || 'anonymous',recordedAt:new Date().toISOString(),eventAt:additions.timestamp,
-                    adults:Number(additions.adults || 0),kids:Number(additions.kids || 0)});
-                payload.correctionLog=log;
-                payload.lastCorrection=log[log.length-1];
-            }
-            if(notes) {
-                if(Object.prototype.hasOwnProperty.call(notes,'adults'))payload.noteAdults=String(notes.adults);
-                if(Object.prototype.hasOwnProperty.call(notes,'kids'))payload.noteKids=String(notes.kids);
-            }
-            if(!snap.exists())payload.createdAt=serverTimestamp();
-            transaction.set(ref,payload,{merge:true});
-            return payload;
+                let snap=preferredSnap;
+                let ref=preferredRef;
+                if(foreign(preferredSnap)) {
+                    const canonicalRef=doc(db,storage.countsCollection,canonicalId);
+                    const canonicalSnap=preferredId===canonicalId ? preferredSnap : await transaction.get(canonicalRef);
+                    if(!foreign(canonicalSnap)) { snap=canonicalSnap; ref=canonicalRef; }
+                    else {
+                        ref=doc(db,storage.countsCollection,suiteId);
+                        snap=await transaction.get(ref);
+                        if(foreign(snap)) throw new Error('Cette journée est déjà réaffectée à un autre lieu.');
+                    }
+                }
+                const data=snap.exists()?snap.data():{};
+                const count=value=>Math.max(0,Math.floor(Number(value) || 0));
+                const payload={locationId,date,adults:count(data.adults),kids:count(data.kids),
+                    adultTimestamps:Array.isArray(data.adultTimestamps)?data.adultTimestamps.slice():[],
+                    kidTimestamps:Array.isArray(data.kidTimestamps)?data.kidTimestamps.slice():[],
+                    userId:userId || 'anonymous',updatedAt:serverTimestamp()};
+                function adjust(category,change,timestamp) {
+                    const before=payload[category];payload[category]=Math.max(0,before+change);
+                    const times=category==='adults'?payload.adultTimestamps:payload.kidTimestamps;
+                    const actual=payload[category]-before;
+                    if(actual>0)for(let i=0;i<actual;i++)times.push(timestamp || new Date().toISOString());
+                    else if(actual<0) removeLatestTimestamps(times, -actual);
+                }
+                if(type==='adults' || type==='kids')adjust(type,delta);
+                if(type==='correction') {
+                    if(!additions || localDateKey(additions.timestamp)!==date)throw new Error('Heure de correction invalide');
+                    const reason=String(request.reason || '').trim();
+                    if(reason.length<3 || reason.length>300)throw new Error('Indiquez une justification de 3 à 300 caractères.');
+                    for(const category of ['adults','kids']) {
+                        const amount=Number(additions[category] || 0);
+                        if(!Number.isInteger(amount) || amount<0 || amount>10000)throw new Error('Nombre de personnes invalide');
+                        adjust(category,amount,additions.timestamp);
+                    }
+                    const log=Array.isArray(data.correctionLog)?data.correctionLog.slice(-49):[];
+                    log.push({reason,userId:userId || 'anonymous',recordedAt:new Date().toISOString(),eventAt:additions.timestamp,
+                        adults:Number(additions.adults || 0),kids:Number(additions.kids || 0)});
+                    payload.correctionLog=log;
+                    payload.lastCorrection=log[log.length-1];
+                }
+                if(notes) {
+                    if(Object.prototype.hasOwnProperty.call(notes,'adults'))payload.noteAdults=String(notes.adults);
+                    if(Object.prototype.hasOwnProperty.call(notes,'kids'))payload.noteKids=String(notes.kids);
+                }
+                if(!snap.exists())payload.createdAt=serverTimestamp();
+                transaction.set(ref,payload,{merge:true});
+                return payload;
+            });
+            notifyCountChanged(locationId, date, request.source);
+            return result;
         });
-        document.dispatchEvent(new CustomEvent('pmk:attendance-count-changed',{detail:{locationId,date}}));
-        return result;
+    }
+
+    async function moveSharedCounts(deps, request) {
+        return enqueueCounterWrite(async () => {
+            if(config.enabled===false || !isMediabus())throw new Error('Compteur désactivé pour ce site');
+            const {db,doc,getDocs,collection,runTransaction,serverTimestamp}=deps;
+            const storage=deps.configuration || config;
+            if(storage.countsCollection!==config.countsCollection)throw new Error('Rechargez la page après un changement du stockage.');
+            const fromLocationId=String(request.fromLocationId || '');
+            const toLocationId=String(request.toLocationId || '');
+            const fromDate=String(request.fromDate || '');
+            const toDate=String(request.toDate || '');
+            const userId=request.userId || 'unknown';
+            if(!fromLocationId || !toLocationId || fromLocationId===toLocationId)throw new Error('Le lieu source et le lieu de destination doivent être différents.');
+            if(!/^\d{4}-\d{2}-\d{2}$/.test(fromDate) || !/^\d{4}-\d{2}-\d{2}$/.test(toDate) || fromDate>toDate)throw new Error('Plage de dates invalide.');
+            const snapshot=await getDocs(collection(db, storage.countsCollection));
+            const entries=[];
+            snapshot.forEach(docSnap => {
+                const data=docSnap.data() || {};
+                if(data.locationId===fromLocationId && data.date>=fromDate && data.date<=toDate) entries.push({id:docSnap.id, date:data.date});
+            });
+            const countOf=value=>Math.max(0,Math.floor(Number(value) || 0));
+            const asList=value=>Array.isArray(value)?value.slice():[];
+            function mergedNote(left, right) {
+                const first=String(left || '').trim();
+                const second=String(right || '').trim();
+                if(!first) return second;
+                if(!second || first===second) return first;
+                return first+' | '+second;
+            }
+            let moved=0;
+            for(const entry of entries) {
+                const destinationId=sanitizeCounterId(toLocationId+'__'+entry.date);
+                await commitCounterChange(runTransaction, db, async transaction => {
+                    const sourceRef=doc(db, storage.countsCollection, entry.id);
+                    const sourceSnap=await transaction.get(sourceRef);
+                    if(!sourceSnap.exists()) return;
+                    const source=sourceSnap.data() || {};
+                    if(source.locationId!==fromLocationId || source.date<fromDate || source.date>toDate) return;
+                    const sameDocument=sourceRef.id===destinationId;
+                    const destinationRef=sameDocument ? sourceRef : doc(db, storage.countsCollection, destinationId);
+                    const destinationSnap=sameDocument ? sourceSnap : await transaction.get(destinationRef);
+                    const destination=destinationSnap.exists() ? (destinationSnap.data() || {}) : {};
+                    if(!sameDocument && destination.locationId && destination.locationId!==toLocationId && destination.locationId!==fromLocationId) {
+                        throw new Error('La journée de destination appartient déjà à un autre lieu.');
+                    }
+                    const base=sameDocument ? {} : destination;
+                    const payload={
+                        locationId:toLocationId,
+                        date:source.date,
+                        adults:countOf(base.adults)+countOf(source.adults),
+                        kids:countOf(base.kids)+countOf(source.kids),
+                        adultTimestamps:asList(base.adultTimestamps).concat(asList(source.adultTimestamps)),
+                        kidTimestamps:asList(base.kidTimestamps).concat(asList(source.kidTimestamps)),
+                        userId, updatedAt:serverTimestamp(),
+                        correctedFromLocationId:fromLocationId,
+                        correctedAt:serverTimestamp(),
+                        correctedBy:userId
+                    };
+                    const adultNote=mergedNote(base.noteAdults, source.noteAdults);
+                    const kidNote=mergedNote(base.noteKids, source.noteKids);
+                    if(adultNote) payload.noteAdults=adultNote;
+                    if(kidNote) payload.noteKids=kidNote;
+                    const log=asList(base.correctionLog).concat(asList(source.correctionLog)).slice(-50);
+                    if(log.length) { payload.correctionLog=log; payload.lastCorrection=log[log.length-1]; }
+                    if(!destinationSnap.exists() || sameDocument) payload.createdAt=source.createdAt || serverTimestamp();
+                    transaction.set(destinationRef, payload, {merge:true});
+                    if(!sameDocument) transaction.delete(sourceRef);
+                });
+                notifyCountChanged(fromLocationId, entry.date, 'move');
+                notifyCountChanged(toLocationId, entry.date, 'move');
+                moved+=1;
+            }
+            return moved;
+        });
     }
 
     function isSuperlibrarian() {
@@ -1540,11 +1697,14 @@
         const [year, month, day] = (dateString || '').split('-').map(Number);
         const [hour, minute] = (hourMinute || '').split(':').map(Number);
 
-        if (!year || !month || !day || Number.isNaN(hour) || Number.isNaN(minute)) {
-            return new Date().toISOString();
+        if (!year || !month || !day || !Number.isInteger(hour) || !Number.isInteger(minute) || hour < 0 || hour > 23 || minute < 0 || minute > 59) {
+            throw new Error('Heure de correction invalide');
         }
 
         const localDate = new Date(year, month - 1, day, hour, minute, 0, 0);
+        if (localDate.getFullYear() !== year || localDate.getMonth() !== month - 1 || localDate.getDate() !== day || localDate.getHours() !== hour || localDate.getMinutes() !== minute) {
+            throw new Error('Heure de correction invalide');
+        }
         return localDate.toISOString();
     }
 
@@ -1623,9 +1783,20 @@
         }
 
         const margin = 8;
+        const availableWidth = Math.max(160, window.innerWidth - margin * 2);
+        const availableHeight = Math.max(120, window.innerHeight - margin * 2);
+        if (appElement.offsetWidth > availableWidth) appElement.style.maxWidth = availableWidth + 'px';
+        else if (!window.matchMedia('(max-width: 575.98px)').matches) appElement.style.removeProperty('max-width');
+        if (appElement.offsetHeight > availableHeight) {
+            appElement.style.maxHeight = availableHeight + 'px';
+            appElement.style.overflow = 'auto';
+        } else if (!window.matchMedia('(max-width: 575.98px)').matches) {
+            appElement.style.removeProperty('max-height');
+        }
+
         const rect = appElement.getBoundingClientRect();
         const maxLeft = Math.max(margin, window.innerWidth - rect.width - margin);
-        const maxTop = Math.max(margin, window.innerHeight - Math.min(rect.height, window.innerHeight - (margin * 2)) - margin);
+        const maxTop = Math.max(margin, window.innerHeight - rect.height - margin);
 
         const nextLeft = Math.min(Math.max(rect.left, margin), maxLeft);
         const nextTop = Math.min(Math.max(rect.top, margin), maxTop);
@@ -1794,6 +1965,7 @@
 
             localStorage.setItem('freqAppCompact', state.isCompact.toString());
             requestAnimationFrame(fitMiniToViewport);
+            setTimeout(fitMiniToViewport, 350);
         });
     }
 
@@ -1870,25 +2042,60 @@
             updateCorrectionValidateButton();
         });
 
-        // Validation de la correction
+        function clampCorrectionClock() {
+            let hours = parseInt(hoursInput.value, 10);
+            let minutes = parseInt(minutesInput.value, 10);
+            if (!Number.isInteger(hours)) hours = 0;
+            if (!Number.isInteger(minutes)) minutes = 0;
+            hours = Math.min(23, Math.max(0, hours));
+            minutes = Math.min(59, Math.max(0, minutes));
+            hoursInput.value = String(hours).padStart(2, '0');
+            minutesInput.value = String(minutes).padStart(2, '0');
+            updateCorrectionPreview();
+        }
+
+        let correctionBusy = false;
+        function setCorrectionLocked(locked) {
+            correctionBusy = locked;
+            adultBtn.disabled = locked;
+            kidBtn.disabled = locked;
+            hoursInput.disabled = locked;
+            minutesInput.disabled = locked;
+            reasonInput.disabled = locked;
+            if (locked) validateBtn.disabled = true;
+            else updateCorrectionValidateButton();
+        }
+
+        // Validation de la correction. Un second clic pendant l'enregistrement est ignoré.
         validateBtn.addEventListener('click', async () => {
+            if (correctionBusy) return;
+            clampCorrectionClock();
+            updateCorrectionValidateButton();
             if (state.correction.adults + state.correction.kids === 0 || state.correction.reason.length < 3) return;
+            const snapshot = {
+                adults: state.correction.adults,
+                kids: state.correction.kids,
+                reason: state.correction.reason
+            };
 
             try {
+                setCorrectionLocked(true);
                 updateStatus('Correction...');
 
                 const date = el('freq-inputDateMini').value || getLocalDateString();
                 const baseTimestamp = buildTimestampForLocalDateTime(date, state.correction.hour);
-                await saveCountWithTimestamps(state.correction, baseTimestamp);
+                await saveCountWithTimestamps(snapshot, baseTimestamp);
                 updateCountsUI();
 
-                updateStatus(`Correction enregistrée et justifiée : ${state.correction.adults} ${attendanceConfig.adultsLabel}, ${state.correction.kids} ${attendanceConfig.kidsLabel}`);
+                updateStatus(`Correction enregistrée et justifiée : ${snapshot.adults} ${attendanceConfig.adultsLabel}, ${snapshot.kids} ${attendanceConfig.kidsLabel}`);
                 setTimeout(() => updateStatus('Prêt'), 2000);
 
                 closeModal();
 
             } catch (error) {
-                updateStatus('Erreur correction');
+                updateStatus(error && error.message ? error.message : 'Erreur correction');
+            } finally {
+                setCorrectionLocked(false);
             }
         });
 
@@ -1987,6 +2194,13 @@
     }
 
     function initMiniEvents() {
+        document.addEventListener('pmk:attendance-count-changed', function(event) {
+            const detail = event.detail || {};
+            if (detail.source === 'mini') return;
+            if (!state.current.locationId || detail.locationId !== state.current.locationId || detail.date !== state.current.date) return;
+            loadCountsForSelectedDate();
+        });
+
         el('freq-incAdultsMini').addEventListener('click', async () => {
             await handleIncrement('adults');
         });
@@ -2004,9 +2218,9 @@
         });
 
         el('freq-btnUpdateMini').addEventListener('click', async () => {
-            updateStatus('MAJ...');
+            updateStatus('Actualisation...');
             await loadCountsForSelectedDate();
-            updateStatus('MAJ OK');
+            updateStatus('Actualisé');
             setTimeout(() => updateStatus('Prêt'), 2000);
         });
 
@@ -2016,7 +2230,7 @@
             state.timestamps.adults = [];
             state.timestamps.kids = [];
             updateCountsUI();
-            updateStatus('Reset OK');
+            updateStatus('Affichage remis à zéro');
             setTimeout(() => updateStatus('Prêt'), 2000);
         });
 
@@ -2061,9 +2275,18 @@
         el('freq-fix-cancel-mini').addEventListener('click', closeModal);
         overlay.addEventListener('click', closeModal);
 
+        let locationFixBusy = false;
         el('freq-fix-validate-mini').addEventListener('click', async () => {
-            await applyLocationCorrectionMini();
-            closeModal();
+            if (locationFixBusy) return;
+            locationFixBusy = true;
+            el('freq-fix-validate-mini').disabled = true;
+            try {
+                if (await applyLocationCorrectionMini()) closeModal();
+            } finally {
+                locationFixBusy = false;
+                const button = el('freq-fix-validate-mini');
+                if (button) button.disabled = false;
+            }
         });
     }
 
@@ -2175,32 +2398,20 @@
 
         try {
             updateStatus('Recherche des corrections...');
-            const snapshot = await getDocs(collection(db, attendanceConfig.countsCollection));
-            const docsToFix = [];
-
-            snapshot.forEach(docSnap => {
-                const data = docSnap.data();
-                if (data.locationId === oldLocationId && data.date >= from && data.date <= to) {
-                    docsToFix.push({ id: docSnap.id });
-                }
+            const moved = await window.PMKAttendance.moveCounts({
+                db, doc, getDocs, collection, runTransaction, serverTimestamp, configuration: attendanceConfig
+            }, {
+                fromLocationId: oldLocationId,
+                toLocationId: newLocationId,
+                fromDate: from,
+                toDate: to,
+                userId: state.user ? state.user.uid : 'unknown'
             });
 
-            if (docsToFix.length === 0) {
+            if (!moved) {
                 updateStatus('Aucune entrée à corriger');
                 alert('Aucune entrée trouvée pour ces critères');
-                return;
-            }
-
-            updateStatus(`Correction de ${docsToFix.length} entrée(s)...`);
-
-            for (const entry of docsToFix) {
-                await updateDoc(doc(db, attendanceConfig.countsCollection, entry.id), {
-                    locationId: newLocationId,
-                    correctedFromLocationId: oldLocationId,
-                    correctedAt: serverTimestamp(),
-                    correctedBy: state.user ? state.user.uid : 'unknown',
-                    updatedAt: serverTimestamp()
-                });
+                return false;
             }
 
             if (state.current.locationId === oldLocationId) {
@@ -2210,12 +2421,14 @@
             }
 
             await loadCountsForSelectedDate();
-            updateStatus(`${docsToFix.length} entrée(s) corrigée(s)`);
-            alert(`${docsToFix.length} entrée(s) corrigée(s) avec succès`);
+            updateStatus(`${moved} entrée(s) corrigée(s)`);
+            alert(`${moved} entrée(s) corrigée(s) avec succès`);
             setTimeout(() => updateStatus('Prêt'), 2000);
+            return true;
         } catch (error) {
             updateStatus('Erreur correction lieux');
             alert('Erreur lors de la correction des lieux: ' + error.message);
+            return false;
         }
     }
 
@@ -2232,7 +2445,7 @@
         const currentData=await getCurrentCountFromDB();
         const result=await window.PMKAttendance.mutate({db,doc,runTransaction,serverTimestamp,configuration:attendanceConfig},{
             type,delta,locationId:state.current.locationId,date:state.current.date,
-            existingId:currentData?.id,userId:state.user?.uid
+            existingId:currentData?.id,userId:state.user?.uid,source:'mini'
         });
         state.current.adults=result.adults;state.current.kids=result.kids;
         state.timestamps.adults=result.adultTimestamps;state.timestamps.kids=result.kidTimestamps;
@@ -2325,7 +2538,7 @@
         state.current.date=el('freq-inputDateMini').value || getLocalDateString();
         const currentData=await getCurrentCountFromDB();
         const result=await window.PMKAttendance.mutate({db,doc,runTransaction,serverTimestamp,configuration:attendanceConfig},{
-            type:'correction',locationId:state.current.locationId,date:state.current.date,existingId:currentData?.id,userId:state.user?.uid,
+            type:'correction',locationId:state.current.locationId,date:state.current.date,existingId:currentData?.id,userId:state.user?.uid,source:'mini',
             additions:{adults:correction.adults,kids:correction.kids,timestamp},reason:correction.reason
         });
         state.current.adults=result.adults;state.current.kids=result.kids;
@@ -2608,6 +2821,7 @@
         getConfig:()=>JSON.parse(JSON.stringify(config)),
         collectLocations,
         mutate:mutateSharedCounter,
+        moveCounts:moveSharedCounts,
         decorate,
         inScope:isMediabus,
         hide:hideInternally,

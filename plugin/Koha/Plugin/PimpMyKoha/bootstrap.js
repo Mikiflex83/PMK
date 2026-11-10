@@ -3,7 +3,7 @@
     if (window.PMKPlugin) return;
     const script = document.currentScript;
     const base = new URL('./',script.src);
-    const state = window.PMKPlugin = {version:'0.4.1',loaded:[],errors:[],ready:false,
+    const state = window.PMKPlugin = {version:'0.5.0',loaded:[],errors:[],ready:false,
         assetUrl:file => new URL('assets/'+file,base).href};
     if (!window.PMK_BRAND_LOGO_URL) window.PMK_BRAND_LOGO_URL=state.assetUrl('pimp-my-koha.png');
     function load(file,version) {

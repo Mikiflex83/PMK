@@ -310,7 +310,7 @@
         #${PANEL_ID} .head{
             display:flex;justify-content:space-between;align-items:center;gap:8px;
             padding:11px 12px;cursor:move;font-weight:700;font-size:13px;
-            background:linear-gradient(135deg,#3f8340 0%,#438d43 100%);color:#fff;
+            background:#3f8340;color:#fff;
             letter-spacing:.2px;border-bottom:1px solid rgba(0,0,0,.08);
         }
         #${PANEL_ID} .head .title{display:flex;align-items:center;gap:8px;font-size:13.5px}
@@ -329,7 +329,7 @@
         #${PANEL_ID} .head-btns button:hover{background:rgba(255,255,255,.30);border-color:rgba(255,255,255,.18)}
         #${PANEL_ID} .body{
             padding:10px 12px 12px;max-height:78vh;overflow-y:auto;overflow-x:hidden;
-            background:linear-gradient(180deg,#ffffff 0%,#fbfcfb 100%);
+            background:#ffffff;
             scrollbar-width:thin;scrollbar-color:#cfd8d0 transparent;
         }
         #${PANEL_ID} .body > *,#${PANEL_ID} .actions,#${PANEL_ID} .preset-list,#${PANEL_ID} .preset-controls{max-width:100%;min-width:0}

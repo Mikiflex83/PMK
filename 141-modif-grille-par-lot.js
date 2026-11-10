@@ -1,8 +1,8 @@
 /* ============================================================
    PimpMyKoha — Modification de grille de catalogage par lot
    Module : bulk-framework-change
-   Version : 1.0.2-preplugin
-   Koha ciblé : 25.11+ (REST API v1)
+   Version : 1.1.1
+   Koha ciblé : 25.11+ (REST API v1), sans réglage propre à une instance
    ------------------------------------------------------------
    Fonctions :
    - page autonome : /cgi-bin/koha/mainpage.pl?pmk_page=bulk-framework-change
@@ -10,7 +10,9 @@
    - résolution code-barres -> item -> biblionumber
    - dédoublonnage des notices
    - aperçu avant traitement
-   - récupération de la grille actuelle et des grilles disponibles
+   - grille actuelle lue sur GET /api/v1/biblios/{id} (framework_id)
+   - grilles disponibles lues sur l'écran Catalogage, repli administration
+   - format MARC lu sur la notice (200 UNIMARC, 245 MARC21)
    - changement via PUT /api/v1/biblios/{id} + x-framework-id
    - conservation du MARCXML : le MARC est relu puis renvoyé à l'identique
    - vérification après modification
@@ -26,15 +28,15 @@
     window.__PMKBulkFrameworkChange = true;
 
     const MODULE_ID = "bulk-framework-change";
-    const MODULE_VERSION = "1.1.0-preplugin";
+    const MODULE_VERSION = "1.1.1";
     const PAGE_PARAM = "bulk-framework-change";
+    const CHOOSE_FRAMEWORK = "__pmk_choose__";
     let API_BASE = "/api/v1";
     let MAX_INPUTS = 5000;
     let CONCURRENCY = 2;
-    let RECORD_SCHEMA="UNIMARC";
     let pageContext=null;
     const pageFetch=(url,options)=>window.PMKPagesSettings?window.PMKPagesSettings.request(PAGE_PARAM,url,options,pageContext):window.fetch(url,options);
-    function applyPageOptions(){const opts=window.PMKPagesSettings?.runtime(PAGE_PARAM,{apiBase:"/api/v1",maxInputs:5000,concurrency:2})||{};API_BASE=opts.apiBase||"/api/v1";MAX_INPUTS=Math.max(1,Number(opts.maxInputs)||5000);CONCURRENCY=Math.max(1,Math.min(5,Number(opts.concurrency)||2));RECORD_SCHEMA=opts.marcFormat||"UNIMARC";}
+    function applyPageOptions(){const opts=window.PMKPagesSettings?.runtime(PAGE_PARAM,{apiBase:"/api/v1",maxInputs:5000,concurrency:2})||{};API_BASE=opts.apiBase||"/api/v1";MAX_INPUTS=Math.max(1,Number(opts.maxInputs)||5000);CONCURRENCY=Math.max(1,Math.min(5,Number(opts.concurrency)||2));}
 
     const state = {
         mode: "biblio",
@@ -69,6 +71,14 @@
 
     function normalizeText(v) {
         return String(v ?? "").replace(/\s+/g, " ").trim();
+    }
+
+    function humanizeError(err) {
+        const msg = err?.message || String(err);
+        if (/\b404\b/.test(msg) || /not_found/i.test(msg) || /Bibliographic record not found/i.test(msg)) {
+            return "Notice introuvable.";
+        }
+        return msg;
     }
 
     function csvCell(v) {
@@ -198,7 +208,7 @@
                     <td>${esc(row.title || "—")}</td>
                     <td><code>${esc(row.currentFrameworkDisplay ?? "—")}</code></td>
                     <td><code>${esc(row.targetFrameworkDisplay ?? "—")}</code></td>
-                    <td>${row.marcPreserved === true ? '<span class="pmk-bfc-badge pmk-bfc-badge-done">MARC conservé</span>' : row.marcPreserved === false ? '<span class="pmk-bfc-badge pmk-bfc-badge-error">Écart MARC</span>' : esc(row.marcSummary || "Contrôle prévu")}${row.marcDiff ? `<div class="pmk-bfc-message">${esc(row.marcDiff)}</div>` : ""}</td>
+                    <td>${row.status === "error" ? "—" : row.marcPreserved === true ? '<span class="pmk-bfc-badge pmk-bfc-badge-done">MARC conservé</span>' : row.marcPreserved === false ? '<span class="pmk-bfc-badge pmk-bfc-badge-error">Écart MARC</span>' : esc(row.marcSummary || "Contrôle prévu")}${row.marcDiff ? `<div class="pmk-bfc-message">${esc(row.marcDiff)}</div>` : ""}</td>
                     <td>${badge}</td>
                     <td class="pmk-bfc-message">${esc(row.message || "")}</td>
                 </tr>
@@ -241,6 +251,18 @@
                     .join(" ");
             }
         } catch (_) {}
+        return "";
+    }
+
+    function detectRecordSchema(xml) {
+        const tags = new Set();
+        const pattern = /tag="(\d{3})"/g;
+        let match;
+        while ((match = pattern.exec(String(xml || "")))) tags.add(match[1]);
+        const unimarc = tags.has("200");
+        const marc21 = tags.has("245");
+        if (unimarc && !marc21) return "UNIMARC";
+        if (marc21 && !unimarc) return "MARC21";
         return "";
     }
 
@@ -377,20 +399,43 @@
         return Array.from(found.values());
     }
 
+    function extractFrameworksFromCataloguingHome(html) {
+        const doc = parseHTML(html);
+        const found = new Map();
+        doc.querySelectorAll('a[href*="addbiblio.pl"][href*="frameworkcode="]').forEach(a => {
+            let u;
+            try { u = new URL(a.getAttribute("href"), window.location.origin); } catch (_) { return; }
+            if (!u.searchParams.has("frameworkcode")) return;
+            const code = String(u.searchParams.get("frameworkcode") ?? "");
+            const label = normalizeText(a.textContent || "");
+            if (!label || found.has(code)) return;
+            found.set(code, { code, label });
+        });
+        return Array.from(found.values());
+    }
+
+    function frameworksAreUsable(list) {
+        return (list || []).some(framework => String(framework.code ?? "") !== "");
+    }
+
     async function loadAllFrameworks() {
-        try {
-            const html = await fetchText('/cgi-bin/koha/admin/biblio_framework.pl');
-            const list = extractFrameworksFromAdminPage(html);
-            if (list.length <= 1) {
-                throw new Error('aucune grille supplémentaire détectée dans la page d’administration');
+        const attempts = [
+            { url: "/cgi-bin/koha/cataloguing/addbooks.pl", extract: extractFrameworksFromCataloguingHome },
+            { url: "/cgi-bin/koha/admin/biblio_framework.pl", extract: extractFrameworksFromAdminPage }
+        ];
+        for (const attempt of attempts) {
+            try {
+                const html = await fetchText(attempt.url);
+                const list = attempt.extract(html);
+                if (!frameworksAreUsable(list)) continue;
+                mergeFrameworks(list);
+                renderFrameworkSelector();
+                return state.frameworks;
+            } catch (err) {
+                console.warn("[PMK141] Liste des grilles indisponible", attempt.url, err);
             }
-            mergeFrameworks(list);
-            renderFrameworkSelector();
-            return list;
-        } catch (err) {
-            console.warn('[PMK141] Impossible de charger la liste complète des grilles', err);
-            return [];
         }
+        return [];
     }
 
     async function resolveBarcode(barcode) {
@@ -419,14 +464,26 @@
         };
     }
 
+    async function getBiblioRecord(biblioId) {
+        const { data } = await fetchJSON(`${API_BASE}/biblios/${encodeURIComponent(biblioId)}`);
+        if (!data || typeof data !== "object" || Array.isArray(data)) {
+            throw new Error("Notice illisible.");
+        }
+        const framework = Object.prototype.hasOwnProperty.call(data, "framework_id")
+            ? String(data.framework_id ?? "")
+            : null;
+        const title = [data.title, data.subtitle].map(normalizeText).filter(Boolean).join(" : ");
+        return { framework, title };
+    }
+
     async function hydrateBiblio(row) {
         row.status = "loading";
         renderRows();
 
         try {
-            const [xml, fw] = await Promise.all([
+            const [xml, summary] = await Promise.all([
                 getMarcXML(row.biblioId),
-                getBiblioFrameworkInfo(row.biblioId)
+                getBiblioRecord(row.biblioId)
             ]);
 
             row.marcXML = xml;
@@ -434,17 +491,21 @@
             row.marcSummary = `${structure.fieldCount} zone(s), ${structure.subfieldCount} sous-zone(s)`;
             row.marcPreserved = null;
             row.marcDiff = "";
-            row.title = titleFromMarcXML(xml) || row.title || "";
-            row.currentFramework = fw.current ?? "";
-            row.currentFrameworkDisplay = row.currentFramework === "" ? "Défaut" : row.currentFramework;
-
-            if (fw.options?.length) mergeFrameworks(fw.options);
+            row.title = titleFromMarcXML(xml) || summary.title || row.title || "";
+            if (summary.framework === null) {
+                const fw = await getBiblioFrameworkInfo(row.biblioId);
+                row.currentFramework = fw.current ?? "";
+                if (fw.options?.length) mergeFrameworks(fw.options);
+            } else {
+                row.currentFramework = summary.framework;
+            }
+            row.currentFrameworkDisplay = frameworkLabel(row.currentFramework);
 
             row.status = "ready";
             row.message = "";
         } catch (err) {
             row.status = "error";
-            row.message = err?.message || String(err);
+            row.message = humanizeError(err);
         }
 
         applyTargetToRow(row);
@@ -473,25 +534,35 @@
         });
     }
 
+    function frameworkLabel(code) {
+        const key = String(code ?? "");
+        const found = state.frameworks.find(framework => String(framework.code) === key);
+        if (key === "") return found?.label || "Défaut";
+        if (!found) return key;
+        const label = normalizeText(found.label || "");
+        if (!label || label === key) return key;
+        return `${label} (${key})`;
+    }
+
     function renderFrameworkSelector() {
         const select = qs("#pmk-bfc-target-framework");
         if (!select) return;
 
-        const selected = state.targetFramework !== null ? String(state.targetFramework) : select.value;
-        select.innerHTML = `<option value="">— Grille par défaut —</option>` +
-            state.frameworks
-                .filter(f => f.code !== "")
-                .map(f => `<option value="${esc(f.code)}">${esc(f.label)} (${esc(f.code)})</option>`)
-                .join("");
-
-        if (state.targetFramework !== null) {
-            select.value = String(state.targetFramework);
-        } else if (selected && state.frameworks.some(f => String(f.code) === selected)) {
-            select.value = selected;
+        const options = [`<option value="${CHOOSE_FRAMEWORK}">— Choisir une grille —</option>`];
+        for (const framework of state.frameworks) {
+            options.push(`<option value="${esc(framework.code)}">${esc(frameworkLabel(framework.code))}</option>`);
         }
+        select.innerHTML = options.join("");
+        select.value = state.targetFramework === null ? CHOOSE_FRAMEWORK : String(state.targetFramework);
     }
 
     function applyTargetToRow(row) {
+        if (row.status === "error" || row.biblioId === "—") {
+            row.targetFramework = null;
+            row.targetFrameworkDisplay = "—";
+            return;
+        }
+
         if (state.targetFramework === null) {
             row.targetFramework = null;
             row.targetFrameworkDisplay = "—";
@@ -500,7 +571,7 @@
         }
 
         row.targetFramework = String(state.targetFramework);
-        row.targetFrameworkDisplay = row.targetFramework === "" ? "Défaut" : row.targetFramework;
+        row.targetFrameworkDisplay = frameworkLabel(row.targetFramework);
 
         if (["ready", "same"].includes(row.status)) {
             if (String(row.currentFramework ?? "") === row.targetFramework) {
@@ -544,7 +615,7 @@
         state.skipped = 0;
         state.errors = 0;
         state.targetFramework = null;
-        qs("#pmk-bfc-target-framework").value = "";
+        renderFrameworkSelector();
         qs("#pmk-bfc-target-wrap").hidden = true;
         qs("#pmk-bfc-actions-wrap").hidden = true;
         qs("#pmk-bfc-results-wrap").hidden = false;
@@ -677,9 +748,10 @@
             "Accept": "application/json",
             "Content-Type": "application/marcxml+xml",
             "x-framework-id": frameworkHeaderValue,
-            "x-record-schema": RECORD_SCHEMA,
             "x-confirm-not-duplicate": "1"
         });
+        const detectedSchema = detectRecordSchema(xml);
+        if (detectedSchema) headers.set("x-record-schema", detectedSchema);
 
         if (csrf) {
             // Koha 24.05+ vérifie le jeton CSRF pour les méthodes PUT
@@ -710,10 +782,13 @@
     }
 
     async function verifyFramework(biblioId, expected) {
-        const fw = await getBiblioFrameworkInfo(biblioId);
+        const summary = await getBiblioRecord(biblioId);
+        const actual = summary.framework === null
+            ? String((await getBiblioFrameworkInfo(biblioId)).current ?? "")
+            : summary.framework;
         return {
-            ok: String(fw.current ?? "") === String(expected ?? ""),
-            actual: String(fw.current ?? "")
+            ok: actual === String(expected ?? ""),
+            actual
         };
     }
 
@@ -739,7 +814,7 @@
             if (!verification.ok) {
                 throw new Error(
                     `Koha a répondu sans erreur, mais la vérification indique la grille ` +
-                    `${verification.actual === "" ? "Défaut" : verification.actual || "inconnue"}.`
+                    `${frameworkLabel(verification.actual) || "inconnue"}.`
                 );
             }
 
@@ -754,7 +829,7 @@
             }
 
             row.currentFramework = String(state.targetFramework);
-            row.currentFrameworkDisplay = row.currentFramework === "" ? "Défaut" : row.currentFramework;
+            row.currentFrameworkDisplay = frameworkLabel(row.currentFramework);
             row.status = "done";
             row.message = "Grille modifiée et vérifiée.";
             state.success++;
@@ -809,7 +884,7 @@
             return;
         }
 
-        const targetLabel = state.targetFramework === "" ? "Défaut" : state.targetFramework;
+        const targetLabel = frameworkLabel(state.targetFramework);
         const confirmation = window.confirm(
             `Modifier la grille de ${ready.length} notice(s) vers « ${targetLabel} » ?\n\n` +
             `Le contenu MARC sera relu puis réenregistré à l'identique avec cette grille.\n` +
@@ -937,7 +1012,7 @@
         qs("#pmk-bfc-target-wrap").hidden = true;
         qs("#pmk-bfc-actions-wrap").hidden = true;
         qs("#pmk-bfc-results-wrap").hidden = true;
-        qs("#pmk-bfc-target-framework").value = "";
+        renderFrameworkSelector();
         setStatus("", "info");
         renderRows();
     }
@@ -979,9 +1054,9 @@
                 background: #fff;
             }
             #pmk-bfc-app .pmk-bfc-mode label:has(input:checked) {
-                border-color: #0b6fa4;
-                box-shadow: 0 0 0 1px #0b6fa4 inset;
-                background: #f2f9fc;
+                border-color: #6f8f32;
+                box-shadow: 0 0 0 1px #6f8f32 inset;
+                background: #f6f9f1;
             }
             #pmk-bfc-app textarea {
                 min-height: 170px;
@@ -1001,7 +1076,7 @@
                 margin-bottom: 16px;
                 border: 1px solid transparent;
             }
-            #pmk-bfc-app .pmk-bfc-info { background:#eef7fb; border-color:#b8deed; }
+            #pmk-bfc-app .pmk-bfc-info { background:#f2f7e9; border-color:#cedbbd; }
             #pmk-bfc-app .pmk-bfc-success { background:#edf8f0; border-color:#b9dfc2; }
             #pmk-bfc-app .pmk-bfc-warning { background:#fff7e6; border-color:#efd79a; }
             #pmk-bfc-app .pmk-bfc-danger { background:#fdeeee; border-color:#e8b8b8; }
@@ -1032,7 +1107,7 @@
                 display:inline-block; border-radius:999px; padding:3px 8px; font-size:.83em; white-space:nowrap;
                 background:#e9ecef;
             }
-            #pmk-bfc-app .pmk-bfc-badge-ready { background:#e8f3fb; }
+            #pmk-bfc-app .pmk-bfc-badge-ready { background:#f2f7e9; }
             #pmk-bfc-app .pmk-bfc-badge-same { background:#f1f1f1; }
             #pmk-bfc-app .pmk-bfc-badge-processing { background:#fff2c9; }
             #pmk-bfc-app .pmk-bfc-badge-done { background:#dff2e3; }
@@ -1102,7 +1177,7 @@
                     Un numéro de notice par ligne
                 </label>
                 <textarea id="pmk-bfc-input" class="form-control"
-                    placeholder="379480&#10;381245&#10;402117"></textarea>
+                    placeholder="12345&#10;12346&#10;12347"></textarea>
 
                 <div class="pmk-bfc-toolbar">
                     <button type="button" class="btn btn-primary" id="pmk-bfc-analyze">
@@ -1124,7 +1199,7 @@
                     <div>
                         <label for="pmk-bfc-target-framework"><strong>Grille cible</strong></label>
                         <select id="pmk-bfc-target-framework" class="form-control">
-                            <option value="">— Grille par défaut —</option>
+                            <option value="__pmk_choose__">— Choisir une grille —</option>
                         </select>
                     </div>
                     <div class="pmk-bfc-note">
@@ -1245,10 +1320,10 @@
                 const ta = qs("#pmk-bfc-input");
                 if (state.mode === "barcode") {
                     label.textContent = "Un code-barres d'exemplaire par ligne";
-                    ta.placeholder = "0000637178\n0000582144\n0000719321";
+                    ta.placeholder = "EX123456\nEX123457\nEX123458";
                 } else {
                     label.textContent = "Un numéro de notice par ligne";
-                    ta.placeholder = "379480\n381245\n402117";
+                    ta.placeholder = "12345\n12346\n12347";
                 }
             });
         });
@@ -1261,7 +1336,8 @@
         qs("#pmk-bfc-export").addEventListener("click", exportCSV);
 
         qs("#pmk-bfc-target-framework").addEventListener("change", ev => {
-            state.targetFramework = String(ev.target.value ?? "");
+            const value = String(ev.target.value ?? "");
+            state.targetFramework = value === CHOOSE_FRAMEWORK ? null : value;
             applyTargetToAll();
         });
 
