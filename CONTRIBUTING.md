@@ -32,7 +32,8 @@ Node.js, Python 3 et Chromium sont nécessaires pour la suite complète sans Koh
 
 ```bash
 cd tests
-npm install
+npm ci
+npm audit --audit-level=high
 npm run audit
 PMK_CHROMIUM_PATH=/chemin/vers/chromium npm test
 cd ..
@@ -71,6 +72,10 @@ Les scénarios qui demandent une Koha réelle, un matériel ou un compte fournis
 - Isolez les échecs des services facultatifs du reste de PMK.
 - Préservez les fonctions natives Koha, les droits, la navigation clavier et les contenus accessibles.
 - Documentez toute hypothèse propre à une version Koha, un format MARC, un rapport ou une valeur autorisée.
+
+## Pratiques Koha retenues pour le plugin
+
+Les pages professionnelles passent par les gabarits Koha et le chargeur de langue du plugin (`i18n/`). Une valeur affichée dans un gabarit est filtrée. Les requêtes SQL passent les valeurs par des marqueurs ; un nom de table ne vient jamais de la requête. Les ressources statiques passent par `/api/v1/contrib/pmk/static`, pas par un alias Apache du répertoire des plugins. Les dépendances de test sont épinglées, installées avec `npm ci`, et refusées par `npm audit` dès le niveau élevé. Le point d’entrée Perl est relu par Perl::Critic au niveau stern.
 
 ## Style des changements
 

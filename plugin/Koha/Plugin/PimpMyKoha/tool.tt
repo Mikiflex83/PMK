@@ -1,5 +1,10 @@
-[% WRAPPER "wrapper-staff-tool-plugin.inc" method="tool" plugin_title="PimpMyKoha" %]
-<h1>PimpMyKoha</h1>
-<p>Les pages et outils s’ouvrent dans l’interface professionnelle de Koha.</p>
-<p><a class="btn btn-primary" href="/cgi-bin/koha/mainpage.pl?pmk_page=hub">Ouvrir les pages et outils</a></p>
+[% TRY %]
+    [% PROCESS "$PLUGIN_DIR/i18n/${LANG}.inc" %]
+[% CATCH %]
+    [% PROCESS "$PLUGIN_DIR/i18n/default.inc" %]
+[% END %]
+[% WRAPPER "wrapper-staff-tool-plugin.inc" method="tool" plugin_title=T.tool_title %]
+<h1>[% T.tool_title | html %]</h1>
+<p>[% T.tool_notice | html %]</p>
+<p><a class="btn btn-primary" href="/cgi-bin/koha/mainpage.pl?pmk_page=hub">[% T.open_pages | html %]</a></p>
 [% END %]

@@ -2,7 +2,7 @@
 
 ## Versions suivies
 
-La dernière version publiée de la série `0.4.x` reçoit les corrections de sécurité. Les anciennes archives et les installations non-plugin historiques ne reçoivent pas de garantie de maintenance séparée.
+La dernière version publiée du plugin, série `0.5.x`, reçoit les corrections de sécurité. Le canal `v0.5.0` est la version stable. Le canal `v0.5.0-preview` est une préversion. Les archives non-plugin ne sont plus publiées et ne reçoivent pas de maintenance.
 
 ## Signaler une vulnérabilité
 
@@ -10,15 +10,14 @@ Utilisez le bouton **Report a vulnerability** dans l’onglet Security du dépô
 
 Indiquez si possible :
 
-- la version PMK et la version Koha ;
-- le mode plugin ou non-plugin ;
+- la version PMK, le canal stable ou aperçu, et la version Koha ;
 - les droits Koha nécessaires pour reproduire le problème ;
 - les étapes de reproduction avec des données synthétiques ;
 - l’impact observé et les mesures temporaires possibles.
 
 Ne joignez jamais un export PMK de production, une base Koha, un cookie, une clé d’API, un mot de passe ou des informations concernant des lecteurs.
 
-Le maintien d’un signalement privé permet d’analyser le problème et de préparer une correction avant sa divulgation. Une date de publication sera convenue selon la gravité et la disponibilité d’un correctif.
+Le maintien d’un signalement privé permet d’analyser le problème et de préparer une correction avant sa divulgation. Une date de publication sera convenue selon la gravité et la disponibilité d’un correctif. Le traitement peut prendre du temps : il est fait par les mainteneurs du plugin, pas par l’équipe de sécurité de Koha. Un défaut de Koha lui-même se signale à https://koha-community.org/security/. Un défaut du plugin se signale ici.
 
 ## Périmètre
 
