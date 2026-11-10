@@ -593,6 +593,7 @@ print(json.dumps({'row':result,'empty':empty}))`;
  await check('Circulation integration: page and floating counter share configuration, backend and increments',async()=>{
   const cfg={autoOpen:false,step:2,defaultLocationId:'L1',adultsLabel:'Visiteurs',kidsLabel:'Groupes',countsCollection:'custom-counts',locationsCollection:'custom-locations'};
   const p=await fixture('/cgi-bin/koha/mainpage.pl?pmk_page=attendance-counter','<div id="counter-page"></div>',{'attendance-mediabus-mini':cfg},true);
+  await p.clock.setFixedTime(new Date('2026-10-17T10:00:00+02:00'));
   await p.evaluate(()=>{
     window.__attendanceApps=[];window.__countWrites=[];window.__countDocs={};
     window.__locations={L1:{name:'Bibliothèque centrale',defaultWeeks:8}};
