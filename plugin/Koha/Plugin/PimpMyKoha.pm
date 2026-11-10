@@ -8,7 +8,7 @@ use C4::Context;
 our $VERSION = '0.4.0';
 our $metadata = {
     name => 'PimpMyKoha', author => 'PimpMyKoha',
-    description => 'Modules et pages PMK, avec ressources embarquées et configuration native dans Koha.',
+    description => 'Modules et pages pour l’interface professionnelle de Koha, avec configuration native. Développé entièrement avec l’IA par une personne qui n’est pas développeur, et partagé pour être relu et amélioré. Développement en cours : l’usage reste sous la responsabilité de l’établissement.',
     date_authored => '2026-10-18', date_updated => '2026-10-28',
     minimum_version => '25.11.00.000', version => $VERSION,
     license => 'GPL-3.0-or-later',
@@ -79,7 +79,7 @@ sub intranet_js {
 sub configure {
     my ($self) = @_;
     print $self->{cgi}->header(-type => 'text/html', -charset => 'utf-8', -cache_control => 'no-store');
-    print qq{<!doctype html><html lang="fr"><meta charset="utf-8"><title>Installation PimpMyKoha</title><body><main><h1>Installation PimpMyKoha</h1><p><a href="/cgi-bin/koha/plugins/plugins-home.pl">Retour aux plugins Koha</a> · <a href="/cgi-bin/koha/mainpage.pl?pmk_admin=1">Configuration PMK après activation</a></p></main><script src="/api/v1/contrib/pmk/static/bootstrap.js?v=$VERSION" data-pmk-setup="1"></script></body></html>};
+    print qq{<!doctype html><html lang="fr"><meta charset="utf-8"><title>Installation PimpMyKoha</title><body><main><h1>Installation PimpMyKoha</h1><p>PimpMyKoha est développé entièrement à l’aide de l’intelligence artificielle, par une personne qui n’est pas développeur. Il est partagé avec la communauté Koha pour que le plus grand nombre puisse en profiter, et pour qu’il soit relu, corrigé, amélioré et rendu plus fiable. Le développement est toujours en cours. Son utilisation reste sous la responsabilité de chaque établissement.</p><p><a href="/cgi-bin/koha/plugins/plugins-home.pl">Retour aux plugins Koha</a> · <a href="/cgi-bin/koha/mainpage.pl?pmk_admin=1">Configuration PMK après activation</a></p></main><script src="/api/v1/contrib/pmk/static/bootstrap.js?v=$VERSION" data-pmk-setup="1"></script></body></html>};
 }
 
 sub tool {
