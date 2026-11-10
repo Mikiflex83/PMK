@@ -1,0 +1,62 @@
+name: Publier une version numérotée
+
+on:
+  push:
+    tags:
+      - "v[0-9]*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Récupérer les sources
+        uses: actions/checkout@v7
+
+      - name: Installer Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Choisir le canal
+        id: channel
+        run: |
+          if [[ "${GITHUB_REF_NAME}" == *-preview ]]; then
+            echo "channel=preview" >> "$GITHUB_OUTPUT"
+            echo "flags=--prerelease" >> "$GITHUB_OUTPUT"
+            echo "title=PimpMyKoha ${GITHUB_REF_NAME} — aperçu" >> "$GITHUB_OUTPUT"
+          else
+            echo "channel=stable" >> "$GITHUB_OUTPUT"
+            echo "flags=--latest" >> "$GITHUB_OUTPUT"
+            echo "title=PimpMyKoha ${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Construire le KPZ
+        run: |
+          python3 plugin/build.py \
+            --channel "${{ steps.channel.outputs.channel }}" \
+            --stage "$RUNNER_TEMP/pmk" \
+            --output "$RUNNER_TEMP/PimpMyKoha-${GITHUB_REF_NAME}.kpz"
+
+      - name: Contrôler le paquet
+        run: python3 tests/publication-safety.py "$RUNNER_TEMP/PimpMyKoha-${GITHUB_REF_NAME}.kpz"
+
+      - name: Publier la release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          notes="Canal ${{ steps.channel.outputs.channel }} construit depuis ${GITHUB_SHA}."
+          if [ "${{ steps.channel.outputs.channel }}" = "stable" ]; then
+            notes="$notes Cette version n’inclut pas les pages encore marquées en développement. La version aperçu est publiée avec le suffixe -preview."
+          else
+            notes="$notes Cette préversion ajoute les pages encore en développement. Elles affichent un avertissement et ne sont pas forcément adaptées à toutes les installations Koha."
+          fi
+          gh release create "$GITHUB_REF_NAME" \
+            "$RUNNER_TEMP/PimpMyKoha-${GITHUB_REF_NAME}.kpz" \
+            --target "$GITHUB_SHA" \
+            --title "${{ steps.channel.outputs.title }}" \
+            --notes "$notes" \
+            ${{ steps.channel.outputs.flags }}

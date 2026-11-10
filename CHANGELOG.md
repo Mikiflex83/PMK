@@ -2,6 +2,32 @@
 
 Les changements majeurs de PimpMyKoha sont consignés dans ce fichier.
 
+## [0.5.0] - 2026-11-10
+
+### Ajouté
+
+- Deux canaux du plugin : `v0.5.0` stable, et `v0.5.0-preview` pour les pages encore en développement.
+- Pages de configuration et d’outil rendues dans l’habillage professionnel Koha.
+- Contrôle `koha-qa.pl` sur le point d’entrée du plugin, avec `.kohaqarc` et `.codespell-ignore`.
+
+### Modifié
+
+- Le mode non-plugin n’est plus construit ni publié.
+- La version stable retire le désherbage, les pages de qualité, l’inventaire et l’éditeur XSLT.
+
+## [0.4.1] - 2026-11-05
+
+### Ajouté
+
+- Cartographie des adhérents, avec le rapport SQL affiché dans les réglages de la page.
+- Plusieurs journaux de suivis. Les actions déjà saisies restent dans Suivi général.
+
+### Modifié
+
+- Rendez-vous et sondages, et les pages de qualité, portent les noms utilisés au quotidien.
+- Douze pages encore en développement affichent un avertissement sur leur carte et en haut de la page.
+- Le centre qualité, qui répétait les mêmes outils, n’est plus une page de la liste.
+
 ## [0.4.0] - 2026-10-29
 
 ### Ajouté

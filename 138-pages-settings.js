@@ -8,14 +8,16 @@ if(window.PMKPagesSettings)return;
 const MODULE_ID='internal-pages-tools';
 const catalog={
   "action-journal": {
-    "title": "Journal des actions",
-    "objective": "Partager les interventions et décisions de l’équipe dans un journal consultable.",
-    "engine": "stockage Koha : entrées, versions, écoute en temps réel et export PDF.",
+    "title": "Journaux de suivis",
+    "objective": "Tenir plusieurs journaux de suivi pour l’équipe. Chaque journal reste distinct du journal d’actions de Koha.",
+    "engine": "stockage Koha : entrées, versions, écoute en temps réel et export CSV.",
     "functions": [
+      "Créer, renommer et supprimer un journal vide",
       "Ajouter et modifier une action",
-      "Retirer et restaurer une entrée",
+      "Retirer et restaurer une entrée, avec un motif",
+      "Filtrer par date, auteur et type",
       "Consulter les versions",
-      "Exporter le journal en PDF"
+      "Exporter le tableau affiché en CSV"
     ],
     "prerequisites": "Session professionnelle Koha.",
     "runtime": {
@@ -23,7 +25,14 @@ const catalog={
       "locale": "fr-FR",
       "entriesCollection": "entries",
       "logsCollection": "logs",
+      "journalsCollection": "journals",
       "actionTypes": [
+        "Prêt",
+        "Retour",
+        "Inscription",
+        "Renseignement",
+        "Incident",
+        "Réservation",
         "Création notice",
         "Modification notice",
         "Suppression notice",
@@ -63,6 +72,12 @@ const catalog={
         "advanced": true
       },
       {
+        "path": "runtime.journalsCollection",
+        "label": "Collection stockage Koha des journaux",
+        "type": "text",
+        "advanced": true
+      },
+      {
         "path": "runtime.actionTypes",
         "label": "Types d’action (un par ligne)",
         "type": "list",
@@ -82,8 +97,50 @@ const catalog={
       }
     ]
   },
+  "patron-map": {
+    "title": "Cartographie des adhérents",
+    "objective": "Voir de quel quartier, ou à défaut de quelle commune, viennent les adhérents, et comment les documents circulent entre les sites. Sans nom ni prénom.",
+    "engine": "Rapport SQL de ce Koha. La rue place le quartier quand un prêt est encore relié à la fiche. Les autres usagers restent à la commune. Géocodage IGN et carte OpenStreetMap. Les deux cas restent distincts. Les points détaillés restent dans le navigateur.",
+    "functions": [
+      "Lire les usagers encore reliés à leur fiche et les transactions pseudonymisées",
+      "Compter chaque personne une seule fois",
+      "Placer le quartier par la rue, la commune sinon",
+      "Distinguer les deux cas sur la carte",
+      "Afficher les flux et les communes",
+      "Exporter une carte agrégée",
+      "Masquer des sites et choisir leurs couleurs"
+    ],
+    "prerequisites": "Pseudonymisation Koha active, avec ville, code postal et bibliothèque. La rue n’est lue que si un prêt des deux dernières années est encore relié à la fiche. Sans numéro, la page lit Koha directement. Un numéro utilise le rapport SQL affiché ci-dessous. Le géocodage envoie la rue seulement pour ce premier cas, et le code postal et la commune pour les autres.",
+    "runtime": {
+      "reportId": 0,
+      "precision": 4,
+      "minCount": 3
+    },
+    "settings": {},
+    "storageKey": "",
+    "sqlFile": "sql/138-cartographie-adherents.sql",
+    "fields": [
+      {
+        "path": "runtime.reportId",
+        "label": "Numéro du rapport Koha",
+        "type": "number"
+      },
+      {
+        "path": "runtime.precision",
+        "label": "Décimales de regroupement des adresses (4 ou 5)",
+        "type": "number",
+        "advanced": true
+      },
+      {
+        "path": "runtime.minCount",
+        "label": "Effectif minimal d’une cellule exportée",
+        "type": "number",
+        "advanced": true
+      }
+    ]
+  },
   "appointments": {
-    "title": "Rendez-vous réseau",
+    "title": "Rendez-vous et sondages",
     "objective": "Organiser les rendez-vous, créneaux et sondages de votre établissement.",
     "engine": "stockage Koha, agenda interne, récurrences, sondages et EmailJS facultatif.",
     "functions": [
@@ -208,30 +265,22 @@ const catalog={
   "restore-deleted-items": {
     "title": "Restauration d’exemplaires",
     "objective": "Retrouver et restaurer les exemplaires ou les notices supprimés, sans plugin supplémentaire.",
-    "engine": "Même parcours qu’UndeleteRecords, inclus dans PimpMyKoha : recherche par période, restauration des exemplaires ou des notices, réindexation. Le plugin inLibro n’est pas requis.",
+    "engine": "Recherche et restauration par l’API PimpMyKoha : exemplaires ou notices supprimés, puis réindexation. Le parcours s’inspire du plugin UndeleteRecords d’inLibro (David Bourgault, Olivier Vézina, William Lavoie, Hammat Wele, Noah Tremblay), sans l’installer.",
     "functions": [
       "Rechercher par code-barres ou dates",
       "Restaurer un exemplaire ou un lot",
       "Proposer le prêt ou le retour après restauration"
     ],
-    "prerequisites": "Aucun plugin UndeleteRecords. Droit edit_items pour les exemplaires, edit_catalogue pour les notices. Un rapport SQL reste facultatif. Lecteur technique uniquement pour le cycle avancé prêt/retour.",
+    "prerequisites": "Aucun plugin UndeleteRecords et aucun rapport SQL. Droit edit_items pour les exemplaires, edit_catalogue pour les notices. Lecteur technique uniquement pour le cycle avancé prêt/retour.",
     "runtime": {
       "allowedUsernames": [],
       "patronCardnumber": "",
       "pluginClass": "",
       "runUrl": "/cgi-bin/koha/plugins/run.pl",
-      "reportIdBarcode": 0,
-      "reportIdDates": 0,
-      "reportUrl": "/cgi-bin/koha/reports/guided_reports.pl",
-      "reportParamName": "barcode|list",
-      "reportDateFromParam": "Du|date",
-      "reportDateToParam": "Au|date",
-      "reportBatchSize": 100,
       "defaultLookbackDays": 90,
       "restBase": "/api/v1",
       "libraryId": null,
-      "timeoutMs": 30000,
-      "reportColumns": {}
+      "timeoutMs": 30000
     },
     "settings": {},
     "storageKey": "",
@@ -247,48 +296,6 @@ const catalog={
         "label": "Carte du lecteur technique pour le prêt",
         "type": "text",
         "advanced": false
-      },
-      {
-        "path": "runtime.reportIdBarcode",
-        "label": "Rapport de recherche par codes-barres",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "runtime.reportIdDates",
-        "label": "Rapport de recherche par dates",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "runtime.reportUrl",
-        "label": "Page des rapports Koha",
-        "type": "text",
-        "advanced": true
-      },
-      {
-        "path": "runtime.reportParamName",
-        "label": "Nom du paramètre de codes-barres du rapport",
-        "type": "text",
-        "advanced": true
-      },
-      {
-        "path": "runtime.reportDateFromParam",
-        "label": "Nom du paramètre de date de début",
-        "type": "text",
-        "advanced": true
-      },
-      {
-        "path": "runtime.reportDateToParam",
-        "label": "Nom du paramètre de date de fin",
-        "type": "text",
-        "advanced": true
-      },
-      {
-        "path": "runtime.reportBatchSize",
-        "label": "Codes-barres par recherche",
-        "type": "number",
-        "advanced": true
       },
       {
         "path": "runtime.defaultLookbackDays",
@@ -313,22 +320,6 @@ const catalog={
         "label": "Délai maximal d’une lecture (ms)",
         "type": "number",
         "advanced": true
-      },
-      {
-        "path": "runtime.reportColumns",
-        "label": "Correspondance des colonnes des rapports",
-        "type": "json",
-        "advanced": true
-      }
-    ],
-    "sqlFiles": [
-      {
-        "file": "sql/138-restauration-codes-barres.sql",
-        "label": "Copier le SQL de recherche par codes-barres"
-      },
-      {
-        "file": "sql/138-restauration-dates.sql",
-        "label": "Copier le SQL de recherche par dates"
       }
     ]
   },
@@ -340,50 +331,21 @@ const catalog={
       "Scanner un document",
       "Préparer une sélection multicritère",
       "Évaluer les exemplaires",
-      "Déplacer, signaler ou supprimer après confirmation",
+      "Réaffecter un site ou une localisation",
+      "Écrire les champs et les codes propres à cette installation",
       "Sauvegarder et restaurer une session, exporter"
     ],
-    "prerequisites": "Permissions Koha pour les traitements ; taxonomie Koha facultative.",
+    "prerequisites": "Droits Koha de l’agent connecté. Les noms de champs API et les catégories de valeurs autorisées sont ceux de cette installation : rien n’est écrit tant qu’ils ne sont pas indiqués.",
     "runtime": {
       "apiBase": "/api/v1",
       "noticeUrl": "/cgi-bin/koha/catalogue/detail.pl?biblionumber=",
-      "notForLoanExcluded": 1,
-      "lostPilon": 1,
-      "lostReview": 5,
-      "reservoirLocations": [
-        {
-          "value": "reserv_adulte",
-          "label": "Réservoir Adulte"
-        },
-        {
-          "value": "reserv_jeune",
-          "label": "Réservoir Jeunesse"
-        }
-      ],
-      "floors": [
-        {
-          "value": "1er etage",
-          "label": "1er étage"
-        },
-        {
-          "value": "2eme etage",
-          "label": "2ème étage"
-        },
-        {
-          "value": "niv-inf",
-          "label": "Niveau inférieur"
-        },
-        {
-          "value": "RDC",
-          "label": "RDC"
-        },
-        {
-          "value": "Sous-sol",
-          "label": "Sous-sol"
-        }
-      ],
-      "floorRestField": "serial_issue_number",
-      "domainMarcTag": "099",
+      "notForLoanExcluded": null,
+      "lostPilon": null,
+      "lostReview": null,
+      "reservoirLocations": [],
+      "floors": [],
+      "floorRestField": "",
+      "domainMarcTag": "",
       "domainMarcSubfield": "a",
       "subdomainMarcSubfield": "b",
       "themeMarcSubfield": "e",
@@ -407,77 +369,23 @@ const catalog={
       "taxonomyCacheKey": "kwd-taxonomy-tree-v1",
       "taxonomyCacheTtlMs": 86400000,
       "taxonomyEnabled": true,
-      "lowRotationDomains": [
-        "Littérature",
-        "Les Arts",
-        "Arts",
-        "Arts du spectacle",
-        "Poésie et Théâtre",
-        "Musique à lire",
-        "Vie pratique",
-        "Hommes et Société",
-        "Sciences et Techniques",
-        "Les civilisations",
-        "Le Var",
-        "La Région Sud"
-      ],
-      "normalRotationDomains": [
-        "Bande dessinée",
-        "Romans Ados",
-        "Romans adultes",
-        "Romans jeunesse",
-        "Albums",
-        "Contes",
-        "Cinéma",
-        "Musique",
-        "Vivre ensemble",
-        "Découvrir le monde",
-        "Mon quotidien",
-        "Parents et compagnie",
-        "Objets",
-        "Grandeur nature",
-        "Informatique",
-        "Lire autrement",
-        "Pop-Up",
-        "V.O"
-      ],
-      "ignoreLocations": [
-        "tri",
-        "Zone de tri",
-        "Magasin",
-        "Magasin/reserve",
-        "MBA-BIB",
-        "Bibliothèque",
-        "MBA-J",
-        "Espace Jeunesse",
-        "MBA-R1",
-        "Réserve 1",
-        "MBA-R2",
-        "Réserve 2",
-        "Espace consultation",
-        "Collectivités",
-        "conservation",
-        "Conservation",
-        "bureaux",
-        "Bureaux",
-        "anim",
-        "Animations",
-        "Service archéologique"
-      ],
-      "specialLocationKeywords": [
-        "Parents et compagnie",
-        "parents-enfants",
-        "réservoir",
-        "reserv_",
-        "parents",
-        "réserv",
-        "Réservoir Jeunesse",
-        "Réservoir Adulte"
-      ],
+      "lowRotationDomains": [],
+      "normalRotationDomains": [],
+      "ignoreLocations": [],
+      "specialLocationKeywords": [],
       "locationCategory": "LOC",
       "collectionCategory": "CCODE",
-      "notLoanCategory": "statut",
+      "notLoanCategory": "NOT_LOAN",
       "lostCategory": "LOST",
+      "statusApiField": "",
+      "statusCategory": "",
+      "lostApiField": "",
+      "secondCategory": "",
+      "markDateApi": "",
+      "noteApi": "",
+      "localUseApi": "",
+      "itemDeletion": false,
+      "deleteEmptyBiblio": false,
       "timeoutMs": 30000,
       "taxonomyCollection": "treeData"
     },
@@ -497,21 +405,75 @@ const catalog={
         "advanced": true
       },
       {
+        "path": "runtime.statusApiField",
+        "label": "Champ API du marquage (vide = ne rien écrire)",
+        "type": "text",
+        "advanced": false
+      },
+      {
+        "path": "runtime.statusCategory",
+        "label": "Catégorie de valeurs autorisées de ce champ",
+        "type": "text",
+        "advanced": false
+      },
+      {
         "path": "runtime.notForLoanExcluded",
-        "label": "Code NOT_LOAN pour l’exclusion du prêt",
-        "type": "number",
+        "label": "Code écrit pour le marquage et la mise à revoir",
+        "type": "text",
+        "advanced": false
+      },
+      {
+        "path": "runtime.lostApiField",
+        "label": "Second champ API, facultatif",
+        "type": "text",
+        "advanced": false
+      },
+      {
+        "path": "runtime.secondCategory",
+        "label": "Catégorie de valeurs du second champ",
+        "type": "text",
         "advanced": false
       },
       {
         "path": "runtime.lostPilon",
-        "label": "Code LOST pour le pilon",
-        "type": "number",
+        "label": "Code du second champ pour le marquage",
+        "type": "text",
         "advanced": false
       },
       {
         "path": "runtime.lostReview",
-        "label": "Code LOST pour l’examen des collections",
-        "type": "number",
+        "label": "Code du second champ pour la mise à revoir",
+        "type": "text",
+        "advanced": false
+      },
+      {
+        "path": "runtime.markDateApi",
+        "label": "Champ date écrit lors du marquage, facultatif",
+        "type": "text",
+        "advanced": false
+      },
+      {
+        "path": "runtime.noteApi",
+        "label": "Champ de note qui reçoit la trace, facultatif",
+        "type": "text",
+        "advanced": false
+      },
+      {
+        "path": "runtime.localUseApi",
+        "label": "Champ des consultations sur place, facultatif",
+        "type": "text",
+        "advanced": true
+      },
+      {
+        "path": "runtime.itemDeletion",
+        "label": "Autoriser la suppression d’un exemplaire déjà marqué",
+        "type": "boolean",
+        "advanced": false
+      },
+      {
+        "path": "runtime.deleteEmptyBiblio",
+        "label": "Supprimer la notice si elle ne contient plus aucun exemplaire",
+        "type": "boolean",
         "advanced": false
       },
       {
@@ -705,15 +667,15 @@ const catalog={
       "floating_itemtypes": [],
       "av_loc_category": "LOC",
       "av_ccode_category": "CCODE",
-      "av_public_category": "public",
-      "av_sous_loc_category": "sous-local",
-      "av_etage_category": "ETAGE",
-      "av_notloan_category": "statut",
+      "av_public_category": "",
+      "av_sous_loc_category": "",
+      "av_etage_category": "",
+      "av_notloan_category": "NOT_LOAN",
       "av_lost_category": "LOST",
-      "public_marc_tag": "999",
-      "public_marc_subfield": "q",
-      "item_public_subfield": "q",
-      "item_sous_loc_subfield": "y",
+      "public_marc_tag": "",
+      "public_marc_subfield": "",
+      "item_public_subfield": "",
+      "item_sous_loc_subfield": "",
       "extra_av_categories": [],
       "error_map_columns": [
         {
@@ -931,652 +893,8 @@ const catalog={
       }
     ]
   },
-  "reservations": {
-    "title": "Maintenance des réservations",
-    "objective": "Repérer les réservations qui nécessitent un examen et préparer leur traitement.",
-    "engine": "API réservations, notices et exemplaires, règles explicites, simulation et recontrôle natif.",
-    "functions": [
-      "Charger et filtrer les réservations",
-      "Expliquer les blocages et délais",
-      "Exclure des catégories ou statuts locaux",
-      "Préparer puis confirmer les annulations",
-      "Exporter les données et conseils"
-    ],
-    "prerequisites": "Permissions API Koha ; les seuils sont des repères à adapter au règlement local.",
-    "runtime": {
-      "API": "/api/v1",
-      "ROWS": 50,
-      "API_PAGE": 100,
-      "MIN_GAP": 250,
-      "DEEP_DELAY": 120,
-      "timeoutMs": 30000
-    },
-    "settings": {
-      "oldDays": 30,
-      "veryOldDays": 60,
-      "idleDays": 30,
-      "waitingDays": 11,
-      "waitingCriticalDays": 30,
-      "transitWatchDays": 8,
-      "transitDays": 14,
-      "transitCriticalDays": 30,
-      "pressureHigh": 3,
-      "loanDays": 30,
-      "renewalDays": 30,
-      "maxRenewals": 1,
-      "processingDays": 7,
-      "cancelRequestDays": 7,
-      "suspendIndefiniteDays": 365,
-      "suspendOverdueDays": 7,
-      "excludedLibraries": "",
-      "excludedLocations": "",
-      "excludedPermanentLocations": "",
-      "excludedCollectionCodes": "",
-      "excludedItemTypes": "",
-      "excludedLostStatuses": "",
-      "excludedDamagedStatuses": "",
-      "excludedWithdrawnStatuses": "",
-      "excludedNotForLoanStatuses": "",
-      "excludedPatronCategories": "PE",
-      "autoExplainOnLoad": true,
-      "autoDeepAfterLoad": false,
-      "autoDeepScope": "priority",
-      "autoDeepMax": 200,
-      "disabledRuleIds": []
-    },
-    "storageKey": "drac_quality_reservations_settings_v3",
-    "fields": [
-      {
-        "path": "settings.oldDays",
-        "label": "Ancienneté à examiner (jours)",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.veryOldDays",
-        "label": "Ancienneté prioritaire (jours)",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.idleDays",
-        "label": "Absence d’activité à examiner (jours)",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.waitingDays",
-        "label": "Attente de retrait à examiner (jours)",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.waitingCriticalDays",
-        "label": "Attente de retrait prioritaire (jours)",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.transitWatchDays",
-        "label": "Transit à surveiller (jours)",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.transitDays",
-        "label": "Transit à vérifier (jours)",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.transitCriticalDays",
-        "label": "Transit prioritaire (jours)",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.pressureHigh",
-        "label": "Demandes en attente signalant une forte pression",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.loanDays",
-        "label": "Durée de prêt de référence (jours)",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.renewalDays",
-        "label": "Durée de renouvellement de référence (jours)",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.maxRenewals",
-        "label": "Nombre de renouvellements de référence",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.processingDays",
-        "label": "Traitement à examiner (jours)",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.cancelRequestDays",
-        "label": "Demande d’annulation ancienne (jours)",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.suspendIndefiniteDays",
-        "label": "Suspension sans échéance à examiner (jours)",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.suspendOverdueDays",
-        "label": "Suspension échue à examiner (jours)",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.excludedLibraries",
-        "label": "Sites exclus",
-        "type": "text",
-        "advanced": false
-      },
-      {
-        "path": "settings.excludedLocations",
-        "label": "Localisations exclues",
-        "type": "text",
-        "advanced": false
-      },
-      {
-        "path": "settings.excludedPermanentLocations",
-        "label": "Localisations permanentes exclues",
-        "type": "text",
-        "advanced": false
-      },
-      {
-        "path": "settings.excludedCollectionCodes",
-        "label": "Collections exclues",
-        "type": "text",
-        "advanced": false
-      },
-      {
-        "path": "settings.excludedItemTypes",
-        "label": "Types de documents exclus",
-        "type": "text",
-        "advanced": false
-      },
-      {
-        "path": "settings.excludedLostStatuses",
-        "label": "Codes LOST exclus",
-        "type": "text",
-        "advanced": false
-      },
-      {
-        "path": "settings.excludedDamagedStatuses",
-        "label": "Codes DAMAGED exclus",
-        "type": "text",
-        "advanced": false
-      },
-      {
-        "path": "settings.excludedWithdrawnStatuses",
-        "label": "Codes WITHDRAWN exclus",
-        "type": "text",
-        "advanced": false
-      },
-      {
-        "path": "settings.excludedNotForLoanStatuses",
-        "label": "Codes NOT_LOAN exclus",
-        "type": "text",
-        "advanced": false
-      },
-      {
-        "path": "settings.excludedPatronCategories",
-        "label": "Catégories d’adhérents exclues",
-        "type": "text",
-        "advanced": false
-      },
-      {
-        "path": "settings.autoExplainOnLoad",
-        "label": "Expliquer les dossiers après le chargement demandé",
-        "type": "boolean",
-        "advanced": false
-      },
-      {
-        "path": "settings.autoDeepAfterLoad",
-        "label": "Lancer l’analyse approfondie après le chargement demandé",
-        "type": "boolean",
-        "advanced": false
-      },
-      {
-        "path": "settings.autoDeepScope",
-        "label": "Périmètre de l’analyse automatique",
-        "type": "text",
-        "advanced": false,
-        "choices": [
-          [
-            "priority",
-            "Dossiers prioritaires"
-          ],
-          [
-            "visible",
-            "Dossiers visibles"
-          ]
-        ]
-      },
-      {
-        "path": "settings.autoDeepMax",
-        "label": "Maximum de notices à approfondir",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "runtime.API",
-        "label": "Racine de l’API Koha",
-        "type": "text",
-        "advanced": true
-      },
-      {
-        "path": "runtime.ROWS",
-        "label": "Lignes par page",
-        "type": "number",
-        "advanced": true
-      },
-      {
-        "path": "runtime.API_PAGE",
-        "label": "Résultats par lecture API",
-        "type": "number",
-        "advanced": true
-      },
-      {
-        "path": "runtime.MIN_GAP",
-        "label": "Pause entre lectures (ms)",
-        "type": "number",
-        "advanced": true
-      },
-      {
-        "path": "runtime.DEEP_DELAY",
-        "label": "Pause entre analyses approfondies (ms)",
-        "type": "number",
-        "advanced": true
-      },
-      {
-        "path": "runtime.timeoutMs",
-        "label": "Délai maximal d’une lecture (ms)",
-        "type": "number",
-        "advanced": true
-      },
-      {
-        "path": "settings.disabledRuleIds",
-        "label": "Contrôles désactivés (identifiants des règles)",
-        "type": "list",
-        "advanced": true
-      }
-    ]
-  },
-  "loans": {
-    "title": "Prêts & litiges",
-    "objective": "Examiner les prêts anciens, retards et réclamations.",
-    "engine": "API prêts, lecteurs, exemplaires et réclamations ; analyse approfondie à la demande.",
-    "functions": [
-      "Analyser les prêts et retards",
-      "Examiner les litiges",
-      "Préparer le traitement de réclamations",
-      "Exporter les dossiers"
-    ],
-    "prerequisites": "Permissions API et droits Koha de circulation/réclamations.",
-    "runtime": {
-      "API": "/api/v1",
-      "ROWS": 50,
-      "API_PAGE": 100,
-      "MIN_GAP": 250,
-      "DEEP_LIMIT": 300,
-      "timeoutMs": 30000,
-      "resolutionCategory": "RETURN_CLAIM_RESOLUTION"
-    },
-    "settings": {
-      "oldDays": 365,
-      "veryOldDays": 730,
-      "overdueDays": 180,
-      "criticalOverdueDays": 730,
-      "idleDays": 365,
-      "claimDays": 90,
-      "claimCriticalDays": 365,
-      "unseenRenewals": 3,
-      "disabledRuleIds": []
-    },
-    "storageKey": "drac_quality_loans_settings_v1",
-    "fields": [
-      {
-        "path": "settings.oldDays",
-        "label": "Ancienneté à examiner (jours)",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.veryOldDays",
-        "label": "Ancienneté prioritaire (jours)",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.overdueDays",
-        "label": "Retard important (jours)",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.criticalOverdueDays",
-        "label": "Retard prioritaire (jours)",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.idleDays",
-        "label": "Absence d’activité à examiner (jours)",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.claimDays",
-        "label": "Réclamation ancienne (jours)",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.claimCriticalDays",
-        "label": "Réclamation prioritaire (jours)",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.unseenRenewals",
-        "label": "Renouvellements sans présentation à examiner",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "runtime.API",
-        "label": "Racine de l’API Koha",
-        "type": "text",
-        "advanced": true
-      },
-      {
-        "path": "runtime.ROWS",
-        "label": "Lignes par page",
-        "type": "number",
-        "advanced": true
-      },
-      {
-        "path": "runtime.API_PAGE",
-        "label": "Résultats par lecture API",
-        "type": "number",
-        "advanced": true
-      },
-      {
-        "path": "runtime.MIN_GAP",
-        "label": "Pause entre lectures (ms)",
-        "type": "number",
-        "advanced": true
-      },
-      {
-        "path": "runtime.DEEP_LIMIT",
-        "label": "Dossiers par analyse approfondie",
-        "type": "number",
-        "advanced": true
-      },
-      {
-        "path": "runtime.timeoutMs",
-        "label": "Délai maximal d’une lecture (ms)",
-        "type": "number",
-        "advanced": true
-      },
-      {
-        "path": "runtime.resolutionCategory",
-        "label": "Catégorie des motifs de résolution des réclamations",
-        "type": "text",
-        "advanced": true
-      },
-      {
-        "path": "settings.disabledRuleIds",
-        "label": "Contrôles désactivés (identifiants des règles)",
-        "type": "list",
-        "advanced": true
-      }
-    ]
-  },
-  "transfers": {
-    "title": "Transferts entre sites",
-    "objective": "Surveiller les demandes de transfert et les documents en transit entre sites.",
-    "engine": "Rapport SQL paginé, API exemplaires, règles de délai et traitement natif.",
-    "functions": [
-      "Charger et filtrer les transferts",
-      "Distinguer attente et transit",
-      "Examiner et marquer les exemplaires recherchés",
-      "Simuler une annulation et vérifier son résultat",
-      "Exporter CSV ou JSON"
-    ],
-    "prerequisites": "Créer le rapport SQL Transferts fourni puis renseigner son ID.",
-    "runtime": {
-      "SVC": "/cgi-bin/koha/svc/report",
-      "ITEMS": "/api/v1/items",
-      "RETURNS": "/cgi-bin/koha/circ/returns.pl",
-      "BATCH_ITEMS": "/cgi-bin/koha/tools/batchMod.pl",
-      "PAGE": 50,
-      "REPORT_BATCH": 1000,
-      "MIN_GAP": 250,
-      "timeoutMs": 30000
-    },
-    "settings": {
-      "reportId": 0,
-      "requestedWarnDays": 7,
-      "requestedReviewDays": 14,
-      "requestedCriticalDays": 30,
-      "transitWatchDays": 8,
-      "transitReviewDays": 14,
-      "transitCriticalDays": 30,
-      "flagNonLoan": false,
-      "routeLongDays": 14,
-      "searchedAtApiField": "searched_at",
-      "allowNativeCancel": false,
-      "excludedLibraries": "",
-      "excludedLocations": "",
-      "excludedPermanentLocations": "",
-      "excludedCollectionCodes": "",
-      "excludedItemTypes": "",
-      "excludedLostStatuses": "",
-      "excludedDamagedStatuses": "",
-      "excludedWithdrawnStatuses": "",
-      "excludedNotForLoanStatuses": "",
-      "disabledRuleIds": []
-    },
-    "storageKey": "dq_transfers_settings_v2",
-    "sqlFile": "sql/138-transferts.sql",
-    "fields": [
-      {
-        "path": "settings.reportId",
-        "label": "Identifiant du rapport SQL",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.requestedWarnDays",
-        "label": "Demande de transfert à surveiller (jours)",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.requestedReviewDays",
-        "label": "Demande de transfert à vérifier (jours)",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.requestedCriticalDays",
-        "label": "Demande de transfert prioritaire (jours)",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.transitWatchDays",
-        "label": "Transit à surveiller (jours)",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.transitReviewDays",
-        "label": "Transit à vérifier (jours)",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.transitCriticalDays",
-        "label": "Transit prioritaire (jours)",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.flagNonLoan",
-        "label": "Signaler le seul statut non-prêtable",
-        "type": "boolean",
-        "advanced": false
-      },
-      {
-        "path": "settings.routeLongDays",
-        "label": "Trajet long de référence (jours)",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.searchedAtApiField",
-        "label": "Champ API « déjà recherché à »",
-        "type": "text",
-        "advanced": false
-      },
-      {
-        "path": "settings.allowNativeCancel",
-        "label": "Autoriser l’annulation native expérimentale",
-        "type": "boolean",
-        "advanced": false
-      },
-      {
-        "path": "settings.excludedLibraries",
-        "label": "Sites exclus",
-        "type": "text",
-        "advanced": false
-      },
-      {
-        "path": "settings.excludedLocations",
-        "label": "Localisations exclues",
-        "type": "text",
-        "advanced": false
-      },
-      {
-        "path": "settings.excludedPermanentLocations",
-        "label": "Localisations permanentes exclues",
-        "type": "text",
-        "advanced": false
-      },
-      {
-        "path": "settings.excludedCollectionCodes",
-        "label": "Collections exclues",
-        "type": "text",
-        "advanced": false
-      },
-      {
-        "path": "settings.excludedItemTypes",
-        "label": "Types de documents exclus",
-        "type": "text",
-        "advanced": false
-      },
-      {
-        "path": "settings.excludedLostStatuses",
-        "label": "Codes LOST exclus",
-        "type": "text",
-        "advanced": false
-      },
-      {
-        "path": "settings.excludedDamagedStatuses",
-        "label": "Codes DAMAGED exclus",
-        "type": "text",
-        "advanced": false
-      },
-      {
-        "path": "settings.excludedWithdrawnStatuses",
-        "label": "Codes WITHDRAWN exclus",
-        "type": "text",
-        "advanced": false
-      },
-      {
-        "path": "settings.excludedNotForLoanStatuses",
-        "label": "Codes NOT_LOAN exclus",
-        "type": "text",
-        "advanced": false
-      },
-      {
-        "path": "runtime.SVC",
-        "label": "Service des rapports SQL",
-        "type": "text",
-        "advanced": true
-      },
-      {
-        "path": "runtime.ITEMS",
-        "label": "API des exemplaires",
-        "type": "text",
-        "advanced": true
-      },
-      {
-        "path": "runtime.RETURNS",
-        "label": "Page native des retours",
-        "type": "text",
-        "advanced": true
-      },
-      {
-        "path": "runtime.BATCH_ITEMS",
-        "label": "Modification native des exemplaires par lot",
-        "type": "text",
-        "advanced": true
-      },
-      {
-        "path": "runtime.PAGE",
-        "label": "Lignes par page",
-        "type": "number",
-        "advanced": true
-      },
-      {
-        "path": "runtime.REPORT_BATCH",
-        "label": "Lignes par lot du rapport",
-        "type": "number",
-        "advanced": true
-      },
-      {
-        "path": "runtime.MIN_GAP",
-        "label": "Pause entre lectures (ms)",
-        "type": "number",
-        "advanced": true
-      },
-      {
-        "path": "runtime.timeoutMs",
-        "label": "Délai maximal d’une lecture (ms)",
-        "type": "number",
-        "advanced": true
-      },
-      {
-        "path": "settings.disabledRuleIds",
-        "label": "Contrôles désactivés (identifiants des règles)",
-        "type": "list",
-        "advanced": true
-      }
-    ]
-  },
   "items": {
-    "title": "Maintenance des exemplaires",
+    "title": "Qualité des exemplaires",
     "objective": "Repérer les statuts figés et incohérences des exemplaires.",
     "engine": "API Koha, règles de statuts/ancienneté, contrôle des relations et préparation de lots.",
     "functions": [
@@ -1603,8 +921,8 @@ const catalog={
       "withdrawnReviewDays": 730,
       "minorityMinItems": 5,
       "minorityMajorityPct": 85,
-      "terminalLostStatuses": "2,3",
-      "terminalWithdrawnStatuses": "1",
+      "terminalLostStatuses": "",
+      "terminalWithdrawnStatuses": "",
       "terminalMinDays": 365,
       "allowApiDelete": false,
       "disabledRuleIds": []
@@ -1722,7 +1040,7 @@ const catalog={
     ]
   },
   "biblios": {
-    "title": "Qualité du catalogue bibliographique",
+    "title": "Qualité des notices",
     "objective": "Examiner la qualité des notices et préparer les corrections de catalogue.",
     "engine": "API bibliographique et MARC, signatures de doublons, fusion native et enrichissement BnF.",
     "functions": [
@@ -1732,7 +1050,7 @@ const catalog={
       "Examiner des propositions d’enrichissement",
       "Exporter les constats"
     ],
-    "prerequisites": "UNIMARC ou MARC21 selon le profil configuré ; service externe facultatif.",
+    "prerequisites": "Le format est lu sur les notices de ce Koha. La comparaison avec la BnF reste facultative et désactivée tant qu’elle n’est pas demandée.",
     "runtime": {
       "API": "/api/v1/biblios",
       "SVC": "/cgi-bin/koha/svc/report",
@@ -1748,13 +1066,10 @@ const catalog={
       "duplicateTitleThreshold": 100,
       "signatureReportId": 0,
       "allowMerge": false,
-      "enableBnf": true,
-      "marcFormat": "UNIMARC",
+      "enableBnf": false,
+      "marcFormat": "",
       "disabledRuleIds": [],
-      "localMarcTags": [
-        "099",
-        "999"
-      ]
+      "localMarcTags": []
     },
     "storageKey": "dq_biblios_settings_v1",
     "fields": [
@@ -1782,6 +1097,10 @@ const catalog={
         "type": "text",
         "advanced": false,
         "choices": [
+          [
+            "",
+            "Lu sur les notices"
+          ],
           [
             "UNIMARC",
             "UNIMARC"
@@ -1860,138 +1179,6 @@ const catalog={
       }
     ],
     "sqlFile": "sql/138-signatures-notices.sql"
-  },
-  "serials": {
-    "title": "Maintenance des périodiques",
-    "objective": "Examiner abonnements échus, fascicules attendus, réclamations et inactivité.",
-    "engine": "Rapport SQL paginé et navigation vers les écrans Koha.",
-    "functions": [
-      "Filtrer les abonnements et sites",
-      "Analyser échéances, retards et réclamations",
-      "Préparer une liste de traitement",
-      "Exporter les constats"
-    ],
-    "prerequisites": "Créer le rapport SQL Périodiques fourni puis renseigner son ID.",
-    "runtime": {
-      "SVC": "/cgi-bin/koha/svc/report",
-      "PAGE": 50,
-      "BATCH": 500,
-      "MIN_GAP": 250,
-      "timeoutMs": 30000
-    },
-    "settings": {
-      "reportId": 0,
-      "endPastReviewDays": 30,
-      "endPastCriticalDays": 180,
-      "claimReviewDays": 90,
-      "inactivityAtypicalDays": 180,
-      "inactivityReviewDays": 365,
-      "overdueCriticalCount": 3,
-      "disabledRuleIds": [],
-      "missingReviewCount": 3,
-      "lateReviewCount": 5,
-      "loadOnOpen": true
-    },
-    "storageKey": "dq_serials_settings_v1",
-    "sqlFile": "sql/138-periodiques.sql",
-    "fields": [
-      {
-        "path": "settings.reportId",
-        "label": "Identifiant du rapport SQL",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.endPastReviewDays",
-        "label": "Abonnement échu à vérifier (jours)",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.endPastCriticalDays",
-        "label": "Abonnement échu prioritaire (jours)",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.claimReviewDays",
-        "label": "Réclamation ancienne (jours)",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.inactivityAtypicalDays",
-        "label": "Inactivité à surveiller (jours)",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.inactivityReviewDays",
-        "label": "Inactivité à vérifier (jours)",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.overdueCriticalCount",
-        "label": "Fascicules attendus en retard : seuil prioritaire",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "runtime.SVC",
-        "label": "Service des rapports SQL",
-        "type": "text",
-        "advanced": true
-      },
-      {
-        "path": "runtime.PAGE",
-        "label": "Lignes par page",
-        "type": "number",
-        "advanced": true
-      },
-      {
-        "path": "runtime.BATCH",
-        "label": "Lignes par lot du rapport",
-        "type": "number",
-        "advanced": true
-      },
-      {
-        "path": "runtime.MIN_GAP",
-        "label": "Pause entre lectures (ms)",
-        "type": "number",
-        "advanced": true
-      },
-      {
-        "path": "runtime.timeoutMs",
-        "label": "Délai maximal d’une lecture (ms)",
-        "type": "number",
-        "advanced": true
-      },
-      {
-        "path": "settings.disabledRuleIds",
-        "label": "Contrôles désactivés (identifiants des règles)",
-        "type": "list",
-        "advanced": true
-      },
-      {
-        "path": "settings.missingReviewCount",
-        "label": "Fascicules manquants : seuil de contrôle",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.lateReviewCount",
-        "label": "Fascicules en retard : seuil de contrôle",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "settings.loadOnOpen",
-        "label": "Charger à l’ouverture quand le rapport est configuré",
-        "type": "boolean",
-        "advanced": false
-      }
-    ]
   },
   "patrons": {
     "title": "Qualité des comptes lecteurs",
@@ -2137,7 +1324,7 @@ const catalog={
       "maxInputs": 5000,
       "concurrency": 2,
       "timeoutMs": 30000,
-      "marcFormat": "UNIMARC"
+      "marcFormat": ""
     },
     "settings": {},
     "storageKey": "",
@@ -2168,9 +1355,13 @@ const catalog={
       },
       {
         "path": "runtime.marcFormat",
-        "label": "Format MARC des notices à modifier",
+        "label": "Format MARC (vide = lu sur chaque notice)",
         "type": "text",
         "choices": [
+          [
+            "",
+            "Lu sur chaque notice"
+          ],
           [
             "UNIMARC",
             "UNIMARC"
@@ -2224,334 +1415,38 @@ const catalog={
     "configureModule": "bibliography-builder",
     "fields": []
   },
-  "overdue-management": {
-    "title": "Gestion des retards",
-    "objective": "Suivre les dossiers de retard et leurs étapes avec les messages Koha.",
-    "engine": "Rapport SQL de classement, lecture des dossiers et formulaires Koha avec jeton CSRF frais.",
+  "bulk-permissions": {
+    "title": "Modification par lot de permissions",
+    "objective": "Choisir des comptes d’une catégorie de personnel (type S), préparer un ajout, un retrait ou un remplacement de droits, puis l’appliquer dans Koha après simulation. Un superadministrateur n’est jamais modifié.",
+    "engine": "Liste des comptes par l’API Koha, catalogue des droits lu dans le formulaire natif, écriture par ce même formulaire, un compte à la fois.",
     "functions": [
-      "Filtrer par site et étape",
-      "Consulter lecteur et prêts",
-      "Préparer et enregistrer un message",
-      "Vérifier les écritures et reprendre les dossiers"
+      "Charger les comptes d’une catégorie de personnel",
+      "Protéger des comptes et exclure les superadministrateurs",
+      "Choisir des droits à ajouter, retirer ou remplacer",
+      "Simuler le avant / après",
+      "Appliquer puis relire chaque compte"
     ],
-    "prerequisites": "Créer le rapport privé avec le SQL fourni, puis indiquer son numéro. 0 laisse la page sans classement.",
+    "prerequisites": "Session superlibrarian. Seule une catégorie Koha de type Personnel (S) peut être chargée. Les catégories de lecteurs, y compris Professionnel, restent exclues. Les protections de la page s’ajoutent aux contrôles de Koha, elles ne les remplacent pas.",
     "runtime": {
-      "reportId": 0,
-      "defaultBranch": "",
-      "pageSize": 500,
-      "maxPages": 200,
-      "timeoutMs": 45000,
-      "reportPath": "/cgi-bin/koha/reports/guided_reports.pl",
-      "memberPath": "/cgi-bin/koha/members/moremember.pl",
-      "deleteMessagePath": "/cgi-bin/koha/circ/del_message.pl",
-      "addMessagePath": "/cgi-bin/koha/circ/add_message.pl",
-      "branchParameter": "Site adhérent|branches:all",
-      "locale": "fr-FR",
-      "currency": "EUR",
-      "title": "Gestion des retards",
-      "quickMessages": [
-        "Contact effectué",
-        "Message interne ajouté",
-        "Dossier à revoir"
-      ],
-      "columnMap": {},
-      "stageRules": [
-        {
-          "stage": "dnr",
-          "pattern": "^DNR",
-          "flags": ""
-        },
-        {
-          "stage": "finance",
-          "pattern": "^6\\s*[—-]",
-          "flags": "i"
-        },
-        {
-          "stage": "cleanup",
-          "pattern": "^7\\s*[—-]",
-          "flags": "i"
-        },
-        {
-          "stage": "sent",
-          "pattern": "^5\\s*[—-]",
-          "flags": "i"
-        },
-        {
-          "stage": "signature",
-          "pattern": "^4\\s*[—-]",
-          "flags": "i"
-        },
-        {
-          "stage": "letter",
-          "pattern": "^3\\s*[—-]",
-          "flags": "i"
-        },
-        {
-          "stage": "search",
-          "pattern": "^2\\s*[—-]",
-          "flags": "i"
-        },
-        {
-          "stage": "call",
-          "pattern": "^1b?\\s*[—-]",
-          "flags": "i"
-        }
-      ],
-      "dnrEnabled": false,
-      "dnrCategory": "DNR",
-      "dnrLabel": "Dossier DNR",
-      "dnrPrepareLabel": "Préparer un dossier DNR",
-      "dnrEditLabel": "Modifier le dossier DNR",
-      "workflowGuide": [
-        "Examiner les prêts en retard, puis enregistrer un message dans la fiche Koha si la bibliothèque le décide. Aucune lettre ni aucun barème n’est imposé."
-      ],
-      "dnrEntryGuide": "Passage en DNR : choisir la catégorie DNR et enregistrer la carte, puis rouvrir « Modifier » pour compléter date du dernier contact signée, année, documents dus, montant et note interne. Vérifier leur présence sur la carte avant de faire les retours.",
-      "dnrExitGuide": "Sortie de DNR : effacer dernier contact, année, documents dus et montant, puis choisir Adulte / Jeune. La note interne datée peut rester selon la procédure DNR.",
-      "returnGuide": "Scanner uniquement les documents concernés ci-dessous. Pour une restitution / un rachat avant transmission, remettre l’exemplaire empruntable ; pour DNR ou clôture après finances, choisir le statut perdu adapté après le retour.",
-      "cardGuide": "Dans la fiche ci-dessous : « Imprimer » → « Imprimer les retards ». Transmettre ensuite la lettre à la logistique et tracer la signature / l’envoi.",
-      "attributeGroupPattern": "\\bdnr\\b|document du|annee de dnr|montant du",
-      "attributeFieldPattern": "^(date dernier contact|annee de dnr|document du|montant du|note interne)\\s*:",
-      "stageLabels": {
-        "all": "Tous",
-        "call": "À appeler",
-        "search": "Recherche documents",
-        "letter": "Lettre à préparer",
-        "signature": "À signer",
-        "sent": "Lettre envoyée",
-        "finance": "Finances / clôture",
-        "cleanup": "À nettoyer",
-        "dnr": "DNR",
-        "control": "À contrôler"
-      },
-      "reportTableSelector": "#report_results",
-      "extendedAttributesSelector": "#patron-extended-attributes",
-      "memberIdentitySelector": "#borrowernumber, input[name=\"borrowernumber\"]",
-      "messageAddAllowedSelector": "#toolbar_addnewmessageLabel",
-      "messageContainerSelector": "#messages > ul > li",
-      "editMessageLinkSelector": ".edit_message",
-      "stageQuickMessages": {}
+      "category": "",
+      "protectedIds": []
     },
     "settings": {},
     "storageKey": "",
     "fields": [
       {
-        "path": "runtime.reportId",
-        "label": "Identifiant du rapport SQL",
-        "type": "number",
-        "advanced": false
-      },
-      {
-        "path": "runtime.defaultBranch",
-        "label": "Site proposé par défaut (code Koha)",
+        "path": "runtime.category",
+        "label": "Code de catégorie de personnel (type S)",
         "type": "text",
         "advanced": false
       },
       {
-        "path": "runtime.pageSize",
-        "label": "Résultats par lecture",
-        "type": "number",
-        "advanced": true
-      },
-      {
-        "path": "runtime.maxPages",
-        "label": "Nombre maximal de pages du rapport",
-        "type": "number",
-        "advanced": true
-      },
-      {
-        "path": "runtime.timeoutMs",
-        "label": "Délai maximal d’une lecture (ms)",
-        "type": "number",
-        "advanced": true
-      },
-      {
-        "path": "runtime.reportPath",
-        "label": "Page des rapports Koha",
-        "type": "text",
-        "advanced": true
-      },
-      {
-        "path": "runtime.memberPath",
-        "label": "Page des fiches lecteurs",
-        "type": "text",
-        "advanced": true
-      },
-      {
-        "path": "runtime.deleteMessagePath",
-        "label": "Suppression native des messages",
-        "type": "text",
-        "advanced": true
-      },
-      {
-        "path": "runtime.addMessagePath",
-        "label": "Ajout natif des messages",
-        "type": "text",
-        "advanced": true
-      },
-      {
-        "path": "runtime.branchParameter",
-        "label": "Nom du paramètre de site du rapport",
-        "type": "text",
-        "advanced": true
-      },
-      {
-        "path": "runtime.locale",
-        "label": "Langue et format régional (ex. fr-FR)",
-        "type": "text",
-        "advanced": true
-      },
-      {
-        "path": "runtime.currency",
-        "label": "Devise (ex. EUR)",
-        "type": "text",
-        "advanced": false
-      },
-      {
-        "path": "runtime.title",
-        "label": "Titre de la page",
-        "type": "text",
-        "advanced": false
-      },
-      {
-        "path": "runtime.quickMessages",
-        "label": "Messages proposés (un par ligne)",
+        "path": "runtime.protectedIds",
+        "label": "Identifiants internes des comptes protégés (un par ligne)",
         "type": "list",
-        "advanced": false
-      },
-      {
-        "path": "runtime.columnMap",
-        "label": "Correspondance des colonnes du rapport",
-        "type": "json",
-        "advanced": true
-      },
-      {
-        "path": "runtime.stageRules",
-        "label": "Correspondance des étapes du rapport",
-        "type": "json",
-        "advanced": true
-      },
-      {
-        "path": "runtime.dnrEnabled",
-        "label": "Proposer le parcours spécialisé DNR",
-        "type": "boolean",
-        "advanced": false
-      },
-      {
-        "path": "runtime.dnrCategory",
-        "label": "Code de catégorie pour le dossier DNR",
-        "type": "text",
-        "advanced": false
-      },
-      {
-        "path": "runtime.dnrLabel",
-        "label": "Intitulé du dossier spécialisé",
-        "type": "text",
-        "advanced": true
-      },
-      {
-        "path": "runtime.dnrPrepareLabel",
-        "label": "Intitulé de préparation du dossier",
-        "type": "text",
-        "advanced": true
-      },
-      {
-        "path": "runtime.dnrEditLabel",
-        "label": "Intitulé de modification du dossier",
-        "type": "text",
-        "advanced": true
-      },
-      {
-        "path": "runtime.workflowGuide",
-        "label": "Consignes de traitement (un paragraphe par ligne)",
-        "type": "list",
-        "advanced": false
-      },
-      {
-        "path": "runtime.dnrEntryGuide",
-        "label": "Consigne d’entrée dans le parcours spécialisé",
-        "type": "text",
-        "advanced": true
-      },
-      {
-        "path": "runtime.dnrExitGuide",
-        "label": "Consigne de sortie du parcours spécialisé",
-        "type": "text",
-        "advanced": true
-      },
-      {
-        "path": "runtime.returnGuide",
-        "label": "Consigne proposée avant les retours",
-        "type": "text",
-        "advanced": false
-      },
-      {
-        "path": "runtime.cardGuide",
-        "label": "Consigne d’impression et de transmission",
-        "type": "text",
-        "advanced": false
-      },
-      {
-        "path": "runtime.attributeGroupPattern",
-        "label": "Reconnaître les groupes d’attributs du dossier (expression régulière)",
-        "type": "text",
-        "advanced": true
-      },
-      {
-        "path": "runtime.attributeFieldPattern",
-        "label": "Reconnaître les attributs du dossier (expression régulière)",
-        "type": "text",
-        "advanced": true
-      },
-      {
-        "path": "runtime.stageLabels",
-        "label": "Intitulés des étapes du suivi",
-        "type": "json",
-        "advanced": true
-      },
-      {
-        "path": "runtime.reportTableSelector",
-        "label": "Tableau de résultats du rapport (sélecteur CSS)",
-        "type": "text",
-        "advanced": true
-      },
-      {
-        "path": "runtime.extendedAttributesSelector",
-        "label": "Bloc des attributs lecteur (sélecteur CSS)",
-        "type": "text",
-        "advanced": true
-      },
-      {
-        "path": "runtime.memberIdentitySelector",
-        "label": "Identité du lecteur (sélecteur CSS)",
-        "type": "text",
-        "advanced": true
-      },
-      {
-        "path": "runtime.messageAddAllowedSelector",
-        "label": "Action native d’ajout de message (sélecteur CSS)",
-        "type": "text",
-        "advanced": true
-      },
-      {
-        "path": "runtime.messageContainerSelector",
-        "label": "Lignes de messages Koha (sélecteur CSS)",
-        "type": "text",
-        "advanced": true
-      },
-      {
-        "path": "runtime.editMessageLinkSelector",
-        "label": "Actions natives de modification de message (sélecteur CSS)",
-        "type": "text",
-        "advanced": true
-      },
-      {
-        "path": "runtime.stageQuickMessages",
-        "label": "Messages proposés en priorité par étape (indices de la liste, à partir de 0)",
-        "type": "json",
         "advanced": true
       }
-    ],
-    "sqlFile": "sql/138-suivi-retards-generique.sql"
+    ]
   }
 };
 const clone=value=>value===undefined?undefined:JSON.parse(JSON.stringify(value));
@@ -2633,12 +1528,56 @@ async function saveSettings(id,storageKey,value){
         return clone(value);
     });saveQueue=job;return job;
 }
-function openSettings(id){selectedPage=id;window.PMKConfig?.openAdmin?.(MODULE_ID);}
+function openSettings(id){
+    selectedPage=id;
+    const host=document.getElementById('pmk138-page-host');
+    if(!host)return;
+    const existing=host.querySelector(':scope > .pmk138-inline-settings');
+    if(existing && existing.dataset.pageId===id){existing.hidden=!existing.hidden;if(!existing.hidden)existing.scrollIntoView({block:'nearest'});return;}
+    existing?.remove();
+    const panel=create('section');panel.className='pmk138-inline-settings';panel.dataset.pageId=id;
+    panel.style.cssText='margin:0 0 14px;padding:14px 16px;border:1px solid #cedbbd;border-left:5px solid #6f8f32;border-radius:8px;background:#fff';
+    const heading=create('h2','Réglages de cette page');heading.style.cssText='margin:0 0 8px;font-size:18px;color:#526d22';panel.appendChild(heading);
+    const bar=host.querySelector('.pmk138-toolbar');
+    if(bar)bar.after(panel);else host.prepend(panel);
+    fillInline(id,panel);
+}
+async function fillInline(id,host){
+    if(id==='authorities'){
+        if(!window.PMKAuthorityInstallation?.renderPanel){host.appendChild(create('p','Les réglages des autorités ne sont pas chargés.'));return;}
+        window.PMKAuthorityInstallation.renderPanel(host);return;
+    }
+    if(id==='hub'){await fillHub(host);return;}
+    if(!catalog[id]){host.appendChild(create('p','Cette page n’a pas de réglages propres.'));return;}
+    if(!window.PMKConfig?.getConfig){host.appendChild(create('p','La configuration PMK n’est pas disponible.'));return;}
+    let draft;try{draft=clone(await window.PMKConfig.getConfig(MODULE_ID));}catch(error){host.appendChild(create('p','Lecture impossible : '+error.message));return;}
+    if(!object(draft))draft={enabled:true,hubAccess:'superlibrarian',pageOptions:{}};
+    const ctx={rootObject:draft,markDirty(){}};
+    host.appendChild(create('p','Ces réglages restent sur cette page. Rechargez-la après l’enregistrement pour les appliquer.'));
+    host.appendChild(renderEditor(ctx,{pageId:id}));
+    const save=create('button','Enregistrer','btn btn-primary btn-sm');save.type='button';
+    const result=create('p');result.setAttribute('role','status');
+    save.addEventListener('click',async()=>{save.disabled=true;try{const valid=validate(draft);if(!valid.ok)throw new Error(valid.message);await window.PMKConfig.saveConfig(MODULE_ID,draft);updateConfiguration(draft);result.textContent='Enregistré. Rechargez la page pour appliquer ces réglages.';}catch(error){result.textContent=error.message;}finally{save.disabled=false;}});
+    host.append(save,result);
+}
+async function fillHub(host){
+    if(!window.PMKConfig?.getConfig){host.appendChild(create('p','La configuration PMK n’est pas disponible.'));return;}
+    let draft;try{draft=clone(await window.PMKConfig.getConfig(MODULE_ID));}catch(error){host.appendChild(create('p','Lecture impossible : '+error.message));return;}
+    if(!object(draft))draft={enabled:true,hubAccess:'superlibrarian',pageOptions:{}};
+    const label=create('label','Qui peut ouvrir cette liste : '),policy=create('select');policy.className='form-control';policy.setAttribute('aria-label','Accès à la liste des pages');
+    for(const [value,text] of [['superlibrarian','Superlibrarian Koha'],['staff','Personnel Koha — uniquement les pages ouvertes au personnel']]){const option=create('option',text);option.value=value;policy.appendChild(option);}
+    policy.value=draft.hubAccess==='staff'?'staff':'superlibrarian';label.appendChild(policy);
+    const note=create('p','Un compte du personnel ne voit que les pages dont l’accès est « Personnel Koha ». Les autres restent réservées au superlibrarian.');
+    const save=create('button','Enregistrer','btn btn-primary btn-sm');save.type='button';
+    const result=create('p');result.setAttribute('role','status');
+    save.addEventListener('click',async()=>{save.disabled=true;try{draft.hubAccess=policy.value;const valid=validate(draft);if(!valid.ok)throw new Error(valid.message);await window.PMKConfig.saveConfig(MODULE_ID,draft);updateConfiguration(draft);result.textContent='Enregistré.';}catch(error){result.textContent=error.message;}finally{save.disabled=false;}});
+    host.append(label,note,save,result);
+}
 function assertType(field,value){
     if(value===undefined||inherited(value))return true;
-    if(field.type==='number')return Number.isFinite(value)&&Number.isInteger(value);
+    if(field.type==='number')return ((value===null||value==='')&&/notForLoanExcluded|lostPilon|lostReview/.test(field.path))||(Number.isFinite(value)&&Number.isInteger(value));
     if(field.type==='boolean')return typeof value==='boolean';
-    if(field.type==='text')return value===null||typeof value==='string';
+    if(field.type==='text')return value===null||typeof value==='string'||(/notForLoanExcluded|lostPilon|lostReview/.test(field.path)&&typeof value==='number');
     if(field.type==='list')return Array.isArray(value)&&value.every(x=>typeof x==='string');
     return object(value)||Array.isArray(value);
 }
@@ -2646,25 +1585,30 @@ function validate(cfg){
     if(cfg.hubAccess && !['superlibrarian','staff'].includes(cfg.hubAccess))return {ok:false,message:'Accès à l’accueil invalide.'};
     for(const [id,definition]of Object.entries(catalog)){
         const stored=cfg.pageOptions?.[id];if(!stored)continue;
+        if(stored.enabled !== undefined && typeof stored.enabled !== 'boolean')return {ok:false,message:definition.title+' : activation invalide.'};
         if(stored.access && !['default','superlibrarian','staff'].includes(stored.access))return {ok:false,message:definition.title+' : accès invalide.'};
         for(const field of definition.fields){const value=at(stored,field.path);if(!assertType(field,value))return {ok:false,message:definition.title+' : '+field.label+' est invalide.'};}
         const state=merge(merge(definition.settings,readLocal(id)),stored.settings);
-        const pairs=id==='reservations'?[['oldDays','veryOldDays'],['waitingDays','waitingCriticalDays'],['transitWatchDays','transitDays'],['transitDays','transitCriticalDays']]:id==='transfers'?[['requestedWarnDays','requestedReviewDays'],['requestedReviewDays','requestedCriticalDays'],['transitWatchDays','transitReviewDays'],['transitReviewDays','transitCriticalDays']]:id==='loans'?[['oldDays','veryOldDays'],['overdueDays','criticalOverdueDays'],['claimDays','claimCriticalDays']]:id==='serials'?[['endPastReviewDays','endPastCriticalDays'],['inactivityAtypicalDays','inactivityReviewDays']]:[];
+        const pairs=[];
         if(pairs.some(([a,b])=>state[a]>state[b]))return {ok:false,message:definition.title+' : les seuils prioritaires doivent être supérieurs ou égaux aux premiers seuils.'};
         const effective=merge(definition.runtime,stored.runtime);
-        if(id==='action-journal'&&effective.entriesCollection===effective.logsCollection)return {ok:false,message:'Journal : les entrées et leur historique doivent utiliser des collections différentes.'};
+        if(id==='action-journal'&&new Set([effective.entriesCollection,effective.logsCollection,effective.journalsCollection]).size<3)return {ok:false,message:'Journal : les journaux, les entrées et leur historique doivent utiliser des collections différentes.'};
+        if(id==='patron-map'&&![4,5].includes(Number(effective.precision)))return {ok:false,message:'Cartographie : la précision doit être 4 ou 5.'};
+        if(id==='patron-map'&&Number(effective.minCount)<2)return {ok:false,message:'Cartographie : le seuil d’export doit être au moins 2.'};
         if(id==='action-journal'&&Object.values(effective.permissions||{}).some(value=>!['staff','superlibrarian'].includes(value)))return {ok:false,message:'Journal : droit par opération invalide.'};
         for(const field of definition.fields.filter(x=>x.type==='number')){const value=at({runtime:effective,settings:state},field.path);if(value<0&&!/notForLoanExcluded|lostPilon|lostReview/.test(field.path))return {ok:false,message:definition.title+' : '+field.label+' doit être positif ou nul.'};}
         if(effective.timeoutMs && (effective.timeoutMs<1000||effective.timeoutMs>180000))return {ok:false,message:definition.title+' : délai de lecture compris entre 1 000 et 180 000 ms.'};
         if(id==='bulk-framework-change' && (effective.concurrency<1||effective.concurrency>5))return {ok:false,message:'La concurrence du changement de grille doit être comprise entre 1 et 5.'};
         if(effective.locale){try{new Intl.DateTimeFormat(effective.locale);}catch(_){return {ok:false,message:definition.title+' : format régional invalide.'};}}
         if(effective.currency){try{new Intl.NumberFormat(effective.locale||'fr-FR',{style:'currency',currency:effective.currency});}catch(_){return {ok:false,message:'Code de devise invalide.'};}}
-        if(id==='bulk-framework-change' && !['UNIMARC','MARC21','NORMARC'].includes(effective.marcFormat))return {ok:false,message:'Format MARC du changement de grille invalide.'};
+        if(id==='bulk-framework-change' && effective.marcFormat && !['UNIMARC','MARC21','NORMARC'].includes(effective.marcFormat))return {ok:false,message:'Format MARC du changement de grille invalide.'};
         for(const path of ['attributeGroupPattern','attributeFieldPattern'])if(effective[path])try{new RegExp(effective[path],'i');}catch(_){return {ok:false,message:'Expression de reconnaissance des attributs invalide.'};}
         for(const field of definition.fields.filter(x=>/Selector$/.test(x.path))){const selector=at({runtime:effective,settings:state},field.path);if(selector)try{document.createDocumentFragment().querySelector(selector);}catch(_){return {ok:false,message:field.label+' : sélecteur invalide.'};}}
-        if(id==='biblios'&&!['UNIMARC','MARC21'].includes(state.marcFormat))return {ok:false,message:'Choisissez UNIMARC ou MARC21.'};
-        if(id==='overdue-management' && effective.stageRules){if(!Array.isArray(effective.stageRules))return {ok:false,message:'Les étapes doivent former une liste.'};for(const rule of effective.stageRules){try{if(!['dnr','finance','cleanup','sent','signature','letter','search','call','control'].includes(rule.stage))throw new Error();new RegExp(rule.pattern,rule.flags||'i');}catch(_){return {ok:false,message:'Correspondance des étapes invalide.'};}}}
-        if(id==='overdue-management' && effective.stageQuickMessages){for(const indices of Object.values(effective.stageQuickMessages))if(!Array.isArray(indices)||indices.some(index=>!Number.isInteger(index)||index<0||index>=effective.quickMessages.length))return {ok:false,message:'Indices de messages prioritaires invalides.'};}
+        if(id==='biblios'&&state.marcFormat&&!['UNIMARC','MARC21'].includes(state.marcFormat))return {ok:false,message:'Choisissez UNIMARC ou MARC21, ou laissez le format se lire sur les notices.'};
+        if(id==='bulk-permissions'){
+            if(String(effective.category||'')!=='' && !/^[A-Za-z0-9_-]{1,20}$/.test(String(effective.category)))return {ok:false,message:'Modification par lot de permissions : code de catégorie invalide.'};
+            if(Array.isArray(effective.protectedIds)&&effective.protectedIds.some(value=>!/^\d+$/.test(String(value))))return {ok:false,message:'Modification par lot de permissions : un compte protégé doit être un numéro interne Koha.'};
+        }
         for(const key of ['PAGE','ROWS','API_PAGE','PER_PAGE','FALLBACK_PER_PAGE','REPORT_BATCH','BATCH','pageSize','maxPages','maxInputs','maxItemsPerPreparation','itemsPageSize','barcodeBatchSize','reportBatchSize','batchConcurrency','concurrency'])if(effective[key]!==undefined && (!Number.isInteger(effective[key])||effective[key]<1))return {ok:false,message:definition.title+' : '+key+' doit être un entier supérieur à zéro.'};
         if(id==='inventory' && !/^\d{3}$/.test(state.public_marc_tag||'999'))return {ok:false,message:'La zone MARC des exemplaires doit comporter trois chiffres.'};
         for(const path of ['API','ITEMS','HOLDS','SVC','RETURNS','BATCH_ITEMS','apiBase','restBase','reportPath','memberPath','deleteMessagePath','addMessagePath','reportUrl','runUrl']){
@@ -2677,7 +1621,7 @@ function create(tag,text,className){const el=document.createElement(tag);if(text
 function hint(field){
     const key=field.path.split('.').at(-1);
     if(/Collection$|^collections\./.test(field.path)||/Collection$/.test(key))return 'Nom exact de la collection de ce projet Koha. Les données existantes ne sont pas déplacées.';
-    if(/excluded|Statuses|Category|av_/.test(key))return 'Utilisez les codes réels de votre Koha. Les valeurs Dracénie restent proposées par défaut.';
+    if(/excluded|Statuses|Category|av_/.test(key))return 'Utilisez les codes réels de votre Koha.';
     if(/reportId|signatureReportId/.test(key))return 'Créez le rapport dans ce Koha, puis indiquez son numéro. 0 laisse la source non configurée.';
     if(key==='allowedUsernames')return 'Identifiants de connexion Koha, un par ligne. Vide : aucun filtre nominatif supplémentaire ; le niveau d’accès de la page reste requis.';
     if(field.type==='list')return 'Une valeur par ligne. Une liste vide n’impose aucune valeur.';
@@ -2697,12 +1641,14 @@ async function copySql(id,button,file=catalog[id]?.sqlFile){
 function sqlButton(id,file=catalog[id]?.sqlFile,label='Copier le SQL à créer dans Koha'){if(!file)return null;const button=create('button',label,'btn btn-default');button.type='button';button.addEventListener('click',()=>copySql(id,button,file));return button;}
 function sqlButtons(id){const files=catalog[id]?.sqlFiles;if(files)return files.map(x=>sqlButton(id,x.file,x.label));const button=sqlButton(id);return button?[button]:[];}
 function download(name,value){const url=URL.createObjectURL(new Blob([JSON.stringify(value,null,2)],{type:'application/json'})),a=create('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
-function renderEditor(ctx){
+function renderEditor(ctx,options={}){
+    const locked=options.pageId||null;
     const wrap=create('div'),intro=create('p','Choisissez une page. Les valeurs existantes du navigateur sont reprises comme base ; seuls vos changements enregistrés dans PMK deviennent communs. Les réglages d’installation prennent effet à la prochaine ouverture.');wrap.appendChild(intro);
     const select=create('select');select.className='form-control';select.setAttribute('aria-label','Page à configurer');
     const manifest=window.PMKPages?.manifest || [];
     for(const page of manifest){const option=create('option',page.title);option.value=page.id;select.appendChild(option);}
-    select.value=selectedPage&&manifest.some(x=>x.id===selectedPage)?selectedPage:manifest[0]?.id;
+    if(locked){intro.hidden=true;select.hidden=true;if(!manifest.some(x=>x.id===locked)){wrap.appendChild(create('p','Cette page n’a pas de réglages dans la liste commune.'));return wrap;}select.value=locked;}
+    else select.value=selectedPage&&manifest.some(x=>x.id===selectedPage)?selectedPage:manifest[0]?.id;
     const panel=create('div');panel.dataset.pmkPageEditor='1';wrap.append(select,panel);
     let revision=0;
     async function show(){
@@ -2712,9 +1658,10 @@ function renderEditor(ctx){
         panel.appendChild(create('h5',definition.objective));const info=create('details');info.appendChild(create('summary','Fonctions, moteur et prérequis'));info.appendChild(create('p',definition.engine));const list=create('ul');definition.functions.forEach(text=>list.appendChild(create('li',text)));info.append(list,create('p',definition.prerequisites));panel.appendChild(info);
         const source=create('p','Lecture des réglages existants…');panel.appendChild(source);
         const local=id==='inventory'?await readInventorySettings():readLocal(id);if(version!==revision)return;
-        source.textContent=Object.keys(local).length?'Réglages de ce navigateur disponibles et conservés. Les surcharges PMK ont priorité.':'Valeurs Dracénie proposées ; aucune configuration existante n’est effacée.';
+        source.textContent=Object.keys(local).length?'Réglages de ce navigateur disponibles et conservés. Les surcharges PMK ont priorité.':'Valeurs proposées par défaut ; aucune configuration existante n’est effacée.';
         const effective=()=>merge({runtime:definition.runtime,settings:merge(definition.settings,local)},ctx.rootObject.pageOptions?.[id]);
         function store(path,value){ctx.rootObject.pageOptions ||= {};ctx.rootObject.pageOptions[id] ||= {};put(ctx.rootObject.pageOptions[id],path,value);ctx.markDirty?.();}
+        const active=create('label','Page active dans le menu Outils : '),activeBox=create('input');activeBox.type='checkbox';activeBox.checked=ctx.rootObject.pageOptions?.[id]?.enabled !== false;activeBox.setAttribute('aria-label','Activer '+definition.title);activeBox.onchange=()=>store('enabled',activeBox.checked);active.appendChild(activeBox);panel.appendChild(active);
         const access=create('label','Accès à cette page : '),policy=create('select');policy.setAttribute('aria-label','Accès à '+definition.title);for(const [value,label]of [['default','Conserver l’accès actuel'],['superlibrarian','Superlibrarian Koha'],['staff','Personnel Koha']]){const option=create('option',label);option.value=value;policy.appendChild(option);}policy.value=ctx.rootObject.pageOptions?.[id]?.access||'default';policy.onchange=()=>store('access',policy.value);access.appendChild(policy);panel.appendChild(access);
         panel.appendChild(create('p','Ce choix contrôle l’ouverture de l’interface. Les permissions Koha et les règles Koha restent nécessaires pour agir sur les données.'));
         if(definition.configureModule){const button=create('button','Configurer le module commun','btn btn-default');button.type='button';button.onclick=()=>window.PMKConfig.openAdmin(definition.configureModule);panel.appendChild(button);panel.appendChild(create('p','Cette page réutilise les réglages de son module. Ils ne sont pas dupliqués ici.'));}
@@ -2725,12 +1672,16 @@ function renderEditor(ctx){
             if(field.choices)for(const [value,text]of field.choices){const option=create('option',text);option.value=value;input.appendChild(option);}
             input.setAttribute('aria-label',field.label);input.className='form-control';if(field.type==='boolean')input.type='checkbox';else if(field.type==='number')input.type='number';else if(field.path.endsWith('.adminPassword'))input.type='password';
             const value=at(effective(),field.path);if(field.type==='boolean')input.checked=!!value;else input.value=field.type==='json'?JSON.stringify(value??{},null,2):field.type==='list'?(value||[]).join('\n'):value??'';
-            const update=()=>{let value;if(field.type==='boolean')value=input.checked;else if(field.type==='number')value=input.value===''?'':Number(input.value);else if(field.type==='list')value=input.value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);else if(field.type==='json'){try{value=JSON.parse(input.value);input.setCustomValidity('');}catch(_){value=input.value;input.setCustomValidity('JSON invalide');}}else value=input.value;store(field.path,value);};input.addEventListener('input',update);input.addEventListener('change',update);
+            const update=()=>{let value;if(field.type==='boolean')value=input.checked;else if(field.type==='number')value=input.value===''?(/notForLoanExcluded|lostPilon|lostReview/.test(field.path)?null:''):Number(input.value);else if(field.type==='list')value=input.value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);else if(field.type==='json'){try{value=JSON.parse(input.value);input.setCustomValidity('');}catch(_){value=input.value;input.setCustomValidity('JSON invalide');}}else value=input.value;store(field.path,value);};input.addEventListener('input',update);input.addEventListener('change',update);
             const reset=create('button','Reprendre la valeur héritée','btn btn-link btn-sm');reset.type='button';reset.onclick=()=>{ctx.rootObject.pageOptionHistory ||= [];ctx.rootObject.pageOptionHistory.push({page:id,path:field.path,value:clone(at(ctx.rootObject.pageOptions?.[id],field.path))});store(field.path,{$inherit:true});show();};
             label.appendChild(input);row.append(label,create('small',hint(field),'pmk-field-help'),reset);(field.advanced?advanced:basic).appendChild(row);
         }
         if(advanced.childElementCount>1)panel.appendChild(advanced);
         for(const button of sqlButtons(id))panel.appendChild(button);
+        if(id==='patron-map' && definition.sqlFile){
+            const sqlBox=create('textarea');sqlBox.readOnly=true;sqlBox.rows=18;sqlBox.className='form-control';sqlBox.setAttribute('aria-label','SQL du rapport de cartographie à coller dans Koha');sqlBox.value='Chargement du SQL…';panel.appendChild(sqlBox);
+            try{const base=window.PMKPages?.assetUrl?.(definition.sqlFile)||definition.sqlFile;const response=await request(id,base,{},null);if(!response.ok){sqlBox.value='SQL indisponible (HTTP '+response.status+')';}else{const text=await response.text();const selectAt=text.search(/\bSELECT\b/i);sqlBox.value=selectAt>=0?text.slice(selectAt).replace(/\s+$/,''):text;}}catch(error){sqlBox.value=error.message;}
+        }
         const exportButton=create('button','Exporter les réglages de cette page','btn btn-default');exportButton.type='button';exportButton.onclick=()=>download('pmk-page-'+id+'.json',{format:'pmk-page-settings',version:1,page:id,options:ctx.rootObject.pageOptions?.[id]||{},effective:effective(),local});
         const importLabel=create('label','Importer des réglages de cette page : '),file=create('input');file.type='file';file.accept='.json,application/json';const result=create('p');result.setAttribute('role','status');
         file.onchange=async()=>{try{const value=await importedJson(file.files[0]);if(value.format!=='pmk-page-settings'||value.page!==id||!object(value.options))throw new Error('Fichier de réglages incompatible avec cette page.');const imported=merge(value.effective||{},value.options);const candidate=clone(ctx.rootObject);candidate.pageOptions ||= {};candidate.pageOptions[id]=merge(candidate.pageOptions[id]||{},imported);const validation=validate(candidate);if(!validation.ok)throw new Error(validation.message);ctx.rootObject.pageOptions ||= {};ctx.rootObject.pageOptionsArchives ||= {};ctx.rootObject.pageOptionsArchives[id] ||= [];ctx.rootObject.pageOptionsArchives[id].push(clone(ctx.rootObject.pageOptions[id]||{}));ctx.rootObject.pageOptions[id]=candidate.pageOptions[id];ctx.markDirty?.();await show();const status=panel.querySelector('[role="status"]');if(status)status.textContent='Importé dans le brouillon. Cliquez sur Enregistrer pour appliquer.';}catch(error){result.textContent=error.message;}};

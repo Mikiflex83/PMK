@@ -26,7 +26,7 @@
     // Keep the historical document ID and count fields; both views use this configuration.
     const DEFAULTS = { enabled:true, autoOpen:true, miniEnabled:true, pageEnabled:true,
         branchNames:'', branchSelector:'.logged-in-branch-name', defaultLocationId:'',
-        locationSource:'manual', hiddenLocationIds:'',
+        locationSource:'manual', hiddenLocationIds:'', configuredLocations:[],
         title:'Compteur de fréquentation', adminPin:'admin', defaultCountedWeeks:8, adultsLabel:'Adultes', kidsLabel:'Enfants',
         step:1, miniWidth:340, countsCollection:'counts', locationsCollection:'locations' };
     let resolveReady;
@@ -210,7 +210,7 @@
         height: 32px;
         font-size: 14px;
         font-weight: bold;
-        background: linear-gradient(180deg, #10b981, #059669);
+        background: #10b981;
         border: 1px solid #047857;
         border-radius: 8px;
         display: flex;
@@ -222,7 +222,7 @@
     }
 
     #freqAppMini .freq-counter-btn:hover {
-        background: linear-gradient(180deg, #34d399, #10b981);
+        background: #34d399;
         transform: translateY(-1px);
     }
 
@@ -231,7 +231,7 @@
     }
 
     #freqAppMini .freq-counter-btn:disabled {
-        background: linear-gradient(180deg, #6b7280, #4b5563);
+        background: #6b7280;
         border-color: #374151;
         cursor: not-allowed;
         transform: none;
@@ -272,7 +272,7 @@
     }
 
     #freqAppMini .freq-action-btn {
-        background: linear-gradient(180deg, #3b82f6, #1d4ed8);
+        background: #3b82f6;
         border: 1px solid #1e40af;
         border-radius: 6px;
         padding: 5px 10px;
@@ -286,12 +286,12 @@
     }
 
     #freqAppMini .freq-action-btn:hover {
-        background: linear-gradient(180deg, #60a5fa, #3b82f6);
+        background: #60a5fa;
         transform: translateY(-1px);
     }
 
     #freqAppMini .freq-action-btn:disabled {
-        background: linear-gradient(180deg, #6b7280, #4b5563);
+        background: #6b7280;
         border-color: #374151;
         cursor: not-allowed;
         transform: none;
@@ -299,16 +299,16 @@
     }
 
     #freqAppMini .freq-reset-btn {
-        background: linear-gradient(180deg, #6b7280, #4b5563);
+        background: #6b7280;
         border: 1px solid #374151;
     }
 
     #freqAppMini .freq-reset-btn:hover {
-        background: linear-gradient(180deg, #9ca3af, #6b7280);
+        background: #9ca3af;
     }
 
     #freqAppMini .freq-report-btn {
-        background: linear-gradient(180deg, #8b5cf6, #7c3aed);
+        background: #8b5cf6;
         border: 1px solid #6d28d9;
         border-radius: 6px;
         padding: 5px 10px;
@@ -324,14 +324,14 @@
     }
 
     #freqAppMini .freq-report-btn:hover {
-        background: linear-gradient(180deg, #a78bfa, #8b5cf6);
+        background: #a78bfa;
         transform: translateY(-1px);
         text-decoration: none;
         color: white;
     }
 
     #freqAppMini .freq-correction-btn {
-        background: linear-gradient(180deg, #f59e0b, #d97706);
+        background: #f59e0b;
         border: 1px solid #b45309;
         border-radius: 6px;
         padding: 5px 10px;
@@ -344,7 +344,7 @@
     }
 
     #freqAppMini .freq-correction-btn:hover {
-        background: linear-gradient(180deg, #fbbf24, #f59e0b);
+        background: #fbbf24;
         transform: translateY(-1px);
     }
 
@@ -423,7 +423,7 @@
     }
 
     .freq-correction-counter-btn {
-        background: linear-gradient(180deg, #10b981, #059669);
+        background: #10b981;
         border: 1px solid #047857;
         border-radius: 8px;
         padding: 10px 15px;
@@ -436,7 +436,7 @@
     }
 
     .freq-correction-counter-btn:hover {
-        background: linear-gradient(180deg, #34d399, #10b981);
+        background: #34d399;
         transform: translateY(-1px);
     }
 
@@ -468,17 +468,17 @@
     }
 
     .freq-modal-validate {
-        background: linear-gradient(180deg, #10b981, #059669);
+        background: #10b981;
         border-color: #047857;
         color: white;
     }
 
     .freq-modal-validate:hover {
-        background: linear-gradient(180deg, #34d399, #10b981);
+        background: #34d399;
     }
 
     .freq-modal-validate:disabled {
-        background: linear-gradient(180deg, #6b7280, #4b5563);
+        background: #6b7280;
         border-color: #374151;
         cursor: not-allowed;
         opacity: 0.6;
@@ -626,7 +626,7 @@
         padding: 8px 10px;
         border: 0;
         border-bottom: 1px solid var(--freq-border);
-        background: linear-gradient(180deg, #fbfdfc 0%, #f4f8f6 100%);
+        background: #fbfdfc;
         cursor: move;
     }
 
@@ -1116,6 +1116,8 @@
             right: 8px !important;
             top: auto !important;
             bottom: 8px !important;
+            max-height: calc(100vh - 16px);
+            overflow: auto;
             resize: none;
             border-radius: 12px;
         }
@@ -1241,7 +1243,7 @@
                        rel="noopener"
                        id="freq-statsLinkMini"
                        class="freq-action-btn freq-stat-btn"
-                       title="Ouvrir les statistiques Attendance Counter">
+                       title="Ouvrir les statistiques">
                         <span aria-hidden="true">▥</span> Statistiques
                     </a>
                 </div>
@@ -1251,7 +1253,7 @@
                                 id="freq-btnResetMini"
                                 title="Remettre les compteurs locaux à zéro"
                                 disabled>
-                            Reset
+                            Remettre à zéro
                         </button>
 
                         <button class="freq-action-btn freq-correction-btn"
@@ -1265,8 +1267,8 @@
                            target="_blank"
                            rel="noopener"
                            class="freq-action-btn freq-report-btn"
-                           title="Ouvrir le rapport SQL configuré">
-                            Rapport SQL
+                           title="Ouvrir le rapport complet">
+                            Rapport complet
                         </a>
                 </div>
             </div>
@@ -1348,7 +1350,8 @@
         if (!names.length) return true;
         try {
             const branch=document.querySelector(config.branchSelector || DEFAULTS.branchSelector);
-            const values=[branch?.textContent,branch?.getAttribute('data-branchcode')].filter(Boolean).map(value=>String(value).trim().toLocaleLowerCase());
+            const code=document.querySelector('.logged-in-branch-code');
+            const values=[branch,code].flatMap(node=>node?[node.textContent,node.getAttribute('data-branchcode'),node.getAttribute('data-branch')]:[]).filter(Boolean).map(value=>String(value).trim().toLocaleLowerCase());
             return values.some(value=>names.includes(value));
         } catch (_) {return false}
     }
@@ -1357,6 +1360,18 @@
         const cfg=Object.assign({},DEFAULTS,next || {});
         cfg.locationSource=['manual','koha','mix'].includes(cfg.locationSource)?cfg.locationSource:'manual';
         cfg.hiddenLocationIds=String(cfg.hiddenLocationIds||'');
+        const usedPlaceIds=new Set();
+        cfg.configuredLocations=(Array.isArray(cfg.configuredLocations)?cfg.configuredLocations:[]).map(row=>{
+            const name=String(row&&row.name||'').trim();
+            if(!name)return null;
+            let id=String(row&&row.id||'').trim();
+            if(!id||usedPlaceIds.has(id)){
+                const base='cfg:'+(name.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40)||'lieu');
+                id=base; let n=2; while(usedPlaceIds.has(id)){id=base+'-'+n; n+=1;}
+            }
+            usedPlaceIds.add(id);
+            return {id,name};
+        }).filter(Boolean);
         cfg.step=Math.max(1,Math.min(100,Math.round(Number(cfg.step) || 1)));
         cfg.miniWidth=Math.max(300,Math.min(520,Number(cfg.miniWidth) || 340));
         cfg.defaultCountedWeeks=Math.max(1,Math.min(53,Math.round(Number(cfg.defaultCountedWeeks) || 8)));
@@ -1377,65 +1392,220 @@
         });
         const title=root.querySelector('.freq-title, header h1');if(title)title.textContent=config.title;
         if(root.id==='freqAppMini')root.style.width=config.miniWidth+'px';
-        root.querySelectorAll('[id^="freq-inc"], [id^="freq-dec"]').forEach(button=>{
+        root.querySelectorAll('[id^="freq-incAdults"], [id^="freq-incKids"], [id^="freq-dec"]').forEach(button=>{
             const label=button.id.includes('Adults')?config.adultsLabel:config.kidsLabel;
             button.title=(button.id.includes('-inc')?'Ajouter ':'Retirer ')+config.step+' — '+label;
             button.setAttribute('aria-label',button.title);
         });
     }
 
+    // One queue per browser so rapid clicks are applied in order. Other browsers
+    // still share the document through revision checks and retries.
+    let counterWriteQueue = Promise.resolve();
+    function enqueueCounterWrite(task) {
+        const run = counterWriteQueue.then(task, task);
+        counterWriteQueue = run.then(() => undefined, () => undefined);
+        return run;
+    }
+
+    function sanitizeCounterId(value) {
+        return String(value || '').replace(/[^A-Za-z0-9_.-]/g, '_');
+    }
+
+    function localDateKey(value) {
+        const parsed = new Date(value);
+        if (Number.isNaN(parsed.getTime())) return '';
+        const month = String(parsed.getMonth() + 1).padStart(2, '0');
+        const day = String(parsed.getDate()).padStart(2, '0');
+        return parsed.getFullYear() + '-' + month + '-' + day;
+    }
+
+    function timestampRank(value) {
+        const time = Date.parse(value);
+        return Number.isFinite(time) ? time : Number.NEGATIVE_INFINITY;
+    }
+
+    function removeLatestTimestamps(times, amount) {
+        let remaining = amount;
+        while (remaining > 0 && times.length) {
+            let latest = 0;
+            for (let index = 1; index < times.length; index += 1) {
+                if (timestampRank(times[index]) >= timestampRank(times[latest])) latest = index;
+            }
+            times.splice(latest, 1);
+            remaining -= 1;
+        }
+    }
+
+    function counterConflict(error) {
+        return !!(error && (error.status === 409 || error.code === 'data_changed'));
+    }
+
+    async function commitCounterChange(runTransaction, db, work) {
+        let lastError;
+        for (let attempt = 0; attempt < 4; attempt += 1) {
+            try { return await runTransaction(db, work); }
+            catch (error) {
+                lastError = error;
+                if (!counterConflict(error) || attempt === 3) throw error;
+                await new Promise(resolve => setTimeout(resolve, 40 * (attempt + 1) + Math.floor(Math.random() * 80)));
+            }
+        }
+        throw lastError;
+    }
+
+    function notifyCountChanged(locationId, date, source) {
+        document.dispatchEvent(new CustomEvent('pmk:attendance-count-changed', {detail:{locationId, date, source: source || ''}}));
+    }
+
     // Single transaction engine shared by the floating and full-page views.
     async function mutateSharedCounter(deps, request) {
-        if(config.enabled===false || !isMediabus())throw new Error('Compteur désactivé pour ce site');
-        const {db,doc,runTransaction,serverTimestamp}=deps;
-        const storage=deps.configuration || config;
-        if(storage.countsCollection!==config.countsCollection)throw new Error('Rechargez la page après un changement du stockage.');
-        const {type,locationId,date,userId,existingId,notes,additions}=request;
-        if(!['adults','kids','notes','correction'].includes(type) || !locationId || !/^\d{4}-\d{2}-\d{2}$/.test(date))throw new Error('Saisie de fréquentation invalide');
-        const delta=Math.sign(Number(request.delta) || 0)*config.step;
-        const id=existingId || (locationId+'__'+date).replace(/[^A-Za-z0-9_.-]/g,'_');
-        const ref=doc(db,storage.countsCollection,id);
-        const result=await runTransaction(db,async transaction=>{
-            const snap=await transaction.get(ref);
-            const data=snap.exists()?snap.data():{};
-            const count=value=>Math.max(0,Math.floor(Number(value) || 0));
-            const payload={locationId,date,adults:count(data.adults),kids:count(data.kids),
-                adultTimestamps:Array.isArray(data.adultTimestamps)?data.adultTimestamps.slice():[],
-                kidTimestamps:Array.isArray(data.kidTimestamps)?data.kidTimestamps.slice():[],
-                userId:userId || 'anonymous',updatedAt:serverTimestamp()};
-            function adjust(category,change,timestamp) {
-                const before=payload[category];payload[category]=Math.max(0,before+change);
-                const times=category==='adults'?payload.adultTimestamps:payload.kidTimestamps;
-                const actual=payload[category]-before;
-                if(actual>0)for(let i=0;i<actual;i++)times.push(timestamp || new Date().toISOString());
-                else times.splice(Math.max(0,times.length+actual),-actual);
-            }
-            if(type==='adults' || type==='kids')adjust(type,delta);
-            if(type==='correction') {
-                if(!additions || !Number.isFinite(Date.parse(additions.timestamp)))throw new Error('Heure de correction invalide');
-                const reason=String(request.reason || '').trim();
-                if(reason.length<3 || reason.length>300)throw new Error('Indiquez une justification de 3 à 300 caractères.');
-                for(const category of ['adults','kids']) {
-                    const amount=Number(additions[category] || 0);
-                    if(!Number.isInteger(amount) || amount<0 || amount>10000)throw new Error('Nombre de personnes invalide');
-                    adjust(category,amount,additions.timestamp);
+        return enqueueCounterWrite(async () => {
+            if(config.enabled===false || !isMediabus())throw new Error('Compteur désactivé pour ce site');
+            const {db,doc,runTransaction,serverTimestamp}=deps;
+            const storage=deps.configuration || config;
+            if(storage.countsCollection!==config.countsCollection)throw new Error('Rechargez la page après un changement du stockage.');
+            const {type,locationId,date,userId,existingId,notes,additions}=request;
+            if(!['adults','kids','notes','correction'].includes(type) || !locationId || !/^\d{4}-\d{2}-\d{2}$/.test(date))throw new Error('Saisie de fréquentation invalide');
+            const delta=Math.sign(Number(request.delta) || 0)*config.step;
+            const canonicalId=sanitizeCounterId(locationId+'__'+date);
+            const suiteId=sanitizeCounterId(locationId+'__'+date+'__suite');
+            const preferredId=existingId || canonicalId;
+            const result=await commitCounterChange(runTransaction, db, async transaction=>{
+                const preferredRef=doc(db,storage.countsCollection,preferredId);
+                const preferredSnap=await transaction.get(preferredRef);
+                function foreign(snap) {
+                    if(!snap || !snap.exists()) return false;
+                    const stored=snap.data() || {};
+                    return !!(stored.locationId && stored.locationId!==locationId);
                 }
-                const log=Array.isArray(data.correctionLog)?data.correctionLog.slice(-49):[];
-                log.push({reason,userId:userId || 'anonymous',recordedAt:new Date().toISOString(),eventAt:additions.timestamp,
-                    adults:Number(additions.adults || 0),kids:Number(additions.kids || 0)});
-                payload.correctionLog=log;
-                payload.lastCorrection=log[log.length-1];
-            }
-            if(notes) {
-                if(Object.prototype.hasOwnProperty.call(notes,'adults'))payload.noteAdults=String(notes.adults);
-                if(Object.prototype.hasOwnProperty.call(notes,'kids'))payload.noteKids=String(notes.kids);
-            }
-            if(!snap.exists())payload.createdAt=serverTimestamp();
-            transaction.set(ref,payload,{merge:true});
-            return payload;
+                let snap=preferredSnap;
+                let ref=preferredRef;
+                if(foreign(preferredSnap)) {
+                    const canonicalRef=doc(db,storage.countsCollection,canonicalId);
+                    const canonicalSnap=preferredId===canonicalId ? preferredSnap : await transaction.get(canonicalRef);
+                    if(!foreign(canonicalSnap)) { snap=canonicalSnap; ref=canonicalRef; }
+                    else {
+                        ref=doc(db,storage.countsCollection,suiteId);
+                        snap=await transaction.get(ref);
+                        if(foreign(snap)) throw new Error('Cette journée est déjà réaffectée à un autre lieu.');
+                    }
+                }
+                const data=snap.exists()?snap.data():{};
+                const count=value=>Math.max(0,Math.floor(Number(value) || 0));
+                const payload={locationId,date,adults:count(data.adults),kids:count(data.kids),
+                    adultTimestamps:Array.isArray(data.adultTimestamps)?data.adultTimestamps.slice():[],
+                    kidTimestamps:Array.isArray(data.kidTimestamps)?data.kidTimestamps.slice():[],
+                    userId:userId || 'anonymous',updatedAt:serverTimestamp()};
+                function adjust(category,change,timestamp) {
+                    const before=payload[category];payload[category]=Math.max(0,before+change);
+                    const times=category==='adults'?payload.adultTimestamps:payload.kidTimestamps;
+                    const actual=payload[category]-before;
+                    if(actual>0)for(let i=0;i<actual;i++)times.push(timestamp || new Date().toISOString());
+                    else if(actual<0) removeLatestTimestamps(times, -actual);
+                }
+                if(type==='adults' || type==='kids')adjust(type,delta);
+                if(type==='correction') {
+                    if(!additions || localDateKey(additions.timestamp)!==date)throw new Error('Heure de correction invalide');
+                    const reason=String(request.reason || '').trim();
+                    if(reason.length<3 || reason.length>300)throw new Error('Indiquez une justification de 3 à 300 caractères.');
+                    for(const category of ['adults','kids']) {
+                        const amount=Number(additions[category] || 0);
+                        if(!Number.isInteger(amount) || amount<0 || amount>10000)throw new Error('Nombre de personnes invalide');
+                        adjust(category,amount,additions.timestamp);
+                    }
+                    const log=Array.isArray(data.correctionLog)?data.correctionLog.slice(-49):[];
+                    log.push({reason,userId:userId || 'anonymous',recordedAt:new Date().toISOString(),eventAt:additions.timestamp,
+                        adults:Number(additions.adults || 0),kids:Number(additions.kids || 0)});
+                    payload.correctionLog=log;
+                    payload.lastCorrection=log[log.length-1];
+                }
+                if(notes) {
+                    if(Object.prototype.hasOwnProperty.call(notes,'adults'))payload.noteAdults=String(notes.adults);
+                    if(Object.prototype.hasOwnProperty.call(notes,'kids'))payload.noteKids=String(notes.kids);
+                }
+                if(!snap.exists())payload.createdAt=serverTimestamp();
+                transaction.set(ref,payload,{merge:true});
+                return payload;
+            });
+            notifyCountChanged(locationId, date, request.source);
+            return result;
         });
-        document.dispatchEvent(new CustomEvent('pmk:attendance-count-changed',{detail:{locationId,date}}));
-        return result;
+    }
+
+    async function moveSharedCounts(deps, request) {
+        return enqueueCounterWrite(async () => {
+            if(config.enabled===false || !isMediabus())throw new Error('Compteur désactivé pour ce site');
+            const {db,doc,getDocs,collection,runTransaction,serverTimestamp}=deps;
+            const storage=deps.configuration || config;
+            if(storage.countsCollection!==config.countsCollection)throw new Error('Rechargez la page après un changement du stockage.');
+            const fromLocationId=String(request.fromLocationId || '');
+            const toLocationId=String(request.toLocationId || '');
+            const fromDate=String(request.fromDate || '');
+            const toDate=String(request.toDate || '');
+            const userId=request.userId || 'unknown';
+            if(!fromLocationId || !toLocationId || fromLocationId===toLocationId)throw new Error('Le lieu source et le lieu de destination doivent être différents.');
+            if(!/^\d{4}-\d{2}-\d{2}$/.test(fromDate) || !/^\d{4}-\d{2}-\d{2}$/.test(toDate) || fromDate>toDate)throw new Error('Plage de dates invalide.');
+            const snapshot=await getDocs(collection(db, storage.countsCollection));
+            const entries=[];
+            snapshot.forEach(docSnap => {
+                const data=docSnap.data() || {};
+                if(data.locationId===fromLocationId && data.date>=fromDate && data.date<=toDate) entries.push({id:docSnap.id, date:data.date});
+            });
+            const countOf=value=>Math.max(0,Math.floor(Number(value) || 0));
+            const asList=value=>Array.isArray(value)?value.slice():[];
+            function mergedNote(left, right) {
+                const first=String(left || '').trim();
+                const second=String(right || '').trim();
+                if(!first) return second;
+                if(!second || first===second) return first;
+                return first+' | '+second;
+            }
+            let moved=0;
+            for(const entry of entries) {
+                const destinationId=sanitizeCounterId(toLocationId+'__'+entry.date);
+                await commitCounterChange(runTransaction, db, async transaction => {
+                    const sourceRef=doc(db, storage.countsCollection, entry.id);
+                    const sourceSnap=await transaction.get(sourceRef);
+                    if(!sourceSnap.exists()) return;
+                    const source=sourceSnap.data() || {};
+                    if(source.locationId!==fromLocationId || source.date<fromDate || source.date>toDate) return;
+                    const sameDocument=sourceRef.id===destinationId;
+                    const destinationRef=sameDocument ? sourceRef : doc(db, storage.countsCollection, destinationId);
+                    const destinationSnap=sameDocument ? sourceSnap : await transaction.get(destinationRef);
+                    const destination=destinationSnap.exists() ? (destinationSnap.data() || {}) : {};
+                    if(!sameDocument && destination.locationId && destination.locationId!==toLocationId && destination.locationId!==fromLocationId) {
+                        throw new Error('La journée de destination appartient déjà à un autre lieu.');
+                    }
+                    const base=sameDocument ? {} : destination;
+                    const payload={
+                        locationId:toLocationId,
+                        date:source.date,
+                        adults:countOf(base.adults)+countOf(source.adults),
+                        kids:countOf(base.kids)+countOf(source.kids),
+                        adultTimestamps:asList(base.adultTimestamps).concat(asList(source.adultTimestamps)),
+                        kidTimestamps:asList(base.kidTimestamps).concat(asList(source.kidTimestamps)),
+                        userId, updatedAt:serverTimestamp(),
+                        correctedFromLocationId:fromLocationId,
+                        correctedAt:serverTimestamp(),
+                        correctedBy:userId
+                    };
+                    const adultNote=mergedNote(base.noteAdults, source.noteAdults);
+                    const kidNote=mergedNote(base.noteKids, source.noteKids);
+                    if(adultNote) payload.noteAdults=adultNote;
+                    if(kidNote) payload.noteKids=kidNote;
+                    const log=asList(base.correctionLog).concat(asList(source.correctionLog)).slice(-50);
+                    if(log.length) { payload.correctionLog=log; payload.lastCorrection=log[log.length-1]; }
+                    if(!destinationSnap.exists() || sameDocument) payload.createdAt=source.createdAt || serverTimestamp();
+                    transaction.set(destinationRef, payload, {merge:true});
+                    if(!sameDocument) transaction.delete(sourceRef);
+                });
+                notifyCountChanged(fromLocationId, entry.date, 'move');
+                notifyCountChanged(toLocationId, entry.date, 'move');
+                moved+=1;
+            }
+            return moved;
+        });
     }
 
     function isSuperlibrarian() {
@@ -1527,11 +1697,14 @@
         const [year, month, day] = (dateString || '').split('-').map(Number);
         const [hour, minute] = (hourMinute || '').split(':').map(Number);
 
-        if (!year || !month || !day || Number.isNaN(hour) || Number.isNaN(minute)) {
-            return new Date().toISOString();
+        if (!year || !month || !day || !Number.isInteger(hour) || !Number.isInteger(minute) || hour < 0 || hour > 23 || minute < 0 || minute > 59) {
+            throw new Error('Heure de correction invalide');
         }
 
         const localDate = new Date(year, month - 1, day, hour, minute, 0, 0);
+        if (localDate.getFullYear() !== year || localDate.getMonth() !== month - 1 || localDate.getDate() !== day || localDate.getHours() !== hour || localDate.getMinutes() !== minute) {
+            throw new Error('Heure de correction invalide');
+        }
         return localDate.toISOString();
     }
 
@@ -1610,9 +1783,20 @@
         }
 
         const margin = 8;
+        const availableWidth = Math.max(160, window.innerWidth - margin * 2);
+        const availableHeight = Math.max(120, window.innerHeight - margin * 2);
+        if (appElement.offsetWidth > availableWidth) appElement.style.maxWidth = availableWidth + 'px';
+        else if (!window.matchMedia('(max-width: 575.98px)').matches) appElement.style.removeProperty('max-width');
+        if (appElement.offsetHeight > availableHeight) {
+            appElement.style.maxHeight = availableHeight + 'px';
+            appElement.style.overflow = 'auto';
+        } else if (!window.matchMedia('(max-width: 575.98px)').matches) {
+            appElement.style.removeProperty('max-height');
+        }
+
         const rect = appElement.getBoundingClientRect();
         const maxLeft = Math.max(margin, window.innerWidth - rect.width - margin);
-        const maxTop = Math.max(margin, window.innerHeight - Math.min(rect.height, window.innerHeight - (margin * 2)) - margin);
+        const maxTop = Math.max(margin, window.innerHeight - rect.height - margin);
 
         const nextLeft = Math.min(Math.max(rect.left, margin), maxLeft);
         const nextTop = Math.min(Math.max(rect.top, margin), maxTop);
@@ -1781,6 +1965,7 @@
 
             localStorage.setItem('freqAppCompact', state.isCompact.toString());
             requestAnimationFrame(fitMiniToViewport);
+            setTimeout(fitMiniToViewport, 350);
         });
     }
 
@@ -1857,25 +2042,60 @@
             updateCorrectionValidateButton();
         });
 
-        // Validation de la correction
+        function clampCorrectionClock() {
+            let hours = parseInt(hoursInput.value, 10);
+            let minutes = parseInt(minutesInput.value, 10);
+            if (!Number.isInteger(hours)) hours = 0;
+            if (!Number.isInteger(minutes)) minutes = 0;
+            hours = Math.min(23, Math.max(0, hours));
+            minutes = Math.min(59, Math.max(0, minutes));
+            hoursInput.value = String(hours).padStart(2, '0');
+            minutesInput.value = String(minutes).padStart(2, '0');
+            updateCorrectionPreview();
+        }
+
+        let correctionBusy = false;
+        function setCorrectionLocked(locked) {
+            correctionBusy = locked;
+            adultBtn.disabled = locked;
+            kidBtn.disabled = locked;
+            hoursInput.disabled = locked;
+            minutesInput.disabled = locked;
+            reasonInput.disabled = locked;
+            if (locked) validateBtn.disabled = true;
+            else updateCorrectionValidateButton();
+        }
+
+        // Validation de la correction. Un second clic pendant l'enregistrement est ignoré.
         validateBtn.addEventListener('click', async () => {
+            if (correctionBusy) return;
+            clampCorrectionClock();
+            updateCorrectionValidateButton();
             if (state.correction.adults + state.correction.kids === 0 || state.correction.reason.length < 3) return;
+            const snapshot = {
+                adults: state.correction.adults,
+                kids: state.correction.kids,
+                reason: state.correction.reason
+            };
 
             try {
+                setCorrectionLocked(true);
                 updateStatus('Correction...');
 
                 const date = el('freq-inputDateMini').value || getLocalDateString();
                 const baseTimestamp = buildTimestampForLocalDateTime(date, state.correction.hour);
-                await saveCountWithTimestamps(state.correction, baseTimestamp);
+                await saveCountWithTimestamps(snapshot, baseTimestamp);
                 updateCountsUI();
 
-                updateStatus(`Correction enregistrée et justifiée : ${state.correction.adults} ${attendanceConfig.adultsLabel}, ${state.correction.kids} ${attendanceConfig.kidsLabel}`);
+                updateStatus(`Correction enregistrée et justifiée : ${snapshot.adults} ${attendanceConfig.adultsLabel}, ${snapshot.kids} ${attendanceConfig.kidsLabel}`);
                 setTimeout(() => updateStatus('Prêt'), 2000);
 
                 closeModal();
 
             } catch (error) {
-                updateStatus('Erreur correction');
+                updateStatus(error && error.message ? error.message : 'Erreur correction');
+            } finally {
+                setCorrectionLocked(false);
             }
         });
 
@@ -1974,6 +2194,13 @@
     }
 
     function initMiniEvents() {
+        document.addEventListener('pmk:attendance-count-changed', function(event) {
+            const detail = event.detail || {};
+            if (detail.source === 'mini') return;
+            if (!state.current.locationId || detail.locationId !== state.current.locationId || detail.date !== state.current.date) return;
+            loadCountsForSelectedDate();
+        });
+
         el('freq-incAdultsMini').addEventListener('click', async () => {
             await handleIncrement('adults');
         });
@@ -1991,9 +2218,9 @@
         });
 
         el('freq-btnUpdateMini').addEventListener('click', async () => {
-            updateStatus('MAJ...');
+            updateStatus('Actualisation...');
             await loadCountsForSelectedDate();
-            updateStatus('MAJ OK');
+            updateStatus('Actualisé');
             setTimeout(() => updateStatus('Prêt'), 2000);
         });
 
@@ -2003,7 +2230,7 @@
             state.timestamps.adults = [];
             state.timestamps.kids = [];
             updateCountsUI();
-            updateStatus('Reset OK');
+            updateStatus('Affichage remis à zéro');
             setTimeout(() => updateStatus('Prêt'), 2000);
         });
 
@@ -2048,9 +2275,18 @@
         el('freq-fix-cancel-mini').addEventListener('click', closeModal);
         overlay.addEventListener('click', closeModal);
 
+        let locationFixBusy = false;
         el('freq-fix-validate-mini').addEventListener('click', async () => {
-            await applyLocationCorrectionMini();
-            closeModal();
+            if (locationFixBusy) return;
+            locationFixBusy = true;
+            el('freq-fix-validate-mini').disabled = true;
+            try {
+                if (await applyLocationCorrectionMini()) closeModal();
+            } finally {
+                locationFixBusy = false;
+                const button = el('freq-fix-validate-mini');
+                if (button) button.disabled = false;
+            }
         });
     }
 
@@ -2162,32 +2398,20 @@
 
         try {
             updateStatus('Recherche des corrections...');
-            const snapshot = await getDocs(collection(db, attendanceConfig.countsCollection));
-            const docsToFix = [];
-
-            snapshot.forEach(docSnap => {
-                const data = docSnap.data();
-                if (data.locationId === oldLocationId && data.date >= from && data.date <= to) {
-                    docsToFix.push({ id: docSnap.id });
-                }
+            const moved = await window.PMKAttendance.moveCounts({
+                db, doc, getDocs, collection, runTransaction, serverTimestamp, configuration: attendanceConfig
+            }, {
+                fromLocationId: oldLocationId,
+                toLocationId: newLocationId,
+                fromDate: from,
+                toDate: to,
+                userId: state.user ? state.user.uid : 'unknown'
             });
 
-            if (docsToFix.length === 0) {
+            if (!moved) {
                 updateStatus('Aucune entrée à corriger');
                 alert('Aucune entrée trouvée pour ces critères');
-                return;
-            }
-
-            updateStatus(`Correction de ${docsToFix.length} entrée(s)...`);
-
-            for (const entry of docsToFix) {
-                await updateDoc(doc(db, attendanceConfig.countsCollection, entry.id), {
-                    locationId: newLocationId,
-                    correctedFromLocationId: oldLocationId,
-                    correctedAt: serverTimestamp(),
-                    correctedBy: state.user ? state.user.uid : 'unknown',
-                    updatedAt: serverTimestamp()
-                });
+                return false;
             }
 
             if (state.current.locationId === oldLocationId) {
@@ -2197,12 +2421,14 @@
             }
 
             await loadCountsForSelectedDate();
-            updateStatus(`${docsToFix.length} entrée(s) corrigée(s)`);
-            alert(`${docsToFix.length} entrée(s) corrigée(s) avec succès`);
+            updateStatus(`${moved} entrée(s) corrigée(s)`);
+            alert(`${moved} entrée(s) corrigée(s) avec succès`);
             setTimeout(() => updateStatus('Prêt'), 2000);
+            return true;
         } catch (error) {
             updateStatus('Erreur correction lieux');
             alert('Erreur lors de la correction des lieux: ' + error.message);
+            return false;
         }
     }
 
@@ -2219,7 +2445,7 @@
         const currentData=await getCurrentCountFromDB();
         const result=await window.PMKAttendance.mutate({db,doc,runTransaction,serverTimestamp,configuration:attendanceConfig},{
             type,delta,locationId:state.current.locationId,date:state.current.date,
-            existingId:currentData?.id,userId:state.user?.uid
+            existingId:currentData?.id,userId:state.user?.uid,source:'mini'
         });
         state.current.adults=result.adults;state.current.kids=result.kids;
         state.timestamps.adults=result.adultTimestamps;state.timestamps.kids=result.kidTimestamps;
@@ -2312,7 +2538,7 @@
         state.current.date=el('freq-inputDateMini').value || getLocalDateString();
         const currentData=await getCurrentCountFromDB();
         const result=await window.PMKAttendance.mutate({db,doc,runTransaction,serverTimestamp,configuration:attendanceConfig},{
-            type:'correction',locationId:state.current.locationId,date:state.current.date,existingId:currentData?.id,userId:state.user?.uid,
+            type:'correction',locationId:state.current.locationId,date:state.current.date,existingId:currentData?.id,userId:state.user?.uid,source:'mini',
             additions:{adults:correction.adults,kids:correction.kids,timestamp},reason:correction.reason
         });
         state.current.adults=result.adults;state.current.kids=result.kids;
@@ -2389,7 +2615,8 @@
     function resolveLocations(stored, libraries, cfg) {
         const source = cfg.locationSource || 'manual';
         const hidden = hiddenLocationSet(cfg.hiddenLocationIds);
-        const manual = (stored || []).filter(row => row && row.id && !String(row.id).startsWith('koha:') && !hidden.has(String(row.id))).map(row => Object.assign({source:'manual'}, row));
+        const configured = source === 'koha' ? [] : (cfg.configuredLocations || []).filter(row => row && row.id && row.name && !hidden.has(String(row.id))).map(row => ({id:row.id, name:row.name, source:'manual', extrapolate:false, defaultWeeks:cfg.defaultCountedWeeks}));
+        const manual = configured.concat((stored || []).filter(row => row && row.id && !String(row.id).startsWith('koha:') && !hidden.has(String(row.id))).map(row => Object.assign({source:'manual'}, row)));
         const koha = (libraries || []).filter(row => row && row.id && !hidden.has(String(row.id)));
         const chosen = source === 'koha' ? koha : source === 'mix' ? koha.concat(manual) : manual;
         const seen = new Set();
@@ -2434,12 +2661,110 @@
         return {locations:resolveLocations(stored, libraries, cfg), warning, source:cfg.locationSource};
     }
 
+    let libraryCache = null;
+    function loadLibraries() {
+        if (!libraryCache) libraryCache = readKohaLibraries(DEFAULTS.defaultCountedWeeks).catch(error => { libraryCache = null; throw error; });
+        return libraryCache;
+    }
+    function branchChecklist(ctx) {
+        const root = ctx.rootObject || {};
+        const box = document.createElement('div');
+        const select = document.createElement('select');
+        select.multiple = true;
+        select.size = 8;
+        select.className = 'form-control';
+        const hint = document.createElement('small');
+        hint.className = 'pmk-field-help';
+        hint.textContent = 'Chargement des sites Koha…';
+        box.append(select, hint);
+        const write = function () {
+            const selected = new Set(Array.from(select.selectedOptions).map(option => option.value));
+            const known = new Set();
+            Array.from(select.options).forEach(option => {
+                known.add(option.value.toLocaleLowerCase());
+                const name = option.textContent.replace(/\s*\([^)]*\)\s*$/, '').trim().toLocaleLowerCase();
+                if (name) known.add(name);
+            });
+            const unknown = String(root.branchNames || '').split(/[\n,;]+/).map(value => value.trim()).filter(value => value && !known.has(value.toLocaleLowerCase()));
+            const lines = [];
+            Array.from(select.options).forEach(option => {
+                if (!selected.has(option.value)) return;
+                lines.push(option.value);
+                const name = option.textContent.replace(/\s*\([^)]*\)\s*$/, '').trim();
+                if (name) lines.push(name);
+            });
+            root.branchNames = lines.concat(unknown).join('\n');
+            if (typeof ctx.markDirty === 'function') ctx.markDirty();
+            hint.textContent = selected.size ? selected.size + ' site(s) autorisé(s).' : 'Aucune sélection : le compteur est proposé sur tous les sites.';
+        };
+        loadLibraries().then(rows => {
+            const tokens = new Set(String(root.branchNames || '').split(/[\n,;]+/).map(value => value.trim().toLocaleLowerCase()).filter(Boolean));
+            rows.forEach(row => {
+                const code = String(row.id || '').replace(/^koha:/, '');
+                const option = document.createElement('option');
+                option.value = code;
+                option.textContent = (row.name || code) + ' (' + code + ')';
+                option.selected = tokens.has(code.toLocaleLowerCase()) || tokens.has(String(row.name || '').trim().toLocaleLowerCase());
+                select.append(option);
+            });
+            hint.textContent = select.selectedOptions.length ? select.selectedOptions.length + ' site(s) autorisé(s).' : 'Aucune sélection : le compteur est proposé sur tous les sites.';
+        }).catch(() => {
+            select.remove();
+            hint.textContent = 'Les sites Koha ne sont pas disponibles. Saisissez les codes ou les noms, un par ligne. Une liste vide autorise tous les sites.';
+            const area = document.createElement('textarea');
+            area.className = 'form-control';
+            area.rows = 4;
+            area.value = root.branchNames || '';
+            area.addEventListener('input', function () { root.branchNames = area.value; if (typeof ctx.markDirty === 'function') ctx.markDirty(); });
+            box.append(area);
+        });
+        select.addEventListener('change', write);
+        return box;
+    }
+    function hiddenChecklist(ctx) {
+        const root = ctx.rootObject || {};
+        const box = document.createElement('div');
+        const select = document.createElement('select');
+        select.multiple = true;
+        select.size = 8;
+        select.className = 'form-control';
+        const hint = document.createElement('small');
+        hint.className = 'pmk-field-help';
+        hint.textContent = 'Chargement des lieux…';
+        box.append(select, hint);
+        const fill = function (rows) {
+            const hidden = new Set(String(root.hiddenLocationIds || '').split(/[\n,;]+/).map(value => value.trim()).filter(Boolean));
+            const seen = new Set();
+            select.replaceChildren();
+            const add = function (id, label) {
+                if (!id || seen.has(id)) return;
+                seen.add(id);
+                const option = document.createElement('option');
+                option.value = id;
+                option.textContent = label;
+                option.selected = hidden.has(id);
+                select.append(option);
+            };
+            (rows || []).forEach(row => add(row.id, (row.name || row.id) + ' (' + String(row.id).replace(/^koha:/, '') + ')'));
+            (root.configuredLocations || []).forEach(row => { if (row && row.id && row.name) add(row.id, row.name); });
+            hidden.forEach(id => add(id, id));
+            hint.textContent = select.selectedOptions.length ? select.selectedOptions.length + ' lieu(x) masqué(s).' : 'Aucun lieu masqué.';
+        };
+        loadLibraries().then(fill).catch(() => fill([]));
+        select.addEventListener('change', function () {
+            root.hiddenLocationIds = Array.from(select.selectedOptions).map(option => option.value).join('\n');
+            if (typeof ctx.markDirty === 'function') ctx.markDirty();
+            hint.textContent = select.selectedOptions.length ? select.selectedOptions.length + ' lieu(x) masqué(s).' : 'Aucun lieu masqué.';
+        });
+        return box;
+    }
+
     function registerWithPMK() {
         if (!window.PMKConfig || registered) return false;
         registered = true;
         window.PMKConfig.registerModule({
             id: MODULE_ID,
-            schemaVersion: 1,
+            schemaVersion: 2,
             name: {fr:'Compteur de fréquentation',en:'Attendance counter'},
             description: {fr:'Un compteur commun aux vues flottante et pleine page : mêmes lieux, compteurs, réglages et historique. Les statistiques et exports restent disponibles dans la page dédiée.',en:'One counter shared by floating and full-page views, with the same locations, settings and history.'},
             category:{fr:'Circulation et accueil',en:'Circulation and front desk'},
@@ -2455,13 +2780,17 @@
                 {key:'miniEnabled',type:'boolean',label:'Proposer le compteur flottant'},
                 {key:'pageEnabled',type:'boolean',label:'Activer la page de saisie et de rapports'},
                 {key:'autoOpen',type:'boolean',label:'Ouvrir automatiquement le compteur flottant'},
-                {key:'branchNames',type:'textarea',label:'Sites autorisés (vide = tous)',help:'Codes ou noms des sites de connexion, séparés par des virgules ou des lignes. Cela limite où le compteur flottant apparaît. Les lieux de comptage se choisissent plus bas.'},
+                {type:'custom',label:{fr:'Afficher le compteur flottant sur ces sites',en:'Show the floating counter on these libraries'},help:{fr:'Cochez les bibliothèques de connexion où le compteur flottant doit apparaître. Aucune case cochée : il apparaît sur tous les sites. Les lieux de comptage, eux, se règlent plus bas.',en:'Tick the signed-in libraries where the floating counter should appear. No tick: it appears on every library. Counting places are set further down.'},render:branchChecklist},
                 {key:'locationSource',type:'select',label:{fr:'Source des lieux de comptage',en:'Counting location source'},options:[
                     {value:'manual',label:{fr:'Liste manuelle',en:'Manual list'}},
                     {value:'koha',label:{fr:'Sites Koha',en:'Koha libraries'}},
                     {value:'mix',label:{fr:'Sites Koha et liste manuelle',en:'Koha libraries and manual list'}}
-                ],help:{fr:'Liste manuelle : lieux ajoutés dans la page. Sites Koha : bibliothèques de ce Koha. Mélange : les deux. Un lieu masqué sort de la saisie sans effacer ses comptages.',en:'Manual list: places added on the page. Koha libraries: this Koha’s libraries. Mix: both. Hiding a place removes it from counting without deleting its counts.'}},
-                {key:'hiddenLocationIds',type:'textarea',label:{fr:'Lieux masqués',en:'Hidden locations'},help:{fr:'Un identifiant par ligne. Un site Koha s’écrit koha: suivi de son code, par exemple koha:CPL. Un lieu manuel utilise l’identifiant affiché dans la page. Effacer une ligne le réaffiche.',en:'One identifier per line. A Koha library is written koha: followed by its code, for example koha:CPL. A manual place uses the identifier shown on the page. Clearing a line shows it again.'}},
+                ],help:{fr:'Liste manuelle : lieux saisis ci-dessous et lieux déjà enregistrés dans la page. Sites Koha : bibliothèques de ce Koha. Mélange : les deux. Un lieu masqué sort de la saisie sans effacer ses comptages.',en:'Manual list: places entered below and places already saved on the page. Koha libraries: this Koha’s libraries. Mix: both. Hiding a place removes it from counting without deleting its counts.'}},
+                {key:'configuredLocations',type:'repeater',label:{fr:'Lieux saisis dans la configuration',en:'Places entered in the configuration'},addLabel:{fr:'Ajouter un lieu',en:'Add a place'},emptyLabel:{fr:'Aucun lieu saisi ici.',en:'No place entered here.'},itemTitleKey:'name',newItem:()=>({id:'',name:''}),help:{fr:'Ces lieux sont proposés quand la source est la liste manuelle ou le mélange. L’identifiant est créé à partir du nom s’il est laissé vide.',en:'These places are offered when the source is the manual list or the mix. The identifier is created from the name when left empty.'},fields:[
+                    {key:'name',type:'text',label:{fr:'Nom du lieu',en:'Place name'}},
+                    {key:'id',type:'text',advanced:true,label:{fr:'Identifiant',en:'Identifier'}}
+                ]},
+                {type:'custom',label:{fr:'Lieux masqués',en:'Hidden places'},help:{fr:'Cochez les sites Koha ou les lieux saisis ci-dessus à retirer de la saisie. Leurs comptages restent conservés.',en:'Select the Koha libraries or configured places to remove from counting. Their counts stay stored.'},render:hiddenChecklist},
                 {key:'branchSelector',type:'elementPicker',allowManual:true,manualAlways:true,label:'Élément portant le site de connexion',pick:ctx=>{
                     const picker=window.PMKConfig.elementPicker;
                     picker?.register(MODULE_ID,{});
@@ -2492,6 +2821,7 @@
         getConfig:()=>JSON.parse(JSON.stringify(config)),
         collectLocations,
         mutate:mutateSharedCounter,
+        moveCounts:moveSharedCounts,
         decorate,
         inScope:isMediabus,
         hide:hideInternally,

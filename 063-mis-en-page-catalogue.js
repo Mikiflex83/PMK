@@ -74,8 +74,11 @@
       margin: '',
       padding: '',
       background: '',
+      backgroundColor: '',
       color: '',
       border: '',
+      borderColor: '',
+      borderWidth: '',
       borderRadius: '',
       fontSize: '',
       fontWeight: '',
@@ -124,6 +127,10 @@
       enabled: true,
       label: { fr: labelFr, en: labelEn || labelFr },
       order: order,
+      columns: 1,
+      titleColor: '',
+      titleSize: '',
+      card: false,
       style: styleProfile(),
       items: items
     };
@@ -377,6 +384,10 @@
         enabled: g.enabled !== false,
         label: { fr: labelFr, en: labelEn },
         order: (gi + 1) * 10,
+        columns: Math.max(1, Math.min(4, Number(g.columns) || 1)),
+        titleColor: clean(g.titleColor),
+        titleSize: clean(g.titleSize),
+        card: g.card === true,
         style: normalizeStyle(g.style),
         items: items
       };
@@ -445,7 +456,7 @@
       var aliases = lines(itemCfg.aliases && itemCfg.aliases.fr)
         .concat(lines(itemCfg.aliases && itemCfg.aliases.en));
       if (aliases.length) {
-        nodes = Array.prototype.filter.call(root.querySelectorAll('li'), function (li) {
+        nodes = Array.prototype.filter.call(root.querySelectorAll('li, span.results_summary'), function (li) {
           if (li.closest('.technique')) return false;
           return matchesAliases(li, aliases);
         });
@@ -602,6 +613,10 @@
       var value = clean(style[key]);
       if (value) node.style[map[key]] = value;
     });
+    if (!clean(style.background) && clean(style.backgroundColor)) node.style.background = clean(style.backgroundColor);
+    if (!clean(style.border) && (clean(style.borderColor) || clean(style.borderWidth))) {
+      node.style.border = (clean(style.borderWidth) || '1px') + ' solid ' + (clean(style.borderColor) || 'currentColor');
+    }
 
     if (
       clean(style.hoverBackground) || clean(style.hoverColor) ||
@@ -776,16 +791,29 @@
       groupDiv.className = 'pmk063-group';
       groupDiv.setAttribute('data-pmk063-group', entry.group.id);
       applyStyleProfile(groupDiv, entry.group.style, 'group-' + entry.group.id);
+      if (entry.group.card) {
+        if (!clean(entry.group.style && entry.group.style.padding)) groupDiv.style.padding = groupDiv.style.padding || '.55rem .7rem';
+        if (!clean(entry.group.style && entry.group.style.background) && !clean(entry.group.style && entry.group.style.backgroundColor)) groupDiv.style.background = groupDiv.style.background || '#f8f9fa';
+        if (!clean(entry.group.style && entry.group.style.border) && !clean(entry.group.style && entry.group.style.borderColor)) groupDiv.style.border = groupDiv.style.border || '1px solid #dee2e6';
+        if (!clean(entry.group.style && entry.group.style.borderRadius)) groupDiv.style.borderRadius = groupDiv.style.borderRadius || '6px';
+      }
 
       if (cfg.appearance.showGroupTitles) {
         var title = document.createElement('div');
         title.className = 'pmk063-group-title';
         title.textContent = entry.group.label[lang] || entry.group.label.fr || entry.group.label.en || entry.group.id;
+        if (clean(entry.group.titleColor)) title.style.color = clean(entry.group.titleColor);
+        if (clean(entry.group.titleSize)) title.style.fontSize = clean(entry.group.titleSize);
         groupDiv.appendChild(title);
       }
 
       var list = document.createElement('ul');
       list.className = 'pmk063-group-list';
+      if (entry.group.columns > 1) {
+        list.style.display = 'grid';
+        list.style.gridTemplateColumns = 'repeat(' + entry.group.columns + ', minmax(0, 1fr))';
+        list.style.gap = '6px 12px';
+      }
 
       entry.rows.forEach(function (row) {
         markOrigin(row.node);
@@ -813,6 +841,10 @@
       enabled: true,
       label: { fr: 'Nouveau groupe', en: 'New group' },
       order: 10,
+      columns: 1,
+      titleColor: '',
+      titleSize: '',
+      card: false,
       style: styleProfile(),
       items: []
     };
@@ -934,7 +966,7 @@
         var path = request && Array.isArray(request.fieldPath) ? request.fieldPath : [];
 
         if (path.indexOf('groups') >= 0 && path.indexOf('items') >= 0) {
-          var li = candidate.closest('li');
+          var li = candidate.closest('li, span.results_summary');
           if (!li || !root.contains(li) || li.closest('.technique')) return null;
           return li;
         }
@@ -959,19 +991,27 @@
 
   function styleSchemaFields() {
     return [
+      { key: 'style.backgroundColor', type: 'color', label: { fr: 'Fond', en: 'Background' } },
+      { key: 'style.color', type: 'color', label: { fr: 'Couleur du texte', en: 'Text color' } },
+      { key: 'style.borderColor', type: 'color', label: { fr: 'Couleur de bordure', en: 'Border color' } },
+      { key: 'style.borderWidth', type: 'text', label: { fr: 'Épaisseur de bordure', en: 'Border width' }, placeholder: { fr: '1px', en: '1px' } },
+      { key: 'style.borderRadius', type: 'text', label: { fr: 'Arrondi', en: 'Border radius' }, placeholder: { fr: '6px', en: '6px' } },
+      { key: 'style.padding', type: 'text', label: { fr: 'Espacement interne', en: 'Padding' }, placeholder: { fr: '4px 8px', en: '4px 8px' } },
+      { key: 'style.fontSize', type: 'text', label: { fr: 'Taille du texte', en: 'Font size' }, placeholder: { fr: '0.95em', en: '0.95em' } },
+      { key: 'style.fontWeight', type: 'select', label: { fr: 'Graisse du texte', en: 'Font weight' }, options: [
+        { value: '', label: { fr: 'Inchangée', en: 'Unchanged' } },
+        { value: '400', label: { fr: 'Normale', en: 'Regular' } },
+        { value: '600', label: { fr: 'Demi-gras', en: 'Semibold' } },
+        { value: '700', label: { fr: 'Gras', en: 'Bold' } }
+      ] },
       { key: 'style.display', type: 'text', label: { fr: 'Mode d’affichage CSS', en: 'CSS display' }, advanced: true, placeholder: { fr: 'ex. flex, block, inline-block', en: 'e.g. flex, block, inline-block' } },
       { key: 'style.alignItems', type: 'text', label: { fr: 'Alignement vertical', en: 'Align items' }, advanced: true },
       { key: 'style.justifyContent', type: 'text', label: { fr: 'Répartition horizontale', en: 'Justify content' }, advanced: true },
       { key: 'style.flexWrap', type: 'text', label: { fr: 'Retour à la ligne flex', en: 'Flex wrap' }, advanced: true },
       { key: 'style.gap', type: 'text', label: { fr: 'Espacement (gap)', en: 'Gap' }, advanced: true },
       { key: 'style.margin', type: 'text', label: { fr: 'Marges', en: 'Margin' }, advanced: true },
-      { key: 'style.padding', type: 'text', label: { fr: 'Espacement interne', en: 'Padding' }, advanced: true },
-      { key: 'style.background', type: 'text', label: { fr: 'Fond', en: 'Background' } },
-      { key: 'style.color', type: 'color', label: { fr: 'Couleur du texte', en: 'Text color' } },
-      { key: 'style.border', type: 'text', label: { fr: 'Bordure', en: 'Border' }, advanced: true },
-      { key: 'style.borderRadius', type: 'text', label: { fr: 'Arrondi', en: 'Border radius' }, advanced: true },
-      { key: 'style.fontSize', type: 'text', label: { fr: 'Taille du texte', en: 'Font size' } },
-      { key: 'style.fontWeight', type: 'text', label: { fr: 'Graisse du texte', en: 'Font weight' }, advanced: true },
+      { key: 'style.background', type: 'text', advanced: true, label: { fr: 'Fond CSS libre', en: 'Custom CSS background' }, help: { fr: 'Remplace la couleur de fond si vous avez besoin d’un dégradé ou d’une image.', en: 'Replaces the background color when a gradient or image is needed.' } },
+      { key: 'style.border', type: 'text', label: { fr: 'Bordure CSS libre', en: 'Custom CSS border' }, advanced: true },
       { key: 'style.textAlign', type: 'text', label: { fr: 'Alignement du texte', en: 'Text alignment' }, advanced: true },
       { key: 'style.textDecoration', type: 'text', label: { fr: 'Décoration du texte', en: 'Text decoration' }, advanced: true },
       { key: 'style.boxShadow', type: 'text', label: { fr: 'Ombre', en: 'Box shadow' }, advanced: true },
@@ -1059,7 +1099,7 @@
 
     return {
       id: MODULE_ID,
-      schemaVersion: 4,
+      schemaVersion: 5,
       name: { fr: 'Organisation des informations de la notice', en: 'Record information layout' },
       description: {
         fr: 'Regroupe les informations bibliographiques et permet de mettre en forme n’importe quel élément de detail.pl avec le même moteur. Les finitions historiques du 107 sont désormais des règles par défaut de ce module.',
@@ -1129,7 +1169,11 @@
               fields: [
                 { key: 'enabled', type: 'boolean', label: { fr: 'Groupe actif', en: 'Group enabled' } },
                 { key: 'label.fr', type: 'text', label: { fr: 'Nom français', en: 'French name' } },
-                { key: 'label.en', type: 'text', label: { fr: 'Nom anglais', en: 'English name' } }
+                { key: 'label.en', type: 'text', label: { fr: 'Nom anglais', en: 'English name' } },
+                { key: 'columns', type: 'number', min: 1, max: 4, label: { fr: 'Colonnes', en: 'Columns' }, help: { fr: '1 à 4 colonnes pour les informations de ce groupe.', en: '1 to 4 columns for the information in this group.' } },
+                { key: 'card', type: 'boolean', label: { fr: 'Présenter le groupe comme une carte', en: 'Present the group as a card' } },
+                { key: 'titleColor', type: 'color', label: { fr: 'Couleur du titre', en: 'Title color' }, help: { fr: 'Visible lorsque les titres de groupes sont affichés.', en: 'Visible when group titles are shown.' } },
+                { key: 'titleSize', type: 'text', label: { fr: 'Taille du titre', en: 'Title size' }, placeholder: { fr: '1rem', en: '1rem' } }
               ].concat(styleSchemaFields()).concat([
                 {
                   key: 'items',

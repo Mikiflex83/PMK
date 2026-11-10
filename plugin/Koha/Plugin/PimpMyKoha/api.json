@@ -821,6 +821,37 @@
       "consumes": ["application/json"]
     }
   },
+  "/authorities": {
+    "get": {
+      "x-mojo-to": "PimpMyKoha::Controller#authorities",
+      "operationId": "pmk_authorities_read",
+      "tags": ["pmk"],
+      "parameters": [
+        {"name": "list", "in": "query", "required": true, "type": "string", "pattern": "^(referential|duplicates|orphans)$"},
+        {"name": "after", "in": "query", "type": "integer", "minimum": 0}
+      ],
+      "responses": {
+        "200": {"description": "Authority rows read from Koha", "schema": {"type": "object"}},
+        "400": {"description": "Invalid request", "schema": {"type": "object"}},
+        "403": {"description": "Reports permission required", "schema": {"type": "object"}}
+      },
+      "x-koha-authorization": {"permissions": {"reports": "execute_reports"}},
+      "produces": ["application/json"]
+    }
+  },
+  "/patron-map": {
+    "get": {
+      "x-mojo-to": "PimpMyKoha::Controller#patron_map",
+      "operationId": "pmk_patron_map",
+      "tags": ["pmk"],
+      "responses": {
+        "200": {"description": "Patron map rows read from Koha", "schema": {"type": "object"}},
+        "403": {"description": "Reports permission required", "schema": {"type": "object"}}
+      },
+      "x-koha-authorization": {"permissions": {"reports": "execute_reports"}},
+      "produces": ["application/json"]
+    }
+  },
   "/transfers": {
     "get": {
       "x-mojo-to": "PimpMyKoha::Controller#open_transfers",

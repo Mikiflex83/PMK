@@ -2,9 +2,9 @@
 const {launch,ROOT}=require('./lib/koha.cjs');const fs=require('node:fs'),assert=require('node:assert/strict');
 (async()=>{const h=await launch({offlineVendors:true}),p=h.page,rows=[];
  try{
- await h.configure('internal-pages-tools',{pageOptions:{transfers:{settings:{reportId:h.fixtures.reports['138-transferts.sql']}},serials:{settings:{reportId:h.fixtures.reports['138-periodiques.sql'],loadOnOpen:false}},biblios:{settings:{signatureReportId:h.fixtures.reports['138-signatures-notices.sql'],enableBnf:false}}}});
+ await h.configure('internal-pages-tools',{pageOptions:{biblios:{settings:{signatureReportId:h.fixtures.reports['138-signatures-notices.sql'],enableBnf:false}}}});
  await h.goto('/cgi-bin/koha/mainpage.pl?pmk_page=hub');
- const cases=[['reservations','dqr-refresh','dqr-status'],['loans','dql-refresh','dql-status'],['transfers','dqtr-refresh','dqtr-status'],['serials','load','dqs-status'],['patrons','load','dqp-status'],['items','dqi-load','dqi-status'],['biblios','load','dqb-status']];
+ const cases=[['patrons','load','dqp-status'],['items','dqi-load','dqi-status'],['biblios','load','dqb-status']];
  for(const [id,button,status,label]of cases){if(process.env.PMK_TEST_FILTER&&!id.includes(process.env.PMK_TEST_FILTER))continue;
   const e0=h.pageErrors.length,http0=h.httpErrors.length,start=h.requests.length,clock=Date.now();
   try{

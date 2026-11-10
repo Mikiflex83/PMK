@@ -707,20 +707,27 @@
         display: flex !important;
         flex-direction: column;
         width: 100% !important;
-        margin: 0 0 0.75rem 0;
-        border: 1px solid var(--bs-border-color, #dee2e6);
-        border-radius: 0.375rem;
+        margin: 0 0 0.9rem 0;
+        border: 1px solid var(--bs-border-color, #d5dde5);
+        border-left: 4px solid var(--bs-primary, #3f6f9a);
+        border-radius: 0.5rem;
         background: var(--bs-body-bg, #fff);
         overflow: hidden;
     }
 
-    .${TABLE_CLASS}.pmk-responsive-mode-stack > tbody > tr > td[${PRIORITY_ATTR}="primary"] { order: -2; }
+    .${TABLE_CLASS}.pmk-responsive-mode-stack > tbody > tr > td[${PRIORITY_ATTR}="primary"] {
+        order: -2;
+        background: var(--bs-tertiary-bg, #f4f7fa);
+        font-weight: 600;
+    }
     .${TABLE_CLASS}.pmk-responsive-mode-stack > tbody > tr > td[${PRIORITY_ATTR}="actions"] {
         order: 2;
         position: sticky;
         bottom: 0;
         z-index: 1;
         background: var(--bs-body-bg, #fff);
+        border-top: 1px solid var(--bs-border-color, #d5dde5);
+        padding-top: 0.65rem !important;
     }
 
     .${TABLE_CLASS}.pmk-responsive-mode-stack > tbody > tr > td {
@@ -745,10 +752,12 @@
 
     .${TABLE_CLASS}.pmk-responsive-mode-stack > tbody > tr > td:not(.${UNLABELLED_CLASS}):not(.${HIDDEN_CLASS})::before {
         content: attr(${LABEL_ATTR}) !important;
-        font-weight: 600;
+        font-size: 0.78rem;
+        font-weight: 650;
+        letter-spacing: 0.01em;
         line-height: 1.35;
         text-align: left;
-        color: inherit;
+        color: var(--bs-secondary-color, #5c6b7a);
     }
 
     .${TABLE_CLASS}.pmk-responsive-mode-stack > tbody > tr > td.${UNLABELLED_CLASS}:not(.${HIDDEN_CLASS}) {

@@ -7,7 +7,7 @@ use JSON ();
 use Try::Tiny;
 use Time::HiRes qw(time);
 my $json = JSON->new->canonical;
-my %namespaces = map { $_ => 1 } qw(attendance appointments journal lists taxonomy planning frequency internal-share authorities);
+my %namespaces = map { $_ => 1 } qw(attendance appointments journal lists taxonomy planning frequency internal-share authorities assistance inventory);
 
 sub _path {
     my ($path, $collection) = @_;

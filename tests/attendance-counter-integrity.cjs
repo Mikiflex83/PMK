@@ -70,6 +70,101 @@ const OUT = path.join(ROOT, 'tests/validation/attendance-counter-integrity.json'
   assert.match(transaction.refused, /justification/i);
   assert.equal(transaction.stored.lastCorrection.reason, 'Saisie différée après fermeture');
   assert.equal(transaction.stored.correctionLog.length, 1);
+
+  const conflicts = await page.evaluate(async () => {
+    const docs = new Map();
+    let serial = Promise.resolve();
+    let conflictsLeft = 2;
+    const deps = {
+      db: {}, configuration: PMKAttendance.getConfig(),
+      collection() { return { name: 'counts' }; },
+      doc(_db, _collection, id) { return { id }; },
+      serverTimestamp() { return 'server-time'; },
+      getDocs() {
+        return { forEach(cb) { docs.forEach((data, id) => cb({ id, data: () => structuredClone(data) })); } };
+      },
+      runTransaction(_db, callback) {
+        const result = serial.then(async () => {
+          if (conflictsLeft > 0) { conflictsLeft -= 1; const error = new Error('data_changed'); error.status = 409; throw error; }
+          const reads = new Map();
+          const writes = [];
+          const tx = {
+            async get(ref) {
+              const row = docs.get(ref.id);
+              reads.set(ref.id, row ? structuredClone(row) : null);
+              return { exists: () => docs.has(ref.id), data: () => structuredClone(docs.get(ref.id) || {}) };
+            },
+            set(ref, payload) { writes.push(['set', ref.id, structuredClone(payload)]); },
+            delete(ref) { writes.push(['delete', ref.id]); }
+          };
+          const value = await callback(tx);
+          writes.forEach(([op, id, payload]) => { if (op === 'delete') docs.delete(id); else docs.set(id, payload); });
+          return value;
+        });
+        serial = result.then(() => undefined, () => undefined);
+        return result;
+      }
+    };
+    const now = new Date();
+    const date = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+    const earlier = new Date(now.getTime() - 60 * 1000).toISOString();
+    const base = { locationId: 'hall', date, userId: 'agent' };
+    await PMKAttendance.mutate(deps, Object.assign({ type: 'correction', reason: 'Ouverture oubliée', additions: { adults: 1, kids: 0, timestamp: earlier } }, base));
+    await PMKAttendance.mutate(deps, Object.assign({ type: 'adults', delta: 1 }, base));
+    await PMKAttendance.mutate(deps, Object.assign({ type: 'adults', delta: -1 }, base));
+    const afterUndo = docs.get('hall__' + date);
+    let wrongDay = '';
+    try {
+      await PMKAttendance.mutate(deps, Object.assign({ type: 'correction', reason: 'Mauvaise journée', additions: { adults: 1, kids: 0, timestamp: '1999-01-01T10:00:00.000Z' } }, base));
+    } catch (error) { wrongDay = error.message; }
+    docs.set('hall__' + date, { locationId: 'other', date, adults: 5, kids: 0, adultTimestamps: [], kidTimestamps: [] });
+    await PMKAttendance.mutate(deps, Object.assign({ type: 'adults', delta: 1 }, base));
+    const moved = await PMKAttendance.moveCounts(deps, { fromLocationId: 'hall', toLocationId: 'desk', fromDate: date, toDate: date, userId: 'agent' });
+    await PMKAttendance.mutate(deps, Object.assign({ type: 'adults', delta: 1 }, base));
+    const ids = [...docs.keys()];
+    return {
+      keptCorrection: afterUndo.adults === 1 && afterUndo.adultTimestamps.length === 1 && afterUndo.adultTimestamps[0] === earlier,
+      wrongDay,
+      foreignUntouched: docs.get('hall__' + date).locationId === 'other' && docs.get('hall__' + date).adults === 5,
+      suiteAdults: (docs.get('hall__' + date + '__suite') || {}).adults || 0,
+      moved,
+      desk: docs.get('desk__' + date) || null,
+      hallAfterMove: docs.get('hall__' + date) || null
+    };
+  });
+  assert.equal(conflicts.keptCorrection, true, 'undo removes the latest passage and keeps the earlier correction');
+  assert.match(conflicts.wrongDay, /Heure de correction invalide/);
+  assert.equal(conflicts.foreignUntouched, true);
+  assert.equal(conflicts.moved, 1);
+  assert.equal(conflicts.desk && conflicts.desk.adults, 1);
+  assert.equal(conflicts.desk && conflicts.desk.locationId, 'desk');
+  assert.equal(conflicts.hallAfterMove.adults, 5);
+  assert.equal(conflicts.suiteAdults, 1);
+
+  let calls = 0;
+  await page.evaluate(async () => {
+    const select = document.querySelector('#freq-selectLocationMini');
+    select.value = 'hall';
+    select.dispatchEvent(new Event('change'));
+    document.querySelector('#freq-btnCorrectionMini').click();
+    document.querySelector('#freq-correction-adult').click();
+    document.querySelector('#freq-correction-reason').value = 'Saisie différée';
+    document.querySelector('#freq-correction-reason').dispatchEvent(new Event('input'));
+    let release;
+    const gate = new Promise(resolve => { release = resolve; });
+    window.__pmkReleaseCorrection = release;
+    const original = PMKAttendance.mutate;
+    PMKAttendance.mutate = function () {
+      window.__pmkCorrectionCalls = (window.__pmkCorrectionCalls || 0) + 1;
+      return gate.then(() => original.apply(this, arguments));
+    };
+    const button = document.querySelector('#freq-correction-validate');
+    button.click();
+    button.click();
+  });
+  calls = await page.evaluate(() => window.__pmkCorrectionCalls || 0);
+  await page.evaluate(() => window.__pmkReleaseCorrection());
+  assert.equal(calls, 1, 'a double click on validate records one correction');
   const evidence = { passed: true, newDay: await page.locator('#freq-inputDateMini').inputValue(), concurrentCount: transaction.stored.adults, correction: transaction.stored.lastCorrection, refusedWithoutReason: transaction.refused };
   fs.writeFileSync(OUT, JSON.stringify(evidence, null, 2) + '\n');
   await page.route('**/api/v1/libraries**', route => route.fulfill({contentType:'application/json', body:JSON.stringify([{library_id:'CPL',name:'Centre'},{library_id:'MED',name:'Médiathèque'}]), headers:{'x-total-count':'2'}}));

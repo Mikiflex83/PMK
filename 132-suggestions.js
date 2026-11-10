@@ -1,7 +1,14 @@
 /* ============================================================
    132-suggestions.js
    PimpMyKoha — Lecteur obligatoire pour une suggestion d'achat
-   Version : 2.1.0-universal
+   Version : 2.2.0-universal
+
+   Correction 2.2.0 :
+   - présélection du lecteur depuis la fiche adhérent (bug Koha 41997/42757) ;
+   - ne corrige que les nouvelles suggestions avec paramètres URL cohérents ;
+   - ne modifie pas les lecteurs attribués manuellement ;
+   - corrige aussi le lien affiché et préserve le gestionnaire Koha ;
+   - option de configuration PMK dédiée, activée par défaut.
 
    Correction 2.0.1 :
    - suppression de la boucle infinie MutationObserver ;
@@ -21,7 +28,7 @@
     window.__PMK132SuggestionSuggester = true;
 
     const MODULE_ID = "suggestion-required-suggester";
-    const MODULE_VERSION = "2.1.0-universal";
+    const MODULE_VERSION = "2.2.0-universal";
 
     const PAGE_PATH = "/cgi-bin/koha/suggestion/suggestion.pl";
 
@@ -30,6 +37,7 @@
 
     const DEFAULT_CONFIG = Object.freeze({
         enabled: true,
+        autoAssignFromPatronPage: true,
 
         warningFr:
             "Lecteur obligatoire : associez un lecteur à cette suggestion avant de l’enregistrer.",
@@ -63,6 +71,9 @@
     let configRevision = 0;
     let destroyed = false;
     let focusTimer = null;
+    let manualSuggesterInteraction = false;
+    let automaticSuggesterApplied = false;
+    let internalSuggesterChange = false;
 
 
     /* =========================================================
@@ -103,6 +114,7 @@
         // Do not replace user-entered empty strings with defaults.
         const result = Object.assign({}, s);
         result.enabled = s.enabled !== false;
+        result.autoAssignFromPatronPage = s.autoAssignFromPatronPage !== false;
         for (const key of ["warningFr", "warningEn", "alertFr", "alertEn"]) {
             result[key] = s[key] === undefined || s[key] === null
                 ? DEFAULT_CONFIG[key] : String(s[key]);
@@ -159,6 +171,112 @@
         return input
             ? String(input.value || "").trim()
             : "";
+    }
+
+
+    /* =========================================================
+       Correctif de la suggestion issue d'une fiche adhérent
+       ========================================================= */
+
+    function patronFromSuggestionUrl() {
+        const params = new URLSearchParams(window.location.search);
+
+        // Uniquement une création depuis la fiche de l'adhérent.
+        if (params.get("op") !== "add_form") return "";
+        if (params.get("redirect") !== "purchase_suggestions") return "";
+
+        const suggested = String(params.get("suggestedby") || "").trim();
+        const borrower = String(params.get("borrowernumber") || "").trim();
+
+        // Les deux paramètres doivent désigner le même lecteur.
+        if (!/^[1-9]\d*$/.test(suggested) || borrower !== suggested) {
+            return "";
+        }
+
+        return suggested;
+    }
+
+
+    function correctInitialSuggester(form) {
+        if (
+            !form ||
+            destroyed ||
+            currentConfig.enabled === false ||
+            currentConfig.autoAssignFromPatronPage === false ||
+            automaticSuggesterApplied ||
+            manualSuggesterInteraction
+        ) return;
+
+        const targetId = patronFromSuggestionUrl();
+        if (!targetId) return;
+
+        const field = form.querySelector('input#suggestedby[name="suggestedby"]');
+        const cell = form.querySelector("#tdsuggestedby");
+        if (!field || !cell) return;
+
+        const currentId = String(field.value || "").trim();
+        if (currentId === targetId) {
+            automaticSuggesterApplied = true;
+            return;
+        }
+
+        // Koha 25.11.04 peut présélectionner le bibliothécaire.
+        // Si un autre lecteur a déjà été choisi, ne pas l'écraser.
+        const managerField = form.querySelector("#managedby");
+        const managerId = managerField ? String(managerField.value || "").trim() : "";
+        if (currentId && (!managerId || currentId !== managerId)) return;
+
+        automaticSuggesterApplied = true;
+        field.value = targetId;
+        field.setAttribute("value", targetId);
+
+        const link = document.createElement("a");
+        link.href = "/cgi-bin/koha/members/moremember.pl?borrowernumber=" +
+            encodeURIComponent(targetId);
+        link.textContent = lang() === "en"
+            ? "Patron from record (Koha ID " + targetId + ")"
+            : "Lecteur de la fiche (n° Koha " + targetId + ")";
+
+        const note = document.createElement("span");
+        note.className = "text-muted pmk132-auto-suggester";
+        note.textContent = lang() === "en"
+            ? " · assigned automatically"
+            : " · attribué automatiquement";
+        cell.replaceChildren(field, document.createTextNode(" "), link, note);
+
+        internalSuggesterChange = true;
+        try {
+            field.dispatchEvent(new Event("change", { bubbles: true }));
+        } finally {
+            internalSuggesterChange = false;
+        }
+
+        if (typeof window.fetch === "function") {
+            window.fetch("/api/v1/patrons/" + encodeURIComponent(targetId), {
+                credentials: "same-origin",
+                headers: { "Accept": "application/json" }
+            })
+            .then(function (response) {
+                return response.ok ? response.json() : null;
+            })
+            .then(function (patron) {
+                if (
+                    destroyed || !patron ||
+                    String(field.value || "").trim() !== targetId ||
+                    !link.isConnected ||
+                    manualSuggesterInteraction
+                ) return;
+
+                const name = [patron.surname, patron.firstname]
+                    .filter(Boolean).join(", ");
+                if (!name) return;
+                const card = patron.cardnumber ? " (" + patron.cardnumber + ")" : "";
+                link.textContent = name + card;
+            })
+            .catch(function () {
+                // Lien correct conservé si l'API n'est pas accessible.
+            });
+        }
     }
 
 
@@ -454,6 +572,7 @@
         formBound = form;
 
 
+        correctInitialSuggester(form);
         updateState();
 
         return true;
@@ -471,7 +590,16 @@
             event.target.matches &&
             event.target.matches("#suggestedby")
         ) {
+            if (!internalSuggesterChange) manualSuggesterInteraction = true;
             updateState();
+        }
+    }
+
+
+    function manualPatronClickHandler(event) {
+        const target = event.target;
+        if (target && target.closest && target.closest("#edit_suggester")) {
+            manualSuggesterInteraction = true;
         }
     }
 
@@ -496,6 +624,7 @@
 
         listenersInstalled = true;
 
+        document.addEventListener("click", manualPatronClickHandler, true);
 
         document.addEventListener(
             "change",
@@ -566,10 +695,10 @@
 
             description: {
                 fr:
-                    "Empêche l’enregistrement d’une suggestion d’achat sans lecteur dans « Suggéré par ».",
+                    "Empêche les suggestions sans lecteur et corrige le préremplissage lors d'une création depuis sa fiche.",
 
                 en:
-                    "Prevents saving a purchase suggestion without a patron in the suggester field."
+                    "Requires a patron and fixes the suggester preselection when creating from a patron record."
             },
 
             category: {
@@ -610,6 +739,20 @@
 
                                 en:
                                     "Require a patron"
+                            }
+                        },
+
+                        {
+                            key: "autoAssignFromPatronPage",
+
+                            type: "boolean",
+
+                            label: {
+                                fr:
+                                    "Préattribuer le lecteur depuis sa fiche (correctif Koha)",
+
+                                en:
+                                    "Preselect patron from their record (Koha workaround)"
                             }
                         },
 
@@ -733,6 +876,8 @@
 
     async function start() {
         if (destroyed) return;
+        // Mémoriser un éventuel choix manuel avant le chargement de la configuration.
+        if (isSuggestionPage()) installListeners();
         registerModule();
         const requestedRevision = configRevision;
 
@@ -777,6 +922,7 @@
         if (observer) { observer.disconnect(); observer = null; }
         if (formBound) { formBound.removeEventListener("submit", submitHandler, true); formBound = null; }
         if (listenersInstalled) {
+            document.removeEventListener("click", manualPatronClickHandler, true);
             document.removeEventListener("change", fieldEventHandler, true);
             document.removeEventListener("input", fieldEventHandler, true);
             window.removeEventListener("focus", windowFocusHandler);

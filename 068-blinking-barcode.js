@@ -23,9 +23,12 @@
     const GENERATED_ATTR = "data-pmk068-generated";
     const SEARCH_KEY = "searchbox_value";
     const CODES_KEY = "codesBarres";
-    const NUMERIC_RX = /^\d{10,}$/;
-    const DR_RX = /^DR\d{10,}$/i;
-    const SEARCH_RX = /^(?:\d{6,}|DR\d{6,})$/i;
+    const BUILTIN_FORMATS = [
+        { id: "digits-10", enabled: true, labelFr: "Numérique, 10 chiffres ou plus", labelEn: "Numeric, 10 digits or more", pattern: "\\d{10,}" },
+        { id: "prefix-dr", enabled: true, labelFr: "Préfixe DR, puis 10 chiffres ou plus", labelEn: "DR prefix, then 10 digits or more", pattern: "DR\\d{10,}" },
+        { id: "digits-6", enabled: true, labelFr: "Numérique, de 6 à 9 chiffres", labelEn: "Numeric, 6 to 9 digits", pattern: "\\d{6,9}" },
+        { id: "prefix-dr-short", enabled: true, labelFr: "Préfixe DR, puis 6 à 9 chiffres", labelEn: "DR prefix, then 6 to 9 digits", pattern: "DR\\d{6,9}" }
+    ];
 
     const DEFAULTS = {
         enabled: true,
@@ -45,6 +48,7 @@
             retentionHours: 24
         },
         exactMatch: true,
+        formats: JSON.parse(JSON.stringify(BUILTIN_FORMATS)),
         selectors: {
             collectedTable: "#item_table",
             detailTable: "#holdings_table",
@@ -86,7 +90,62 @@
         });
         cfg.remembered.retentionHours = clamp(cfg.remembered.retentionHours, 24, 1, 8760);
         cfg.selectors = merge(DEFAULTS.selectors, cfg.selectors || {});
+        cfg.formats = normalizeFormats(raw && Object.prototype.hasOwnProperty.call(raw, "formats") ? raw.formats : null);
         return cfg;
+    }
+    function compileBarcodePattern(pattern) {
+        const source = String(pattern || "").trim();
+        if (!source || source.length > 80 || /\\[1-9]|\(\?/.test(source)) return null;
+        try { return new RegExp("^(?:" + source + ")$", "i"); }
+        catch (_) { return null; }
+    }
+    function normalizeFormats(raw) {
+        const incoming = Array.isArray(raw) ? raw : null;
+        const found = new Map();
+        const custom = [];
+        const builtinIds = new Set(BUILTIN_FORMATS.map(function (format) { return format.id; }));
+        (incoming || []).forEach(function (item) {
+            if (!item || typeof item !== "object") return;
+            const id = String(item.id || "").trim();
+            if (id && builtinIds.has(id)) {
+                if (!found.has(id)) found.set(id, item);
+                return;
+            }
+            const pattern = String(item.pattern || "").trim();
+            const labelFr = String(item.labelFr || item.labelEn || "").trim();
+            if (!pattern && !labelFr) return;
+            let customId = id && !builtinIds.has(id) ? id : "format_" + custom.length;
+            while (builtinIds.has(customId) || custom.some(function (format) { return format.id === customId; })) customId += "_" + custom.length;
+            custom.push({
+                id: customId,
+                enabled: item.enabled !== false,
+                labelFr: labelFr || "Format personnalisé",
+                labelEn: String(item.labelEn || item.labelFr || "Custom format"),
+                pattern: pattern
+            });
+        });
+        const builtins = BUILTIN_FORMATS.map(function (base) {
+            const item = found.get(base.id);
+            if (!incoming) return clone(base);
+            if (!item) return Object.assign(clone(base), { enabled: false });
+            return {
+                id: base.id,
+                enabled: item.enabled !== false,
+                labelFr: String(item.labelFr || base.labelFr),
+                labelEn: String(item.labelEn || base.labelEn),
+                pattern: String(item.pattern || "").trim() || base.pattern
+            };
+        });
+        return builtins.concat(custom);
+    }
+    function matchesBarcode(value) {
+        const text = String(value || "").trim();
+        if (!text || text.length > 80) return false;
+        return (config.formats || []).some(function (format) {
+            if (!format || format.enabled === false) return false;
+            const pattern = compileBarcodePattern(format.pattern);
+            return pattern ? pattern.test(text) : false;
+        });
     }
     function safeGet(key, fallback) {
         try { const v = localStorage.getItem(key); return v == null ? fallback : v; }
@@ -189,7 +248,7 @@
         const codes = [];
         table.querySelectorAll("a").forEach(function (a) {
             const value = String(a.textContent || "").trim();
-            if ((path.endsWith("itemsearch.pl") && NUMERIC_RX.test(value)) || (path.endsWith("moremember.pl") && (NUMERIC_RX.test(value) || DR_RX.test(value)))) codes.push(value);
+            if (matchesBarcode(value)) codes.push(value);
         });
         const now = Date.now();
         safeSet(CODES_KEY, JSON.stringify(Array.from(new Set(codes)).map(function (code) { return { code:code, at:now, source:path.endsWith("itemsearch.pl") ? "Recherche d’exemplaires" : "Dossier adhérent" }; })));
@@ -200,7 +259,7 @@
         if (!form || form.nodeType !== 1) return;
         const input = form.querySelector("#search-form, input[name='q'], input[type='search'], #findborrower, #findborrower_main");
         const value = input ? String(input.value || "").trim() : "";
-        if (SEARCH_RX.test(value)) safeSet(SEARCH_KEY, value);
+        if (matchesBarcode(value)) safeSet(SEARCH_KEY, value);
     }
 
     function applyHighlights() {
@@ -214,10 +273,10 @@
             const table = document.querySelector(config.selectors.detailTable);
             if (!table) return;
             if (config.remembered.enabled !== false) readCodeEntries().sort(function (a,b){return b.code.length-a.code.length;}).forEach(function (entry) { highlight(table, entry.code, "pmk068-remembered", "Code-barres mémorisé localement · " + (entry.source || "source historique")); });
-            if (config.lastSearch.enabled !== false && SEARCH_RX.test(search)) highlight(table, search, "pmk068-last-search", "Dernier code-barres recherché dans cet navigateur");
+            if (config.lastSearch.enabled !== false && matchesBarcode(search)) highlight(table, search, "pmk068-last-search", "Dernier code-barres recherché dans cet navigateur");
         } else if (path.endsWith("view_holdsqueue.pl")) {
             const table = document.querySelector(config.selectors.holdsQueueTable);
-            if (table && config.lastSearch.enabled !== false && SEARCH_RX.test(search)) highlight(table, search, "pmk068-last-search", "Dernier code-barres recherché dans cet navigateur");
+            if (table && config.lastSearch.enabled !== false && matchesBarcode(search)) highlight(table, search, "pmk068-last-search", "Dernier code-barres recherché dans cet navigateur");
         }
     }
 
@@ -236,20 +295,31 @@
     function validate(raw) {
         const cfg = normalize(raw);
         if (cfg.lastSearch.speedMs < 150 || cfg.remembered.speedMs < 150) return { ok:false, message:"La vitesse de clignotement doit être au moins de 150 ms." };
+        const invalid = (cfg.formats || []).filter(function (format) { return format && format.enabled !== false && !compileBarcodePattern(format.pattern); });
+        if (invalid.length) return { ok:false, message:"Un format actif a un motif invalide : " + invalid.map(function (format) { return format.labelFr || format.pattern || format.id; }).join(", ") };
         return { ok:true };
     }
 
     function definition() {
         return {
             id: MODULE_ID,
-            schemaVersion: 1,
+            schemaVersion: 2,
             name: { fr:"Repérage des codes-barres", en:"Barcode highlighting" },
-            description: { fr:"Repère visuellement le dernier code-barres recherché et les codes-barres mémorisés. Le module fonctionne indépendamment du 036.", en:"Highlights the last searched barcode and remembered barcodes. This module works independently from module 036." },
+            description: { fr:"Repère visuellement le dernier code-barres recherché et les codes-barres mémorisés. Les formats proposés peuvent être activés ou désactivés, et d'autres formats peuvent être ajoutés.", en:"Highlights the last searched barcode and remembered barcodes. The supplied formats can be enabled or disabled, and more formats can be added." },
             category: { fr:"Catalogue / circulation", en:"Catalog / circulation" },
             supportedPages:["catalogue.detail","catalogue.itemsearch","members.moremember","circ.holdsqueue"],
             prerequisites:[], dependencies:[], defaults:clone(DEFAULTS), normalize:normalize, validate:validate,
             schema:[
                 { type:"section", id:"general", label:{fr:"Activation",en:"Activation"}, fields:[{key:"enabled",type:"boolean",label:{fr:"Activer le repérage des codes-barres",en:"Enable barcode highlighting"}}] },
+                { type:"section", id:"formats", label:{fr:"Formats reconnus",en:"Recognized formats"}, description:{fr:"Les quatre formats déjà proposés restent dans la liste : activez ou désactivez chacun. Ajoutez ensuite autant de formats que nécessaire. Le motif s'applique au code entier, par exemple \\d{13} ou [A-Z]{2}\\d{8}.",en:"The four supplied formats stay in the list and can each be enabled or disabled. Add as many further formats as needed. The pattern matches the whole code, for example \\d{13} or [A-Z]{2}\\d{8}."}, fields:[
+                    { key:"formats", type:"repeater", label:{fr:"Formats",en:"Formats"}, addLabel:{fr:"Ajouter un format",en:"Add a format"}, reorder:true, newItem:function(){ return { id:"format_" + Date.now().toString(36), enabled:true, labelFr:"Nouveau format", labelEn:"New format", pattern:"" }; }, itemTitle:function(item){ return String(item && (item.labelFr || item.labelEn || item.pattern) || "Format"); }, fields:[
+                        { key:"enabled", type:"boolean", label:{fr:"Format actif",en:"Format enabled"} },
+                        { key:"labelFr", type:"text", label:{fr:"Nom",en:"Name"} },
+                        { key:"labelEn", type:"text", advanced:true, label:{fr:"Nom anglais",en:"English name"} },
+                        { key:"pattern", type:"text", label:{fr:"Motif",en:"Pattern"}, help:{fr:"Expression appliquée au code entier. Exemples : \\\\d{10,} ou [A-Z]{2}\\\\d{8}.",en:"Expression matched against the whole code. Examples: \\\\d{10,} or [A-Z]{2}\\\\d{8}."} },
+                        { key:"id", type:"text", readOnly:true, advanced:true, label:{fr:"Identifiant",en:"Identifier"} }
+                    ] }
+                ] },
                 { type:"section", id:"lastSearch", label:{fr:"Dernier code-barres recherché",en:"Last searched barcode"}, description:{fr:"Repère le code-barres de la dernière recherche. Cette fonction ne dépend pas du module 036 : le 068 mémorise lui-même les recherches code-barres qu’il observe.",en:"Highlights the last barcode search. This does not depend on module 036; module 068 records barcode searches itself when observed."}, fields:[
                     {key:"lastSearch.enabled",type:"boolean",label:{fr:"Activer ce repérage",en:"Enable this highlight"}},
                     {key:"lastSearch.backgroundColor",type:"color",label:{fr:"Couleur de fond",en:"Background color"}},

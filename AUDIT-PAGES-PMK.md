@@ -132,9 +132,9 @@ Configuration : module existant `attendance-mediabus-mini`, accessible depuis ce
 
 URL : `/cgi-bin/koha/mainpage.pl?pmk_page=restore-deleted-items`.
 
-Retrouver des exemplaires supprimés et les restaurer avec le plugin Koha.
+Retrouver des exemplaires supprimés et les restaurer dans PimpMyKoha.
 
-Moteur : Rapports Koha, plugin UndeleteRecords, API de prêt et retour natif.
+Moteur : API PimpMyKoha de recherche et de restauration, API de prêt et retour natif. Le parcours s’inspire du plugin UndeleteRecords (inLibro : David Bourgault, Olivier Vézina, William Lavoie, Hammat Wele, Noah Tremblay).
 
 Fonctions :
 
@@ -145,16 +145,13 @@ Fonctions :
 - Proposer le prêt ou le retour après restauration
 
 
-Prérequis : Plugin UndeleteRecords, rapports de recherche, permissions Koha et lecteur technique configurés.
+Prérequis : Droits Koha de restauration et lecteur technique pour le cycle prêt/retour. Aucun plugin UndeleteRecords et aucun rapport SQL.
 
 
-Réglages utiles : Comptes Koha autorisés (un par ligne), Carte du lecteur technique pour le prêt, Rapport de recherche par codes-barres, Rapport de recherche par dates, Période initiale de recherche (jours).
+Réglages utiles : Comptes Koha autorisés (un par ligne), Carte du lecteur technique pour le prêt, Période initiale de recherche (jours).
 
 
-Réglages avancés : Classe du plugin de restauration, Page d’exécution des plugins Koha, Page des rapports Koha, Nom du paramètre de codes-barres du rapport, Nom du paramètre de date de début, Nom du paramètre de date de fin, Codes-barres par recherche, Racine de l’API Koha, Code du site de circulation (vide = session Koha), Délai maximal d’une lecture (ms), Correspondance des colonnes des rapports.
-
-
-SQL à créer dans votre Koha puis ID à renseigner : `sql/138-restauration-codes-barres.sql`, `sql/138-restauration-dates.sql`. Le formulaire permet de copier le SQL.
+Réglages avancés : Racine de l’API Koha, Code du site de circulation (vide = session Koha), Délai maximal d’une lecture (ms).
 
 
 ### Désherbage
@@ -589,9 +586,9 @@ formulaire des dix-huit autres pages.
   contrôle de progression et limites explicites. `Last_Arrived` du SQL périodiques
   utilise la date de publication du dernier fascicule arrivé, pas sa date réelle
   de réception, que la table native ne fournit pas directement.
-- Restauration : plugin UndeleteRecords toujours requis. Les rapports 5230/5231,
-  le filtre nominatif et le lecteur technique historiques sont conservés par
-  défaut mais paramétrables ; ils ne sont pas supposés exister ailleurs.
+- Restauration : recherche et restauration par l’API PimpMyKoha. Le plugin
+  UndeleteRecords et les rapports SQL ne sont pas requis. Le filtre nominatif
+  et le lecteur technique restent paramétrables.
 - Retards : rapport 5261 inchangé par défaut. Le SQL générique fourni ne reproduit
   pas les règles Dracénie de ce rapport : il identifie les lecteurs en retard et
   les place « À contrôler ». Les sites, colonnes, étapes, messages, consignes,

@@ -2,9 +2,9 @@
 const {launch,ROOT}=require('./lib/koha.cjs');const fs=require('node:fs');const assert=require('node:assert/strict');
 (async()=>{const h=await launch({offlineVendors:true});const p=h.page,rows=[];
  try{
- await h.configure('internal-pages-tools',{pageOptions:{transfers:{settings:{reportId:h.fixtures.reports['138-transferts.sql']}},serials:{settings:{reportId:h.fixtures.reports['138-periodiques.sql'],loadOnOpen:false}},biblios:{settings:{signatureReportId:h.fixtures.reports['138-signatures-notices.sql'],enableBnf:false}},'restore-deleted-items':{runtime:{allowedUsernames:[],reportIdBarcode:h.fixtures.reports['138-restauration-codes-barres.sql'],reportIdDates:h.fixtures.reports['138-restauration-dates.sql']}},'overdue-management':{runtime:{reportId:h.fixtures.reports['138-suivi-retards-generique.sql']}}}});
+ await h.configure('internal-pages-tools',{pageOptions:{biblios:{settings:{signatureReportId:h.fixtures.reports['138-signatures-notices.sql'],enableBnf:false}},'restore-deleted-items':{runtime:{allowedUsernames:[]}}}});
  await h.goto('/cgi-bin/koha/mainpage.pl?pmk_page=hub');
- const manifest=await p.evaluate(()=>PMKPages.manifest);assert.equal(manifest.length,19);
+ const manifest=await p.evaluate(()=>PMKPages.manifest);assert.equal(manifest.length,15);
  for(const item of manifest){
   if(process.env.PMK_TEST_FILTER&&!item.id.includes(process.env.PMK_TEST_FILTER))continue;
   const e0=h.pageErrors.length,http0=h.httpErrors.length,w0=h.requests.length,start=Date.now();

@@ -9,6 +9,8 @@ use Koha::Plugin::PimpMyKoha;
 use Koha::Plugin::PimpMyKoha::NativeData;
 use Koha::Plugin::PimpMyKoha::Restoration;
 use Koha::Plugin::PimpMyKoha::Transfers;
+use Koha::Plugin::PimpMyKoha::PatronMap;
+use Koha::Plugin::PimpMyKoha::Authorities;
 use Koha::Reports;
 use Koha::Plugin::PimpMyKoha::Nedap;
 my $document_json = JSON->new->canonical;
@@ -32,6 +34,8 @@ sub restoration_items_search { return Koha::Plugin::PimpMyKoha::Restoration::sea
 sub restoration_biblios_search { return Koha::Plugin::PimpMyKoha::Restoration::search(shift, 'biblios'); }
 sub restoration_biblio { return Koha::Plugin::PimpMyKoha::Restoration::exchange_biblio(shift); }
 sub open_transfers { return Koha::Plugin::PimpMyKoha::Transfers::search(shift); }
+sub patron_map { return Koha::Plugin::PimpMyKoha::PatronMap::search(shift); }
+sub authorities { return Koha::Plugin::PimpMyKoha::Authorities::search(shift); }
 sub data { return Koha::Plugin::PimpMyKoha::NativeData::exchange(shift); }
 sub get_native_session {
     my $c = shift->openapi->valid_input or return;
