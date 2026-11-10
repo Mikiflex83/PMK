@@ -217,7 +217,7 @@ tr.dim-detail-row > td {
     padding: 14px 16px 16px;
     border-left: 4px solid #6f8f32;
     background:
-      linear-gradient(135deg, rgba(111,143,50,.055), rgba(75,120,160,.03)),
+      rgba(111,143,50,.055),
       #fff;
 }
 .dim-item-head {
@@ -410,7 +410,7 @@ tr.dim-detail-row > td {
     align-items: flex-start;
     gap: 14px;
     padding: 12px 14px;
-    background: linear-gradient(135deg, #f8fbf4, #f5f8fa);
+    background: #f8fbf4;
     border-bottom: 1px solid #e1e7ea;
 }
 .dim-notice-title {

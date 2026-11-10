@@ -1,6 +1,6 @@
-/* PimpMyKoha — 136 Assistant XSLT — v0.4.0-preplugin
- * Import manuel (fichier ou collage), édition visuelle, XSLT complet à copier.
- * Aperçu automatique sur une notice Koha, historique local et compatibilité des projets.
+/* PimpMyKoha — 136 Éditeur XSLT — v1.0.0
+ * Import manuel (fichier ou collage), édition visuelle, aperçu sur une notice Koha.
+ * Les projets restent dans le navigateur. Aucune feuille XSLT ni préférence Koha n'est modifiée.
  * Les références xsl:include/import sont conservées ; aucun XSLT distant n'est récupéré.
  * Aperçu : str:encode-uri dans xsl:value-of est évalué sans extension navigateur,
  * puis encodé en JavaScript ; le XSLT source et le code final ne sont pas modifiés.
@@ -12,7 +12,7 @@
     window.__PMK136_XSLT_ASSISTANT__ = true;
 
     const MODULE_ID = "xslt-assistant";
-    const MODULE_VERSION = "0.4.0-preplugin";
+    const MODULE_VERSION = "1.0.0";
     const PAGE_PARAM = "xslt-assistant";
     const PAGE_URL = "/cgi-bin/koha/mainpage.pl?pmk_page=" + encodeURIComponent(PAGE_PARAM);
     const STORAGE_PREFIX = "pmk-xslt-assistant-v1:";
@@ -264,7 +264,7 @@
             .pmk136-navigation{background:#fff;border-bottom:1px solid #dfe3e7;padding:.35rem .85rem}
             .pmk136-navigation .pmk136-stepbar{margin:0}
             .pmk136-navigation button[aria-current=step]{font-weight:700}
-            .pmk135-card:focus-visible{outline:3px solid #408540;outline-offset:2px}
+            .pmk135-card:focus-visible{outline:3px solid #6f8f32;outline-offset:2px}
             .pmk136-focus-step .pmk135-main { display:block; overflow:auto; }
             .pmk136-focus-step .pmk135-pane-workspace { max-width:1050px; margin:auto; min-height:100%; }
             .pmk136-focus-step .pmk135-pane-structure, .pmk136-focus-step .pmk135-pane-inspector { display:none; }
@@ -276,32 +276,40 @@
             .pmk136-add-options small { display:block; margin-top:.3rem; color:#5c6870; }
             .pmk135-launch { display:flex; flex-wrap:wrap; align-items:center; gap:.6rem; padding:.75rem; border:1px solid #d8dee4; border-radius:.65rem; background:#fff; }
             .pmk135-launch p { margin:0; color:#5d6771; flex:1 1 28rem; }
-            .pmk135-overlay { position:fixed; inset:0; z-index:1095; background:#f5f7f9; color:#20262d; display:flex; flex-direction:column; }
-            .pmk135-topbar { min-height:58px; display:flex; align-items:center; gap:.6rem; padding:.6rem .85rem; background:#fff; border-bottom:1px solid #dfe3e7; box-shadow:0 1px 3px rgba(0,0,0,.04); }
+            .pmk135-overlay { position:fixed; inset:0; z-index:1095; background:#d5dee6; color:#1f3445; display:flex; flex-direction:column; }
+            .pmk135-topbar, .pmk135-card, .pmk135-pane, .pmk135-section, .pmk135-dialog, .pmk135-toast, .pmk136-drag-ghost, .pmk136-drag-hint, .pmk136-live-preview-section, .pmk135-overlay .btn { box-shadow:none !important; }
+            .pmk135-overlay .btn, .pmk135-dialog .btn, .pmk135-overlay .btn:hover, .pmk135-dialog .btn:hover, .pmk135-overlay .btn:focus, .pmk135-dialog .btn:focus { background-image:none; box-shadow:none; }
+            .pmk135-overlay .btn-primary, .pmk135-dialog .btn-primary, .pmk135-overlay .btn-primary:hover, .pmk135-dialog .btn-primary:hover, .pmk135-overlay .btn-primary:focus, .pmk135-dialog .btn-primary:focus { background-color:#6f8f32; border-color:#1f3445; color:#fff; }
+            .pmk135-overlay .btn-outline-primary, .pmk135-dialog .btn-outline-primary, .pmk135-overlay .btn-outline-primary:hover, .pmk135-dialog .btn-outline-primary:hover { background:#fff; color:#6f8f32; border-color:#6f8f32; }
+            .pmk135-overlay .btn-outline-danger, .pmk135-dialog .btn-outline-danger, .pmk135-overlay .btn-outline-danger:hover, .pmk135-dialog .btn-outline-danger:hover { background:#fff; color:#9d2936; border-color:#9d2936; }
+            .pmk135-overlay .btn-outline-secondary, .pmk135-dialog .btn-outline-secondary { background:#fff; color:#1f3445; border-color:#d5dee6; }
+            .pmk135-overlay :focus-visible { outline:3px solid #6f8f32; outline-offset:2px; }
+            .pmk135-topbar { min-height:52px; display:flex; align-items:center; flex-wrap:wrap; gap:.4rem .5rem; padding:.45rem .75rem; background:#fff; border-bottom:1px solid #d5dee6; }
+            .pmk135-topbar-tail { margin-left:auto; display:flex; align-items:center; flex-wrap:wrap; gap:.4rem; }
             .pmk135-brand { display:flex; align-items:center; gap:.55rem; font-weight:700; margin-right:.35rem; white-space:nowrap; }
             .pmk135-brand i { font-size:1.1rem; }
-            .pmk135-topbar select, .pmk135-topbar input { min-width:180px; }
-            .pmk135-spacer { flex:1; }
+            .pmk135-topbar select, .pmk135-topbar input { min-width:0; width:min(220px, 46vw); flex:1 1 140px; }
+            .pmk135-spacer { display:none; }
             .pmk135-main { min-height:0; flex:1; display:grid; grid-template-columns:minmax(280px, 22%) minmax(520px, 1fr) minmax(320px, 28%); gap:0; }
             .pmk135-pane { min-width:0; min-height:0; overflow:auto; background:#fff; }
             .pmk135-pane + .pmk135-pane { border-left:1px solid #dfe3e7; }
             .pmk135-pane-head { position:sticky; top:0; z-index:2; display:flex; align-items:center; gap:.45rem; padding:.7rem .75rem; border-bottom:1px solid #e6eaee; background:rgba(255,255,255,.97); }
             .pmk135-pane-head strong { flex:1; }
             .pmk135-structure { padding:.6rem; }
-            .pmk135-card { border:1px solid #dce2e7; border-radius:.55rem; background:#fff; padding:.55rem .6rem; margin:.36rem 0; cursor:pointer; transition:border-color .12s, box-shadow .12s, transform .12s; }
-            .pmk135-card:hover { border-color:#adb5bd; box-shadow:0 2px 8px rgba(0,0,0,.05); }
-            .pmk135-card.is-selected { border-color:#6c757d; box-shadow:0 0 0 2px rgba(108,117,125,.13); }
+            .pmk135-card { border:1px solid #d5dee6; border-radius:.55rem; background:#fff; padding:.55rem .6rem; margin:.36rem 0; cursor:pointer; }
+            .pmk135-card:hover { border-color:#6f8f32; }
+            .pmk135-card.is-selected { border-color:#6f8f32; outline:2px solid #6f8f32; }
             .pmk135-card.is-dragging { opacity:.30; }
             .pmk135-card.is-drop-target { border-style:dashed; }
-            .pmk135-card.is-drop-before { box-shadow:0 -4px 0 #6f8f32, 0 0 0 1px rgba(111,143,50,.18); }
-            .pmk135-card.is-drop-after { box-shadow:0 4px 0 #6f8f32, 0 0 0 1px rgba(111,143,50,.18); }
-            .pmk135-card.is-drop-inside { border:2px solid #6f8f32; background:#f5f9ef; }
+            .pmk135-card.is-drop-before { border-top:3px solid #6f8f32; }
+            .pmk135-card.is-drop-after { border-bottom:3px solid #6f8f32; }
+            .pmk135-card.is-drop-inside { border:2px solid #6f8f32; background:#d5dee6; }
             .pmk135-card-title { display:flex; align-items:center; gap:.4rem; font-weight:600; }
             .pmk135-drag { cursor:grab; color:#6f7d88; padding:.2rem .28rem; margin:-.2rem 0 -.2rem -.2rem; border-radius:.3rem; touch-action:none; user-select:none; }
-            .pmk135-drag:hover { background:#eef2e8; color:#526d22; }
+            .pmk135-drag:hover { background:#d5dee6; color:#1f3445; }
             .pmk135-drag:active { cursor:grabbing; }
-            .pmk136-drag-ghost { position:fixed; z-index:1200; pointer-events:none; max-width:360px; padding:.55rem .7rem; border:1px solid #8aa252; border-radius:.5rem; background:#fff; box-shadow:0 10px 35px rgba(0,0,0,.2); font-weight:600; opacity:.96; }
-            .pmk136-drag-hint { position:fixed; z-index:1201; pointer-events:none; padding:.22rem .45rem; border-radius:999px; background:#526d22; color:#fff; font-size:.75rem; font-weight:700; box-shadow:0 4px 14px rgba(0,0,0,.18); }
+            .pmk136-drag-ghost { position:fixed; z-index:1200; pointer-events:none; max-width:360px; padding:.55rem .7rem; border:1px solid #6f8f32; border-radius:.5rem; background:#fff; font-weight:600; }
+            .pmk136-drag-hint { position:fixed; z-index:1201; pointer-events:none; padding:.22rem .45rem; border-radius:999px; background:#1f3445; color:#fff; font-size:.75rem; font-weight:700; }
             .pmk135-node-meta { margin-top:.25rem; color:#6b747d; font-size:.82rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
             .pmk135-depth { display:inline-block; }
             .pmk135-workspace { padding:.8rem; }
@@ -332,12 +340,12 @@
             .pmk135-sourcebar { display:flex; align-items:center; gap:.45rem; margin-bottom:.65rem; flex-wrap:wrap; }
             .pmk135-sourcebar code { max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
             .pmk135-toolbar { display:flex; flex-wrap:wrap; gap:.4rem; }
-            .pmk135-toast { position:fixed; z-index:1110; right:1rem; bottom:1rem; max-width:min(420px, calc(100vw - 2rem)); padding:.7rem .9rem; background:#343a40; color:#fff; border-radius:.55rem; box-shadow:0 7px 28px rgba(0,0,0,.2); opacity:0; transform:translateY(8px); pointer-events:none; transition:.18s; }
+            .pmk135-toast { position:fixed; z-index:1110; right:1rem; bottom:1rem; max-width:min(420px, calc(100vw - 2rem)); padding:.7rem .9rem; background:#1f3445; color:#fff; border-radius:.55rem; opacity:0; transform:translateY(8px); pointer-events:none; transition:.18s; }
             .pmk135-toast.is-visible { opacity:1; transform:translateY(0); }
-            .pmk135-toast.success { background:#25633c; }
-            .pmk135-toast.danger { background:#8b2c2c; }
-            .pmk135-dialog-backdrop { position:fixed; inset:0; z-index:1105; background:rgba(19,25,30,.48); display:flex; align-items:center; justify-content:center; padding:1rem; }
-            .pmk135-dialog { width:min(760px, 100%); max-height:90vh; overflow:auto; background:#fff; border-radius:.7rem; box-shadow:0 15px 60px rgba(0,0,0,.25); }
+            .pmk135-toast.success { background:#1e9365; }
+            .pmk135-toast.danger { background:#9d2936; }
+            .pmk135-dialog-backdrop { position:fixed; inset:0; z-index:1105; background:rgba(31,52,69,.48); display:flex; align-items:center; justify-content:center; padding:1rem; }
+            .pmk135-dialog { width:min(760px, 100%); max-height:90vh; overflow:auto; background:#fff; border:1px solid #d5dee6; border-radius:.7rem; }
             .pmk135-dialog-head, .pmk135-dialog-foot { padding:.75rem .9rem; display:flex; align-items:center; gap:.5rem; }
             .pmk135-dialog-head { border-bottom:1px solid #e3e7ea; }
             .pmk135-dialog-head strong { flex:1; }
@@ -351,18 +359,20 @@
             .pmk135-preview-controls { display:flex; flex-wrap:wrap; gap:.45rem; align-items:end; margin-bottom:.65rem; }
             .pmk135-preview-controls .pmk135-field { margin:0; min-width:140px; flex:1 1 150px; }
             .pmk135-real-preview { border:1px solid #dfe4e8; border-radius:.55rem; background:#fff; min-height:180px; padding:.75rem; overflow:auto; }
-            .pmk136-live-preview-section { border-color:#c9d7ad; box-shadow:0 2px 9px rgba(82,109,34,.08); }
+            .pmk136-live-preview-section { border-color:#6f8f32; }
             .pmk136-live-preview-head { display:flex; align-items:center; gap:.55rem; margin-bottom:.55rem; }
             .pmk136-live-preview-head h4 { margin:0; flex:1; }
             .pmk136-live-preview-status { font-size:.78rem; color:#697680; white-space:nowrap; }
-            .pmk136-live-preview { min-height:380px; max-height:58vh; padding:1rem; background:#fff; box-shadow:inset 0 0 0 1px rgba(0,0,0,.015); }
-            .pmk136-live-preview [data-pmk-preview-node] { cursor:pointer; transition:outline-color .12s, box-shadow .12s, background-color .12s; }
-            .pmk136-live-preview [data-pmk-preview-node]:hover { outline:2px dashed rgba(111,143,50,.65); outline-offset:2px; }
+            .pmk136-live-preview { min-height:180px; max-height:58vh; padding:1rem; background:#fff; border:1px solid #d5dee6; }
+            .pmk136-live-preview [data-pmk-preview-node] { cursor:pointer; }
+            .pmk136-live-preview [data-pmk-preview-node]:hover { outline:2px dashed #6f8f32; outline-offset:2px; }
             .pmk136-live-preview [data-pmk-preview-selected="1"],
-            .pmk136-live-preview .pmk136-preview-picked { outline:3px solid #6f8f32 !important; outline-offset:3px; box-shadow:0 0 0 6px rgba(111,143,50,.12); }
+            .pmk136-live-preview .pmk136-preview-picked { outline:3px solid #6f8f32 !important; outline-offset:3px; }
             .pmk136-live-preview-empty { min-height:300px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; color:#697680; }
             .pmk136-live-preview-empty i { font-size:2.2rem; color:#91a567; margin-bottom:.65rem; }
-            .pmk136-live-controls { display:grid; grid-template-columns:minmax(150px,220px) auto auto auto; gap:.45rem; align-items:end; margin-bottom:.65rem; }
+            .pmk136-live-controls { display:flex; flex-wrap:wrap; gap:.45rem .75rem; align-items:flex-end; margin-bottom:.65rem; }
+            .pmk136-live-controls .pmk135-field { flex:1 1 180px; min-width:150px; }
+            .pmk136-live-controls .pmk135-toggle-line { white-space:nowrap; margin:0 0 .35rem; flex:0 0 auto; align-self:center; }
             .pmk136-live-controls .pmk135-field { margin:0; }
             .pmk135-preview-compare { display:grid; grid-template-columns:1fr 1fr; gap:.65rem; }
             .pmk135-preview-column { min-width:0; border:1px solid #e1e5e8; border-radius:.5rem; background:#fff; padding:.55rem; }
@@ -376,31 +386,32 @@
             .pmk135-muted { color:#6c757d; }
             .pmk136-stepbar { display:flex; gap:.4rem; flex-wrap:wrap; padding:.65rem .75rem; border-bottom:1px solid #e1e6ea; background:#f8fafb; }
             .pmk136-stepbar button { border:1px solid #cfd7dd; background:#fff; border-radius:999px; padding:.38rem .7rem; color:#52606b; }
-            .pmk136-stepbar button.is-active { background:#526d22; border-color:#526d22; color:#fff; font-weight:600; }
-            .pmk136-stepbar button.is-done:not(.is-active) { border-color:#8aa252; color:#526d22; }
+            .pmk136-stepbar button.is-active { background:#6f8f32; border-color:#6f8f32; color:#fff; font-weight:600; }
+            .pmk136-stepbar button.is-done:not(.is-active) { border-color:#1e9365; color:#1e9365; }
             .pmk136-validation { display:flex; flex-direction:column; gap:.45rem; }
             .pmk136-check { display:grid; grid-template-columns:24px 1fr; gap:.45rem; align-items:start; padding:.48rem .55rem; border:1px solid #e2e6e9; border-radius:.45rem; background:#fff; }
-            .pmk136-check.ok i { color:#2f7d44; }
-            .pmk136-check.warn i { color:#a66b00; }
-            .pmk136-check.error i { color:#a52b2b; }
+            .pmk136-check.ok i { color:#1e9365; }
+            .pmk136-check.warn i { color:#1f3445; }
+            .pmk136-check.error i { color:#9d2936; }
             .pmk136-check small { display:block; color:#697680; margin-top:.14rem; }
             .pmk136-project-status { font-size:.78rem; color:#6c757d; white-space:nowrap; }
             .pmk136-structure-controls { display:grid; grid-template-columns:1fr auto; gap:.4rem; margin-bottom:.55rem; }
-            .pmk136-template-title { margin:.75rem 0 .35rem; padding:.28rem .4rem; border-left:3px solid #8aa252; color:#4d5d2c; font-size:.82rem; font-weight:700; background:#f6f9f0; cursor:pointer; user-select:none; }
+            .pmk136-template-title { margin:.75rem 0 .35rem; padding:.28rem .4rem; border-left:3px solid #6f8f32; color:#1f3445; font-size:.82rem; font-weight:700; background:#d5dee6; cursor:pointer; user-select:none; }
             .pmk136-mode-simple .pmk136-advanced-only { display:none !important; }
             .pmk136-source-summary { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.45rem; }
             .pmk136-source-summary > div { border:1px solid #e1e5e8; border-radius:.45rem; padding:.55rem; background:#fafbfc; }
             .pmk136-source-summary strong { display:block; font-size:.78rem; color:#6a747d; margin-bottom:.15rem; }
             @media (max-width: 1100px) {
-                .pmk135-main { grid-template-columns:280px 1fr; }
-                .pmk135-pane-inspector { grid-column:1 / -1; border-left:0 !important; border-top:1px solid #dfe3e7; max-height:44vh; }
+                .pmk135-main { grid-template-columns:minmax(220px, 280px) minmax(0, 1fr); grid-template-rows:minmax(0, 1fr) minmax(160px, 34vh); }
+                .pmk135-pane-inspector { grid-column:1 / -1; border-left:0 !important; border-top:1px solid #d5dee6; max-height:none; }
+                .pmk136-live-preview { min-height:140px; max-height:none; }
             }
             @media (max-width: 760px) {
                 .pmk135-topbar { flex-wrap:wrap; }
             .pmk136-navigation{background:#fff;border-bottom:1px solid #dfe3e7;padding:.35rem .85rem}
             .pmk136-navigation .pmk136-stepbar{margin:0}
             .pmk136-navigation button[aria-current=step]{font-weight:700}
-            .pmk135-card:focus-visible{outline:3px solid #408540;outline-offset:2px}
+            .pmk135-card:focus-visible{outline:3px solid #6f8f32;outline-offset:2px}
                 .pmk135-topbar .pmk135-spacer { display:none; }
                 .pmk135-main { display:flex; flex-direction:column; overflow:auto; }
                 .pmk135-pane { overflow:visible; }
@@ -1816,17 +1827,16 @@
             renderAll();
         }, currentUiMode() === "advanced" ? "fa fa-tools" : "fa fa-leaf"));
 
-        const spacer = document.createElement("div");
-        spacer.className = "pmk135-spacer";
-        bar.appendChild(spacer);
+        const tail = document.createElement("div");
+        tail.className = "pmk135-topbar-tail";
         const status = document.createElement("span");
         status.className = "pmk136-project-status";
-        bar.appendChild(status);
-
+        tail.appendChild(status);
         if (workingDoc) {
-            bar.appendChild(createButton("Vérifier et exporter", "btn btn-sm btn-primary", function () { setWorkspaceStep("publish"); }, "fa fa-copy"));
+            tail.appendChild(createButton("Vérifier et exporter", "btn btn-sm btn-primary", function () { setWorkspaceStep("publish"); }, "fa fa-copy"));
         }
-        bar.appendChild(createButton("Fermer", "btn btn-sm btn-outline-secondary", closeAssistant, "fa fa-times"));
+        tail.appendChild(createButton("Fermer", "btn btn-sm btn-outline-secondary", closeAssistant, "fa fa-times"));
+        bar.appendChild(tail);
         updateTopbarStatus();
     }
 
@@ -2196,7 +2206,7 @@
     function openAddElementMenu() {
         const wrap = document.createElement("div"); wrap.className = "pmk136-add-options";
         const choices = [
-            ["Une donnée de la notice", "Exemple : le titre en 200$a, le résumé en 330$a ou un auteur en 700$a.", openAddFieldDialog],
+            ["Une donnée de la notice", "Saisissez la zone de ce Koha. Exemples UNIMARC : titre 200$a, résumé 330$a, auteur 700$a. Exemples MARC21 : titre 245$a, résumé 520$a, auteur 100$a.", openAddFieldDialog],
             ["Un encadré avec du texte", "Un titre et un texte que vous rédigez, avec des données de la notice si besoin.", openCustomBlockDialog],
             ["Plusieurs données ensemble", "Exemple : collection, numéro de volume et séparateurs sur une même ligne.", openCompositeDialog],
             ["Un titre, une image ou un bouton", "Ajouter un élément de présentation et régler son apparence.", openGenericElementDialog]
@@ -2299,7 +2309,7 @@
         const idInput = document.createElement("input");
         idInput.className = "form-control form-control-sm";
         idInput.inputMode = "numeric";
-        idInput.placeholder = kind === "authority" ? "Numéro d’autorité" : "Numéro de notice, ex. 380818";
+        idInput.placeholder = kind === "authority" ? "Numéro d’autorité" : "Numéro de notice";
         idInput.value = currentProject[idKey] || "";
         idInput.addEventListener("input", function () {
             currentProject[idKey] = clean(idInput.value).replace(/\D/g, "");
@@ -2900,7 +2910,7 @@
             if (!meta.rules.length) {
                 const empty = document.createElement("div");
                 empty.className = "pmk135-muted";
-                empty.textContent = "Aucune condition. Exemple conseillé : 200$a n’est pas vide.";
+                empty.textContent = "Aucune condition. Exemple UNIMARC : 200$a n’est pas vide. En MARC21, indiquez la zone de ce Koha, par exemple 245$a.";
                 list.appendChild(empty);
             }
             meta.rules.forEach(function (_, index) {
@@ -3014,7 +3024,7 @@
         renderDynamic();
 
         const help = document.createElement("div"); help.className = "alert alert-light"; help.style.marginTop = ".65rem";
-        help.innerHTML = '<strong>Exemples :</strong> <code>{700$a}</code> vers l’index auteur, <code>{225$a}</code> vers l’index collection, ou <code>https://…?isbn={010$a}</code> vers un service externe.';
+        help.innerHTML = '<strong>Exemples UNIMARC :</strong> <code>{700$a}</code> vers l’index auteur, <code>{225$a}</code> vers l’index collection, <code>{010$a}</code> pour l’ISBN. En MARC21 : <code>{100$a}</code>, <code>{490$a}</code>, <code>{020$a}</code>. Un service externe reste facultatif.';
         section.appendChild(help);
         body.appendChild(section);
     }
@@ -3183,6 +3193,9 @@
         hideEmpty.type = "checkbox";
         hideEmpty.checked = true;
 
+        const formatHint = document.createElement("p");
+        formatHint.textContent = "200$a est un exemple UNIMARC (titre). En MARC21, le titre est souvent en 245$a. La zone saisie est celle de ce Koha, rien n’est imposé.";
+        grid.appendChild(formatHint);
         grid.appendChild(makeField("Zone MARC", tag));
         grid.appendChild(makeField("Sous-zone", sub));
         grid.appendChild(makeField("Libellé", label));
@@ -3898,10 +3911,10 @@
                 {
                     type: "section",
                     id: "assistant",
-                    label: { fr: "Assistant XSLT", en: "XSLT assistant" },
+                    label: { fr: "Éditeur XSLT", en: "XSLT editor" },
                     description: {
-                        fr: "Le travail XSLT est conservé localement dans ce navigateur pendant la phase pré-plugin.",
-                        en: "XSLT work is stored locally in this browser during the pre-plugin phase."
+                        fr: "Les projets restent dans ce navigateur. L’éditeur ne modifie ni les préférences ni les feuilles XSLT de Koha.",
+                        en: "Projects stay in this browser. The editor does not change Koha preferences or XSLT files."
                     },
                     fields: [
                         { key: "enabled", type: "boolean", label: { fr: "Activer le module", en: "Enable module" } },
@@ -3947,7 +3960,7 @@
                 if (window.PMKPages && typeof window.PMKPages.isSuperlibrarian === "function" && !isSuperlibrarian()) {
                     const denied = document.createElement("div");
                     denied.className = "pmk135-overlay";
-                    denied.innerHTML = '<div style="max-width:760px;margin:60px auto;padding:22px;border:1px solid #e1b5b5;border-radius:8px;background:#fff1f1;color:#822929"><strong>Accès réservé.</strong><br>L’Assistant XSLT est accessible uniquement aux superlibrarians Koha.<div style="margin-top:1rem"><a class="btn btn-default btn-sm" href="/cgi-bin/koha/mainpage.pl"><i class="fa fa-home"></i> Accueil Koha</a></div></div>';
+                    denied.innerHTML = '<div style="max-width:760px;margin:60px auto;padding:22px;border:1px solid #9d2936;border-radius:8px;background:#fff;color:#9d2936"><strong>Accès réservé.</strong><br>L’éditeur XSLT est accessible uniquement aux superlibrarians Koha.<div style="margin-top:1rem"><a class="btn btn-default btn-sm" href="/cgi-bin/koha/mainpage.pl"><i class="fa fa-home"></i> Accueil Koha</a></div></div>';
                     document.body.appendChild(denied);
                     return;
                 }

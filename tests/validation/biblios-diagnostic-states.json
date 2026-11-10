@@ -9,7 +9,11 @@
     "technicalErrorDistinct": true,
     "errorClearedAfterSuccess": true,
     "auditSummaryCountsFailures": true,
-    "noExternalDependency": true
+    "noExternalDependency": true,
+    "opportunityNotMissing": true,
+    "pendingHidesConforme": true,
+    "frenchSeverities": true,
+    "emptyGhosts": true
   },
   "scope": "Contrat de la page : critères de rapprochement visibles et états métier/technique non confondus."
 }

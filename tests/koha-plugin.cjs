@@ -80,7 +80,7 @@ async function put(context,key,data,revision,header=true){
  });
  await check('Real Koha: internal hub and settings open through the native plugin',async()=>{
   await admin.page.goto(base+'/cgi-bin/koha/mainpage.pl?pmk_page=hub');await admin.page.waitForSelector('.pmk138-card',{timeout:60000});
-  assert.equal(await admin.page.locator('.pmk138-card').count(),19);
+  assert.equal(await admin.page.locator('.pmk138-card').count(),15);
   await admin.page.evaluate(()=>PMKConfig.openAdmin('internal-pages-tools'));
   await admin.page.waitForSelector('[data-pmk-page-editor]');
   if(await admin.page.locator('#freqAppMini').count())assert.equal(await admin.page.locator('#freqAppMini').evaluate(el=>getComputedStyle(el).visibility),'hidden');

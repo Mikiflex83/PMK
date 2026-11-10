@@ -42,6 +42,6 @@ if len(sys.argv) > 1:
         assert prefix + "IntranetUserJS-Dracenie.js" not in names
         assert prefix + "pmk-legacy-private-config.example.js" not in names
         packaged = zipped.read(prefix + "pmk-firebase-config.example.js").decode()
-        assert packaged == text
+        assert packaged.replace("\r\n", "\n").replace("\r", "\n") == text.replace("\r\n", "\n").replace("\r", "\n")
 
 print("PASS non-plugin Firebase: no institution project selected by default")

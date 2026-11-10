@@ -2,12 +2,16 @@
   "passed": true,
   "failures": [],
   "writes": [],
-  "moduleActivity": [],
+  "moduleActivity": [
+    "POST /api/v1/contrib/pmk/data/attendance",
+    "POST /api/v1/contrib/pmk/data/assistance",
+    "POST /api/v1/contrib/pmk/data/internal-share",
+    "POST /api/v1/contrib/pmk/data/frequency",
+    "POST /api/v1/contrib/pmk/data/appointments",
+    "POST /api/v1/contrib/pmk/data/planning",
+    "POST /api/v1/contrib/pmk/data/taxonomy"
+  ],
   "kohaInlineErrors": [
-    {
-      "screen": "saved-reports",
-      "message": "Cannot read properties of undefined (reading 'DataTable')"
-    },
     {
       "screen": "reading-record",
       "message": "Cannot read properties of undefined (reading 'DataTable')"
@@ -15,7 +19,12 @@
   ],
   "dialogs": [],
   "firebase": [],
-  "blocked": [],
+  "blocked": [
+    "https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js",
+    "https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js",
+    "https://musicbrainz.org/ws/2/release/?query=release%3A%22Export+%C3%A0+Dublin+Core...%22+AND+artist%3A%22Auteur+principal%3A%22&fmt=json&limit=5",
+    "https://data.geopf.fr/geocodage/completion/?text=Draguignan+83300&type=PositionOfInterest%2CStreetAddress&poiType=administratif&maximumResponses=15"
+  ],
   "skipped": [
     {
       "id": "subscription",
@@ -40,12 +49,12 @@
     "loan-duration-detail"
   ],
   "screens": 28,
-  "modules": 85,
+  "modules": 86,
   "rows": [
     {
-      "title": "Koha staff interface",
+      "title": "Interface professionnelle Koha",
       "ready": true,
-      "loaded": 111,
+      "loaded": 113,
       "errors": [],
       "id": "home",
       "route": "mainpage.pl",
@@ -55,7 +64,7 @@
     {
       "title": "Circulation › Koha",
       "ready": true,
-      "loaded": 111,
+      "loaded": 113,
       "errors": [],
       "id": "circulation",
       "route": "circ/circulation-home.pl",
@@ -63,9 +72,9 @@
       "httpErrors": []
     },
     {
-      "title": "Patrons › Koha",
+      "title": "Adhérents › Koha",
       "ready": true,
-      "loaded": 111,
+      "loaded": 113,
       "errors": [],
       "id": "patrons",
       "route": "members/members-home.pl",
@@ -73,9 +82,9 @@
       "httpErrors": []
     },
     {
-      "title": "Reports › Koha",
+      "title": "Rapports › Koha",
       "ready": true,
-      "loaded": 111,
+      "loaded": 113,
       "errors": [],
       "id": "reports",
       "route": "reports/reports-home.pl",
@@ -83,9 +92,9 @@
       "httpErrors": []
     },
     {
-      "title": "Tools › Koha",
+      "title": "Outils › Koha",
       "ready": true,
-      "loaded": 111,
+      "loaded": 113,
       "errors": [],
       "id": "tools",
       "route": "tools/tools-home.pl",
@@ -95,7 +104,7 @@
     {
       "title": "Administration › Koha",
       "ready": true,
-      "loaded": 111,
+      "loaded": 113,
       "errors": [],
       "id": "administration",
       "route": "admin/admin-home.pl",
@@ -103,9 +112,9 @@
       "httpErrors": []
     },
     {
-      "title": "Details for La Recherche › Catalog › Koha",
+      "title": "Details pour La Recherche › Catalogue › Koha",
       "ready": true,
-      "loaded": 111,
+      "loaded": 113,
       "errors": [],
       "id": "detail",
       "route": "catalogue/detail.pl?biblionumber=1",
@@ -113,9 +122,9 @@
       "httpErrors": []
     },
     {
-      "title": "Item details for La Recherche › Catalog › Koha",
+      "title": "Détails des exemplaires de La Recherche › Catalogue › Koha",
       "ready": true,
-      "loaded": 111,
+      "loaded": 113,
       "errors": [],
       "id": "items-detail",
       "route": "catalogue/moredetail.pl?biblionumber=1&itemnumber=1",
@@ -123,9 +132,9 @@
       "httpErrors": []
     },
     {
-      "title": "Results of search for kw,wrdl: a › Catalog › Koha",
+      "title": "Recherche pour « a » — Catalogue",
       "ready": true,
-      "loaded": 111,
+      "loaded": 113,
       "errors": [],
       "id": "search",
       "route": "catalogue/search.pl?q=a",
@@ -133,9 +142,9 @@
       "httpErrors": []
     },
     {
-      "title": "Patron details for Koha Admin (1) › Patrons › Koha",
+      "title": "Détail adhérent pour Koha Admin (1) › Adhérents › Koha",
       "ready": true,
-      "loaded": 111,
+      "loaded": 113,
       "errors": [],
       "id": "patron-detail",
       "route": "members/moremember.pl?borrowernumber=1",
@@ -143,9 +152,9 @@
       "httpErrors": []
     },
     {
-      "title": "Checking out to Admin, Koha (1) › Circulation › Koha",
+      "title": "Prêt à Admin, Koha (1) › Circulation › Koha",
       "ready": true,
-      "loaded": 111,
+      "loaded": 113,
       "errors": [],
       "id": "checkout",
       "route": "circ/circulation.pl?borrowernumber=1",
@@ -153,9 +162,9 @@
       "httpErrors": []
     },
     {
-      "title": "Check in › Circulation › Koha",
+      "title": "Retourner › Circulation › Koha",
       "ready": true,
-      "loaded": 111,
+      "loaded": 113,
       "errors": [],
       "id": "returns",
       "route": "circ/returns.pl",
@@ -163,9 +172,9 @@
       "httpErrors": []
     },
     {
-      "title": "Renew › Circulation › Koha",
+      "title": "Renouveler › Circulation › Koha",
       "ready": true,
-      "loaded": 111,
+      "loaded": 113,
       "errors": [],
       "id": "renew",
       "route": "circ/renew.pl",
@@ -173,9 +182,9 @@
       "httpErrors": []
     },
     {
-      "title": "Transfers › Circulation › Koha",
+      "title": "Transferts › Circulation › Koha",
       "ready": true,
-      "loaded": 111,
+      "loaded": 113,
       "errors": [],
       "id": "branchtransfers",
       "route": "circ/branchtransfers.pl",
@@ -183,9 +192,9 @@
       "httpErrors": []
     },
     {
-      "title": "Holds awaiting pickup › Circulation › Koha",
+      "title": "Réservations mises de coté › Circulation › Koha",
       "ready": true,
-      "loaded": 111,
+      "loaded": 113,
       "errors": [],
       "id": "waiting-holds",
       "route": "circ/waitingreserves.pl",
@@ -193,9 +202,9 @@
       "httpErrors": []
     },
     {
-      "title": "Place hold on La Recherche › Holds › Circulation › Koha",
+      "title": "Réserver La Recherche › Réservations › Circulation › Koha",
       "ready": true,
-      "loaded": 111,
+      "loaded": 113,
       "errors": [],
       "id": "holds",
       "route": "reserve/request.pl?biblionumber=1",
@@ -203,9 +212,9 @@
       "httpErrors": []
     },
     {
-      "title": "Add patron (Staff) › Patrons › Koha",
+      "title": "Ajouter un adhérent (Staff) › Adhérents › Koha",
       "ready": true,
-      "loaded": 111,
+      "loaded": 113,
       "errors": [],
       "id": "patron-entry",
       "route": "members/memberentry.pl?op=add_form&categorycode=S",
@@ -213,9 +222,9 @@
       "httpErrors": []
     },
     {
-      "title": "Editing La Recherche (Record number 1) › Cataloging › Koha",
+      "title": "Modification de La Recherche (Notice n° 1) › Catalogage › Koha",
       "ready": true,
-      "loaded": 111,
+      "loaded": 113,
       "errors": [],
       "id": "cataloguing",
       "route": "cataloguing/addbiblio.pl?biblionumber=1",
@@ -223,9 +232,9 @@
       "httpErrors": []
     },
     {
-      "title": "Items › La Recherche (Record #1) › Cataloging › Koha",
+      "title": "Exemplaires › La Recherche (Notice n° 1) › Catalogage › Koha",
       "ready": true,
-      "loaded": 111,
+      "loaded": 113,
       "errors": [],
       "id": "item-entry",
       "route": "cataloguing/additem.pl?biblionumber=1",
@@ -233,9 +242,9 @@
       "httpErrors": []
     },
     {
-      "title": "Batch item modification › Cataloging › Koha",
+      "title": "Modification d'exemplaires par lots › Catalogage › Koha",
       "ready": true,
-      "loaded": 111,
+      "loaded": 113,
       "errors": [],
       "id": "batchmod",
       "route": "tools/batchMod.pl",
@@ -243,29 +252,19 @@
       "httpErrors": []
     },
     {
-      "title": "Saved reports › Guided reports wizard › Reports › Koha",
+      "title": "Rapports sauvegardés › Assistant de rapports guidés › Rapports › Koha",
       "ready": true,
-      "loaded": 111,
+      "loaded": 113,
       "errors": [],
       "id": "saved-reports",
       "route": "reports/guided_reports.pl?op=list",
-      "pageErrors": [
-        {
-          "message": "Cannot read properties of undefined (reading 'DataTable')",
-          "stack": [
-            "TypeError: Cannot read properties of undefined (reading 'DataTable')",
-            "    at HTMLDocument.<anonymous> (http://127.0.0.1:18081/cgi-bin/koha/reports/guided_reports.pl?op=list:2252:39)",
-            "    at e (http://127.0.0.1:18081/intranet-tmpl/lib/jquery/jquery-3.6.0.min_25.1110000.js:2:30038)",
-            "    at t (http://127.0.0.1:18081/intranet-tmpl/lib/jquery/jquery-3.6.0.min_25.1110000.js:2:30340)"
-          ]
-        }
-      ],
+      "pageErrors": [],
       "httpErrors": []
     },
     {
-      "title": "Create from SQL › Guided reports wizard › Reports › Koha",
+      "title": "Créer à partir de SQL › Assistant de rapports guidés › Rapports › Koha",
       "ready": true,
-      "loaded": 111,
+      "loaded": 113,
       "errors": [],
       "id": "sql-editor",
       "route": "reports/guided_reports.pl?op=add_form_sql",
@@ -273,9 +272,9 @@
       "httpErrors": []
     },
     {
-      "title": "Circulation history for Koha Admin (1) Patrons › Koha",
+      "title": "Historique de circulation pour Koha Admin (1) Adhérents › Koha",
       "ready": true,
-      "loaded": 111,
+      "loaded": 113,
       "errors": [],
       "id": "reading-record",
       "route": "members/readingrec.pl?borrowernumber=1",
@@ -284,7 +283,7 @@
           "message": "Cannot read properties of undefined (reading 'DataTable')",
           "stack": [
             "TypeError: Cannot read properties of undefined (reading 'DataTable')",
-            "    at HTMLDocument.<anonymous> (http://127.0.0.1:18081/cgi-bin/koha/members/readingrec.pl?borrowernumber=1:2284:34)",
+            "    at HTMLDocument.<anonymous> (http://127.0.0.1:18081/cgi-bin/koha/members/readingrec.pl?borrowernumber=1:2336:34)",
             "    at e (http://127.0.0.1:18081/intranet-tmpl/lib/jquery/jquery-3.6.0.min_25.1110000.js:2:30038)",
             "    at t (http://127.0.0.1:18081/intranet-tmpl/lib/jquery/jquery-3.6.0.min_25.1110000.js:2:30340)"
           ]
@@ -293,9 +292,9 @@
       "httpErrors": []
     },
     {
-      "title": "Checkout history for La Recherche › Catalog › Koha",
+      "title": "Historique de prêt de La Recherche › Catalogue › Koha",
       "ready": true,
-      "loaded": 111,
+      "loaded": 113,
       "errors": [],
       "id": "loan-history",
       "route": "catalogue/issuehistory.pl?biblionumber=1",
@@ -303,9 +302,9 @@
       "httpErrors": []
     },
     {
-      "title": "Results › Log viewer › Tools › Koha",
+      "title": "Résultats › Visualiseur des logs › Outils › Koha",
       "ready": true,
-      "loaded": 111,
+      "loaded": 113,
       "errors": [],
       "id": "journal",
       "route": "tools/viewlog.pl?do_it=1&modules=CATALOGUING&object=1",
@@ -313,9 +312,9 @@
       "httpErrors": []
     },
     {
-      "title": "Add suggestion › Suggestions › Acquisitions › Koha",
+      "title": "Ajouter une suggestion › Suggestions › Acquisitions › Koha",
       "ready": true,
-      "loaded": 111,
+      "loaded": 113,
       "errors": [],
       "id": "suggestions",
       "route": "suggestion/suggestion.pl?op=add_form",
@@ -323,9 +322,9 @@
       "httpErrors": []
     },
     {
-      "title": "Authorities › Koha",
+      "title": "Autorités › Koha",
       "ready": true,
-      "loaded": 111,
+      "loaded": 113,
       "errors": [],
       "id": "authorities-home",
       "route": "authorities/authorities-home.pl",
@@ -333,9 +332,9 @@
       "httpErrors": []
     },
     {
-      "title": "Koha staff interface",
+      "title": "Interface professionnelle Koha",
       "ready": true,
-      "loaded": 111,
+      "loaded": 113,
       "errors": [],
       "id": "hub",
       "route": "mainpage.pl?pmk_page=hub",
@@ -347,9 +346,9 @@
     {
       "id": "table-labels",
       "opened": true,
-      "heading": "Settings — Labels and interface elements",
+      "heading": "Configuration — Libellés et éléments d’interface",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -357,9 +356,9 @@
     {
       "id": "detail-fourth-cover",
       "opened": true,
-      "heading": "Settings — Enriched summary / back cover",
+      "heading": "Configuration — Résumé enrichi / 4ème de couverture",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -367,9 +366,9 @@
     {
       "id": "external-links",
       "opened": true,
-      "heading": "Settings — External links",
+      "heading": "Configuration — Liens externes",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -377,9 +376,9 @@
     {
       "id": "moredetail-layout",
       "opened": true,
-      "heading": "Settings — Item details layout",
+      "heading": "Configuration — Présentation des détails des exemplaires",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -387,9 +386,9 @@
     {
       "id": "waiting-holds-age",
       "opened": true,
-      "heading": "Settings — Ages and relative dates",
+      "heading": "Configuration — Âges et dates relatives",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -397,9 +396,9 @@
     {
       "id": "patron-message-templates",
       "opened": true,
-      "heading": "Settings — Predefined values for automatic field filling",
+      "heading": "Configuration — Ajouter des listes de valeurs prédéfinies pour le remplissage automatique d’un champ",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -407,9 +406,9 @@
     {
       "id": "element-formatting",
       "opened": true,
-      "heading": "Settings — Element formatting",
+      "heading": "Configuration — Mise en forme des éléments",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -417,9 +416,9 @@
     {
       "id": "contextual-search-links",
       "opened": true,
-      "heading": "Settings — Dynamic links",
+      "heading": "Configuration — Liens dynamiques",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -427,9 +426,9 @@
     {
       "id": "bibliographic-markers",
       "opened": true,
-      "heading": "Settings — Bibliographic icons and badges",
+      "heading": "Configuration — Icônes et badges bibliographiques",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -437,9 +436,9 @@
     {
       "id": "transfer-button-holdings",
       "opened": true,
-      "heading": "Settings — Quick item transfer",
+      "heading": "Configuration — Transfert rapide d'un exemplaire",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -447,9 +446,9 @@
     {
       "id": "serials-tracking",
       "opened": true,
-      "heading": "Settings — Serials management",
+      "heading": "Configuration — Gestion des périodiques",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -457,9 +456,9 @@
     {
       "id": "batchmod-empty-field-warning",
       "opened": true,
-      "heading": "Settings — Field clearing warning",
+      "heading": "Configuration — Alerte avant vidage d'un champ",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -467,9 +466,9 @@
     {
       "id": "holdings-table-presentation",
       "opened": true,
-      "heading": "Settings — Holdings table presentation",
+      "heading": "Configuration — Présentation du tableau des exemplaires",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -477,9 +476,9 @@
     {
       "id": "z3950-workspace",
       "opened": true,
-      "heading": "Settings — Z39.50 / SRU search workspace",
+      "heading": "Configuration — Confort de recherche Z39.50 / SRU",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -487,9 +486,9 @@
     {
       "id": "catalogue-search-behavior",
       "opened": true,
-      "heading": "Settings — Catalogue search bar",
+      "heading": "Configuration — Barre de recherche catalogue",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -497,9 +496,9 @@
     {
       "id": "contextual-tooltips",
       "opened": true,
-      "heading": "Settings — Contextual tooltips",
+      "heading": "Configuration — Info-bulles contextuelles",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -507,9 +506,9 @@
     {
       "id": "phone-number-formatting",
       "opened": true,
-      "heading": "Settings — Phone number formatting",
+      "heading": "Configuration — Formatage des numéros de téléphone",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -517,9 +516,9 @@
     {
       "id": "patron-astrological-sign",
       "opened": true,
-      "heading": "Settings — Patron astrological sign",
+      "heading": "Configuration — Signe astrologique du lecteur",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -527,9 +526,9 @@
     {
       "id": "multiline-list-counter",
       "opened": true,
-      "heading": "Settings — List counter",
+      "heading": "Configuration — Compteur de listes",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -537,9 +536,9 @@
     {
       "id": "lost-found-checkin-status",
       "opened": true,
-      "heading": "Settings — Lost item check-in status control",
+      "heading": "Configuration — Contrôle du statut au retour d’un document perdu",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -547,9 +546,9 @@
     {
       "id": "search-facets",
       "opened": true,
-      "heading": "Settings — Search facets",
+      "heading": "Configuration — Facettes de recherche",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -557,9 +556,9 @@
     {
       "id": "guided-reports-tools",
       "opened": true,
-      "heading": "Settings — Guided report tools",
+      "heading": "Configuration — Outils des rapports guidés",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -567,9 +566,9 @@
     {
       "id": "detail-bibliographic-groups",
       "opened": true,
-      "heading": "Settings — Record information layout",
+      "heading": "Configuration — Organisation des informations de la notice",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -577,9 +576,9 @@
     {
       "id": "callnumber-progressive-search",
       "opened": true,
-      "heading": "Settings — Progressive call-number search",
+      "heading": "Configuration — Recherche progressive par cote",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -587,9 +586,9 @@
     {
       "id": "serials-claims-filtering",
       "opened": true,
-      "heading": "Settings — Serial claims filters",
+      "heading": "Configuration — Filtres des réclamations de périodiques",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -597,9 +596,9 @@
     {
       "id": "070",
       "opened": true,
-      "heading": "Settings — Address autocomplete",
+      "heading": "Configuration — Autocomplétion des adresses",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -607,9 +606,9 @@
     {
       "id": "patron-age-display",
       "opened": true,
-      "heading": "Settings — Ages and relative dates",
+      "heading": "Configuration — Âges et dates relatives",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -617,9 +616,9 @@
     {
       "id": "relative-dates",
       "opened": true,
-      "heading": "Settings — Ages and relative dates",
+      "heading": "Configuration — Âges et dates relatives",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -627,9 +626,9 @@
     {
       "id": "efficiency-indicators",
       "opened": true,
-      "heading": "Settings — Efficiency indicators",
+      "heading": "Configuration — Indicateurs d’efficacité",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -637,9 +636,9 @@
     {
       "id": "scroll-buttons",
       "opened": true,
-      "heading": "Settings — Quick navigation — top / bottom",
+      "heading": "Configuration — Navigation rapide — haut / bas de page",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -647,7 +646,7 @@
     {
       "id": "guided-report-print",
       "opened": true,
-      "heading": "Settings — Report results printing",
+      "heading": "Configuration — Impression des résultats de rapports",
       "danger": "",
       "enabled": false,
       "workflow": 0,
@@ -657,9 +656,9 @@
     {
       "id": "patron-overdues-print",
       "opened": true,
-      "heading": "Settings — Overdues printing / guarantor",
+      "heading": "Configuration — Impression des retards / garant",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -667,9 +666,9 @@
     {
       "id": "cataloguing-tree-assistant",
       "opened": true,
-      "heading": "Settings — Cataloguing hierarchy assistant",
+      "heading": "Configuration — Saisie de l'arborescence au catalogage",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -677,9 +676,9 @@
     {
       "id": "147-home-submenus",
       "opened": true,
-      "heading": "Settings — Home menus",
+      "heading": "Configuration — Menus de l’accueil",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -687,9 +686,9 @@
     {
       "id": "authority-installation-options",
       "opened": true,
-      "heading": "Settings — Authorities — installation settings",
+      "heading": "Configuration — Autorités — paramètres de l’installation",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -697,9 +696,9 @@
     {
       "id": "legacy-interface-options",
       "opened": true,
-      "heading": "Settings — Interface — historic enhancements",
+      "heading": "Configuration — Compléments d’interface",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -707,9 +706,9 @@
     {
       "id": "patron-renewal-verification",
       "opened": true,
-      "heading": "Settings — Patron renewal verification",
+      "heading": "Configuration — Vérification avant renouvellement lecteur",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -717,9 +716,9 @@
     {
       "id": "responsive-tables",
       "opened": true,
-      "heading": "Settings — Item tables on mobile",
+      "heading": "Configuration — Tableaux d’exemplaires sur mobile",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -727,9 +726,9 @@
     {
       "id": "copy-actions",
       "opened": true,
-      "heading": "Settings — Copy actions",
+      "heading": "Configuration — Actions de copie",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -737,9 +736,9 @@
     {
       "id": "history-row-highlights",
       "opened": true,
-      "heading": "Settings — Loan history highlights",
+      "heading": "Configuration — Repères de l’historique des prêts",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -747,9 +746,9 @@
     {
       "id": "loan-history-timeline",
       "opened": true,
-      "heading": "Settings — Loan and return history",
+      "heading": "Configuration — Historique des prêts et des retours",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -757,9 +756,9 @@
     {
       "id": "element-placement",
       "opened": true,
-      "heading": "Settings — Element placement",
+      "heading": "Configuration — Placement d'éléments",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -767,9 +766,9 @@
     {
       "id": "date-display-formatting",
       "opened": true,
-      "heading": "Settings — Displayed date formatting",
+      "heading": "Configuration — Formatage des dates affichées",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -777,9 +776,9 @@
     {
       "id": "input-rules",
       "opened": true,
-      "heading": "Settings — Input rules",
+      "heading": "Configuration — Règles de saisie",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -787,9 +786,9 @@
     {
       "id": "custom-navigation",
       "opened": true,
-      "heading": "Settings — Custom navigation",
+      "heading": "Configuration — Navigation personnalisée",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -797,9 +796,9 @@
     {
       "id": "patron-page-utils",
       "opened": true,
-      "heading": "Settings — Patron entry automations",
+      "heading": "Configuration — Automatismes de saisie adhérent",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -807,9 +806,9 @@
     {
       "id": "mascot-frogs",
       "opened": true,
-      "heading": "Settings — Mascot — Frogs",
+      "heading": "Configuration — Mascotte — Grenouilles",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -817,9 +816,9 @@
     {
       "id": "mascot-agents",
       "opened": true,
-      "heading": "Settings — Mascot — Staff",
+      "heading": "Configuration — Mascotte — Agents",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -827,9 +826,9 @@
     {
       "id": "personal-lists-manager",
       "opened": true,
-      "heading": "Settings — Personal lists manager",
+      "heading": "Configuration — Listes de travail",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -837,9 +836,9 @@
     {
       "id": "barcode-highlights",
       "opened": true,
-      "heading": "Settings — Barcode highlighting",
+      "heading": "Configuration — Repérage des codes-barres",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -847,9 +846,9 @@
     {
       "id": "recent-history",
       "opened": true,
-      "heading": "Settings — Recent history",
+      "heading": "Configuration — Historique récent",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -857,9 +856,9 @@
     {
       "id": "advanced-search-sidebar",
       "opened": true,
-      "heading": "Settings — Advanced search",
+      "heading": "Configuration — Recherche avancée",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -867,9 +866,9 @@
     {
       "id": "new-release-indicators",
       "opened": true,
-      "heading": "Settings — New acquisition indicators",
+      "heading": "Configuration — Indicateurs de nouveauté",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -877,9 +876,9 @@
     {
       "id": "cataloging-6xx-suggestions",
       "opened": true,
-      "heading": "Settings — 6XX indexing helpers",
+      "heading": "Configuration — Aide à l’indexation 6XX",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -887,9 +886,9 @@
     {
       "id": "musicbrainz-coverart",
       "opened": true,
-      "heading": "Settings — Music cover art — MusicBrainz",
+      "heading": "Configuration — Jaquettes musicales — MusicBrainz",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -897,9 +896,9 @@
     {
       "id": "log-viewer",
       "opened": true,
-      "heading": "Settings — Koha change log",
+      "heading": "Configuration — Journal des modifications Koha",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -907,9 +906,9 @@
     {
       "id": "item-template-buttons",
       "opened": true,
-      "heading": "Settings — Item template buttons",
+      "heading": "Configuration — Boutons modèles exemplaires",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -917,9 +916,9 @@
     {
       "id": "detail-reservations-summary-style",
       "opened": true,
-      "heading": "Settings — Conditional formatting — Holds and lists",
+      "heading": "Configuration — Mise en forme conditionnelle — Réservations et listes",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -927,9 +926,9 @@
     {
       "id": "item-entry-assistant",
       "opened": true,
-      "heading": "Settings — Item entry assistant",
+      "heading": "Configuration — Assistant de saisie des exemplaires",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -937,9 +936,9 @@
     {
       "id": "internal-share",
       "opened": true,
-      "heading": "Settings — Internal share",
+      "heading": "Configuration — Partage interne",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -947,9 +946,9 @@
     {
       "id": "search-autocomplete-performance",
       "opened": true,
-      "heading": "Settings — Catalogue search autocomplete",
+      "heading": "Configuration — Autocomplétion Recherche catalogue",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -957,9 +956,9 @@
     {
       "id": "renewal-enhancements",
       "opened": true,
-      "heading": "Settings — Renewal availability and reasons",
+      "heading": "Configuration — Disponibilité et motifs de renouvellement",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -967,9 +966,9 @@
     {
       "id": "patron-message-chronology",
       "opened": true,
-      "heading": "Settings — Patron message chronology",
+      "heading": "Configuration — Chronologie des messages lecteur",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -977,9 +976,9 @@
     {
       "id": "menu-icons",
       "opened": true,
-      "heading": "Settings — Menu icons",
+      "heading": "Configuration — Icônes des menus",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -987,9 +986,9 @@
     {
       "id": "patron-required-contact",
       "opened": true,
-      "heading": "Settings — Required contact details",
+      "heading": "Configuration — Coordonnées obligatoires",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -997,9 +996,9 @@
     {
       "id": "multi-transfer",
       "opened": true,
-      "heading": "Settings — Batch transfer",
+      "heading": "Configuration — Transfert en lot",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -1007,9 +1006,9 @@
     {
       "id": "hold-pickup-expiration",
       "opened": true,
-      "heading": "Settings — Hold pickup expiration date",
+      "heading": "Configuration — Date limite de retrait des réservations",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -1017,9 +1016,9 @@
     {
       "id": "search-filter-badges",
       "opened": true,
-      "heading": "Settings — Search filter badges",
+      "heading": "Configuration — Badges des filtres de recherche",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -1027,9 +1026,9 @@
     {
       "id": "patron-category-defaults",
       "opened": true,
-      "heading": "Settings — Defaults by patron category",
+      "heading": "Configuration — Valeurs par défaut selon la catégorie d’adhérent",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -1037,9 +1036,9 @@
     {
       "id": "hold-submit-guard",
       "opened": true,
-      "heading": "Settings — Hold double-submit protection",
+      "heading": "Configuration — Protection double validation — réservations",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -1047,9 +1046,9 @@
     {
       "id": "search-results-master",
       "opened": true,
-      "heading": "Settings — Catalog results — layout and items",
+      "heading": "Configuration — Résultats catalogue — présentation et exemplaires",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -1057,9 +1056,9 @@
     {
       "id": "document-movements",
       "opened": true,
-      "heading": "Settings — Document movements",
+      "heading": "Configuration — Mouvements des documents",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -1067,9 +1066,9 @@
     {
       "id": "suggestion-required-suggester",
       "opened": true,
-      "heading": "Settings — Suggestions — patron required",
+      "heading": "Configuration — Suggestions — lecteur obligatoire",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -1077,9 +1076,9 @@
     {
       "id": "intranet-nav-menu",
       "opened": true,
-      "heading": "Settings — IntranetNav menu",
+      "heading": "Configuration — Menu IntranetNav",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -1087,9 +1086,9 @@
     {
       "id": "guides-training",
       "opened": true,
-      "heading": "Settings — Guides & training",
+      "heading": "Configuration — Guides & formation",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -1097,9 +1096,9 @@
     {
       "id": "xslt-assistant",
       "opened": true,
-      "heading": "Settings — XSLT editor",
+      "heading": "Configuration — Éditeur XSLT",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -1107,9 +1106,9 @@
     {
       "id": "home-widgets",
       "opened": true,
-      "heading": "Settings — Home widgets & blocks",
+      "heading": "Configuration — Widgets & blocs d’accueil",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -1117,9 +1116,9 @@
     {
       "id": "attendance-mediabus-mini",
       "opened": true,
-      "heading": "Settings — Attendance counter",
+      "heading": "Configuration — Compteur de fréquentation",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -1127,9 +1126,9 @@
     {
       "id": "bibliography-builder",
       "opened": true,
-      "heading": "Settings — Bibliographies & publications",
+      "heading": "Configuration — Bibliographies & publications",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -1137,9 +1136,9 @@
     {
       "id": "144",
       "opened": true,
-      "heading": "Settings — Patron duplicate check",
+      "heading": "Configuration — Contrôle des doublons adhérents",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -1147,9 +1146,9 @@
     {
       "id": "item-quick-edit",
       "opened": true,
-      "heading": "Settings — Quick item editing",
+      "heading": "Configuration — Édition rapide des exemplaires",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -1157,9 +1156,19 @@
     {
       "id": "checkout-status-correction",
       "opened": true,
-      "heading": "Settings — Checkout status correction",
+      "heading": "Configuration — Correction du statut au prêt",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
+      "workflow": 0,
+      "readError": null,
+      "errors": []
+    },
+    {
+      "id": "assistance-reseau",
+      "opened": true,
+      "heading": "Configuration — Assistance réseau",
+      "danger": "",
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -1167,9 +1176,9 @@
     {
       "id": "france-publications-subscriptions",
       "opened": true,
-      "heading": "Settings — Périodiques — enrichissement natif Koha / FP",
+      "heading": "Configuration — Périodiques — enrichissement natif Koha / FP",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -1177,9 +1186,9 @@
     {
       "id": "page-qr-code",
       "opened": true,
-      "heading": "Settings — Page mobile QR",
+      "heading": "Configuration — QR mobile de la page",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []
@@ -1187,9 +1196,9 @@
     {
       "id": "last-borrower",
       "opened": true,
-      "heading": "Settings — Last borrower retained after anonymization",
+      "heading": "Configuration — Dernier emprunteur anonymisé",
       "danger": "",
-      "enabled": false,
+      "enabled": true,
       "workflow": 0,
       "readError": null,
       "errors": []

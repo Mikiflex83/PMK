@@ -6,8 +6,7 @@ Consultez d’abord :
 
 - [le README](README.md) ;
 - [l’installation du plugin](INSTALLATION-PLUGIN.md) ;
-- [l’installation non-plugin](INSTALLATION-NON-PLUGIN-TRANSITION.md) ;
-- [la transition vers le plugin](TRANSITION-NON-PLUGIN-VERS-PLUGIN.md) ;
+- [la transition d’une ancienne installation](TRANSITION-NON-PLUGIN-VERS-PLUGIN.md) ;
 - [la matrice de compatibilité](COMPATIBILITE-PLUGIN-0.4.0.md).
 
 Utilisez une Issue pour un défaut reproductible, une incompatibilité ou une demande d’amélioration. Donnez la version de PMK, la version de Koha, le format MARC, le navigateur, la page concernée et les étapes de reproduction avec des données fictives.

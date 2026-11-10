@@ -205,8 +205,8 @@
             schemaVersion: 1,
             name: { fr: 'Listes de travail', en: 'Personal lists manager' },
             description: {
-                fr: 'Profils nommés partagés, ou listes privées liées au compte Koha selon le mode choisi. Les bibliographies utilisent le même profil.',
-                en: 'Enables or disables synchronized personal lists and exposes a data bridge to other PimpMyKoha modules.'
+                fr: 'Un tiroir pour mettre de côté les notices et les exemplaires sur lesquels vous travaillez. Ce n’est pas une liste Koha visible des lecteurs. Ouvrez-le avec Outils, en haut de l’écran, puis Listes personnelles. Donnez un nom de profil que plusieurs agents ouvrent ensemble, ou gardez les listes pour vous seul, liées à votre compte Koha.',
+                en: 'A drawer for the bibliographic records and items you are working on. It is not a Koha list that patrons can see. Open it from PMK tools at the top of the screen, then Personal lists. Name a profile that several staff members open together, or keep the lists private on your Koha account.'
             },
             category: { fr: 'Outils', en: 'Tools' },
             defaults: { enabled: true, identityMode:'named' },

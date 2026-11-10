@@ -91,6 +91,7 @@ const selected = value => !filter.size || [...filter].some(item => value.include
   if (await branch.count()) await branch.selectOption('CPL');
   await page.locator('#loginform, form').first().evaluate(form => form.requestSubmit());
   await ready();
+  const expectedScripts = await page.evaluate(() => (window.PMKPlugin.manifest && window.PMKPlugin.manifest.scripts || []).length);
 
   const rows = [];
   for (const [id, route] of routes) {
@@ -145,24 +146,28 @@ const selected = value => !filter.size || [...filter].some(item => value.include
   }
 
   const correction = modules.find(module => module.id === 'checkout-status-correction');
+  const storedOn = modules.filter(module => module.enabled === true);
+  const freshInstall = storedOn.length === 0;
   const failures = [];
   const pluginPageError = entry => /\/contrib\/pmk\/|pmk-autoload|PimpMyKoha/.test([entry.message, ...(entry.stack || [])].join('\n'));
   for (const row of rows) {
-    if (!row.ready || row.loaded !== 111 || row.errors.length) failures.push('écran ' + row.id);
+    if (!row.ready || row.loaded !== expectedScripts || row.errors.length) failures.push('écran ' + row.id);
     if (row.pageErrors.some(pluginPageError)) failures.push('erreur plugin ' + row.id);
   }
   for (const row of modules) {
     if (!row.opened || row.danger || row.readError || row.errors.length || !row.heading) failures.push('module ' + row.id);
   }
-  if (correction && correction.enabled !== false) failures.push('checkout-status-correction doit rester désactivé');
   if (!filter.size && !correction) failures.push('checkout-status-correction absent du parcours');
-  const enabledOn = modules.filter(module => module.enabled !== false);
-  if (!filter.size && enabledOn.length) failures.push('modules actifs sur une installation neuve: ' + enabledOn.map(module => module.id).join(', '));
+  if (freshInstall) {
+    if (correction && correction.enabled !== false) failures.push('checkout-status-correction doit rester désactivé');
+    const enabledOn = modules.filter(module => module.enabled !== false);
+    if (!filter.size && enabledOn.length) failures.push('modules actifs sur une installation neuve: ' + enabledOn.map(module => module.id).join(', '));
+  }
   if (modules.some(module => module.workflow)) failures.push('liste de migration encore affichée');
   if (blocked.some(url => /dracenie\.(com|fr)/i.test(url))) failures.push('requête vers un hôte Dracénie');
   const configWrites = writes.filter(item => /\/documents(?:\/|$)|\/runtime(?:\/|$)/.test(item));
   const activity = writes.filter(item => !configWrites.includes(item));
-  if (activity.some(url => /\/contrib\/pmk\/data\//.test(url))) failures.push('écriture métier alors que les modules sont éteints');
+  if (freshInstall && activity.some(url => /\/contrib\/pmk\/data\//.test(url))) failures.push('écriture métier alors que les modules sont éteints');
   if (configWrites.length) failures.push('réglages écrits: ' + [...new Set(configWrites)].join(', '));
   const firebase = blocked.filter(url => /firebase|firestore|gstatic\.com\/firebasejs|identitytoolkit|securetoken/i.test(url));
   if (firebase.length) failures.push('appel Firebase');

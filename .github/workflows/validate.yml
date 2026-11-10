@@ -65,48 +65,28 @@ jobs:
         working-directory: tests
         run: npm test
 
-      - name: Construire le mode non-plugin
-        run: |
-          python3 legacy/build.py \
-            --stage "$RUNNER_TEMP/pmk-non-plugin" \
-            --output "$RUNNER_TEMP/PimpMyKoha-non-plugin.zip"
+      - name: Contrôles Perl du toolkit KTD
+        run: prove -v t/00-boundaries.t t/02-ktd-toolkit.t
 
-      - name: Construire le plugin KPZ
+      - name: Construire les deux canaux du plugin
         run: |
           python3 plugin/build.py \
-            --stage "$RUNNER_TEMP/pmk-plugin" \
-            --output "$RUNNER_TEMP/PimpMyKoha-plugin.kpz"
+            --channel stable \
+            --stage "$RUNNER_TEMP/pmk-stable" \
+            --output "$RUNNER_TEMP/PimpMyKoha-stable.kpz"
+          python3 plugin/build.py \
+            --channel preview \
+            --stage "$RUNNER_TEMP/pmk-preview" \
+            --output "$RUNNER_TEMP/PimpMyKoha-preview.kpz"
 
       - name: Contrôler les paquets construits
         run: |
           python3 tests/publication-safety.py \
-            "$RUNNER_TEMP/PimpMyKoha-non-plugin.zip" \
-            "$RUNNER_TEMP/PimpMyKoha-plugin.kpz"
-          python3 tests/firebase-non-plugin-safety.py \
-            "$RUNNER_TEMP/PimpMyKoha-non-plugin.zip"
-          python3 - <<'PY'
-          from pathlib import Path
-          from zipfile import ZipFile
-          import os
-          for name in ('PimpMyKoha-non-plugin.zip', 'PimpMyKoha-plugin.kpz'):
-              path = Path(os.environ['RUNNER_TEMP']) / name
-              with ZipFile(path) as archive:
-                  assert archive.testzip() is None, name
-                  if name == 'PimpMyKoha-non-plugin.zip':
-                      files = set(archive.namelist())
-                      prefix = 'PimpMyKoha-non-plugin/'
-                      for required in (
-                          '000-pmk-firebase-adapter.js',
-                          '001-pmk-firebase-data.js',
-                          'pmk-firebase-config.example.js',
-                          'IntranetUserJS-PMK.js',
-                          'FIREBASE-NON-PLUGIN.md',
-                      ):
-                          assert prefix + required in files, required
-                      assert prefix + 'IntranetUserJS-Dracenie.js' not in files
-                      assert prefix + 'pmk-legacy-private-config.example.js' not in files
-              print(f'{name}: {path.stat().st_size} octets, archive valide')
-          PY
+            "$RUNNER_TEMP/PimpMyKoha-stable.kpz" \
+            "$RUNNER_TEMP/PimpMyKoha-preview.kpz"
+          python3 tests/release-channels.py \
+            "$RUNNER_TEMP/PimpMyKoha-stable.kpz" \
+            "$RUNNER_TEMP/PimpMyKoha-preview.kpz"
 
       - name: Publier les paquets de contrôle
         uses: actions/upload-artifact@v7
@@ -115,6 +95,6 @@ jobs:
           if-no-files-found: error
           retention-days: 14
           path: |
-            ${{ runner.temp }}/PimpMyKoha-non-plugin.zip
-            ${{ runner.temp }}/PimpMyKoha-plugin.kpz
+            ${{ runner.temp }}/PimpMyKoha-stable.kpz
+            ${{ runner.temp }}/PimpMyKoha-preview.kpz
 

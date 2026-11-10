@@ -20,7 +20,11 @@ const OUT=path.join(ROOT,'tests/validation/biblios-diagnostic-states.json');
     technicalErrorDistinct:source.includes("kind:'error',label:'Erreur technique'")&&source.includes('state.auditErrors.set(b.id'),
     errorClearedAfterSuccess:source.includes('state.auditErrors.delete(b.id)'),
     auditSummaryCountsFailures:source.includes('${failed} erreur(s) technique(s)'),
-    noExternalDependency:!source.includes('Firebase')
+    noExternalDependency:!source.includes('Firebase'),
+    opportunityNotMissing:source.includes("!opportunity(hit)&&/absent|incomplet|sans exemplaire|vide/i"),
+    pendingHidesConforme:source.includes("diagnostic.kind==='pending'||diagnostic.kind==='error'"),
+    frenchSeverities:source.includes("['review','À vérifier']")&&source.includes("['ok','Conforme']"),
+    emptyGhosts:source.includes('Aucune notice sans exemplaire parmi les notices déjà auditées.')
   };
   for(const [name,passed] of Object.entries(checks))assert.equal(passed,true,name);
   fs.writeFileSync(OUT,JSON.stringify({passed:true,checks,scope:'Contrat de la page : critères de rapprochement visibles et états métier/technique non confondus.'},null,2)+'\n');

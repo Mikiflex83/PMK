@@ -239,8 +239,8 @@
                 en: 'Advanced search'
             },
             description: {
-                fr: 'Active ou désactive le module autonome de recherche avancée sans modifier son fonctionnement interne. L’accès peut être placé dans le Menu IntranetNav.',
-                en: 'Enables or disables the standalone advanced-search module without changing its internal behavior. Its entry point can be placed in the IntranetNav menu.'
+                fr: 'Ouvre la recherche avancée depuis le bouton Outils, en haut de l’écran. Le menu de navigation peut ajouter un raccourci, mais il n’est pas nécessaire.',
+                en: 'Opens advanced search from the PMK tools button at the top of the screen. The navigation menu may add a shortcut, but it is not required.'
             },
             category: {
                 fr: 'Catalogue / recherche',

@@ -13,11 +13,11 @@ assert stage!=ROOT and ROOT not in stage.parents
 if stage.exists():shutil.rmtree(stage)
 stage.mkdir(parents=True)
 
-excluded={'000-drac-quality-memory-firebase.js','008-issuehistory-timelineold.js','138-pages-settings.js','066-067-lists-manager.js','071-history-system.js','075-advanced-search-sidebar.js'}
+excluded={'000-drac-quality-memory-firebase.js','008-issuehistory-timelineold.js','138-pages-settings.js','066-067-lists-manager.js','071-history-system.js','075-advanced-search-sidebar.js','_extract-pages.js','_extract-ui.js'}
 scripts=[p.name for p in sorted(ROOT.glob('*.js')) if p.name not in excluded]
 ordered=['legacy/000-pmk-firebase-adapter.js','legacy/001-pmk-firebase-data.js']+scripts
 for path in list(ROOT.glob('*.js')):
- if path.name not in {'000-drac-quality-memory-firebase.js','008-issuehistory-timelineold.js'}:shutil.copy2(path,stage/path.name)
+ if path.name not in {'000-drac-quality-memory-firebase.js','008-issuehistory-timelineold.js','_extract-pages.js','_extract-ui.js'}:shutil.copy2(path,stage/path.name)
 for directory in ('137-widgets','138-pages','guides','sql'):
  shutil.copytree(ROOT/directory,stage/directory)
 (stage/'dev/migration').mkdir(parents=True)

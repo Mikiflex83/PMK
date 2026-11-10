@@ -5,7 +5,7 @@ const fs=require('node:fs'),assert=require('node:assert/strict');
  const h=await launch(),p=h.page,rows=[],prefix='recipe_'+Date.now();
  async function check(name,fn){const e=h.pageErrors.length;try{const evidence=await fn();assert.deepEqual(h.pageErrors.slice(e),[]);rows.push({name,passed:true,evidence});console.log('PASS '+name);}catch(error){rows.push({name,passed:false,error:error.stack,pageErrors:h.pageErrors.slice(e)});console.log('FAIL '+name+' '+error.message.slice(0,300));}fs.writeFileSync(ROOT+'/tests/validation/koha-native-data.json',JSON.stringify({kind:'Real Koha 25.11 / MariaDB; all Firebase traffic forbidden',pluginVersion:'0.4.0',rows},null,2)+'\n');}
  try {
- await check('Native documents: all nine module namespaces persist Unicode, timestamps and unknown fields',async()=>{
+ await check('Native documents: module namespaces persist Unicode, timestamps and unknown fields',async()=>{
   return p.evaluate(async prefix=>{const s=PMKNativeData,results=[];for(const ns of s.namespaces){const db=s.createDatabase(ns),r=s.doc(db,prefix,'unicode');await s.setDoc(r,{name:'Équipe € 漢字',unknown:{personal:[1,2]},created:s.serverTimestamp(),date:s.Timestamp.fromDate(new Date('2026-10-18T09:12:00Z'))});const snap=await s.getDoc(r),v=snap.data();if(v.name!=='Équipe € 漢字'||v.created.toMillis()<=0||v.date.toDate().toISOString()!=='2026-10-18T09:12:00.000Z')throw new Error(ns);results.push({ns,revision:snap.revision});}return results;},prefix);
  });
  await check('Native updates and merges retain unrelated fields; missing updates fail',async()=>{

@@ -5,39 +5,30 @@ PimpMyKoha (PMK) ajoute des modules à l’interface professionnelle de [Koha](h
 > [!IMPORTANT]
 > PimpMyKoha est développé entièrement à l’aide de l’intelligence artificielle, par une personne qui n’est pas développeur. Il est partagé avec la communauté Koha pour que le plus grand nombre puisse en profiter, et pour qu’il soit relu, corrigé, amélioré et rendu plus fiable. Le développement est toujours en cours. Son utilisation reste sous la responsabilité de chaque établissement.
 
-Ce dépôt est la source publiée du plugin. Il sert à la revue du plugin et aux contributions. Le paquet à examiner est celui construit depuis `main`, ou l’archive figée de la version 0.4.0 dans `releases/0.4.0`. Les valeurs d’une installation historique ne sont pas des réglages universels.
+Ce dépôt est la source du plugin Koha. La version 0.5.0 se publie en deux canaux construits depuis le même commit. Le mode non-plugin n’est plus distribué.
 
 ## Revue du plugin
 
 Le manifeste déclare la licence GPL-3.0-or-later et une version minimale de Koha. Il ne fixe pas de version maximale, afin de ne pas bloquer une Koha plus récente encore compatible. Les tests Perl sont dans `t/`. Le journal est `CHANGELOG.md`. `README.md` et `CONTRIBUTING.md` sont recopiés dans le paquet KPZ.
 
-La version 0.4.0 reste expérimentale. Les contrôles automatiques ne remplacent pas une recette sur une copie de l’installation : parcours métier, droits Koha, et absence d’effet quand un module est éteint.
+Les contrôles automatiques ne remplacent pas une première recette sur une copie de l’installation : parcours métier, droits Koha, et absence d’effet quand un module est éteint. Le canal stable est celui à installer. Le canal aperçu ajoute des pages encore en développement.
 
-## État actuel du projet
+## Versions 0.5.0
 
-| Mode | Maturité actuelle |
-|---|---|
-| **Non-plugin** | Mode éprouvé en situation réelle. Il dépend de projets Firebase créés et administrés par chaque établissement pour les configurations et certaines données PMK. Aucun projet Firebase ni identifiant Dracénie n’est fourni. |
-| **Plugin Koha** | **Version expérimentale en cours de test.** Le paquet passe des tests automatiques et des essais techniques sur une instance Koha dédiée, mais il ne bénéficie pas encore d’un retour d’utilisation en établissement ni d’une transition réelle validée. |
-
-> [!WARNING]
-> Le plugin 0.4.0 est fourni pour évaluation et recette. Ne l’activez pas directement en production : commencez sur une copie de l’installation et conservez le mode non-plugin tant que la reprise complète n’a pas été validée.
-
-## Télécharger la version 0.4.0
-
-| Distribution | Usage | Téléchargement |
+| Canal | Étiquette | Contenu |
 |---|---|---|
-| Livraison complète | Plugin, mode non-plugin, migration, documentation et sources | [ZIP complet](releases/0.4.0/PimpMyKoha-livraison-complete-2026-10-30.zip) |
-| Mode non-plugin | Installation actuelle par transfert de fichiers | [ZIP non-plugin](releases/0.4.0/PimpMyKoha-non-plugin-0.4.0-transition.4.zip) |
-| Plugin Koha | Paquet expérimental pour test depuis **Outils → Plugins** | [KPZ de test](releases/0.4.0/PimpMyKoha-plugin-0.4.0.kpz) |
+| **Stable** | `v0.5.0`, release de référence | Plugin complet, sans les pages encore marquées en développement. |
+| **Aperçu** | `v0.5.0-preview`, préversion | Le même plugin, plus ces pages. Elles gardent l’avertissement d’usage. |
 
-Les empreintes SHA-256 sont publiées dans le [dossier de la version](releases/0.4.0/README.md).
+Les pages absentes du canal stable sont le désherbage, la qualité des autorités, l’inventaire, la qualité des exemplaires, la qualité des notices, la qualité des comptes lecteurs et l’éditeur XSLT.
+
+Les deux paquets s’installent depuis **Outils → Plugins**. Une mise à jour conserve les tables PMK. Les valeurs d’une installation historique ne sont pas des réglages universels.
 
 ## Choisir le mode d’installation
 
 ### Plugin Koha
 
-Le plugin est le mode cible, actuellement en phase de test. Il fournit :
+Le plugin est le seul mode publié à partir de la version 0.5.0. Il fournit :
 
 - un seul paquet KPZ à installer et à mettre à jour ;
 - un stockage natif dans Koha pour les configurations et les données PMK ;
@@ -48,48 +39,20 @@ Le plugin est le mode cible, actuellement en phase de test. Il fournit :
 
 Consultez [l’installation du plugin](INSTALLATION-PLUGIN.md), puis la [procédure de transition](TRANSITION-NON-PLUGIN-VERS-PLUGIN.md).
 
-### Mode non-plugin
-
-Cette distribution permet de profiter des modules à jour lorsque l’installation des plugins Koha n’est pas encore autorisée. Elle se copie dans le dossier web qui sert actuellement les scripts PMK et utilise un petit chargeur dans `IntranetUserJS`.
-
-> [!CAUTION]
-> Le mode non-plugin n’est pas autonome : chaque établissement doit créer, sécuriser et maintenir ses propres projets Firebase pour charger les configurations et certaines données PMK. PMK ne contient aucun identifiant Firebase Dracénie et ne donne accès à aucune base partagée. Cette dépendance externe disparaît uniquement dans le mode plugin.
-
-Elle accepte la configuration Firebase propre à chaque installation et produit une sauvegarde importable dans le plugin. Le plugin, lui, n’utilise pas Firebase.
-
-La configuration doit être placée uniquement sur le serveur dans `pmk-firebase-config.js`, créé depuis le modèle fourni et exclu de Git. Consultez [Créer et connecter ses propres projets Firebase](FIREBASE-NON-PLUGIN.md).
-
-Le diagnostic PMK teste ensuite le projet principal ainsi que chaque espace
-fonctionnel. Les connexions ne sont pas dupliquées dans les réglages de chaque
-module : plusieurs modules utilisant les mêmes données partagent un seul espace
-Firebase défini dans ce fichier.
-
-Consultez [l’installation non-plugin](INSTALLATION-NON-PLUGIN-TRANSITION.md).
-
 > [!IMPORTANT]
-> Le chargeur non-plugin et le plugin ne doivent jamais être actifs simultanément. Deux chargements exécuteraient chaque module deux fois.
+> Le chargeur non-plugin et le plugin ne doivent jamais être actifs simultanément. Si un ancien chargeur est encore présent dans `IntranetUserJS`, retirez-le avant d’activer le plugin.
 
 ## Installation rapide du plugin
 
 1. Sauvegarder Koha, les fichiers personnalisés, `IntranetUserJS` et `IntranetUserCSS`.
 2. Si PMK est déjà utilisé, générer l’export complet avec [`dev/migration/export-production.js`](dev/migration/export-production.js).
-3. Installer [`PimpMyKoha-plugin-0.4.0.kpz`](releases/0.4.0/PimpMyKoha-plugin-0.4.0.kpz) depuis **Outils → Plugins**.
+3. Installer le KPZ `v0.5.0` depuis **Outils → Plugins**. Le canal aperçu se reconnaît à l’étiquette `v0.5.0-preview`.
 4. Ouvrir **PimpMyKoha → Configurer** et laisser le plugin en attente pendant la reprise.
 5. Analyser le fichier exporté, télécharger la sauvegarde du plugin, puis importer et contrôler les données.
 6. Tester les principaux parcours sur une copie de la production.
 7. Retirer l’ancien chargeur PMK de `IntranetUserJS`, puis activer le plugin et recharger les postes.
 
 L’export ne modifie pas l’ancienne installation. Les configurations inconnues, modules désactivés, valeurs personnalisées et données métier accessibles sont conservés dans la sauvegarde. Le détail se trouve dans [Migration des stockages natifs](MIGRATION-STOCKAGES-NATIFS.md).
-
-## Installation rapide sans plugin
-
-1. Sauvegarder le dossier de scripts actuel et les personnalisations Koha.
-2. Décompresser le [ZIP non-plugin](releases/0.4.0/PimpMyKoha-non-plugin-0.4.0-transition.4.zip).
-3. Copier le contenu de `PimpMyKoha-non-plugin` dans le dossier servi, par exemple `/public/koha-scripts/`.
-4. Remplacer les anciens chargements PMK individuels par le contenu de `IntranetUserJS-PMK.js` fourni.
-5. Vider le cache du navigateur et contrôler les configurations dans PMK avant tout enregistrement.
-
-Les 113 sources sont regroupées en neuf ressources de démarrage pour réduire les requêtes HTTP. Les fichiers individuels restent séparés dans les sources afin de conserver une maintenance lisible.
 
 ## Principales fonctions
 
@@ -111,7 +74,7 @@ Les fonctions propres à une installation disposent autant que possible de séle
 
 ## Compatibilité et validation
 
-La version 0.4.0 a été développée et contrôlée techniquement principalement avec Koha 25.11, UNIMARC et MariaDB 10.11. Seul le mode non-plugin bénéficie à ce jour d’un recul d’utilisation en situation réelle. Le plugin comprend :
+La version 0.5.0 est construite et contrôlée avec Koha 25.11, UNIMARC et MariaDB 10.11. Le plugin comprend :
 
 - 87 modules déclarés ;
 - 79 groupes de tests de régression avec des données locales simulées ;
@@ -144,15 +107,15 @@ node tests/audit.cjs
 # Régression principale
 node tests/regression.cjs
 
-# Construire le mode non-plugin
-python3 legacy/build.py \
-  --stage /tmp/pmk-non-plugin \
-  --output /tmp/PimpMyKoha-non-plugin.zip
-
-# Construire le KPZ
+# Canal stable, puis canal aperçu
 python3 plugin/build.py \
-  --stage /tmp/pmk-plugin \
-  --output /tmp/PimpMyKoha-plugin.kpz
+  --channel stable \
+  --stage /tmp/pmk-stable \
+  --output /tmp/PimpMyKoha-0.5.0.kpz
+python3 plugin/build.py \
+  --channel preview \
+  --stage /tmp/pmk-preview \
+  --output /tmp/PimpMyKoha-0.5.0-preview.kpz
 ```
 
 Les tests Chromium nécessitent Playwright et Chromium. Les tests Koha complets nécessitent l’environnement local décrit dans [PLUGIN-KOHA-PMK.md](PLUGIN-KOHA-PMK.md).
@@ -168,8 +131,7 @@ Les tests Chromium nécessitent Playwright et Chromium. Les tests Koha complets 
 ## Documentation
 
 - [Installer le plugin](INSTALLATION-PLUGIN.md)
-- [Installer le mode non-plugin](INSTALLATION-NON-PLUGIN-TRANSITION.md)
-- [Transition non-plugin vers plugin](TRANSITION-NON-PLUGIN-VERS-PLUGIN.md)
+- [Transition d’une ancienne installation](TRANSITION-NON-PLUGIN-VERS-PLUGIN.md)
 - [Migration des stockages](MIGRATION-STOCKAGES-NATIFS.md)
 - [Recette du plugin](RECETTE-PLUGIN-KOHA.md)
 - [Compatibilité de la version 0.4.0](COMPATIBILITE-PLUGIN-0.4.0.md)

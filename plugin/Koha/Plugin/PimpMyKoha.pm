@@ -5,14 +5,24 @@ use base qw(Koha::Plugins::Base);
 use JSON qw(decode_json);
 use C4::Context;
 
-our $VERSION = '0.4.0';
+our $VERSION = '0.5.0';
 our $metadata = {
     name => 'PimpMyKoha', author => 'PimpMyKoha',
     description => 'Modules et pages pour l’interface professionnelle de Koha, avec configuration native. Développé entièrement avec l’IA par une personne qui n’est pas développeur, et partagé pour être relu et amélioré. Développement en cours : l’usage reste sous la responsabilité de l’établissement.',
-    date_authored => '2026-10-18', date_updated => '2026-10-28',
+    date_authored => '2026-10-18', date_updated => '2026-11-10',
     minimum_version => '25.11.00.000', version => $VERSION,
     license => 'GPL-3.0-or-later',
 };
+
+=head1 METHODS
+
+=head2 new
+
+    my $plugin = Koha::Plugin::PimpMyKoha->new;
+
+Builds the plugin object from the package metadata.
+
+=cut
 
 sub new {
     my ($class, $args) = @_;
@@ -64,30 +74,83 @@ sub install {
     return 1;
 }
 
+=head2 upgrade
+
+Re-runs install so a newer package keeps the existing tables and settings.
+
+=cut
+
 sub upgrade { return shift->install; }
-# La désinstallation ne supprime pas les réglages ni leur historique.
+
+=head2 uninstall
+
+Leaves the plugin tables and their history in place.
+
+=cut
+
 sub uninstall { return 1; }
+
+=head2 intranet_js
+
+Returns the staff bootstrap tag for a logged-in session. A disabled plugin
+stays quiet, except on the migration screen.
+
+=cut
 
 sub intranet_js {
     my ($self) = @_;
-    return '' if ($self->retrieve_data('runtime_enabled') // '1') eq '0';
+    my $migration = $self->{cgi} && $self->{cgi}->param('pmk_migration') ? 1 : 0;
+    return '' if ($self->retrieve_data('runtime_enabled') // '1') eq '0' && !$migration;
     return '' unless C4::Context->userenv && C4::Context->userenv->{number};
     my $base = '/api/v1/contrib/pmk/static';
-    return qq{<script src="$base/bootstrap.js?v=$VERSION" data-pmk-plugin="1"></script>};
+    my $marker = $migration ? 'data-pmk-setup="1"' : 'data-pmk-plugin="1"';
+    return qq{<script src="$base/bootstrap.js?v=$VERSION" $marker></script>};
 }
 
 sub configure {
     my ($self) = @_;
-    print $self->{cgi}->header(-type => 'text/html', -charset => 'utf-8', -cache_control => 'no-store');
-    print qq{<!doctype html><html lang="fr"><meta charset="utf-8"><title>Installation PimpMyKoha</title><body><main><h1>Installation PimpMyKoha</h1><p>PimpMyKoha est développé entièrement à l’aide de l’intelligence artificielle, par une personne qui n’est pas développeur. Il est partagé avec la communauté Koha pour que le plus grand nombre puisse en profiter, et pour qu’il soit relu, corrigé, amélioré et rendu plus fiable. Le développement est toujours en cours. Son utilisation reste sous la responsabilité de chaque établissement.</p><p><a href="/cgi-bin/koha/plugins/plugins-home.pl">Retour aux plugins Koha</a> · <a href="/cgi-bin/koha/mainpage.pl?pmk_admin=1">Configuration PMK après activation</a></p></main><script src="/api/v1/contrib/pmk/static/bootstrap.js?v=$VERSION" data-pmk-setup="1"></script></body></html>};
+    return $self->_render_staff_page('configure.tt');
 }
 
 sub tool {
     my ($self) = @_;
-    print $self->{cgi}->redirect('/cgi-bin/koha/mainpage.pl?pmk_page=hub');
+    return $self->_render_staff_page('tool.tt');
 }
 
+=head2 _render_staff_page
+
+Renders a plugin template inside the Koha staff wrapper, or a short alert
+when the template cannot be read.
+
+=cut
+
+sub _render_staff_page {
+    my ( $self, $file ) = @_;
+    my $template = eval { $self->get_template( { file => $file } ) };
+    if ( !$template ) {
+        warn "PimpMyKoha $file: " . ( $@ || 'template unavailable' );
+        return $self->output_html(
+            '<div class="alert alert-danger" role="alert">PimpMyKoha n’a pas pu ouvrir cette page. Consultez le journal Plack.</div>'
+        );
+    }
+    $template->param( version => $VERSION );
+    return $self->output_html( $template->output() );
+}
+
+=head2 api_namespace
+
+Returns the REST namespace pmk.
+
+=cut
+
 sub api_namespace { return 'pmk'; }
+
+=head2 static_routes
+
+Publishes the bundled staff files under the plugin static API.
+
+=cut
+
 sub static_routes {
     my ($self) = @_;
     open my $file, '<:raw', $self->mbf_path('manifest.json') or die "PMK manifest: $!";
@@ -109,11 +172,59 @@ sub static_routes {
     }
     return \%routes;
 }
+
+=head2 api_routes
+
+Returns the plugin API description.
+
+=cut
+
 sub api_routes {
     my ($self) = @_;
     open my $file, '<:raw', $self->mbf_path('api.json') or die "PMK API: $!";
     local $/;
     return decode_json(<$file>);
 }
+
+=head1 NAME
+
+Koha::Plugin::PimpMyKoha - Staff interface modules and internal pages for Koha
+
+=head1 SYNOPSIS
+
+Install the KPZ from Administration, then Plugins. The configure screen prepares
+the plugin. The tool screen opens the internal pages inside the Koha staff wrapper.
+
+=head1 DESCRIPTION
+
+PimpMyKoha stores its configuration in Koha. A new installation leaves every
+module disabled until a document is saved. Uninstall keeps the plugin tables.
+
+The stable package omits internal pages still marked as in development. The
+preview package includes those pages.
+
+=head1 METHODS
+
+=head2 configure
+
+Renders the installation screen with the Koha staff plugin wrapper.
+
+=head2 tool
+
+Renders the tool screen with the Koha staff plugin wrapper.
+
+=head2 install
+
+Creates the plugin tables when they are missing and preserves existing rows.
+
+=head1 AUTHOR
+
+PimpMyKoha
+
+=head1 LICENSE
+
+GPL-3.0-or-later
+
+=cut
 
 1;

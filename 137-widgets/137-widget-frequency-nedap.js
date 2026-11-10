@@ -98,7 +98,7 @@ const STYLE_TEXT = `  #nf-app {
 
   #nf-app .nf-body {
     padding: 6px 16px 16px;
-    background: linear-gradient(180deg, #fff 0%, var(--nf-bg) 100%);
+    background: #fff;
   }
 
   #nf-app .nf-stats {
@@ -679,12 +679,11 @@ const HTML_TEXT = `<div id="nf-app">
 <div class="nf-admin-body">
 <div class="nf-section-title">Connexion au compteur</div>
 <div class="nf-form-grid">
-<div class="nf-field nf-full"><label for="nf-cfg-mode">Mode de connexion</label><select id="nf-cfg-mode"><option value="worker">Cloudflare (configuration actuelle)</option><option value="direct">API Nedap directe</option><option value="koha">Relais du plugin Koha — clé côté serveur</option></select></div>
-<div class="nf-field nf-full" id="nf-worker-field"><label for="nf-cfg-worker">URL du Worker</label> <input id="nf-cfg-worker" type="url" /></div>
-<div class="nf-field nf-full nf-direct-field"><label for="nf-cfg-api-key">Clé API Nedap / Libnet</label><input id="nf-cfg-api-key" type="password" autocomplete="off" spellcheck="false" /><small id="nf-key-help">En mode direct, la clé est transmise aux navigateurs. Avec le relais Koha, elle reste sur le serveur.</small></div>
+<div class="nf-field nf-full"><p id="nf-cfg-mode-label">Relais du plugin Koha. La clé reste sur le serveur.</p><input id="nf-cfg-mode" type="hidden" value="koha" /></div>
+<div class="nf-field nf-full" id="nf-worker-field" hidden><label for="nf-cfg-worker">URL du Worker</label> <input id="nf-cfg-worker" type="url" /></div>
+<div class="nf-field nf-full nf-direct-field"><label for="nf-cfg-api-key">Clé API Nedap / Libnet</label><input id="nf-cfg-api-key" type="password" autocomplete="off" spellcheck="false" /><small id="nf-key-help">Clé conservée sur le serveur Koha. Un champ vide conserve la clé déjà enregistrée ; une nouvelle clé la remplace.</small></div>
 <div class="nf-field nf-full nf-direct-field"><label for="nf-cfg-display">Inclure les périodes sans données</label><select id="nf-cfg-display"><option value="NO">Non (recommandé)</option><option value="YES">Oui</option></select></div>
-<div class="nf-field nf-full nf-direct-field"><small>Connexion CCInfo Libnet configurée automatiquement. Utiliser « Tester l’API » pour vérifier l’accès direct ; conserver Cloudflare si le serveur le bloque.</small></div>
-<div class="nf-field nf-full nf-relay-field"><small id="nf-relay-status" role="status">La clé serveur doit être configurée par un administrateur Koha.</small><button type="button" id="nf-relay-clear" class="nf-mini-btn">Effacer la clé serveur</button><small>Le serveur Koha contacte Libnet. Les anciennes connexions restent disponibles. Une clé conservée dans les anciennes sauvegardes n’est pas effacée de ces sauvegardes.</small></div>
+<div class="nf-field nf-full nf-relay-field"><small id="nf-relay-status" role="status">La clé serveur doit être configurée par un administrateur Koha.</small><button type="button" id="nf-relay-clear" class="nf-mini-btn">Effacer la clé serveur</button><small>Le serveur Koha contacte Libnet. Une clé présente dans une sauvegarde antérieure n’est pas retirée de cette sauvegarde.</small></div>
 <div class="nf-field"><label for="nf-cfg-rcr">RCR</label> <input id="nf-cfg-rcr" type="text" /></div>
 <div class="nf-field"><label for="nf-cfg-period">P&eacute;riode API</label> <input id="nf-cfg-period" type="text" /></div>
 <div class="nf-field nf-worker-detail"><label for="nf-cfg-start-hour">D&eacute;but de journ&eacute;e &mdash; heure</label> <input id="nf-cfg-start-hour" type="number" min="0" max="23" /></div>
@@ -767,7 +766,7 @@ async function mount(container) {
 
       const DEFAULT_CONFIG = {
         schemaVersion: 15,
-        connectionMode: "worker",
+        connectionMode: "koha",
         nedapDisplay: "NO",
         nedapApiKey: "",
 
@@ -817,6 +816,7 @@ async function mount(container) {
       const relayErrors = {
         configuration_changed: "La connexion serveur a été modifiée ailleurs. Fermez puis rouvrez les paramètres avant de réessayer.",
         key_required: "Renseignez une clé pour activer le relais Koha.",
+        invalid_request: "Le relais a refusé l’enregistrement. Le RCR doit contenir exactement 9 chiffres, et la clé ne doit contenir ni espace, ni retour à la ligne.",
         relay_not_configured: "La clé serveur du relais Koha n’est pas configurée.",
         rcr_not_configured: "Le RCR choisi ne correspond pas à celui enregistré pour le relais Koha.",
         relay_disabled: "Le widget de fréquentation est éteint. Le relais ne contacte pas Libnet.",
@@ -1737,6 +1737,7 @@ async function mount(container) {
           }
 
           currentConfig = deepMerge(DEFAULT_CONFIG, saved);
+          currentConfig.connectionMode = "koha";
           configSource = "Koha";
         } catch {
           currentConfig = structuredClone(DEFAULT_CONFIG);
@@ -1825,7 +1826,7 @@ async function mount(container) {
 
       function fillAdminForm() {
         normalizePresentColor();
-        document.getElementById("nf-cfg-mode").value = currentConfig.connectionMode || "worker";
+        document.getElementById("nf-cfg-mode").value = "koha";
         document.getElementById("nf-cfg-api-key").value = nedapApiKey || loadNedapApiKey(currentConfig);
         document.getElementById("nf-cfg-display").value = currentConfig.nedapDisplay === "YES" ? "YES" : "NO";
         updateConnectionFields();
@@ -1873,7 +1874,7 @@ async function mount(container) {
       function readAdminForm() {
         const config = structuredClone(currentConfig);
 
-        config.connectionMode = document.getElementById("nf-cfg-mode").value;
+        config.connectionMode = "koha";
         config.schemaVersion = 15;
         config.nedapApiKey = document.getElementById("nf-cfg-api-key").value.trim();
         config.nedapDisplay = document.getElementById("nf-cfg-display").value;
@@ -1945,21 +1946,13 @@ async function mount(container) {
             throw new Error("Les seuils doivent vérifier : 1 ≤ orange < rouge ≤ 100.");
           }
         }
-        if (!["worker", "direct", "koha"].includes(config.connectionMode || "worker")) {
-          throw new Error("Mode de connexion invalide.");
+        config.connectionMode = "koha";
+        if (!/^\d{9}$/.test(config.rcr || "")) throw new Error("Le relais Koha attend un RCR de 9 chiffres.");
+        if (config.nedapApiKey && (config.nedapApiKey.length > 512 || /[\u0000-\u0020\u007f]/.test(config.nedapApiKey))) {
+          throw new Error("La clé API ne doit contenir ni espace, ni retour à la ligne.");
         }
-        if ((config.connectionMode || "worker") === "worker") {
-          if (!config.workerUrl) throw new Error("L’URL du Worker est obligatoire.");
-          let parsed;
-          try { parsed = new URL(config.workerUrl); } catch { throw new Error("URL du Worker invalide."); }
-          if (!["http:", "https:"].includes(parsed.protocol)) {
-            throw new Error("L’URL du Worker doit commencer par http:// ou https://.");
-          }
-        }
-        if (!config.rcr) throw new Error("Le RCR est obligatoire.");
-        if (config.connectionMode === "koha" && !/^\d{9}$/.test(config.rcr)) throw new Error("Le relais Koha attend un RCR de 9 chiffres.");
         if (!config.period) throw new Error("La période API est obligatoire.");
-        if (["direct", "koha"].includes(config.connectionMode) && !["1", "5", "10", "15", "30", "HOUR", "DAY"].includes(config.period)) {
+        if (!["1", "5", "10", "15", "30", "HOUR", "DAY"].includes(config.period)) {
           throw new Error("Période CCInfo : utiliser 1, 5, 10, 15, 30, HOUR ou DAY.");
         }
       }

@@ -111,8 +111,9 @@
    if(e.hidden){used.add(e.id);continue;}
    if(e.origin==='koha'){
     const natural=byId.get(e.id);
-    if(natural){ordered.push({...natural,...e,label:(e.label&&e.label!=='Lien'&&e.label.trim()!=='Créer une notice'?e.label:natural.label),category:e.category&&e.category!=='Autres'?e.category:natural.category});used.add(e.id);}
-    else {ordered.push({...e,unavailable:true,unavailableReason:'Cette destination n’est pas présente dans la page Koha chargée pour cette session.'});used.add(e.id);}
+    if(natural)ordered.push({...natural,...e,label:(e.label&&e.label!=='Lien'&&e.label.trim()!=='Créer une notice'?e.label:natural.label),category:e.category&&e.category!=='Autres'?e.category:natural.category});
+    else ordered.push(e);
+    used.add(e.id);
    }else if(rec.allowedCustom.has(e.id)){ordered.push(e);used.add(e.id);}
   }
   for(const e of found)if(!used.has(e.id)){ordered.push(e);used.add(e.id);}
@@ -178,20 +179,20 @@
    return;
  }
  if(moduleCfg.enabled===false)return;
- discoveryOptions={...window.PMKMenuEngine.homeDiscoveryDefaults,...moduleCfg.discovery};conf.timeoutMs=Number(discoveryOptions.timeoutMs)||6500;conf.maxLinks=Number(discoveryOptions.maxLinks)||600;
+ discoveryOptions={...window.PMKMenuEngine.homeDiscoveryDefaults};conf.timeoutMs=Number(discoveryOptions.timeoutMs)||6500;conf.maxLinks=Number(discoveryOptions.maxLinks)||600;
  globalConfig={version:1,sections:Object.fromEntries((moduleCfg.sections||[]).filter(x=>x&&x.path).map(x=>[x.path,{...x,entries:x.entries||[]}]))};
  if(typeof pmk.subscribe==='function'){
    pmk.subscribe(moduleKey,async next=>{
-     discoveryOptions={...window.PMKMenuEngine.homeDiscoveryDefaults,...next?.discovery};
+     discoveryOptions={...window.PMKMenuEngine.homeDiscoveryDefaults};
      if(next?.enabled===false){for(const rec of sections.values()){rec.toggle.hidden=true;rec.panel.hidden=true;}return;}
      globalConfig={version:1,sections:Object.fromEntries((next?.sections||[]).filter(x=>x&&x.path).map(x=>[x.path,{...x,entries:x.entries||[]}]))};
-     await Promise.all([...sections.values()].map(async rec=>{rec.discovered=await discover(location.origin+rec.key);await refresh(rec)}));
+     await Promise.all([...sections.values()].map(async rec=>{rec.discovered=[];await refresh(rec)}));
    });
  }
  const links=[...document.querySelectorAll('.biglinks-list > li > a.icon_general[href]')];for(const [i,a] of links.entries()){const u=safe(a.getAttribute('href'));if(!u)continue;if(String(discoveryOptions.ignoredSections||'').split(/\n/).map(path=>path.trim()).includes(u.pathname))continue;const key=idFor(u),label=norm(a.textContent)||PMK147_HOME_META[u.pathname.replace(ROOT,'/')];const host=el('div','pmk147host');a.before(host);host.append(a);const toggle=el('button','pmk147toggle');toggle.hidden=true;toggle.type='button';toggle.setAttribute('aria-label','Ouvrir le sous-menu '+label);toggle.setAttribute('aria-expanded','false');toggle.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';const panel=el('div','pmk147panel');panel.hidden=true;panel.id='pmk147-panel-'+i;toggle.setAttribute('aria-controls',panel.id);host.append(toggle,panel);const rec={key,label,toggle,panel,discovered:[],allowedCustom:new Set(),items:[]};sections.set(key,rec);toggle.onclick=e=>{e.preventDefault();e.stopPropagation();const wasClosed=panel.hidden;closeAll();if(wasClosed){panel.hidden=false;toggle.setAttribute('aria-expanded','true');render(rec)}};}
  document.addEventListener('click',e=>{if(!e.target.closest('.pmk147host')&&!e.target.closest('.pmk147modal'))closeAll()});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAll()});
  // Toutes les rubriques en parallèle : pas de vérification HTTP par lien.
- await Promise.all([...sections.values()].map(async rec=>{rec.discovered=await discover(location.origin+rec.key);await refresh(rec)}));
+ await Promise.all([...sections.values()].map(async rec=>{rec.discovered=[];await refresh(rec)}));
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
