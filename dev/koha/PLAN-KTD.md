@@ -27,7 +27,7 @@ existante ne recrée pas les tables et ne change `runtime_enabled` que s'il est 
 1. Le répertoire `~/git/koha-plugins/pmk` est monté dans le conteneur sur `/kohadevbox/plugins/pmk`.
 2. `prove -v t/` tourne dans `koha-shell`, avec `PERL5LIB` qui inclut le plugin.
    - `t/00-boundaries.t` : pas de `system`/`exec`, pas de client HTTP générique, pas de Firebase, pas de `DROP TABLE`, version et licence déclarées, désinstallation sans suppression des tables.
-   - `t/01-metadata.t` : version 0.5.0, licence, aucun script injecté hors session, quatre tables présentes, plugin visible par Koha.
+   - `t/01-metadata.t` : version 0.5.1, licence, aucun script injecté hors session, quatre tables présentes, plugin visible par Koha.
    - `t/02-ktd-toolkit.t` : motif de commit, codespell, POD et gabarit `wrapper-staff-tool-plugin.inc`.
 3. Administration > Plugins affiche PimpMyKoha une fois connecté.
 4. `.kohaqarc` et `.codespell-ignore` sont à la racine du dépôt, comme pour kitchen-sink.

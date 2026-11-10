@@ -5,7 +5,7 @@ PimpMyKoha (PMK) ajoute des modules à l’interface professionnelle de [Koha](h
 > [!IMPORTANT]
 > PimpMyKoha est développé entièrement à l’aide de l’intelligence artificielle, par une personne qui n’est pas développeur. Il est partagé avec la communauté Koha pour que le plus grand nombre puisse en profiter, et pour qu’il soit relu, corrigé, amélioré et rendu plus fiable. Le développement est toujours en cours. Son utilisation reste sous la responsabilité de chaque établissement.
 
-Ce dépôt est la source du plugin Koha. La version 0.5.0 se publie en deux canaux construits depuis le même commit. Le mode non-plugin n’est plus distribué.
+Ce dépôt est la source du plugin Koha. La version 0.5.1 se publie en deux canaux construits depuis le même commit. Le mode non-plugin n’est plus distribué.
 
 ## Revue du plugin
 
@@ -13,12 +13,12 @@ Le manifeste déclare la licence GPL-3.0-or-later et une version minimale de Koh
 
 Les contrôles automatiques ne remplacent pas une première recette sur une copie de l’installation : parcours métier, droits Koha, et absence d’effet quand un module est éteint. Le canal stable est celui à installer. Le canal aperçu ajoute des pages encore en développement.
 
-## Versions 0.5.0
+## Versions 0.5.1
 
 | Canal | Étiquette | Contenu |
 |---|---|---|
-| **Stable** | `v0.5.0`, release de référence | Plugin complet, sans les pages encore marquées en développement. |
-| **Aperçu** | `v0.5.0-preview`, préversion | Le même plugin, plus ces pages. Elles gardent l’avertissement d’usage. |
+| **Stable** | `v0.5.1`, release de référence | Plugin complet, sans les pages encore marquées en développement. |
+| **Aperçu** | `v0.5.1-preview`, préversion | Le même plugin, plus ces pages. Elles gardent l’avertissement d’usage. |
 
 Les pages absentes du canal stable sont le désherbage, la qualité des autorités, l’inventaire, la qualité des exemplaires, la qualité des notices, la qualité des comptes lecteurs et l’éditeur XSLT.
 
@@ -46,7 +46,7 @@ Consultez [l’installation du plugin](INSTALLATION-PLUGIN.md), puis la [procéd
 
 1. Sauvegarder Koha, les fichiers personnalisés, `IntranetUserJS` et `IntranetUserCSS`.
 2. Si PMK est déjà utilisé, générer l’export complet avec [`dev/migration/export-production.js`](dev/migration/export-production.js).
-3. Installer le KPZ `v0.5.0` depuis **Outils → Plugins**. Le canal aperçu se reconnaît à l’étiquette `v0.5.0-preview`.
+3. Installer le KPZ `v0.5.1` depuis **Outils → Plugins**. Le canal aperçu se reconnaît à l’étiquette `v0.5.1-preview`.
 4. Ouvrir **PimpMyKoha → Configurer** et laisser le plugin en attente pendant la reprise.
 5. Analyser le fichier exporté, télécharger la sauvegarde du plugin, puis importer et contrôler les données.
 6. Tester les principaux parcours sur une copie de la production.
@@ -74,7 +74,7 @@ Les fonctions propres à une installation disposent autant que possible de séle
 
 ## Compatibilité et validation
 
-La version 0.5.0 est construite et contrôlée avec Koha 25.11, UNIMARC et MariaDB 10.11. Le plugin comprend :
+La version 0.5.1 est construite et contrôlée avec Koha 25.11, UNIMARC et MariaDB 10.11. Le plugin comprend :
 
 - 87 modules déclarés ;
 - 79 groupes de tests de régression avec des données locales simulées ;
@@ -111,11 +111,11 @@ node tests/regression.cjs
 python3 plugin/build.py \
   --channel stable \
   --stage /tmp/pmk-stable \
-  --output /tmp/PimpMyKoha-0.5.0.kpz
+  --output /tmp/PimpMyKoha-0.5.1.kpz
 python3 plugin/build.py \
   --channel preview \
   --stage /tmp/pmk-preview \
-  --output /tmp/PimpMyKoha-0.5.0-preview.kpz
+  --output /tmp/PimpMyKoha-0.5.1-preview.kpz
 ```
 
 Les tests Chromium nécessitent Playwright et Chromium. Les tests Koha complets nécessitent l’environnement local décrit dans [PLUGIN-KOHA-PMK.md](PLUGIN-KOHA-PMK.md).

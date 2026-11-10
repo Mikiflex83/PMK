@@ -58,7 +58,8 @@ def check(stable, preview):
         names, manifest, configure, tool = read_manifest(archive)
         if manifest.get('channel') != channel:
             errors.append(f'{label}: canal {manifest.get("channel")}')
-        if manifest.get('version') != '0.5.0':
+        expected = re.search(r"our \$VERSION = '([^']+)'", (ROOT / 'plugin/Koha/Plugin/PimpMyKoha.pm').read_text(encoding='utf-8')).group(1)
+        if manifest.get('version') != expected:
             errors.append(f'{label}: version {manifest.get("version")}')
         if 'wrapper-staff-tool-plugin.inc' not in configure or 'wrapper-staff-tool-plugin.inc' not in tool:
             errors.append(f'{label}: gabarit staff absent')

@@ -48,18 +48,18 @@ Construire les deux canaux du plugin dans un dossier temporaire :
 python3 plugin/build.py \
   --channel stable \
   --stage /tmp/pmk-stable \
-  --output /tmp/PimpMyKoha-0.5.0.kpz
+  --output /tmp/PimpMyKoha-0.5.1.kpz
 python3 plugin/build.py \
   --channel preview \
   --stage /tmp/pmk-preview \
-  --output /tmp/PimpMyKoha-0.5.0-preview.kpz
+  --output /tmp/PimpMyKoha-0.5.1-preview.kpz
 
 python3 tests/release-channels.py \
-  /tmp/PimpMyKoha-0.5.0.kpz \
-  /tmp/PimpMyKoha-0.5.0-preview.kpz
+  /tmp/PimpMyKoha-0.5.1.kpz \
+  /tmp/PimpMyKoha-0.5.1-preview.kpz
 python3 tests/publication-safety.py \
-  /tmp/PimpMyKoha-0.5.0.kpz \
-  /tmp/PimpMyKoha-0.5.0-preview.kpz
+  /tmp/PimpMyKoha-0.5.1.kpz \
+  /tmp/PimpMyKoha-0.5.1-preview.kpz
 ```
 
 Les scénarios qui demandent une Koha réelle, un matériel ou un compte fournisseur restent distincts. Décrivez ce qui a été testé et ce qui a été simulé. Le compte professionnel d’une Koha locale se passe par `PMK_KOHA_USER` et `PMK_KOHA_PASSWORD`. Il ne s’écrit pas dans le dépôt.

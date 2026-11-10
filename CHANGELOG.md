@@ -2,7 +2,7 @@
 
 Les changements majeurs de PimpMyKoha sont consignés dans ce fichier.
 
-## [Non publié]
+## [0.5.1] - 2026-11-10
 
 ### Ajouté
 
