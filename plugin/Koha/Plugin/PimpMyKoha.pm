@@ -33,14 +33,26 @@ sub new {
 sub install {
     my ($self) = @_;
     my $dbh = C4::Context->dbh;
-    $dbh->do(q{CREATE TABLE IF NOT EXISTS koha_plugin_pimpmykoha_documents (
+    my %expected = (
+        documents    => 'koha_plugin_pimpmykoha_documents',
+        history      => 'koha_plugin_pimpmykoha_history',
+        data         => 'koha_plugin_pimpmykoha_data',
+        data_history => 'koha_plugin_pimpmykoha_data_history',
+    );
+    my %table;
+    for my $suffix ( keys %expected ) {
+        my $name = $self->get_qualified_table_name($suffix);
+        die "PMK refuse un nom de table inattendu: $name\n" if $name ne $expected{$suffix};
+        $table{$suffix} = $name;
+    }
+    $dbh->do(qq{CREATE TABLE IF NOT EXISTS $table{documents} (
         document_key VARCHAR(190) NOT NULL PRIMARY KEY,
         body LONGTEXT NOT NULL,
         revision BIGINT UNSIGNED NOT NULL DEFAULT 1,
         updated_by INT DEFAULT NULL,
         updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin});
-    $dbh->do(q{CREATE TABLE IF NOT EXISTS koha_plugin_pimpmykoha_history (
+    $dbh->do(qq{CREATE TABLE IF NOT EXISTS $table{history} (
         id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
         document_key VARCHAR(190) NOT NULL,
         body LONGTEXT NOT NULL,
@@ -49,7 +61,7 @@ sub install {
         saved_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         INDEX document_revision(document_key, revision)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin});
-    $dbh->do(q{CREATE TABLE IF NOT EXISTS koha_plugin_pimpmykoha_data (
+    $dbh->do(qq{CREATE TABLE IF NOT EXISTS $table{data} (
         namespace VARCHAR(64) NOT NULL,
         path VARCHAR(512) NOT NULL,
         parent VARCHAR(512) NOT NULL,
@@ -59,7 +71,7 @@ sub install {
         updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         PRIMARY KEY(namespace, path), INDEX collection_path(namespace, parent)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin});
-    $dbh->do(q{CREATE TABLE IF NOT EXISTS koha_plugin_pimpmykoha_data_history (
+    $dbh->do(qq{CREATE TABLE IF NOT EXISTS $table{data_history} (
         id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
         namespace VARCHAR(64) NOT NULL, path VARCHAR(512) NOT NULL,
         body LONGTEXT DEFAULT NULL, revision BIGINT UNSIGNED NOT NULL,
@@ -68,7 +80,7 @@ sub install {
         INDEX namespace_history(namespace, id)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin});
     if (!defined $self->retrieve_data('runtime_enabled')) {
-        my $count = $dbh->selectrow_array('SELECT COUNT(*) FROM koha_plugin_pimpmykoha_documents');
+        my $count = $dbh->selectrow_array("SELECT COUNT(*) FROM $table{documents}");
         $self->store_data({runtime_enabled => $count ? '1' : '0'});
     }
     return 1;
@@ -154,8 +166,8 @@ Publishes the bundled staff files under the plugin static API.
 sub static_routes {
     my ($self) = @_;
     open my $file, '<:raw', $self->mbf_path('manifest.json') or die "PMK manifest: $!";
-    local $/;
-    my $manifest = decode_json(<$file>);
+    my $manifest = do { local $/; decode_json(<$file>) };
+    close $file or die "PMK manifest: $!";
     my @files = ('bootstrap.js', 'storage.js', 'native-data.js', 'migration.js', 'manifest.json', $manifest->{autoloadBundle}, map { 'assets/' . $_ } sort keys %{$manifest->{files}});
     my %produce = (js => 'application/javascript', json => 'application/json', sql => 'text/plain', png => 'image/png', css => 'text/css', md => 'text/plain');
     my %routes;
@@ -182,8 +194,9 @@ Returns the plugin API description.
 sub api_routes {
     my ($self) = @_;
     open my $file, '<:raw', $self->mbf_path('api.json') or die "PMK API: $!";
-    local $/;
-    return decode_json(<$file>);
+    my $spec = do { local $/; decode_json(<$file>) };
+    close $file or die "PMK API: $!";
+    return $spec;
 }
 
 =head1 NAME

@@ -1,7 +1,13 @@
-[% WRAPPER "wrapper-staff-tool-plugin.inc" method="configure" plugin_title="PimpMyKoha : installation" %]
-<h1>Installation PimpMyKoha</h1>
-<p>PimpMyKoha est développé entièrement à l’aide de l’intelligence artificielle, par une personne qui n’est pas développeur. Il est partagé avec la communauté Koha pour que le plus grand nombre puisse en profiter, et pour qu’il soit relu, corrigé, amélioré et rendu plus fiable. Le développement est toujours en cours. Son utilisation reste sous la responsabilité de chaque établissement.</p>
-<p><a href="/cgi-bin/koha/plugins/plugins-home.pl">Retour aux plugins Koha</a></p>
-<p><a href="/cgi-bin/koha/mainpage.pl?pmk_migration=1">Préparer l’installation</a></p>
-<p><a href="/cgi-bin/koha/mainpage.pl?pmk_admin=1">Configuration PMK après activation</a></p>
+[% TRY %]
+    [% PROCESS "$PLUGIN_DIR/i18n/${LANG}.inc" %]
+[% CATCH %]
+    [% PROCESS "$PLUGIN_DIR/i18n/default.inc" %]
+[% END %]
+[% WRAPPER "wrapper-staff-tool-plugin.inc" method="configure" plugin_title=T.configure_title %]
+<h1>[% T.configure_title | html %]</h1>
+<p>[% T.configure_notice | html %]</p>
+<p><a href="/cgi-bin/koha/plugins/plugins-home.pl">[% T.back_to_plugins | html %]</a></p>
+<p><a href="/cgi-bin/koha/mainpage.pl?pmk_migration=1">[% T.prepare_install | html %]</a></p>
+<p><a href="/cgi-bin/koha/mainpage.pl?pmk_admin=1">[% T.open_configuration | html %]</a></p>
+<p>[% T.version_label | html %] [% version | html %]</p>
 [% END %]

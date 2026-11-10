@@ -2,6 +2,18 @@
 
 Les changements majeurs de PimpMyKoha sont consignés dans ce fichier.
 
+## [Non publié]
+
+### Ajouté
+
+- Textes des pages Koha de configuration et d’outil séparés par langue, avec repli français.
+- Contrôle npm au niveau élevé et Perl::Critic au niveau stern sur le point d’entrée.
+
+### Modifié
+
+- Les tables du plugin sont créées avec le nom qualifié Koha, sans changer les tables déjà installées.
+- La politique de sécurité décrit le canal 0.5 et distingue un défaut du plugin d’un défaut de Koha.
+
 ## [0.5.0] - 2026-11-10
 
 ### Ajouté

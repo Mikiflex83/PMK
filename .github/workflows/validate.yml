@@ -42,6 +42,10 @@ jobs:
         working-directory: tests
         run: npm ci
 
+      - name: Auditer les dépendances npm au niveau élevé
+        working-directory: tests
+        run: npm audit --audit-level=high
+
       - name: Installer Chromium pour Playwright
         working-directory: tests
         run: |
@@ -67,6 +71,16 @@ jobs:
 
       - name: Contrôles Perl du toolkit KTD
         run: prove -v t/00-boundaries.t t/02-ktd-toolkit.t
+
+      - name: Perl::Critic au niveau stern sur le point d’entrée
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libperl-critic-perl
+          perlcritic --severity 4 --verbose 8 \
+            plugin/Koha/Plugin/PimpMyKoha.pm \
+            t/00-boundaries.t \
+            t/01-metadata.t \
+            t/02-ktd-toolkit.t
 
       - name: Construire les deux canaux du plugin
         run: |
