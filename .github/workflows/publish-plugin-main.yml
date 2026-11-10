@@ -27,14 +27,15 @@ jobs:
           name: pmk-${{ github.event.workflow_run.head_sha }}
           path: dist
 
-      - name: Vérifier le paquet publié
+      - name: Vérifier les paquets publiés
         run: |
           python3 - <<'PY'
           import zipfile
-          with zipfile.ZipFile('dist/PimpMyKoha-plugin.kpz') as z:
-              assert z.testzip() is None
-              assert {'Koha/Plugin/PimpMyKoha.pm','Koha/Plugin/PimpMyKoha/api.json'}.issubset(z.namelist())
-          print('KPZ valide')
+          for name in ('PimpMyKoha-stable.kpz', 'PimpMyKoha-preview.kpz'):
+              with zipfile.ZipFile(f'dist/{name}') as z:
+                  assert z.testzip() is None
+                  assert {'Koha/Plugin/PimpMyKoha.pm','Koha/Plugin/PimpMyKoha/api.json'}.issubset(z.namelist())
+              print(name, 'valide')
           PY
 
       - name: Créer une release téléchargeable et traçable
@@ -48,8 +49,10 @@ jobs:
             echo "Release déjà existante : $tag"
             exit 0
           fi
-          gh release create "$tag" dist/PimpMyKoha-plugin.kpz \
+          gh release create "$tag" \
+            dist/PimpMyKoha-stable.kpz \
+            dist/PimpMyKoha-preview.kpz \
             --target "$VALIDATED_SHA" \
-            --title "PimpMyKoha plugin — main validé ${VALIDATED_SHA:0:12}" \
-            --notes "Paquet KPZ généré automatiquement depuis un commit main ayant réussi Validation PMK. Commit complet : $VALIDATED_SHA. Tester sur sandbox Koha avant production." \
-            --latest
+            --title "PimpMyKoha — main validé ${VALIDATED_SHA:0:12}" \
+            --notes "Deux paquets KPZ issus d’un commit main ayant réussi Validation PMK. Commit complet : $VALIDATED_SHA. PimpMyKoha-stable.kpz est le canal stable. PimpMyKoha-preview.kpz ajoute les pages encore en développement. Les versions numérotées restent les publications de référence." \
+            --prerelease

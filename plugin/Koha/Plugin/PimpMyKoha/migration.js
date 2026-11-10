@@ -26,7 +26,7 @@
   if(archive.format!=='pmk-transition-v1'||archive.payload?.format!=='pmk-transition-v1'||await digest(archive.payload)!==archive.sha256)throw new Error('Format ou empreinte de la sauvegarde invalide');
   const source=clone(archive.payload);
   if(!source.complete||source.issues?.length||!Array.isArray(source.coverage)||source.coverage.some(x=>x.state!=='complete'&&!(x.state==='excluded'&&x.reason)))throw new Error('La sauvegarde est incomplète. Résolvez les erreurs de l’export avant la bascule.');
-  const expected=['configuration',...PMKNativeData.namespaces.filter(x=>x!=='authorities')];
+  const expected=['configuration',...PMKNativeData.namespaces.filter(x=>x!=='authorities'&&x!=='assistance')];
   if(expected.some(x=>!source.coverage.some(c=>c.scope===x)))throw new Error('Couverture de sauvegarde manquante');
   validateRows(source.configuration,true);
   const known=window.PMKPlugin?.manifest?.moduleIds;

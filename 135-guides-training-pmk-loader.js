@@ -721,8 +721,8 @@
                 en: 'Guides & training'
             },
             description: {
-                fr: 'Pilote les guides interactifs Koha, les parcours de formation et le mode accompagnement. Le module est autonome du gestionnaire de listes et peut être exposé directement dans Menu IntranetNav.',
-                en: 'Controls Koha interactive guides, training paths and contextual assistance. This module is independent from the lists manager and can be exposed directly in IntranetNav Menu.'
+                fr: 'Pilote les guides interactifs Koha, les parcours de formation et le mode accompagnement. Le guide de l’écran et les parcours s’ouvrent depuis Outils, en haut de l’écran.',
+                en: 'Controls Koha interactive guides, training paths and contextual assistance. The screen guide and the paths open from PMK tools, at the top of the screen.'
             },
             category: {
                 fr: 'Aide et formation',

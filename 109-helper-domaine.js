@@ -237,7 +237,7 @@
   cursor:move;
   font-weight:700;
   font-size:13px;
-  background:linear-gradient(135deg,#3f8340 0%,#438d43 100%);
+  background:#3f8340;
   color:#fff;
   letter-spacing:.2px;
   border-bottom:1px solid rgba(0,0,0,.08);
@@ -1846,6 +1846,40 @@
     `;
   };
 
+  // Mémorisation locale du panneau. Seul le bouton dédié change l'état.
+  const bindSafeCollapse109 = (root, button) => {
+    if (!button || button.dataset.pmk109SafeCollapse === "1") return;
+    button.dataset.pmk109SafeCollapse = "1";
+    const stateKey = root.classList.contains("pmk-tree-generic")
+      ? GENERIC_PANEL_STATE_KEY : PANEL_STATE_KEY;
+    const saved = getJSON(stateKey, {});
+    let collapsed = typeof saved === "boolean" ? saved : !!saved?.collapsed;
+    const paint = () => {
+      root.classList.toggle("collapsed", collapsed);
+      button.textContent = collapsed ? "+" : "–";
+      button.title = collapsed ? "Déployer" : "Réduire";
+      button.setAttribute("aria-expanded", String(!collapsed));
+    };
+    paint();
+    const collapseGuard109 = new MutationObserver(() => {
+      if (root.classList.contains("collapsed") !== collapsed) paint();
+    });
+    collapseGuard109.observe(root, { attributes: true, attributeFilter: ["class"] });
+    root.addEventListener("click", event => event.stopPropagation());
+    button.addEventListener("pointerdown", event => event.stopPropagation());
+    button.addEventListener("pointerup", event => event.stopPropagation());
+    button.addEventListener("mousedown", event => event.stopPropagation());
+    button.addEventListener("mouseup", event => event.stopPropagation());
+    button.addEventListener("click", event => {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      if (!event.isTrusted || !event.target.closest('[data-act="collapse"]')) return;
+      collapsed = !collapsed;
+      paint();
+      setJSON(stateKey, { collapsed });
+    });
+  };
+
   // ============================================================
   // Création du panneau
   // ============================================================
@@ -1898,7 +1932,7 @@
     root.innerHTML = `
       <div class="head">
         <span>
-          <span class="title">Assistant catalogage</span>
+          <span class="title">Saisie de l'arborescence</span>
           <span
             class="subtitle"
             id="koha099_current_list"
@@ -4492,26 +4526,7 @@
         '[data-act="collapse"]'
       );
 
-    if (collapseBtn) {
-      collapseBtn.addEventListener(
-        "click",
-        () => {
-          root.classList.toggle(
-            "collapsed"
-          );
-
-          setJSON(
-            PANEL_STATE_KEY,
-            {
-              collapsed:
-                root.classList.contains(
-                  "collapsed"
-                )
-            }
-          );
-        }
-      );
-    }
+    bindSafeCollapse109(root, collapseBtn);
   };
 
   // ============================================================
@@ -4597,18 +4612,221 @@
       // empêcher le 109 historique de fonctionner avec ses valeurs par défaut.
     }
 
+    const canonical099 = { domain: "a", subdomain: "b", theme: "e", subject099: "f" };
+    for (const field of (cfg.levels || [])) {
+      if (Object.prototype.hasOwnProperty.call(canonical099, field.id)) {
+        field.sourceType = "firebase_legacy";
+        field.firebaseCode = canonical099[field.id];
+      }
+    }
+    if ((cfg.levels || []).some(field => Object.prototype.hasOwnProperty.call(canonical099, field.id))) {
+      cfg.hierarchy = { ...(cfg.hierarchy || {}), relationshipMode: "firebase_legacy", strictFiltering: true };
+    }
     return cfg;
+  };
+
+  const PMK109_CACHE_SCOPE = "koha-taxonomy";
+  const PMK109_CACHE_DB = "pmk109_koha_cache_v1";
+  const PMK109_CACHE_STORE = "snapshots";
+  const PMK109_TTLS = Object.freeze({
+    treeData: 6 * 60 * 60 * 1000,
+    koha099_named_presets: 30 * 60 * 1000,
+    pmk_cataloguing_tree_presets: 30 * 60 * 1000
+  });
+  const pmk109Sources = new Map();
+  const PMK109_FAILURE_COOLDOWN_MS = 60 * 60 * 1000;
+  const pmk109FailureKey = key => `pmk109_koha_unavailable|${key}`;
+  const pmk109FailureUntil = key => {
+    try { return Number(localStorage.getItem(pmk109FailureKey(key)) || 0); }
+    catch (_) { return 0; }
+  };
+  const pmk109RememberFailure = key => {
+    try { localStorage.setItem(pmk109FailureKey(key), String(Date.now() + PMK109_FAILURE_COOLDOWN_MS)); }
+    catch (_) {}
+  };
+  const pmk109ClearFailure = key => {
+    try { localStorage.removeItem(pmk109FailureKey(key)); } catch (_) {}
+  };
+  const pmk109RecordSource = (key, source, details = {}) => {
+    pmk109Sources.set(key, { source, at: Date.now(), ...details });
+    pmk109UpdateIndicators();
+  };
+  const pmk109SourceFor = (kind, path) =>
+    pmk109Sources.get(`${PMK109_CACHE_SCOPE}|${kind}|${path}`) || null;
+  const pmk109SourceLabel = state => {
+    if (!state) return "Non chargé";
+    if (state.source === "koha") return "Référentiel Koha (lecture directe)";
+    if (state.source === "cache") return "Cache local (validité en cours)";
+    if (state.source === "degraded") return "Cache local — mode dégradé (référentiel Koha inaccessible)";
+    return "Source indisponible";
+  };
+  const pmk109BuildSourceText = () => {
+    const tree = pmk109SourceFor("collection", "treeData");
+    const owners = pmk109SourceFor("collection", FIREBASE_PRESETS_COLLECTION);
+    const statuses = [tree, owners];
+    const degraded = statuses.some(item => item && (item.source === "degraded" || item.source === "error"));
+    const title = degraded ? "Mode dégradé — dernières données locales conservées" : "Sources des données";
+    return {
+      degraded,
+      text: `${title}\nArborescence 099 : ${pmk109SourceLabel(tree)}\nNoms des listes : ${pmk109SourceLabel(owners)}\nStockage : référentiel Koha\nLes données affichées depuis le cache peuvent être anciennes.`
+    };
+  };
+  const pmk109UpdateIndicators = () => {
+    const current = pmk109BuildSourceText();
+    for (const root of document.querySelectorAll("#koha099_picker_panel")) {
+      let wrapper = root.querySelector("[data-pmk109-data-source]");
+      if (!wrapper) {
+        wrapper = document.createElement("div");
+        wrapper.setAttribute("data-pmk109-data-source", "");
+        wrapper.style.cssText = "display:flex;flex-direction:column;align-items:flex-end;gap:5px;margin:5px 10px 7px;font:11px/1.45 system-ui,sans-serif";
+        const button = document.createElement("button");
+        button.type = "button";
+        button.setAttribute("data-pmk109-sources-toggle", "");
+        button.setAttribute("aria-expanded", "false");
+        button.style.cssText = "border:1px solid #d6ded6;background:#f7faf7;color:#617065;border-radius:999px;padding:3px 8px;cursor:pointer;font:11px/1.35 system-ui,sans-serif";
+        const details = document.createElement("div");
+        details.setAttribute("data-pmk109-sources-details", "");
+        details.setAttribute("role", "status");
+        details.hidden = true;
+        details.style.cssText = "box-sizing:border-box;width:100%;white-space:pre-line;padding:9px;border:1px solid #cbd5e1;border-left:3px solid #64748b;border-radius:7px;background:#f8fafc;color:#334155";
+        button.addEventListener("click", () => {
+          details.hidden = !details.hidden;
+          button.setAttribute("aria-expanded", String(!details.hidden));
+        });
+        wrapper.append(button, details);
+        const body = root.querySelector(".body") || root;
+        body.prepend(wrapper);
+      }
+      const button = wrapper.querySelector("[data-pmk109-sources-toggle]");
+      const details = wrapper.querySelector("[data-pmk109-sources-details]");
+      button.textContent = current.degraded ? "Sources · mode dégradé" : "Sources";
+      button.title = current.degraded
+        ? "Certaines données viennent du cache local — cliquer pour le détail"
+        : "Afficher les sources des données";
+      details.textContent = current.text;
+    }
+  };
+  const pmk109InFlight = new Map();
+  let pmk109DbPromise;
+  const pmk109OpenCache = () => {
+    if (pmk109DbPromise) return pmk109DbPromise;
+    pmk109DbPromise = new Promise(resolve => {
+      if (!window.indexedDB) return resolve(null);
+      try {
+        const request = indexedDB.open(PMK109_CACHE_DB, 1);
+        request.onupgradeneeded = () => {
+          if (!request.result.objectStoreNames.contains(PMK109_CACHE_STORE)) {
+            request.result.createObjectStore(PMK109_CACHE_STORE);
+          }
+        };
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => resolve(null);
+        request.onblocked = () => resolve(null);
+      } catch (_) { resolve(null); }
+    });
+    return pmk109DbPromise;
+  };
+  const pmk109CacheOp = async (mode, key, value) => {
+    const db = await pmk109OpenCache();
+    if (!db) return null;
+    return new Promise(resolve => {
+      try {
+        const txn = db.transaction(PMK109_CACHE_STORE, mode === "get" ? "readonly" : "readwrite");
+        const store = txn.objectStore(PMK109_CACHE_STORE);
+        const request = mode === "get" ? store.get(key)
+          : mode === "delete" ? store.delete(key) : store.put(value, key);
+        request.onsuccess = () => resolve(mode === "get" ? request.result || null : true);
+        request.onerror = () => resolve(null);
+        txn.onabort = () => resolve(null);
+      } catch (_) { resolve(null); }
+    });
+  };
+  const pmk109Key = (ref, multiple) => `${PMK109_CACHE_SCOPE}|${multiple ? "collection" : "document"}|${ref?.path || ""}`;
+  const pmk109Ttl = key => {
+    const collectionName = Object.keys(PMK109_TTLS).find(name => key.includes(`|${name}`));
+    return PMK109_TTLS[collectionName] || 15 * 60 * 1000;
+  };
+  const pmk109SnapshotFromCache = stored => {
+    const entry = (id, data) => ({ id, data: () => data, exists: () => true });
+    if (stored.type === "collection") {
+      const docs = (stored.rows || []).map(row => entry(row.id, row.data));
+      return { docs, size: docs.length, empty: docs.length === 0, forEach: callback => docs.forEach(callback) };
+    }
+    return { id: stored.id, exists: () => !!stored.exists, data: () => stored.exists ? stored.data : undefined };
+  };
+  const pmk109Capture = (snapshot, multiple) => multiple
+    ? { type: "collection", rows: snapshot.docs.map(item => ({ id: item.id, data: item.data() })) }
+    : { type: "document", id: snapshot.id, exists: snapshot.exists(), data: snapshot.exists() ? snapshot.data() : null };
+  const pmk109CachedRead = async (ref, multiple, nativeRead) => {
+    if (!ref?.path || typeof nativeRead !== "function") return nativeRead(ref);
+    const key = pmk109Key(ref, multiple);
+    if (pmk109InFlight.has(key)) return pmk109InFlight.get(key);
+    const job = (async () => {
+      const cached = await pmk109CacheOp("get", key);
+      const remaining = pmk109FailureUntil(key) - Date.now();
+      if (cached && remaining > 0) {
+        pmk109RecordSource(key, "degraded", { savedAt: cached.savedAt, retryInMs: remaining });
+        return pmk109SnapshotFromCache(cached.snapshot);
+      }
+      if (cached && Date.now() - cached.savedAt < pmk109Ttl(key)) {
+        pmk109RecordSource(key, "cache", { savedAt: cached.savedAt });
+        return pmk109SnapshotFromCache(cached.snapshot);
+      }
+      try {
+        const fresh = await nativeRead(ref);
+        await pmk109CacheOp("put", key, { savedAt: Date.now(), snapshot: pmk109Capture(fresh, multiple) });
+        pmk109ClearFailure(key);
+        pmk109RecordSource(key, "koha", { savedAt: Date.now() });
+        return fresh;
+      } catch (error) {
+        pmk109RememberFailure(key);
+        if (cached?.snapshot) {
+          pmk109RecordSource(key, "degraded", { savedAt: cached.savedAt, reason: String(error?.message || error) });
+          return pmk109SnapshotFromCache(cached.snapshot);
+        }
+        pmk109RecordSource(key, "error", { reason: String(error?.message || error) });
+        throw error;
+      }
+    })();
+    pmk109InFlight.set(key, job);
+    try { return await job; }
+    finally { pmk109InFlight.delete(key); }
+  };
+  const pmk109Invalidate = async ref => {
+    if (!ref?.path) return;
+    await Promise.all([
+      pmk109CacheOp("delete", pmk109Key(ref, false)),
+      pmk109CacheOp("delete", `${PMK109_CACHE_SCOPE}|collection|${ref.path.split("/").slice(0, -1).join("/")}`)
+    ]);
   };
 
   const ensureKoha109 = async () => {
     if (firebaseDb && collection && getDocs) return firebaseDb;
-
     const nativeStore = window.PMKNativeData;
-    collection = nativeStore.collection; doc = nativeStore.doc;
-    getDocs = nativeStore.getDocs; getDoc = nativeStore.getDoc;
-    setDoc = nativeStore.setDoc; deleteDoc = nativeStore.deleteDoc;
-    serverTimestamp = nativeStore.serverTimestamp; runTransaction = nativeStore.runTransaction;
-    firebaseDb = nativeStore.createDatabase('taxonomy');
+    if (!nativeStore || typeof nativeStore.createDatabase !== "function") {
+      throw new Error("Stockage Koha indisponible");
+    }
+    collection = nativeStore.collection;
+    doc = nativeStore.doc;
+    getDocs = ref => pmk109CachedRead(ref, true, nativeStore.getDocs);
+    getDoc = ref => pmk109CachedRead(ref, false, nativeStore.getDoc);
+    setDoc = async (...args) => {
+      const result = await nativeStore.setDoc(...args);
+      await pmk109Invalidate(args[0]);
+      return result;
+    };
+    deleteDoc = async (...args) => {
+      const result = await nativeStore.deleteDoc(...args);
+      await pmk109Invalidate(args[0]);
+      return result;
+    };
+    serverTimestamp = nativeStore.serverTimestamp;
+    runTransaction = async (...args) => {
+      const result = await nativeStore.runTransaction(...args);
+      await pmk109CacheOp("delete", `${PMK109_CACHE_SCOPE}|collection|${FIREBASE_PRESETS_COLLECTION}`);
+      return result;
+    };
+    firebaseDb = nativeStore.createDatabase("taxonomy");
     return firebaseDb;
   };
 
@@ -4626,7 +4844,7 @@
     const rows = await loadLegacyTreeRows109();
 
     window.PMKCataloguingTreeAssistant = {
-      version: "4.1.0",
+      version: "4.2.0-sources-degraded",
       moduleId: MODULE_ID,
       mode: "legacy_dracenie",
       config: deepClone109(cfg),
@@ -4636,6 +4854,7 @@
     };
 
     await createLegacyPanel(rows, cfg);
+    pmk109UpdateIndicators();
   };
 
   // ------------------------------------------------------------
@@ -4747,12 +4966,15 @@
   };
 
   const findTagScopes109 = tag => {
+    // Le sélecteur [data-tag] était trop large : il capturait aussi des
+    // descendants de l'unique occurrence MARC, d'où les faux doublons.
     const safe = cssEscape109(tag);
-    return [
-      ...document.querySelectorAll(
-        `li.tag.clearfix[id^="tag_${safe}_"], li.tag[id^="tag_${safe}_"], [data-tag="${safe}"]`
-      )
-    ];
+    const editor = document.querySelector('form.marc_editor') || document;
+    const nativeScopes = [...editor.querySelectorAll(`li.tag[id^="tag_${safe}_"]`)];
+    if (nativeScopes.length) return [...new Set(nativeScopes)];
+    // Compatibilité avec un éventuel éditeur personnalisé sans li.tag.
+    const customScopes = [...editor.querySelectorAll(`[data-tag="${safe}"]`)];
+    return customScopes.filter(el => !customScopes.some(other => other !== el && other.contains(el)));
   };
 
   const fieldSelectors109 = (tag, subfield) => {
@@ -5232,7 +5454,8 @@
         : mergeRelationMaps109(derived, configured);
 
     const diagnostics = diagnoseGenericModel109(cfg, levels, extras, itemsById, relations);
-    return { levels, extras, itemsById, relations, legacyRows, diagnostics };
+    const legacyIndex = legacyRows && legacyRows.length ? buildIndex(legacyRows) : null;
+    return { levels, extras, itemsById, relations, legacyRows, legacyIndex, diagnostics };
   };
 
   const itemMatchesValue109 = (item, raw) => {
@@ -5249,6 +5472,26 @@
   const allowedItemsForLevel109 = (model, levelIndex, state) => {
     const level = model.levels[levelIndex];
     const all = model.itemsById.get(level.id) || [];
+
+    // Le filtrage 099 historique s'appuie sur les chemins complets dans
+    // buildIndex(), pas sur des relations génériques susceptibles de croiser
+    // des valeurs homonymes appartenant à plusieurs branches de l'arborescence.
+    const legacy = model.legacyIndex;
+    const canonical = ["domain", "subdomain", "theme", "subject099"];
+    if (legacy && canonical.includes(level.id) &&
+        canonical.every((id, i) => model.levels[i]?.id === id && model.levels[i]?.sourceType === "firebase_legacy")) {
+      const find = (items, raw) => (items || []).find(item => norm(item.label) === norm(raw || ""));
+      const a = find(legacy.a, state.domain);
+      const b = a ? find(legacy.bByA.get(a.key), state.subdomain) : null;
+      const e = a && b ? find(legacy.eByAB.get(`${a.key}|||${b.key}`), state.theme) : null;
+      const historical = level.id === "domain" ? legacy.a
+        : level.id === "subdomain" ? (a ? legacy.bByA.get(a.key) || [] : [])
+        : level.id === "theme" ? (a && b ? legacy.eByAB.get(`${a.key}|||${b.key}`) || [] : [])
+        : (a && b && e ? legacy.fByABE.get(`${a.key}|||${b.key}|||${e.key}`) || [] : []);
+      // Conserver les objets normalisés du modèle générique pour l'écriture Koha.
+      const allowed = new Set(historical.map(item => norm(item.label)));
+      return all.filter(item => allowed.has(norm(item.label)));
+    }
     if (levelIndex === 0) return all;
 
     const parent = model.levels[levelIndex - 1];
@@ -5519,18 +5762,13 @@
     root.classList.add("pmk-tree-generic");
     root.style.width = `${Math.max(280, Number(cfg?.appearance?.widthPx) || 360)}px`;
 
-    const savedPanelState = getJSON(GENERIC_PANEL_STATE_KEY, { collapsed: false });
-    if (cfg?.features?.rememberPanelState !== false && savedPanelState.collapsed) {
-      root.classList.add("collapsed");
-    }
-
     const primaryTag = model.levels[0].tag;
     const allFields = [...model.levels, ...model.extras];
 
     root.innerHTML = `
       <div class="head">
         <span>
-          <span class="title">${escapeHTML(tr109("Assistant catalogage", "Cataloguing assistant"))}</span>
+          <span class="title">${escapeHTML(tr109("Saisie de l'arborescence", "Hierarchy entry"))}</span>
           <span class="subtitle" data-generic-list-label></span>
         </span>
         <div class="head-btns">
@@ -5538,11 +5776,8 @@
         </div>
       </div>
       <div class="body">
+        <div class="pmk-099-warning" data-099-warning role="alert"></div>
         <div class="status" data-generic-diagnostics style="display:none;margin-bottom:8px" role="status"></div>
-        <div class="row" data-row="generic-scope" style="display:none">
-          <label>${escapeHTML(tr109(`Zone ${primaryTag} cible`, `Target ${primaryTag} field`))}</label>
-          <select class="combo-input" data-generic-scope style="width:100%"></select>
-        </div>
         <div data-generic-fields></div>
         ${cfg?.features?.showBreadcrumb === false ? "" : `
           <div class="status" data-generic-breadcrumb style="margin-bottom:8px"></div>
@@ -5559,6 +5794,24 @@
             <span>${escapeHTML(tr109("Mémorisations", "Saved selections"))}</span>
             <span class="presets-count" data-generic-presets-count></span>
           </div>
+          <div class="presets-actions">
+            <span class="note-presets" data-list-current>Choisissez une liste pour charger ses mémorisations.</span>
+            <button type="button" class="btn-secondary btn-small" data-act="generic-options">Options</button>
+          </div>
+          <div class="preset-controls" data-generic-list-controls>
+            <div class="row">
+              <label>Liste nominative</label>
+              <select class="combo-input" data-generic-owner style="width:100%"></select>
+            </div>
+            <div class="row">
+              <label>Créer une liste</label>
+              <div style="display:flex;gap:6px">
+                <input type="text" class="combo-input" data-generic-owner-name placeholder="Nom Prénom" style="min-width:0;flex:1">
+                <button type="button" class="btn-secondary btn-small" data-act="generic-create-owner">Créer</button>
+              </div>
+            </div>
+            <div class="row" style="font-size:10.5px;color:#667067">Les listes nominatives historiques sont conservées dans le référentiel Koha.</div>
+          </div>
           <div class="preset-list" data-generic-presets></div>
         `}
       </div>
@@ -5568,10 +5821,9 @@
 
     const fieldsHost = root.querySelector("[data-generic-fields]");
     const status = root.querySelector("[data-generic-status]");
-    const diagnosticsHost = root.querySelector("[data-generic-diagnostics]");
     const breadcrumb = root.querySelector("[data-generic-breadcrumb]");
-    const scopeRow = root.querySelector('[data-row="generic-scope"]');
-    const scopeSelect = root.querySelector("[data-generic-scope]");
+    const scopeWarning = root.querySelector('[data-099-warning]');
+    const diagnosticsHost = root.querySelector("[data-generic-diagnostics]");
     const listLabel = root.querySelector("[data-generic-list-label]");
     const combos = new Map();
     const state = {};
@@ -5605,18 +5857,21 @@
     let scopes = [];
     const refreshScopes = () => {
       scopes = findTagScopes109(primaryTag);
-      const before = scopeSelect.value;
-      scopeSelect.innerHTML = scopes.map((scope, index) =>
-        `<option value="${index}">${escapeHTML(`${primaryTag} #${index + 1} (${scope.id || "—"})`)}</option>`
-      ).join("");
-      scopeRow.style.display = scopes.length > 1 ? "" : "none";
-      if (before !== "" && scopes[Number(before)]) scopeSelect.value = before;
+      if (scopeWarning) {
+        scopeWarning.style.display = scopes.length > 1 ? "block" : "none";
+        scopeWarning.textContent = scopes.length > 1
+          ? tr109(
+              `${scopes.length} zones ${primaryTag} détectées. L’assistant intervient uniquement sur la première zone. Les autres restent inchangées.`,
+              `${scopes.length} ${primaryTag} fields detected. Only the first field will be modified; other occurrences remain unchanged.`
+            )
+          : "";
+      }
       return scopes;
     };
     refreshScopes();
 
-    const getSelectedScope = () => scopes[Number(scopeSelect.value)] || scopes[0] || null;
-    const getScopeIndex = () => Math.max(0, Number(scopeSelect.value) || 0);
+    const getSelectedScope = () => scopes[0] || null;
+    const getScopeIndex = () => 0;
 
     const itemForState = fieldCfg =>
       findItem109(model.itemsById.get(fieldCfg.id) || [], state[fieldCfg.id]);
@@ -5652,20 +5907,11 @@
     };
 
     const rebuild = () => {
-      const filteringReasons = [];
       model.levels.forEach((level, index) => {
         const allowed = allowedItemsForLevel109(model, index, state);
         const combo = combos.get(level.id);
         combo.setItems(allowed);
         combo.setDisabled(index > 0 && !state[model.levels[index - 1].id]);
-        if (index > 0 && state[model.levels[index - 1].id] && !allowed.length) {
-          const parent = model.levels[index - 1];
-          const parentItem = itemForState(parent);
-          filteringReasons.push(tr109(
-            `Aucune valeur proposée pour ${genericLabel109(level)} : aucune relation active depuis « ${parentItem?.label || state[parent.id]} ».`,
-            `No value is offered for ${genericLabel109(level)}: no active relation from “${parentItem?.label || state[parent.id]}”.`
-          ));
-        }
       });
 
       model.extras.forEach(extra => {
@@ -5679,8 +5925,6 @@
       }
 
       updateBreadcrumb();
-      if (filteringReasons.length) status.textContent = filteringReasons.join(" ");
-      else if (/Aucune valeur proposée|No value is offered/.test(status.textContent || "")) status.textContent = "";
     };
 
     const clearAfter = levelIndex => {
@@ -5721,20 +5965,45 @@
 
     initializeFromPage();
 
-    scopeSelect.addEventListener("change", () => {
-      refreshScopes();
-      initializeFromPage();
+    // Koha ajoute ou retire des occurrences MARC sans recharger la page.
+    let scopeRefreshTimer109 = null;
+    const scopeObserver109 = new MutationObserver(() => {
+      clearTimeout(scopeRefreshTimer109);
+      scopeRefreshTimer109 = setTimeout(() => {
+        const previous = scopes.map(el => el.id).join("|");
+        const current = findTagScopes109(primaryTag).map(el => el.id).join("|");
+        if (previous !== current) {
+          refreshScopes();
+          initializeFromPage();
+        }
+      }, 120);
     });
+    scopeObserver109.observe(
+      document.querySelector("#cat_addbiblio") || document.querySelector('form[name="f"]') || document.body,
+      { childList: true, subtree: true }
+    );
 
     root.querySelector('[data-act="generic-apply"]')?.addEventListener("click", () => {
+      refreshScopes();
+      if (scopes.length > 1 && !window.confirm(tr109(
+        `${scopes.length} zones ${primaryTag} sont présentes. Appliquer uniquement à la première zone ?`,
+        `${scopes.length} ${primaryTag} fields exist. Apply only to the first field?`
+      ))) return;
       const scope = getSelectedScope();
       const scopeIndex = getScopeIndex();
+      if (!scope) {
+        status.textContent = tr109(
+          `Aucune zone ${primaryTag} trouvée. Ajoutez-la dans la notice avant d’appliquer.`,
+          `No ${primaryTag} field found. Add one before applying.`
+        );
+        return;
+      }
       const results = [];
 
       allFields.forEach(fieldCfg => {
         const raw = state[fieldCfg.id];
         if (!raw) {
-          results.push(`${fieldCfg.tag}$${fieldCfg.subfield} : ${tr109("inchangé", "unchanged")}`);
+          results.push(`${fieldCfg.tag}${fieldCfg.subfield} : ${tr109("inchangé", "unchanged")}`);
           return;
         }
 
@@ -5745,13 +6014,13 @@
 
         const item = findItem109(items, raw);
         if (!item) {
-          results.push(`${fieldCfg.tag}$${fieldCfg.subfield} : ✘ ${tr109("valeur non autorisée", "value not allowed")}`);
+          results.push(`${fieldCfg.tag}${fieldCfg.subfield} : ✘ ${tr109("valeur non autorisée", "value not allowed")}`);
           return;
         }
 
         const field = resolveGenericField109(fieldCfg, primaryTag, scope, scopeIndex);
         const result = setGenericField109(field, item);
-        results.push(`${fieldCfg.tag}$${fieldCfg.subfield} : ${result.ok ? "✔ " + result.matched : "✘ " + result.reason}`);
+        results.push(`${fieldCfg.tag}${fieldCfg.subfield} : ${result.ok ? "✔ " + result.matched : "✘ " + result.reason}`);
       });
 
       status.textContent = results.join("\n");
@@ -5766,12 +6035,7 @@
       status.textContent = tr109("Sélection du panneau vidée.", "Assistant selection cleared.");
     });
 
-    root.querySelector('[data-act="collapse"]')?.addEventListener("click", () => {
-      root.classList.toggle("collapsed");
-      if (cfg?.features?.rememberPanelState !== false) {
-        setJSON(GENERIC_PANEL_STATE_KEY, { collapsed: root.classList.contains("collapsed") });
-      }
-    });
+    bindSafeCollapse109(root, root.querySelector('[data-act="collapse"]'));
 
     // Déplacement : même principe que le 109 historique.
     (() => {
@@ -5795,15 +6059,39 @@
       document.addEventListener("mouseup", () => { dragging = false; });
     })();
 
-    // Mémorisations génériques.
+    // Mémorisations : liste commune PMK et listes nominatives historiques.
     const presetsHost = root.querySelector("[data-generic-presets]");
     const presetsCount = root.querySelector("[data-generic-presets-count]");
+    const ownerSelect = root.querySelector("[data-generic-owner]");
+    const ownerNameInput = root.querySelector("[data-generic-owner-name]");
+    const currentListInfo = root.querySelector("[data-list-current]");
+    const listControls = root.querySelector("[data-generic-list-controls]");
+    const listOptions = root.querySelector('[data-act="generic-options"]');
+    const selectedOwnerStorage = "pmk109_generic_selected_owner";
+    let currentOwner = "";
+    const LOCAL_LEGACY_LIST_109 = "__legacy_local_presets_109__";
     let presets = [];
-
+    let ownerNames = new Map();
+    const presetMapFromLegacy = p => {
+      const codeToId = { a: "domain", b: "subdomain", e: "theme", f: "subject099", g: "genre608", s: "subject615", p: "character623" };
+      const values = {};
+      Object.entries(codeToId).forEach(([code, id]) => { values[id] = p?.[code] || ""; });
+      return { name: p?.name || "", values, createdAt: p?.createdAt, legacyOriginal: p };
+    };
+    const presetMapToLegacy = p => ({
+      ...(p.legacyOriginal || {}),
+      name: p.name || "", a: p.values?.domain || "", b: p.values?.subdomain || "",
+      e: p.values?.theme || "", f: p.values?.subject099 || "",
+      g: p.values?.genre608 || "", s: p.values?.subject615 || "",
+      p: p.values?.character623 || "", createdAt: p.createdAt || Date.now()
+    });
     const renderPresets = () => {
       if (!presetsHost) return;
       const max = Math.max(1, Number(cfg?.lists?.maxPresets) || 20);
       if (presetsCount) presetsCount.textContent = `${presets.length}/${max}`;
+      if (currentListInfo) currentListInfo.textContent = currentOwner
+        ? `Liste : ${ownerNames.get(currentOwner) || currentOwner}`
+        : "Liste commune PMK";
       if (!presets.length) {
         presetsHost.innerHTML = `<div class="preset-empty">${escapeHTML(tr109("Aucune mémorisation pour l'instant.", "No saved selection yet."))}</div>`;
         return;
@@ -5813,36 +6101,126 @@
           const raw = preset.values?.[fieldCfg.id];
           return findItem109(model.itemsById.get(fieldCfg.id) || [], raw)?.label || raw || "";
         }).filter(Boolean);
-        return `
-          <div class="preset-item" data-generic-preset="${index}">
-            <span class="preset-text">
-              ${preset.name ? `<span class="preset-name">${escapeHTML(preset.name)}</span>` : ""}
-              <span class="preset-chain">${escapeHTML(labels.join(" › "))}</span>
-            </span>
-            <button type="button" class="preset-del" data-generic-delete="${index}" title="${escapeAttr(tr109("Supprimer", "Delete"))}" aria-label="${escapeAttr(tr109("Supprimer", "Delete"))}">×</button>
-          </div>`;
+        return `<div class="preset-item" data-generic-preset="${index}">
+          <span class="preset-text">${preset.name ? `<span class="preset-name">${escapeHTML(preset.name)}</span>` : ""}
+          <span class="preset-chain">${escapeHTML(labels.join(" › "))}</span></span>
+          <button type="button" class="preset-rename" data-generic-rename="${index}" title="Renommer">✎</button>
+          <button type="button" class="preset-del" data-generic-delete="${index}" title="Supprimer">×</button>
+        </div>`;
       }).join("");
     };
-
-    if (presetsHost) {
-      try {
-        presets = await loadGenericPresets109(cfg);
-      } catch (_) {
-        presets = getJSON("pmk_cataloguing_tree_presets_fallback", []);
+    const persistPresets = async next => {
+      await ensureKoha109();
+      if (currentOwner === LOCAL_LEGACY_LIST_109) {
+        setJSON(PRESETS_KEY, next.map(presetMapToLegacy));
+      } else if (currentOwner) {
+        const ref = doc(firebaseDb, FIREBASE_PRESETS_COLLECTION, currentOwner);
+        await setDoc(ref, {
+          ownerName: ownerNames.get(currentOwner) || currentOwner,
+          presets: next.map(presetMapToLegacy), updatedAt: serverTimestamp()
+        }, { merge: true });
+      } else {
+        await saveGenericPresets109(cfg, next);
       }
-      renderPresets();
-
+    };
+    const loadSelectedPresets = async () => {
+      try {
+        if (currentOwner === LOCAL_LEGACY_LIST_109) {
+          presets = getJSON(PRESETS_KEY, []).map(presetMapFromLegacy);
+        } else if (currentOwner) {
+          await ensureKoha109();
+          const snapshot = await getDoc(doc(firebaseDb, FIREBASE_PRESETS_COLLECTION, currentOwner));
+          presets = (snapshot.exists() ? snapshot.data()?.presets || [] : []).map(presetMapFromLegacy);
+        } else {
+          presets = await loadGenericPresets109(cfg);
+        }
+        if (!Array.isArray(presets)) presets = [];
+        renderPresets();
+      } catch (error) {
+        presets = [];
+        renderPresets();
+        status.textContent = `Chargement des mémorisations impossible : ${error.message || error}`;
+      }
+    };
+    const loadOwners = async () => {
+      try {
+        await ensureKoha109();
+        const snaps = await getDocs(collection(firebaseDb, FIREBASE_PRESETS_COLLECTION));
+        ownerNames = new Map(snaps.docs.map(snapshot => [snapshot.id, snapshot.data()?.ownerName || snapshot.id]));
+        const items = [...ownerNames].sort((a,b) => a[1].localeCompare(b[1], "fr"));
+        ownerSelect.replaceChildren();
+        const common = new Option("Liste commune PMK", "");
+        ownerSelect.add(common);
+        // Les anciennes mémorisations locales n'ont jamais été dans Firebase.
+        const localLegacy = getJSON(PRESETS_KEY, []);
+        if (Array.isArray(localLegacy) && localLegacy.length) {
+          ownerNames.set(LOCAL_LEGACY_LIST_109, "Anciennes mémorisations locales");
+          ownerSelect.add(new Option(`Anciennes mémorisations locales (${localLegacy.length})`, LOCAL_LEGACY_LIST_109));
+        }
+        items.forEach(([id, name]) => ownerSelect.add(new Option(name, id)));
+        if (currentOwner && !ownerNames.has(currentOwner)) currentOwner = "";
+        ownerSelect.value = currentOwner;
+        ownerSelect.title = `${items.length} listes nominatives Firebase, 1 liste commune PMK`;
+      } catch (error) {
+        ownerSelect.replaceChildren(new Option("Liste commune PMK (listes Firebase indisponibles)", ""));
+        const localLegacy = getJSON(PRESETS_KEY, []);
+        if (Array.isArray(localLegacy) && localLegacy.length) {
+          ownerNames.set(LOCAL_LEGACY_LIST_109, "Anciennes mémorisations locales");
+          ownerSelect.add(new Option(`Anciennes mémorisations locales (${localLegacy.length})`, LOCAL_LEGACY_LIST_109));
+        }
+        if (currentOwner !== LOCAL_LEGACY_LIST_109) currentOwner = "";
+        ownerSelect.value = currentOwner;
+        status.textContent = `Listes nominatives indisponibles : ${error.message || error}`;
+      }
+    };
+    if (presetsHost) {
+      listOptions?.addEventListener("click", () => {
+        listControls.classList.toggle("open");
+        listOptions.textContent = listControls.classList.contains("open") ? "Masquer" : "Options";
+      });
+      try { currentOwner = localStorage.getItem(selectedOwnerStorage) || ""; } catch (_) {}
+      await loadOwners();
+      await loadSelectedPresets();
+      ownerSelect?.addEventListener("change", async () => {
+        currentOwner = ownerSelect.value;
+        try { localStorage.setItem(selectedOwnerStorage, currentOwner); } catch (_) {}
+        await loadSelectedPresets();
+      });
+      root.querySelector('[data-act="generic-create-owner"]')?.addEventListener("click", async () => {
+        const name = (ownerNameInput?.value || "").replace(/\s+/g, " ").trim();
+        if (!name) { status.textContent = "Indiquez un nom pour créer la liste."; return; }
+        const id = norm(name).replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "");
+        if (!id) { status.textContent = "Nom de liste invalide."; return; }
+        try {
+          await ensureKoha109();
+          const ref = doc(firebaseDb, FIREBASE_PRESETS_COLLECTION, id);
+          const existing = await getDoc(ref);
+          if (!existing.exists()) await setDoc(ref, { ownerName: name, presets: [], updatedAt: serverTimestamp() });
+          currentOwner = id;
+          try { localStorage.setItem(selectedOwnerStorage, id); } catch (_) {}
+          await loadOwners();
+          await loadSelectedPresets();
+          status.textContent = existing.exists() ? "Liste existante chargée." : "Liste créée et chargée.";
+        } catch (error) { status.textContent = `Création impossible : ${error.message || error}`; }
+      });
       presetsHost.addEventListener("click", async event => {
-        const deleteButton = event.target.closest("[data-generic-delete]");
-        if (deleteButton) {
-          const index = Number(deleteButton.dataset.genericDelete);
-          presets.splice(index, 1);
-          try { await saveGenericPresets109(cfg, presets); }
-          catch (_) { setJSON("pmk_cataloguing_tree_presets_fallback", presets); }
-          renderPresets();
+        const del = event.target.closest("[data-generic-delete]");
+        const rename = event.target.closest("[data-generic-rename]");
+        if (del || rename) {
+          const index = Number((del || rename).dataset[del ? "genericDelete" : "genericRename"]);
+          const next = presets.map(p => ({...p}));
+          if (del) {
+            if (!window.confirm("Supprimer cette mémorisation ?")) return;
+            next.splice(index, 1);
+          } else {
+            const name = window.prompt("Nom de la mémorisation :", next[index]?.name || "");
+            if (name === null || !next[index]) return;
+            next[index].name = name.trim().slice(0,80);
+          }
+          try { await persistPresets(next); presets = next; renderPresets(); }
+          catch (error) { status.textContent = `Modification impossible : ${error.message || error}`; }
           return;
         }
-
         const item = event.target.closest("[data-generic-preset]");
         if (!item) return;
         const preset = presets[Number(item.dataset.genericPreset)];
@@ -5852,30 +6230,20 @@
           combos.get(fieldCfg.id)?.setValue(state[fieldCfg.id], true);
         });
         rebuild();
-        status.textContent = tr109('Mémorisation chargée. Cliquez sur "Appliquer" pour l’utiliser.', 'Saved selection loaded. Click “Apply” to use it.');
+        status.textContent = 'Mémorisation chargée. Cliquez sur « Appliquer » pour l’utiliser.';
       });
     }
-
     root.querySelector('[data-act="generic-save"]')?.addEventListener("click", async () => {
       const values = {};
       allFields.forEach(fieldCfg => { values[fieldCfg.id] = state[fieldCfg.id] || ""; });
-      if (!Object.values(values).some(Boolean)) {
-        status.textContent = tr109("Rien à mémoriser.", "Nothing to save.");
-        return;
-      }
-
-      const suggested = model.levels.map(level => itemForState(level)?.label || "").filter(Boolean).join(" › ");
-      const name = window.prompt(tr109("Nom de la mémorisation (facultatif)", "Saved selection name (optional)"), suggested) || "";
+      if (!Object.values(values).some(Boolean)) { status.textContent = "Rien à mémoriser."; return; }
+      const suggestion = model.levels.map(level => itemForState(level)?.label || "").filter(Boolean).join(" › ");
+      const chosen = window.prompt("Nom de la mémorisation (facultatif)", suggestion);
+      if (chosen === null) return;
       const max = Math.max(1, Number(cfg?.lists?.maxPresets) || 20);
-      presets.unshift({ name: name.trim().slice(0, 80), values, updatedAt: Date.now() });
-      presets = presets.slice(0, max);
-      try {
-        await saveGenericPresets109(cfg, presets);
-      } catch (_) {
-        setJSON("pmk_cataloguing_tree_presets_fallback", presets);
-      }
-      renderPresets();
-      status.textContent = tr109("Mémorisation enregistrée.", "Saved selection stored.");
+      const next = [{name: chosen.trim().slice(0,80), values, createdAt: Date.now()}, ...presets].slice(0,max);
+      try { await persistPresets(next); presets = next; renderPresets(); status.textContent = "Mémorisation enregistrée."; }
+      catch (error) { status.textContent = `Enregistrement impossible : ${error.message || error}`; }
     });
 
     // Responsive sans modifier le rendu desktop historique.
@@ -5906,8 +6274,12 @@
 
     if (needsKoha) {
       try { legacyRows = await loadLegacyTreeRows109(); }
-      catch (_) {
-        // Le moteur reste utilisable avec VA / manuel même si Koha est indisponible.
+      catch (error) {
+        const has099 = activeLevels109(cfg).some(field => field.sourceType === "firebase_legacy");
+        if (has099) {
+          console.error("[PMK 109] Arborescence Koha indisponible : listes 099 non chargées.", error);
+          return;
+        }
         legacyRows = [];
       }
     }
@@ -5915,9 +6287,10 @@
     const model = await buildGenericModel109(cfg, legacyRows);
     startNativeFiltering109(model, cfg);
     await createGenericPanel109(model, cfg);
+    pmk109UpdateIndicators();
 
     window.PMKCataloguingTreeAssistant = {
-      version: "4.1.0",
+      version: "4.2.0-sources-degraded",
       moduleId: MODULE_ID,
       config: deepClone109(cfg),
       model: model,
@@ -5938,6 +6311,11 @@
       return;
     }
 
+    document.addEventListener("change", event => {
+      if (event.target?.matches?.("[data-generic-owner], [data-owner-select]")) {
+        setTimeout(pmk109UpdateIndicators, 0);
+      }
+    });
     try {
       // Preserve the existing panel and its saved presets for the unchanged historical profile.
       // Customized fields and sources automatically use the configurable assistant.

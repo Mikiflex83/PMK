@@ -1220,45 +1220,6 @@
       "result": "État du stockage IndexedDB et reprise visibles dans la page. Les codes inconnus, rescannés dans la même zone ou déjà vus dans une autre zone sont conservés avec un état explicite ; les imports interrompus restent reprenables sans appliquer silencieusement de modification Koha."
     },
     {
-      "id": "reservations",
-      "kind": "page",
-      "name": "Maintenance des réservations",
-      "requested": "Anomalies expliquées, date analyse, certitude/hypothèse.",
-      "status": "validé sur le périmètre demandé",
-      "evidence": [
-        "tests/validation/reservations-diagnostic-certainty.json"
-      ],
-      "maturityCriterion": "Anomalies expliquées, date analyse, certitude/hypothèse. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
-      "remaining": [],
-      "result": "La date et la couverture de l’analyse sont affichées. Chaque dossier distingue constat vérifié, hypothèse forte, hypothèse sur données partielles ou absence d’écart démontré ; la cause et l’action proposée restent dans des colonnes séparées."
-    },
-    {
-      "id": "loans",
-      "kind": "page",
-      "name": "Prêts & litiges",
-      "requested": "Résolution justifiée, constat/proposition/action.",
-      "status": "validé sur le périmètre demandé",
-      "evidence": [
-        "tests/validation/loans-resolution-trace.json"
-      ],
-      "maturityCriterion": "Résolution justifiée, constat/proposition/action. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
-      "remaining": [],
-      "result": "Le parcours distingue le constat relu dans Koha, la proposition simulée avec son motif autorisé, puis l’action réellement effectuée. Chaque écriture relit le litige avant et après la résolution et conserve un bilan de session avec succès, dossiers ignorés et échecs."
-    },
-    {
-      "id": "transfers",
-      "kind": "page",
-      "name": "Transferts / navette",
-      "requested": "Planning commun, estimation/événement réel.",
-      "status": "validé sur le périmètre demandé",
-      "evidence": [
-        "tests/validation/planning-transfer-common.json"
-      ],
-      "maturityCriterion": "Planning commun, estimation/événement réel. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
-      "remaining": [],
-      "result": "La page lit le même document natif Koha et le même moteur d’occurrences que le widget Planning. Les alias relient les codes de sites aux étapes ; l’estimation du prochain passage reste affichée séparément des événements de demande, d’envoi et d’arrivée enregistrés par Koha."
-    },
-    {
       "id": "items",
       "kind": "page",
       "name": "Maintenance des exemplaires",
@@ -1283,19 +1244,6 @@
       "maturityCriterion": "Critères de rapprochement, donnée manquante/anomalie/erreur. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
       "remaining": [],
       "result": "Les rapprochements indiquent leur critère : ISBN valide identique ou, à défaut, titre et auteur normalisés avec la même année. Un groupe reste une proposition. La page distingue donnée manquante, anomalie métier, erreur technique et notice non encore contrôlée."
-    },
-    {
-      "id": "serials",
-      "kind": "page",
-      "name": "Maintenance des périodiques",
-      "requested": "Seuils et interruption publication, fraîcheur rapport.",
-      "status": "validé sur le périmètre demandé",
-      "evidence": [
-        "tests/validation/serials-publication-freshness.json"
-      ],
-      "maturityCriterion": "Seuils et interruption publication, fraîcheur rapport. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
-      "remaining": [],
-      "result": "Le seuil d’interruption possible est configurable et ne s’applique qu’à un abonnement actif non arrivé à échéance. La page affiche la fraîcheur selon la date produite par le rapport ou, à défaut, l’heure de lecture dans Koha, avec un seuil explicite."
     },
     {
       "id": "patrons",
@@ -1335,19 +1283,6 @@
       "maturityCriterion": "Différence détaillée, reprise échecs, conservation MARC. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
       "remaining": [],
       "result": "Différence de grille et structure MARC détaillées, relecture avant/après écriture, export d’audit et reprise limitée aux échecs techniques ; les écarts MARC imposent une vérification manuelle."
-    },
-    {
-      "id": "overdue-management",
-      "kind": "page",
-      "name": "Gestion des retards TP4",
-      "requested": "Destinataire/contenu avant action, étapes/exceptions/reprises.",
-      "status": "validé sur le périmètre demandé",
-      "evidence": [
-        "tests/validation/overdue-action-preview-recovery.json"
-      ],
-      "maturityCriterion": "Destinataire/contenu avant action, étapes/exceptions/reprises. Les valeurs par défaut et les personnalisations sont conservées. Une recette ciblée couvre les risques réels, sans exigence de perfection universelle.",
-      "remaining": [],
-      "result": "Dossier destinataire, destination et contenu exact contrôlés avant écriture ; étapes et exceptions visibles, reprises après réponse incertaine ou nettoyage partiel, avec relecture Koha."
     },
     {
       "id": "nedap",

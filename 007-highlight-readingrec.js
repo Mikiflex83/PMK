@@ -48,7 +48,12 @@
             tableId: "table_readingrec",
             labelFr: "Historique d'un lecteur",
             labelEn: "Patron circulation history",
-            fallback: { checkout: 8, due: 11, returned: 12 },
+            fallback: { checkout: 7, due: 9, returned: 10 },
+            columnSelectors: {
+                checkout: "#table_readingrec thead th:nth-child(8)",
+                due: "#table_readingrec thead th:nth-child(10)",
+                returned: "#table_readingrec thead th:nth-child(11)"
+            },
             headingSelectors: ["body#pat_readingrec h1", "main h1", "h1"]
         },
         "catalogue.issuehistory": {
@@ -58,6 +63,11 @@
             labelFr: "Historique des prêts d'une notice",
             labelEn: "Bibliographic record loan history",
             fallback: { checkout: 5, due: 6, returned: 7 },
+            columnSelectors: {
+                checkout: "#table_issues thead th:nth-child(6)",
+                due: "#table_issues thead th:nth-child(7)",
+                returned: "#table_issues thead th:nth-child(8)"
+            },
             headingSelectors: ["body#catalog_issuehistory h1", "main h1", "h1"]
         }
     };
@@ -146,6 +156,12 @@
                 id: "members.readingrec",
                 enabled: true,
                 path: "/cgi-bin/koha/members/readingrec.pl",
+                tableSelector: "#table_readingrec",
+                columnSelectors: {
+                    checkout: "#table_readingrec thead th:nth-child(8)",
+                    due: "#table_readingrec thead th:nth-child(10)",
+                    returned: "#table_readingrec thead th:nth-child(11)"
+                },
                 labelFr: "Historique d'un lecteur",
                 labelEn: "Patron circulation history",
                 indicators: [
@@ -160,6 +176,12 @@
                 id: "catalogue.issuehistory",
                 enabled: true,
                 path: "/cgi-bin/koha/catalogue/issuehistory.pl",
+                tableSelector: "#table_issues",
+                columnSelectors: {
+                    checkout: "#table_issues thead th:nth-child(6)",
+                    due: "#table_issues thead th:nth-child(7)",
+                    returned: "#table_issues thead th:nth-child(8)"
+                },
                 labelFr: "Historique des prêts d'une notice",
                 labelEn: "Bibliographic record loan history",
                 indicators: [
@@ -292,9 +314,15 @@
             page.enabled=true;
 
             const native=PAGES[page.id];
-            page.tableSelector=sourcePage?.tableSelector || '#'+native.tableId;
-            page.columnSelectors=Object.assign({checkout:'',due:'',returned:''},sourcePage?.columnSelectors || {});
+            const builtin=native.columnSelectors || {};
+            page.tableSelector=String(sourcePage?.tableSelector || '').trim() || '#'+native.tableId;
+            page.columnSelectors={
+                checkout:String(sourcePage?.columnSelectors?.checkout || '').trim() || builtin.checkout || '',
+                due:String(sourcePage?.columnSelectors?.due || '').trim() || builtin.due || '',
+                returned:String(sourcePage?.columnSelectors?.returned || '').trim() || builtin.returned || ''
+            };
             page.fallback=Object.assign({},native.fallback,sourcePage?.fallback || {});
+            if(page.id==='members.readingrec' && page.fallback.checkout===8 && page.fallback.due===11 && page.fallback.returned===12) page.fallback=Object.assign({},native.fallback);
             if (sourcePage) {
                 if(typeof sourcePage.path==='string' && sourcePage.path.trim())page.path=sourcePage.path.trim();
                 if (typeof sourcePage.labelFr === "string" && sourcePage.labelFr.trim()) {
@@ -560,6 +588,7 @@
         ],
         returned: [
             "rendu le",
+            "retour le",
             "date de retour effective",
             "retour effectif",
             "return date",
@@ -594,7 +623,14 @@
 
         const chooseUnique = function (kind) {
             const selector=currentPageConfig?.columnSelectors?.[kind];
-            if(selector) {try {return headers.findIndex(header=>header.matches(selector))} catch(_){return -1}}
+            if(selector) {
+                let index = -1;
+                try { index = headers.findIndex(header => header.matches(selector)); } catch (_) { index = -1; }
+                if (index >= 0) {
+                    const builtin = PAGES[currentPage?.id]?.columnSelectors?.[kind];
+                    if (selector !== builtin || matchesAlias(labels[index], COLUMN_ALIASES[kind])) return index;
+                }
+            }
             const indexes = findAll(kind);
             return indexes.length === 1 ? indexes[0] : -1;
         };
@@ -602,8 +638,6 @@
         let checkout = chooseUnique("checkout");
         let due = chooseUnique("due");
         let returned = chooseUnique("returned");
-
-        if(['checkout','due','returned'].some(kind=>currentPageConfig?.columnSelectors?.[kind] && chooseUnique(kind)<0))return null;
         const fallback = currentPage && currentPage.fallback
             ? currentPage.fallback
             : null;

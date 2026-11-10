@@ -55,20 +55,12 @@ Réglages métier : module `attendance-mediabus-mini`.
 |---|---|---|
 | Comptes Koha autorisés (un par ligne) | `runtime.allowedUsernames` | Courant |
 | Carte du lecteur technique pour le prêt | `runtime.patronCardnumber` | Courant |
-| Classe du plugin de restauration | `runtime.pluginClass` | Avancé |
-| Page d’exécution des plugins Koha | `runtime.runUrl` | Avancé |
-| Rapport de recherche par codes-barres | `runtime.reportIdBarcode` | Courant |
-| Rapport de recherche par dates | `runtime.reportIdDates` | Courant |
-| Page des rapports Koha | `runtime.reportUrl` | Avancé |
-| Nom du paramètre de codes-barres du rapport | `runtime.reportParamName` | Avancé |
-| Nom du paramètre de date de début | `runtime.reportDateFromParam` | Avancé |
-| Nom du paramètre de date de fin | `runtime.reportDateToParam` | Avancé |
-| Codes-barres par recherche | `runtime.reportBatchSize` | Avancé |
 | Période initiale de recherche (jours) | `runtime.defaultLookbackDays` | Courant |
 | Racine de l’API Koha | `runtime.restBase` | Avancé |
 | Code du site de circulation (vide = session Koha) | `runtime.libraryId` | Avancé |
 | Délai maximal d’une lecture (ms) | `runtime.timeoutMs` | Avancé |
-| Correspondance des colonnes des rapports | `runtime.reportColumns` | Avancé |
+
+La recherche passe par l’API PimpMyKoha (`/api/v1/contrib/pmk/restoration/deleted-items` et `deleted-biblios`). Aucun rapport SQL n’est à créer.
 
 ## Désherbage — `weeding`
 

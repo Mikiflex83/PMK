@@ -1,0 +1,5 @@
+[% WRAPPER "wrapper-staff-tool-plugin.inc" method="tool" plugin_title="PimpMyKoha" %]
+<h1>PimpMyKoha</h1>
+<p>Les pages et outils s’ouvrent dans l’interface professionnelle de Koha.</p>
+<p><a class="btn btn-primary" href="/cgi-bin/koha/mainpage.pl?pmk_page=hub">Ouvrir les pages et outils</a></p>
+[% END %]

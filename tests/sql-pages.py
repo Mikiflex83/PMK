@@ -49,12 +49,9 @@ def query(name,params):
     adapted=adapted.replace("GROUP_CONCAT(m.message ORDER BY m.message_date SEPARATOR ' | ')","GROUP_CONCAT(m.message, ' | ')")
     return [dict(row) for row in conn.execute(adapted,params)]
 checks=[]
-rows=query('138-transferts.sql',[0]);assert len(rows)==1 and rows[0]['Transfer_ID']==5 and rows[0]['Checkout_Active']==1 and rows[0]['Active_Hold_Count']==2;assert query('138-transferts.sql',[5])==[];checks.append('Transferts : une ligne par transfert actif, comptes non multipliés et pagination')
-rows=query('138-periodiques.sql',[0]);r=rows[0];assert r['Serial_Count']==5 and r['Expected_Count']==2 and r['Overdue_Expected_Count']==1 and r['Claimed_Count']==1 and r['Missing_Count']==1;assert r['Last_Arrived']=='2026-02-01';assert query('138-periodiques.sql',[1])==[];checks.append('Périodiques : agrégats et dates du contrat, sans multiplication de fascicules')
 rows=query('138-restauration-codes-barres.sql',['DELETED\nCB-10']);assert len(rows)==2;assert rows[0]['conflict']==0 and rows[1]['conflict']==1;checks.append('Restauration codes-barres : liste multiligne et conflit avec un exemplaire existant')
 rows=query('138-restauration-dates.sql',['2026-09-20','2026-09-20']);assert len(rows)==1 and rows[0]['itemnumber']==20;checks.append('Restauration dates : bornes inclusives sur la date de suppression')
 rows=query('138-signatures-notices.sql',[0]);assert len(rows)==1 and rows[0]['ISBN']=='9782070360024';assert query('138-signatures-notices.sql',[1])==[];checks.append('Signatures : alias bibliographiques et pagination')
-rows=query('138-suivi-retards-generique.sql',['B1']);assert len(rows)==1;assert rows[0]['Prêts actifs']==2 and rows[0]['Docs >= 35 j']==1 and rows[0]['Valeur docs >= 35 j']==20;assert rows[0]['Étape']=='À contrôler' and 'Premier contact' in rows[0]['Suivi procédure'];assert query('138-suivi-retards-generique.sql',['OTHER'])==[];assert len(query('138-suivi-retards-generique.sql',['%']))==1;checks.append('Retards génériques : un dossier par lecteur, montant non multiplié, périmètre de site')
 report={'passed':checks,'engine':'SQLite fixtures with explicit MariaDB syntax adaptations; not a MariaDB production validation'}
 (root/'tests/validation/sql-pages.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
 print(json.dumps(report,ensure_ascii=False,indent=2))

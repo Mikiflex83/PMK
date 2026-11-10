@@ -119,11 +119,12 @@ else
   mark INFO "perlcritic absent de l'image KTD"
 fi
 
-note "koha-qa.pl"
-if docker exec pmk-koha-1 test -d /kohadevbox/plugins/pmk/.git; then
-  docker exec pmk-koha-1 koha-shell kohadev -c 'cd /kohadevbox/plugins/pmk && KOHA_SOURCE_DIR=/kohadevbox/koha /kohadevbox/qa-test-tools/koha-qa.pl -c 2' || mark INFO "koha-qa.pl a des remarques"
+note "koha-qa.pl -c 2"
+if bash "${ROOT}/dev/koha/qa-scoped.sh" "${STAGE}"; then
+  mark OK "koha-qa.pl"
 else
-  mark INFO "le stage KTD n'est pas un dépôt git : koha-qa.pl -c 2 se lance depuis le clone du plugin, pas depuis le paquet construit"
+  mark FAIL "koha-qa.pl"
+  fail=1
 fi
 
 note "Audit statique et absence de Firebase"
@@ -143,6 +144,10 @@ if command -v python3 >/dev/null 2>&1; then
 fi
 
 note "Modules, un par un, sans enregistrement"
+# node.exe, lancé depuis WSL, ne reçoit les variables que si WSLENV les cite.
+if [[ "${NODE}" == *.exe ]]; then
+  export WSLENV="${WSLENV:+${WSLENV}:}PMK_KOHA_USER/w:PMK_KOHA_PASSWORD/w:PMK_CHROMIUM_PATH/w"
+fi
 if [ -n "${NODE}" ] && (cd "${ROOT}/tests" && "${NODE}" -e "require('playwright')" >/dev/null 2>&1); then
   if (cd "${ROOT}/tests" && env -u PMK_TEST_FILTER "${NODE}" ktd-staff.cjs); then
     mark OK "parcours professionnel"

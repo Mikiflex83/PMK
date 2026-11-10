@@ -231,7 +231,7 @@
     }
 
     async function getAuthorisedValues(category, force) {
-        const key = String(category || "").toUpperCase();
+        const key = String(category || "").trim();
         const cached = avCache.get(key);
         if (!force && cached && (Date.now() - cached.at) < 60000) return cached.values;
 
@@ -363,7 +363,7 @@
         if (enabledRows.length === rows.length) return { allowed: true, identified: false, forceAsk: false };
 
         let live = [];
-        try { live = await getAuthorisedValues("LOST", false); } catch (_) {}
+        try { live = await getAuthorisedValues(config.lostCategory || "LOST", false); } catch (_) {}
 
         const byValue = new Map();
         rows.forEach(function (row) { byValue.set(String(row.value), row); });
@@ -685,7 +685,7 @@
         }
 
         let notLoanValues = [];
-        try { notLoanValues = await getAuthorisedValues("NOT_LOAN", false); } catch (_) {}
+        try { notLoanValues = await getAuthorisedValues(config.notLoanCategory || "NOT_LOAN", false); } catch (_) {}
         const statusLabel = findStatusLabel(status, notLoanValues, config.notLoanRules);
         trace.push(t("Statut final NOT_LOAN : ", "Final NOT_LOAN status: ") + statusLabel + " (" + String(status) + ").");
 

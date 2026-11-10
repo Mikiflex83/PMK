@@ -1,6 +1,6 @@
 /*
  Nom du fichier : 110-exemplaire-helper.js
- Version : 3.1.2-preplugin
+ Version : 3.1.4-etat-panneau-memorise
  Date : 2026-09-20
 
  PimpMyKoha — Assistant de saisie des exemplaires
@@ -26,7 +26,7 @@
     window.__PMK110_ITEM_ENTRY_ASSISTANT__ = true;
 
     const MODULE_ID = "item-entry-assistant";
-    const MODULE_VERSION = "3.1.2-preplugin";
+    const MODULE_VERSION = "3.1.4-etat-panneau-memorise";
     const PANEL_ID = "koha_items_assistant_panel";
     const CACHE_KEY = "koha_items_assistant_last";
     const PRESETS_KEY = "koha_items_assistant_presets";
@@ -82,7 +82,7 @@
         pages: PAGE_DEFINITIONS.map(function (p) { return { id:p.id, path:p.path, enabled:p.enabled }; }),
         panel: {
             widthPx: 420,
-            collapsedByDefault: true,
+            collapsedByDefault: false,
             rememberStateAndPosition: true,
             refreshOptionsMs: 5000
         },
@@ -114,6 +114,7 @@
     let unsubscribeConfig = null;
     let renderTimer = null;
     let refreshTimer = null;
+    let panelCollapsedInSession = null;
     let firebaseDb = null;
     let firebaseApi = null;
     let firebaseBootPromise = null;
@@ -309,7 +310,7 @@
         #${PANEL_ID} .head{
             display:flex;justify-content:space-between;align-items:center;gap:8px;
             padding:11px 12px;cursor:move;font-weight:700;font-size:13px;
-            background:linear-gradient(135deg,#3f8340 0%,#438d43 100%);color:#fff;
+            background:#3f8340;color:#fff;
             letter-spacing:.2px;border-bottom:1px solid rgba(0,0,0,.08);
         }
         #${PANEL_ID} .head .title{display:flex;align-items:center;gap:8px;font-size:13.5px}
@@ -328,7 +329,7 @@
         #${PANEL_ID} .head-btns button:hover{background:rgba(255,255,255,.30);border-color:rgba(255,255,255,.18)}
         #${PANEL_ID} .body{
             padding:10px 12px 12px;max-height:78vh;overflow-y:auto;overflow-x:hidden;
-            background:linear-gradient(180deg,#ffffff 0%,#fbfcfb 100%);
+            background:#ffffff;
             scrollbar-width:thin;scrollbar-color:#cfd8d0 transparent;
         }
         #${PANEL_ID} .body > *,#${PANEL_ID} .actions,#${PANEL_ID} .preset-list,#${PANEL_ID} .preset-controls{max-width:100%;min-width:0}
@@ -1280,7 +1281,12 @@
         ensureResponsiveStyle();
 
         const remember = currentConfig.panel.rememberStateAndPosition !== false;
-        const savedPanelState = remember ? getJSON(PANEL_STATE_KEY, { collapsed: currentConfig.panel.collapsedByDefault !== false }) : { collapsed: currentConfig.panel.collapsedByDefault !== false };
+        if (panelCollapsedInSession === null) {
+            const previousState = remember ? getJSON(PANEL_STATE_KEY, {}) : {};
+            panelCollapsedInSession = typeof previousState === "boolean"
+                ? previousState : !!(previousState && previousState.collapsed);
+        }
+        const savedPanelState = { collapsed: panelCollapsedInSession };
         const savedPosition = remember ? getJSON(PANEL_POSITION_KEY, { left:null, top:70, right:20 }) : { left:null, top:70, right:20 };
         const fields = activeFields();
         const root = document.createElement("div");
@@ -1686,14 +1692,24 @@
         root.querySelector('[data-act="copyFromOthers"]').addEventListener("click", copyFromOthers);
         root.querySelector('[data-act="save"]').addEventListener("click", savePreset);
         const collapseBtn = root.querySelector('[data-pmk110-act="collapse"]');
-        collapseBtn.textContent = savedPanelState.collapsed ? "+" : "–";
+        const paintCollapsed110 = function () {
+            root.classList.toggle("collapsed", panelCollapsedInSession);
+            collapseBtn.textContent = panelCollapsedInSession ? "+" : "–";
+            collapseBtn.title = panelCollapsedInSession ? tr("Déployer", "Expand") : tr("Réduire", "Collapse");
+            collapseBtn.setAttribute("aria-expanded", String(!panelCollapsedInSession));
+        };
+        paintCollapsed110();
+        const collapseGuard110 = new MutationObserver(function () {
+            if (root.classList.contains("collapsed") !== panelCollapsedInSession) paintCollapsed110();
+        });
+        collapseGuard110.observe(root, { attributes: true, attributeFilter: ["class"] });
         collapseBtn.addEventListener("click", function (event) {
             event.preventDefault();
-            event.stopPropagation();
-            root.classList.toggle("collapsed");
-            const collapsed = root.classList.contains("collapsed");
-            collapseBtn.textContent = collapsed ? "+" : "–";
-            if (remember) setJSON(PANEL_STATE_KEY, { collapsed:collapsed });
+            event.stopImmediatePropagation();
+            if (!event.isTrusted || !event.target.closest('[data-pmk110-act="collapse"]')) return;
+            panelCollapsedInSession = !panelCollapsedInSession;
+            paintCollapsed110();
+            if (remember) setJSON(PANEL_STATE_KEY, { collapsed: panelCollapsedInSession });
             savePosition();
         });
         window.addEventListener("beforeunload", savePosition, { once:true });
@@ -1816,9 +1832,9 @@
                         {key:"path",type:"text",label:{fr:"Chemin Koha",en:"Koha path"}}
                     ]}
                 ]},
-                { type:"section", id:"panel", label:{fr:"Panneau",en:"Panel"}, description:{fr:"420 px et panneau replié restent les valeurs historiques par défaut. Sur petit écran la largeur s’adapte automatiquement.",en:"420 px and collapsed state remain the historical defaults. Width adapts automatically on small screens."}, fields:[
+                { type:"section", id:"panel", label:{fr:"Panneau",en:"Panel"}, description:{fr:"Seul le bouton +/– change l’état du panneau. L’état réduit ou déployé et la position sont conservés sur ce navigateur.",en:"Only the +/– button changes the panel state. The collapsed or expanded state and the position are kept in this browser."}, fields:[
                     {key:"panel.widthPx",type:"number",min:300,max:760,label:{fr:"Largeur du panneau (px)",en:"Panel width (px)"}},
-                    {key:"panel.collapsedByDefault",type:"boolean",label:{fr:"Panneau replié par défaut",en:"Collapsed by default"}},
+                    {key:"panel.collapsedByDefault",type:"boolean",label:{fr:"Ancien réglage (ignoré pour la stabilité)",en:"Legacy setting (ignored for stability)"}},
                     {key:"panel.rememberStateAndPosition",type:"boolean",label:{fr:"Mémoriser état et position sur ce navigateur",en:"Remember state and position in this browser"}},
                     {key:"panel.refreshOptionsMs",type:"number",min:1000,max:60000,advanced:true,label:{fr:"Rafraîchissement des listes Koha (ms)",en:"Koha list refresh interval (ms)"}}
                 ]},
@@ -1885,17 +1901,25 @@
             ]
         });
 
+        // Ignorer les notifications PMK sans modification réelle : elles
+        // ne doivent pas démonter/remonter la fenêtre pendant l'utilisation.
+        let lastConfigSignature110 = JSON.stringify(currentConfig);
+        function acceptConfig110(cfg) {
+            const normalized = normalizeConfig(cfg || {});
+            const signature = JSON.stringify(normalized);
+            if (signature === lastConfigSignature110 && document.getElementById(PANEL_ID)) return;
+            lastConfigSignature110 = signature;
+            currentConfig = normalized;
+            scheduleRender(0);
+        }
         window.PMKConfig.getConfig(MODULE_ID).then(function (cfg) {
-            currentConfig = normalizeConfig(cfg || {});
-            scheduleRender(0);
+            acceptConfig110(cfg);
         }).catch(function () {
-            currentConfig = normalizeConfig(DEFAULT_CONFIG);
-            scheduleRender(0);
+            acceptConfig110(DEFAULT_CONFIG);
         });
         if (typeof window.PMKConfig.subscribe === "function") {
             unsubscribeConfig = window.PMKConfig.subscribe(MODULE_ID, function (cfg) {
-                currentConfig = normalizeConfig(cfg || {});
-                scheduleRender(0);
+                acceptConfig110(cfg);
             });
         }
         return true;

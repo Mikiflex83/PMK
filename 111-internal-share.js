@@ -1206,18 +1206,17 @@
             document.getElementById(ROOT_ID)?.remove();
             return;
         }
-        ensureStyles(); ensureRoot(); ensureModals();
         currentIdentity = resolveIdentity();
         currentPage = pageConfigForPath(currentPath());
         const info = await waitForBranch(10000);
         if (myGeneration !== runtimeGeneration) return;
         currentSite = resolveSite(info);
         if (!currentConfig.enabled || !currentSite) {
-            const libraryName = clean(info.name || info.code);
-            addDiagnostic('disconnected', tr('Module inactif sur ce site','Module inactive on this site'), libraryName);
-            showOutsideSite(libraryName);
+            document.getElementById(STYLE_ID)?.remove();
+            document.getElementById(ROOT_ID)?.remove();
             return;
         }
+        ensureStyles(); ensureRoot(); ensureModals();
         startInjectionObserver();
         if (!currentSite.canReceive) return;
         try {
@@ -1241,23 +1240,6 @@
             };
             run();
         });
-    }
-
-    function showOutsideSite(libraryName) {
-        const root = ensureRoot();
-        root.replaceChildren();
-        const card = document.createElement('div');
-        card.className = 'pmk111-card';
-        card.setAttribute('data-variant', 'warning');
-        const body = document.createElement('div');
-        body.className = 'pmk111-body pmk111-site-notice';
-        const name = libraryName || tr('Cette bibliothèque', 'This library');
-        body.textContent = tr(
-            name + ' n’est pas dans les sites du partage interne. Aucune demande n’est envoyée ni reçue.',
-            name + ' is not one of the internal-share sites. Nothing is sent or received.'
-        );
-        card.appendChild(body);
-        root.appendChild(card);
     }
 
     function listedSiteIds(group) {
