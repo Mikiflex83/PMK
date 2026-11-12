@@ -4552,22 +4552,14 @@
         help.className = "pmk-global-master-help";
         help.textContent = enabled
             ? text({
-                fr: "Interrupteur général. Les états individuels restent mémorisés.",
-                en: "Global switch. Individual module states remain saved."
+                fr: "Désactiver mémorise uniquement les modules actifs. Rétablir ne rallume pas ceux qui étaient déjà éteints. Tout activer ignore l’état précédent.",
+                en: "Disable remembers only the modules that are on. Restore does not turn on modules that were already off. Enable all ignores the previous state."
             }, lang)
             : text({
-                fr: "PMK est suspendu. Les modules individuellement activés restent mémorisés et reviendront à la réactivation.",
-                en: "PMK is suspended. Individually enabled modules remain saved and will return when re-enabled."
+                fr: "PMK est suspendu. Les modules qui étaient actifs restent mémorisés. Rétablir ne rallume pas ceux qui étaient déjà éteints.",
+                en: "PMK is suspended. Modules that were on remain saved. Restore does not turn on modules that were already off."
             }, lang);
         host.appendChild(help);
-
-        const bulkHelp = document.createElement("div");
-        bulkHelp.className = "pmk-global-master-help";
-        bulkHelp.textContent = text({
-            fr: "Désactiver mémorise uniquement les modules actifs. Rétablir ne rallume pas ceux qui étaient déjà éteints. Tout activer ignore l’état précédent.",
-            en: "Disable remembers only the modules that are on. Restore does not turn on modules that were already off. Enable all ignores the previous state."
-        }, lang);
-        host.appendChild(bulkHelp);
 
         const actions = document.createElement("div");
         actions.className = "pmk-global-bulk-actions";
@@ -4665,8 +4657,8 @@
         const contextHelp = document.createElement("div");
         contextHelp.className = "pmk-global-context-help";
         contextHelp.textContent = text({
-            fr: "Affiche ou masque les petits boutons ⚙️ disséminés dans les pages Koha.",
-            en: "Shows or hides the small ⚙️ buttons placed throughout Koha pages."
+            fr: "Affichés s’ils ne font pas double emploi et ne gênent pas la page.",
+            en: "Shown unless they duplicate another control or get in the way of the page."
         }, lang);
         contextCopy.appendChild(contextHelp);
         contextRow.appendChild(contextCopy);
@@ -4872,8 +4864,8 @@
         heroCopy.appendChild(intro);
         const origin = document.createElement("p");
         origin.textContent = text({
-            fr: "PimpMyKoha est développé entièrement à l’aide de l’intelligence artificielle, par une personne qui n’est pas développeur. Il est partagé avec la communauté Koha pour être utilisé, relu, corrigé et amélioré. Le développement est en cours : son utilisation reste sous la responsabilité de l’établissement.",
-            en: "PimpMyKoha is developed entirely with the help of artificial intelligence, by someone who is not a developer. It is shared with the Koha community so it can be used, reviewed, corrected and improved. Development is still under way: use remains the responsibility of each library."
+            fr: "PimpMyKoha est développé entièrement à l’aide de l’intelligence artificielle, par Michael Mundet, qui n’est pas développeur. Il est partagé avec la communauté Koha pour être utilisé, relu, corrigé et amélioré. Le développement est en cours : son utilisation reste sous la responsabilité de l’établissement.",
+            en: "PimpMyKoha is developed entirely with the help of artificial intelligence, by Michael Mundet, who is not a developer. It is shared with the Koha community so it can be used, reviewed, corrected and improved. Development is still under way: use remains the responsibility of each library."
         }, lang);
         heroCopy.appendChild(origin);
         hero.appendChild(heroCopy);
@@ -4889,8 +4881,8 @@
             legacy.appendChild(legacyTitle);
             const legacyHelp = document.createElement("p");
             legacyHelp.textContent = text({
-                fr: "Si PimpMyKoha était déjà utilisé sans ce plugin, importez le fichier de sauvegarde de cette installation. Sans import, le plugin est déjà lancé et chaque module reste éteint.",
-                en: "If PimpMyKoha was already in use without this plugin, import that installation’s backup file. Without an import, the plugin is already running and every module stays off."
+                fr: "Si PimpMyKoha était déjà utilisé sans ce plugin, importez ici le fichier de sauvegarde. Sans cet import, le plugin est déjà lancé et chaque module reste éteint.",
+                en: "If PimpMyKoha was already in use without this plugin, import the backup file here. Without that import, the plugin is already running and every module stays off."
             }, lang);
             legacy.appendChild(legacyHelp);
             const legacyButton = document.createElement("button");
@@ -4970,8 +4962,8 @@
         const warning = overlay.querySelector(".pmk-config-footer-warning-text");
         if (warning) {
             warning.textContent = text({
-                fr: "PimpMyKoha est développé entièrement à l’aide de l’intelligence artificielle, par une personne qui n’est pas développeur. Il est partagé avec la communauté Koha pour en faire profiter le plus grand nombre, et pour être relu, corrigé et amélioré. Le développement est en cours : ces modules ne font pas partie de Koha et ne sont pas pris en charge par votre hébergeur. Leur utilisation reste sous la responsabilité de l’établissement. En cas d’anomalie, désactivez le module concerné — ou PimpMyKoha dans son ensemble — avant toute autre intervention. Activez les modules progressivement, un par un, et vérifiez le bon fonctionnement de Koha après chaque activation.",
-                en: "PimpMyKoha is developed entirely with the help of artificial intelligence, by someone who is not a developer. It is shared with the Koha community so that as many libraries as possible can use it, and so that it can be reviewed, corrected and improved. Development is still under way: these modules are not part of Koha and are not supported by your hosting provider. Use remains the responsibility of each library. If something behaves unexpectedly, disable the affected module — or PimpMyKoha as a whole — before any other intervention. Enable modules gradually, one at a time, and verify Koha after each activation."
+                fr: "PimpMyKoha est développé entièrement à l’aide de l’intelligence artificielle, par Michael Mundet, qui n’est pas développeur. Il est partagé avec la communauté Koha pour en faire profiter le plus grand nombre, et pour être relu, corrigé et amélioré. Le développement est en cours : ces modules ne font pas partie de Koha et ne sont pas pris en charge par votre hébergeur. Leur utilisation reste sous la responsabilité de l’établissement. En cas d’anomalie, désactivez le module concerné — ou PimpMyKoha dans son ensemble — avant toute autre intervention. Activez les modules progressivement, un par un, et vérifiez le bon fonctionnement de Koha après chaque activation.",
+                en: "PimpMyKoha is developed entirely with the help of artificial intelligence, by Michael Mundet, who is not a developer. It is shared with the Koha community so that as many libraries as possible can use it, and so that it can be reviewed, corrected and improved. Development is still under way: these modules are not part of Koha and are not supported by your hosting provider. Use remains the responsibility of each library. If something behaves unexpectedly, disable the affected module — or PimpMyKoha as a whole — before any other intervention. Enable modules gradually, one at a time, and verify Koha after each activation."
             }, lang);
         }
 
@@ -5722,8 +5714,8 @@
         if (warning) {
             const lang = detectLanguage();
             warning.textContent = text({
-                fr: "PimpMyKoha est développé entièrement à l’aide de l’intelligence artificielle, par une personne qui n’est pas développeur. Il est partagé avec la communauté Koha pour en faire profiter le plus grand nombre, et pour être relu, corrigé et amélioré. Le développement est en cours : ces modules ne font pas partie de Koha et ne sont pas pris en charge par votre hébergeur. Leur utilisation reste sous la responsabilité de l’établissement. En cas d’anomalie, désactivez le module concerné — ou PimpMyKoha dans son ensemble — avant toute autre intervention. Activez les modules progressivement, un par un, et vérifiez le bon fonctionnement de Koha après chaque activation.",
-                en: "PimpMyKoha is developed entirely with the help of artificial intelligence, by someone who is not a developer. It is shared with the Koha community so that as many libraries as possible can use it, and so that it can be reviewed, corrected and improved. Development is still under way: these modules are not part of Koha and are not supported by your hosting provider. Use remains the responsibility of each library. If something behaves unexpectedly, disable the affected module — or PimpMyKoha as a whole — before any other intervention. Enable modules gradually, one at a time, and verify Koha after each activation."
+                fr: "PimpMyKoha est développé entièrement à l’aide de l’intelligence artificielle, par Michael Mundet, qui n’est pas développeur. Il est partagé avec la communauté Koha pour en faire profiter le plus grand nombre, et pour être relu, corrigé et amélioré. Le développement est en cours : ces modules ne font pas partie de Koha et ne sont pas pris en charge par votre hébergeur. Leur utilisation reste sous la responsabilité de l’établissement. En cas d’anomalie, désactivez le module concerné — ou PimpMyKoha dans son ensemble — avant toute autre intervention. Activez les modules progressivement, un par un, et vérifiez le bon fonctionnement de Koha après chaque activation.",
+                en: "PimpMyKoha is developed entirely with the help of artificial intelligence, by Michael Mundet, who is not a developer. It is shared with the Koha community so that as many libraries as possible can use it, and so that it can be reviewed, corrected and improved. Development is still under way: these modules are not part of Koha and are not supported by your hosting provider. Use remains the responsibility of each library. If something behaves unexpectedly, disable the affected module — or PimpMyKoha as a whole — before any other intervention. Enable modules gradually, one at a time, and verify Koha after each activation."
             }, lang);
         }
 

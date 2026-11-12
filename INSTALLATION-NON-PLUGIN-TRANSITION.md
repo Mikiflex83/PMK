@@ -4,7 +4,7 @@
 > À partir de la version 0.5.0, ce mode n’est plus construit ni publié. Installez le plugin Koha. Cette page décrit seulement une installation déjà en place.
 
 > [!IMPORTANT]
-> PimpMyKoha est développé entièrement à l’aide de l’intelligence artificielle, par une personne qui n’est pas développeur. Il est partagé avec la communauté Koha pour être utilisé, relu, corrigé et amélioré. Le développement est toujours en cours. Son utilisation reste sous la responsabilité de chaque établissement.
+> PimpMyKoha est développé entièrement à l’aide de l’intelligence artificielle, par Michael Mundet, qui n’est pas développeur. Il est partagé avec la communauté Koha pour être utilisé, relu, corrigé et amélioré. Le développement est toujours en cours. Son utilisation reste sous la responsabilité de chaque établissement.
 
 Cette distribution permet d’utiliser les scripts 0.4.0 par transfert de fichiers
 tant que l’installation des plugins Koha n’est pas autorisée. Elle se connecte

@@ -1,18 +1,18 @@
-# Installer PimpMyKoha 0.5.1
+# Installer PimpMyKoha 0.5.3
 
-Installez le KPZ de l’étiquette `v0.5.1`. C’est le canal stable : il ne contient pas les pages encore marquées en développement. L’étiquette `v0.5.1-preview` est une préversion qui les ajoute, avec leur avertissement.
+Installez le KPZ de l’étiquette `v0.5.3`. C’est le canal stable : il ne contient pas les pages encore marquées en développement. L’étiquette `v0.5.3-preview` est une préversion qui les ajoute, avec leur avertissement.
 
 > [!IMPORTANT]
-> PimpMyKoha est développé entièrement à l’aide de l’intelligence artificielle, par une personne qui n’est pas développeur. Il est partagé avec la communauté Koha pour être utilisé, relu, corrigé et amélioré. Le développement est toujours en cours. Son utilisation reste sous la responsabilité de chaque établissement.
+> PimpMyKoha est développé entièrement à l’aide de l’intelligence artificielle, par Michael Mundet, qui n’est pas développeur. Il est partagé avec la communauté Koha pour être utilisé, relu, corrigé et amélioré. Le développement est toujours en cours. Son utilisation reste sous la responsabilité de chaque établissement.
 
 Le paquet se télécharge depuis la release GitHub du même nom. Il est prévu pour Koha 25.11 professionnel, UNIMARC et MariaDB 10.11. Les limites figurent dans [la recette](RECETTE-PLUGIN-KOHA.md).
 
 1. Sauvegarder Koha, les fichiers personnalisés et le contenu exact d’IntranetUserJS/IntranetUserCSS. Commencer sur une copie de la production.
 2. Si PMK fonctionne déjà sans plugin, exécuter d’abord `dev/migration/export-production.js` comme décrit dans [la procédure de transition](TRANSITION-NON-PLUGIN-VERS-PLUGIN.md). Conserver le JSON privé et vérifier qu’il est complet.
 3. Vérifier que les plugins sont autorisés (`enable_plugins`), puis téléverser le KPZ dans **Outils → Plugins** avec les permissions nécessaires. Koha peut nécessiter un rechargement des routes par redémarrage de Plack.
-4. Ouvrir **PimpMyKoha → Configurer**. Une nouvelle installation garde ses modules en attente ; l’écran de préparation fonctionne indépendamment du chargeur historique. Une mise à jour conserve l’état du plugin déjà utilisé.
-5. Pour une transition, analyser le JSON, télécharger la sauvegarde du plugin, importer puis vérifier la relecture. Le plugin reste en attente. Pour une installation entièrement neuve, choisir explicitement l’activation sans reprise.
-6. Après recette et import final, retirer uniquement l’ancien chargeur PMK d’IntranetUserJS, puis activer le plugin depuis son écran de préparation. Recharger les postes. Les deux chargeurs ne doivent pas exécuter PMK simultanément.
+4. Ouvrir **PimpMyKoha** dans le menu de l’utilisateur. Le plugin démarre tout de suite. Chaque module reste éteint tant qu’il n’est pas activé. Une mise à jour conserve l’état déjà choisi.
+5. Pour une transition, ouvrir **Ancienne installation** sur cette page, importer le fichier de sauvegarde, puis vérifier la relecture. Une installation neuve n’a rien à importer.
+6. Après la recette, retirer uniquement l’ancien chargeur PMK d’IntranetUserJS s’il est encore présent. Recharger les postes. Les deux chargeurs ne doivent pas exécuter PMK simultanément.
 7. La configuration courante est accessible depuis l’interface PMK et `/cgi-bin/koha/mainpage.pl?pmk_admin=1`. L’accueil des pages internes est `/cgi-bin/koha/mainpage.pl?pmk_page=hub`.
 
 Le stockage des configurations, listes, rendez-vous, journal, compteurs et anciens référentiels Firebase est natif Koha. Aucun compte, SDK ni service Firebase n’est requis par le plugin, y compris pour les Autorités. Le script d’export historique, séparé et manuel, lit les anciens services uniquement pour préparer leur reprise.
