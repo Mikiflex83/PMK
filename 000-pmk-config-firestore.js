@@ -4880,6 +4880,30 @@
         home.appendChild(hero);
         ensurePmkHomeHeroLogo(home);
 
+        if (window.PMKMigration) {
+            const legacy = document.createElement("section");
+            legacy.className = "pmk-home-card";
+            const legacyTitle = document.createElement("h4");
+            legacyTitle.innerHTML = '<i class="fa fa-upload" aria-hidden="true"></i> ' +
+                escapeHtml(text({ fr: "Ancienne installation", en: "Previous installation" }, lang));
+            legacy.appendChild(legacyTitle);
+            const legacyHelp = document.createElement("p");
+            legacyHelp.textContent = text({
+                fr: "Si PimpMyKoha était déjà utilisé sans ce plugin, importez le fichier de sauvegarde de cette installation. Sans import, le plugin est déjà lancé et chaque module reste éteint.",
+                en: "If PimpMyKoha was already in use without this plugin, import that installation’s backup file. Without an import, the plugin is already running and every module stays off."
+            }, lang);
+            legacy.appendChild(legacyHelp);
+            const legacyButton = document.createElement("button");
+            legacyButton.type = "button";
+            legacyButton.className = "btn btn-primary";
+            legacyButton.textContent = text({ fr: "Importer les données", en: "Import the data" }, lang);
+            legacyButton.onclick = function () {
+                window.PMKMigration.open().catch(function (error) { window.alert(error.message); });
+            };
+            legacy.appendChild(legacyButton);
+            home.appendChild(legacy);
+        }
+
         const grid = document.createElement("div");
         grid.className = "pmk-home-grid";
 
@@ -4901,7 +4925,6 @@
             dataButton.textContent=text({fr:'Données des modules — import / export',en:'Module data — import / export'},lang);
             dataButton.onclick=()=>window.PMKNativeData.openManager().catch(error=>alert(error.message));
             settings.appendChild(dataButton);
-            if(window.PMKMigration){const migration=document.createElement('button');migration.type='button';migration.className='btn btn-default';migration.textContent='Transition vers le plugin — import global';migration.onclick=()=>window.PMKMigration.open().catch(error=>alert(error.message));settings.appendChild(migration);}
         }
 
         const globalHost = document.createElement("div");

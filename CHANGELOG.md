@@ -2,6 +2,13 @@
 
 Les changements majeurs de PimpMyKoha sont consignés dans ce fichier.
 
+## [0.5.2] - 2026-11-12
+
+### Modifié
+
+- Une installation neuve démarre le plugin tout de suite. Les modules restent éteints tant qu’aucun document n’est enregistré.
+- L’accueil de la configuration propose d’importer la sauvegarde d’une ancienne installation.
+
 ## [0.5.1] - 2026-11-10
 
 ### Ajouté

@@ -5,11 +5,11 @@ use base qw(Koha::Plugins::Base);
 use JSON qw(decode_json);
 use C4::Context;
 
-our $VERSION = '0.5.1';
+our $VERSION = '0.5.2';
 our $metadata = {
     name => 'PimpMyKoha', author => 'PimpMyKoha',
     description => 'Modules et pages pour l’interface professionnelle de Koha, avec configuration native. Développé entièrement avec l’IA par une personne qui n’est pas développeur, et partagé pour être relu et amélioré. Développement en cours : l’usage reste sous la responsabilité de l’établissement.',
-    date_authored => '2026-10-18', date_updated => '2026-11-10',
+    date_authored => '2026-10-18', date_updated => '2026-11-12',
     minimum_version => '25.11.00.000', version => $VERSION,
     license => 'GPL-3.0-or-later',
 };
@@ -79,11 +79,32 @@ sub install {
         saved_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         INDEX namespace_history(namespace, id)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin});
-    if (!defined $self->retrieve_data('runtime_enabled')) {
-        my $count = $dbh->selectrow_array("SELECT COUNT(*) FROM $table{documents}");
-        $self->store_data({runtime_enabled => $count ? '1' : '0'});
+    my $runtime = $self->retrieve_data('runtime_enabled');
+    if (!defined $runtime) {
+        # A new installation starts at once. Modules stay off until a document is saved.
+        $self->store_data({runtime_enabled => '1'});
+    } elsif ($runtime eq '0') {
+        # 0.5.1 and earlier left a fresh install waiting for a manual activation.
+        my $previous = $self->retrieve_data('__INSTALLED_VERSION__');
+        if (defined $previous && _version_older_than($previous, '0.5.2')) {
+            my $count = $dbh->selectrow_array("SELECT COUNT(*) FROM $table{documents}");
+            $self->store_data({runtime_enabled => '1'}) if !$count;
+        }
     }
     return 1;
+}
+
+sub _version_older_than {
+    my ( $version, $limit ) = @_;
+    my @left = split /[.]/, (defined $version && $version ne '') ? $version : '0';
+    my @right = split /[.]/, $limit;
+    for my $index (0 .. 2) {
+        my $current = int($left[$index] // 0);
+        my $boundary = int($right[$index] // 0);
+        return 1 if $current < $boundary;
+        return 0 if $current > $boundary;
+    }
+    return 0;
 }
 
 =head2 upgrade
