@@ -8,8 +8,8 @@ use Koha::Plugin::PimpMyKoha;
 use Koha::Plugins;
 use C4::Context;
 
-is($Koha::Plugin::PimpMyKoha::VERSION, '0.5.1', 'version 0.5.1');
-is($Koha::Plugin::PimpMyKoha::metadata->{version}, '0.5.1', 'version du manifeste');
+is($Koha::Plugin::PimpMyKoha::VERSION, '0.5.2', 'version 0.5.2');
+is($Koha::Plugin::PimpMyKoha::metadata->{version}, '0.5.2', 'version du manifeste');
 is($Koha::Plugin::PimpMyKoha::metadata->{license}, 'GPL-3.0-or-later', 'licence déclarée');
 ok($Koha::Plugin::PimpMyKoha::metadata->{minimum_version}, 'version minimale déclarée');
 is($Koha::Plugin::PimpMyKoha::metadata->{name}, 'PimpMyKoha', 'nom du plugin');
