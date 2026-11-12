@@ -107,16 +107,61 @@ sub uninstall { return 1; }
 Returns the staff bootstrap tag for a logged-in session. A disabled plugin
 stays quiet, except on the migration screen.
 
+Older Koha attaches the current request to C<$self->{cgi}> before calling
+this hook. Koha 25.11 and later call it without that object, so the same
+C<pmk_migration> parameter is then read from the request query string.
+
 =cut
 
 sub intranet_js {
-    my ($self) = @_;
-    my $migration = $self->{cgi} && $self->{cgi}->param('pmk_migration') ? 1 : 0;
+    my ( $self, $args ) = @_;
+    my $migration = $self->_migration_requested($args);
     return '' if ($self->retrieve_data('runtime_enabled') // '1') eq '0' && !$migration;
     return '' unless C4::Context->userenv && C4::Context->userenv->{number};
     my $base = '/api/v1/contrib/pmk/static';
     my $marker = $migration ? 'data-pmk-setup="1"' : 'data-pmk-plugin="1"';
     return qq{<script src="$base/bootstrap.js?v=$VERSION" $marker></script>};
+}
+
+sub _query_unescape {
+    my ($text) = @_;
+    $text =~ tr/+/ /;
+    $text =~ s/%([0-9A-Fa-f]{2})/chr(hex($1))/eg;
+    return $text;
+}
+
+sub _query_has_flag {
+    my ( $query, $name ) = @_;
+    return 0 if !defined $query || $query eq '';
+    for my $pair ( split /[&;]/, $query, -1 ) {
+        next if $pair eq '';
+        my ( $raw_key, $raw_value ) = split /=/, $pair, 2;
+        next unless defined $raw_key;
+        next if _query_unescape($raw_key) ne $name;
+        return 0 unless defined $raw_value;
+        return _query_unescape($raw_value) ? 1 : 0;
+    }
+    return 0;
+}
+
+sub _migration_requested {
+    my ( $self, $args ) = @_;
+    my $cgi = $self->{cgi};
+    if ( $cgi && $cgi->can('param') ) {
+        return $cgi->param('pmk_migration') ? 1 : 0;
+    }
+    if ( ref($args) eq 'HASH' ) {
+        return 1 if $args->{pmk_migration};
+        if ( defined $args->{page} && $args->{page} =~ /\?(.*)\z/s ) {
+            return 1 if _query_has_flag( $1, 'pmk_migration' );
+        }
+    }
+    my $query = $ENV{QUERY_STRING};
+    $query = $ENV{REDIRECT_QUERY_STRING} if !defined $query || $query eq '';
+    return _query_has_flag( $query, 'pmk_migration' ) if defined $query && $query ne '';
+    my $uri = $ENV{REQUEST_URI} // '';
+    return _query_has_flag( $1, 'pmk_migration' ) if $uri =~ /\?(.*)\z/s;
+    return 0;
 }
 
 sub configure {
