@@ -70,7 +70,7 @@ jobs:
         run: npm test
 
       - name: Contrôles Perl du toolkit KTD
-        run: prove -v t/00-boundaries.t t/02-ktd-toolkit.t
+        run: prove -v t/00-boundaries.t t/02-ktd-toolkit.t t/03-migration-request.t
 
       - name: Perl::Critic au niveau stern sur le point d’entrée
         run: |
