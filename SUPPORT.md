@@ -13,7 +13,7 @@ Utilisez une Issue pour un défaut reproductible, une incompatibilité ou une de
 
 ## Limites du support
 
-PimpMyKoha est développé entièrement à l’aide de l’intelligence artificielle, par une personne qui n’est pas développeur. Il est partagé pour être utilisé, relu et amélioré. Le développement est toujours en cours, et l’utilisation reste sous la responsabilité de chaque établissement.
+PimpMyKoha est développé entièrement à l’aide de l’intelligence artificielle, par Michael Mundet, qui n’est pas développeur. Il est partagé pour être utilisé, relu et amélioré. Le développement est toujours en cours, et l’utilisation reste sous la responsabilité de chaque établissement.
 
 Le projet communautaire ne peut pas accéder à votre production ni garantir une configuration locale, un rapport SQL, un matériel ou un fournisseur externe. Une recette sur une copie de l’installation reste nécessaire avant une migration.
 

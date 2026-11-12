@@ -2,6 +2,14 @@
 
 Les changements majeurs de PimpMyKoha sont consignés dans ce fichier.
 
+## [0.5.3] - 2026-11-12
+
+### Modifié
+
+- L’auteur du plugin est Michael Mundet.
+- L’accueil de la configuration précise l’import d’une ancienne installation, l’interrupteur général et les boutons contextuels.
+- Le dépôt publie un catalogue des modules et des pages, rédigé pour les équipes.
+
 ## [0.5.2] - 2026-11-12
 
 ### Modifié

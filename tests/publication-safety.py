@@ -10,7 +10,8 @@ FORBIDDEN={
     'google_api_key':re.compile(rb'AIza[0-9A-Za-z_-]{20,}'),
     'private_key':re.compile(rb'-----BEGIN [A-Z ]*PRIVATE KEY-----'),
     'github_token':re.compile(rb'(?:gh[pousr]_[A-Za-z0-9_]{20,}|github_pat_[A-Za-z0-9_]{20,})'),
-    'personal_identity':re.compile(rb'(?i)(?:mickael|michael)[-_ .]?mundet|emily[._ -]?gilotin|mikiflex83'),
+    # Le nom d’auteur du plugin est public. Les autres identités personnelles restent interdites.
+    'personal_identity':re.compile(rb'(?i)emily[._ -]?gilotin|mikiflex83'),
     'personal_email':re.compile(rb'(?i)(?:mickael[._-]?mundet|emily[._-]?gilotin)@[A-Z0-9.-]+'),
     'historic_firebase':re.compile(rb'(?i)(?:configpmk|comptage-b23b7|doodle-8cc1d|journal-2-5b969|listesperso-64318|arborescence-427ef|planningmediabusnavette|nedapfreq|internal-share-5360d)'),
     'private_worker':re.compile(rb'(?i)polished-scene-9336|michael-mundet\.workers\.dev'),

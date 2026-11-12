@@ -5,10 +5,10 @@ use base qw(Koha::Plugins::Base);
 use JSON qw(decode_json);
 use C4::Context;
 
-our $VERSION = '0.5.2';
+our $VERSION = '0.5.3';
 our $metadata = {
-    name => 'PimpMyKoha', author => 'PimpMyKoha',
-    description => 'Modules et pages pour l’interface professionnelle de Koha, avec configuration native. Développé entièrement avec l’IA par une personne qui n’est pas développeur, et partagé pour être relu et amélioré. Développement en cours : l’usage reste sous la responsabilité de l’établissement.',
+    name => 'PimpMyKoha', author => 'Michael Mundet',
+    description => 'Modules et pages pour l’interface professionnelle de Koha, avec configuration native. Développé entièrement avec l’IA par Michael Mundet, qui n’est pas développeur, et partagé pour être relu et amélioré. Développement en cours : l’usage reste sous la responsabilité de l’établissement.',
     date_authored => '2026-10-18', date_updated => '2026-11-12',
     minimum_version => '25.11.00.000', version => $VERSION,
     license => 'GPL-3.0-or-later',
