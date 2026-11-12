@@ -15,10 +15,12 @@ C’est la liste à ouvrir pour savoir ce que PimpMyKoha propose. Les pages enco
 
 La version publiée est la **0.5.3**. Deux paquets sont construits depuis le même commit. Installez le canal stable. Le canal aperçu ajoute les pages encore en vérification.
 
-| Canal | Paquet | Contenu |
-|---|---|---|
-| **Stable** | [PimpMyKoha-v0.5.3.kpz](https://github.com/Mikiflex83/PMK/releases/download/v0.5.3/PimpMyKoha-v0.5.3.kpz) | Plugin sans les pages encore en vérification. |
-| **Aperçu** | [PimpMyKoha-v0.5.3-preview.kpz](https://github.com/Mikiflex83/PMK/releases/download/v0.5.3-preview/PimpMyKoha-v0.5.3-preview.kpz) | Le même plugin, plus ces pages. Elles affichent un avertissement. |
+Les deux fichiers sont sur la page **Releases** du dépôt.
+
+| Canal | Fichier | Étiquette | Contenu |
+|---|---|---|---|
+| **Stable** | `PimpMyKoha-v0.5.3.kpz` | `v0.5.3` | Plugin sans les pages encore en vérification. |
+| **Aperçu** | `PimpMyKoha-v0.5.3-preview.kpz` | `v0.5.3-preview` | Le même plugin, plus ces pages. Elles affichent un avertissement. |
 
 Les pages réservées à l’aperçu sont le désherbage, la qualité des autorités, l’inventaire, la qualité des exemplaires, la qualité des notices, la qualité des comptes lecteurs et l’éditeur XSLT.
 
